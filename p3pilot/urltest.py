@@ -1,9 +1,19 @@
 #!/usr/bin/python
 
+import argparse
+
 import urllib
 from urllib import request
 
-response = urllib.request.urlopen('http://localhost:8000/')
+#-------------------------
+parser = argparse.ArgumentParser()
+parser.add_argument("-u", "--url", type=str, default='http://localhost:8000/')
+args = parser.parse_args()
+
+url = args.url
+print(url)
+
+response = urllib.request.urlopen(url)
 print ('RESPONSE:', response)
 print ('URL     :', response.geturl())
 
