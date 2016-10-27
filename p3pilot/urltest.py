@@ -37,7 +37,7 @@ if(verb >=2):
     print ('---------')
     print (headers)
 
-    print ('LENGTH  :', len(data))
+    print ('DATA LENGTH  :', len(data))
     print ('DATA    :')
     print ('---------')
     
