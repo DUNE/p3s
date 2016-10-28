@@ -17,14 +17,23 @@ from urllib.error import URLError
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-u", "--url",
+parser.add_argument("-s", "--server",
                     type=str,
                     default='http://localhost:8000/',
-                    help="url of the server, defaults to http://localhost:8000/")
+                    help="the server address, defaults to http://localhost:8000/")
+
+parser.add_argument("-u", "--url",
+                    type=str,
+                    default='',
+                    help="url of the query to be added, defaults to empty string")
 
 parser.add_argument("-t", "--test",
                     action='store_true',
                     help="when set, forms a request but does not contact the server")
+
+parser.add_argument("-r", "--register",
+                    action='store_true',
+                    help="when set, the pilot will attempt to register with the server")
 
 parser.add_argument("-v", "--verbosity",
                     type=int,
@@ -33,11 +42,15 @@ parser.add_argument("-v", "--verbosity",
 
 args = parser.parse_args()
 
+server	= args.server
 url	= args.url
 verb	= args.verbosity
-tst	= args.test
 
-print(tst) 
+# Boolean
+tst	= args.test
+register= args.register
+
+print(register) 
 pilotID = uuid.uuid1()
 print(pilotID)
 host = socket.gethostname()
@@ -52,7 +65,11 @@ if(tst):
     exit(0)
 
 try:
-    response = urllib.request.urlopen(url)
+    if(register):
+        response = urllib.request.urlopen(server+url, pilotData)
+    else:
+        response = urllib.request.urlopen(server+url)
+        
 except URLError:
     exit(1)
     
