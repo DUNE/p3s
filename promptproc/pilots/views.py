@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -20,6 +22,17 @@ def gateway(request):
 #    print(ts)
 
     
-    p=request.POST
-    print(p)
+    post	= request.POST
+    ts_created	= post['ts']
+    uuid	= post['uuid']
+    host	= post['host']
+    cluster	= 'default' # fixme
+    
+    ts_created	= post['ts']
+    ts_reg	= str(datetime.datetime.now())
+
+    p = pilot(cluster=cluster, host=host, uuid=uuid, ts_created=ts_created, ts_reg=ts_reg)
+
+    p.save()
+    
     return HttpResponse("You're looking at the pilot gateway" )
