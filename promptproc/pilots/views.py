@@ -4,6 +4,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from django.utils import timezone
+
 from .models import pilot
 
 def detail(request):
@@ -29,7 +31,8 @@ def gateway(request):
     cluster	= 'default' # fixme
     
     ts_created	= post['ts']
-    ts_reg	= str(datetime.datetime.now())
+#    ts_reg	= datetime.datetime.now()
+    ts_reg	= timezone.now()
 
     p = pilot(cluster=cluster, host=host, uuid=uuid, ts_created=ts_created, ts_reg=ts_reg)
 

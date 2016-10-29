@@ -2,11 +2,14 @@
 
 '''This is a stub for the p3s pilot'''
 #!/usr/bin/python
+from django.conf import settings
 
 import argparse
 import uuid
 import socket
 import datetime
+
+from django.utils import timezone
 
 import urllib
 from urllib import request
@@ -41,6 +44,8 @@ parser.add_argument("-v", "--verbosity",
                     default=0, choices=[0, 1, 2],
                     help="increase output verbosity")
 
+settings.configure(USE_TZ = True)
+
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
@@ -58,11 +63,14 @@ register= args.register
 
 pilotID	= uuid.uuid1()
 host	= socket.gethostname()
-ts	= str(datetime.datetime.now())
+#ts	= str(datetime.datetime.now())
+
+ts	= str(timezone.now())
 
 print(ts)
 
 pilotData= urllib.parse.urlencode({'uuid' : pilotID, 'host' : host, 'ts' : ts})
+
 pilotData = pilotData.encode('UTF-8')
 
 if(verb>0):
