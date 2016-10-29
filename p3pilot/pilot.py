@@ -6,6 +6,7 @@
 import argparse
 import uuid
 import socket
+import datetime
 
 import urllib
 from urllib import request
@@ -40,40 +41,48 @@ parser.add_argument("-v", "--verbosity",
                     default=0, choices=[0, 1, 2],
                     help="increase output verbosity")
 
+########################### Parse all arguments #########################
 args = parser.parse_args()
 
+# strings
 server	= args.server
 url	= args.url
+# numbers
 verb	= args.verbosity
-
 # Boolean
 tst	= args.test
 register= args.register
+########################################################################
 
-print(register) 
-pilotID = uuid.uuid1()
-print(pilotID)
-host = socket.gethostname()
-print(host)
+# find pilot parameters
 
-pilotData = urllib.parse.urlencode({'uuid' : pilotID, 'host' : host})
+pilotID	= uuid.uuid1()
+host	= socket.gethostname()
+ts	= str(datetime.datetime.now())
+
+print(ts)
+
+pilotData= urllib.parse.urlencode({'uuid' : pilotID, 'host' : host, 'ts' : ts})
 pilotData = pilotData.encode('UTF-8')
 
-print(pilotData)
+if(verb>0):
+    print(pilotData)
 
+# if in test mode simply bail
 if(tst):
     exit(0)
 
+# contact the server
 try:
-    if(register):
+    if(register):	# POST
         response = urllib.request.urlopen(server+url, pilotData)
-    else:
+    else:		# GET
         response = urllib.request.urlopen(server+url)
         
 except URLError:
-    exit(1)
+    exit(1)		# silent exit with an error code set
     
-    
+# get the reponse from the server    
 headers		= response.info()
 data		= response.read()
 
