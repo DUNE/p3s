@@ -63,11 +63,11 @@ register= args.register
 
 pilotID	= uuid.uuid1()
 host	= socket.gethostname()
-#ts	= str(datetime.datetime.now())
+
+# This will work but it's not TZ aware so there will be runtime warnings
+# from the backend DB on the server side: ts = str(datetime.datetime.now())
 
 ts	= str(timezone.now())
-
-print(ts)
 
 pilotData= urllib.parse.urlencode({'uuid' : pilotID, 'host' : host, 'ts' : ts})
 
