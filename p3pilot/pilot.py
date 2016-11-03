@@ -1,7 +1,6 @@
 #!/usr/bin/python
-
 '''This is a stub for the p3s pilot'''
-#!/usr/bin/python
+
 from django.conf import settings
 
 import argparse
@@ -69,15 +68,15 @@ host	= socket.gethostname()
 
 ts	= str(timezone.now())
 
-pilotData= urllib.parse.urlencode({'uuid' : pilotID, 'host' : host, 'ts' : ts})
+pilotData = urllib.parse.urlencode({'uuid' : pilotID, 'host' : host, 'ts' : ts})
 
 pilotData = pilotData.encode('UTF-8')
 
 if(verb>0):
     print(pilotData)
 
-# if in test mode simply bail
-if(tst):
+
+if(tst): # if in test mode simply bail
     exit(0)
 
 # contact the server
