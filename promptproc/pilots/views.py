@@ -1,19 +1,28 @@
 import datetime
 
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-
-from django.utils import timezone
+from django.shortcuts			import render
+from django.http			import HttpResponse
+from django.views.decorators.csrf	import csrf_exempt
+from django.utils			import timezone
+from django.core			import serializers
 
 from .models import pilot
 
 def detail(request):
-    pilot_id = request.GET.get('pilot','')
-    print(pilot_id)
-    ts = pilot.objects.get(id=pilot_id).ts_created
-    print(ts)
-    return HttpResponse("You're looking at pilot %s." % pilot_id)
+    pilot_uuid	= request.GET.get('uuid','')
+    pilot_pk	= request.GET.get('pk','')
+
+    if(pilot_uuid == '' and pilot_pk == ''):
+        return HttpResponse("Empty pilot id")
+
+    if(pilot_uuid != ''):
+        p = pilot.objects.get(uuid=pilot_uuid)
+    else:
+        p = pilot.objects.get(pk=pilot_pk)
+        
+    data = serializers.serialize('json', [ p, ]) #    print(data)
+    
+    return HttpResponse(data)
 
 
 @csrf_exempt
