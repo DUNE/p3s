@@ -82,6 +82,7 @@ if(tst): # if in test mode simply bail
 # contact the server
 try:
     if(register):	# POST
+        url = "pilots/addpilot"
         response = urllib.request.urlopen(server+url, pilotData)
     else:		# GET
         response = urllib.request.urlopen(server+url)

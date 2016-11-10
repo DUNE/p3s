@@ -13,4 +13,4 @@ class pilot(models.Model):
     #    auto_now=True
     
     def __str__(self):
-        return self.cluster
+        return self.uuid

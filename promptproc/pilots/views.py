@@ -26,7 +26,7 @@ def detail(request):
 
 
 @csrf_exempt
-def gateway(request):
+def addpilot(request):
     
     post	= request.POST
     ts_created	= post['ts']
