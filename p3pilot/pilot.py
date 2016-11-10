@@ -6,6 +6,7 @@ from django.conf import settings
 import argparse
 import uuid
 import socket
+import time
 import datetime
 
 from django.utils import timezone
@@ -17,6 +18,20 @@ from urllib import parse
 
 from urllib.error import URLError
 
+settings.configure(USE_TZ = True)
+
+#-------------------------
+class Pilot(dict):
+    def __init__(self):
+        self['host']	= socket.gethostname()
+        self['ts']	= str(timezone.now())	# This will work but it's not TZ aware
+        					# so there will be runtime warnings
+						# from the backend DB on the server side:
+                                                # ts = str(datetime.datetime.now())
+        self['uuid']	= uuid.uuid1()
+        self.timeout	= 10
+        self.period	= 1
+        
 #-------------------------
 parser = argparse.ArgumentParser()
 
@@ -43,7 +58,7 @@ parser.add_argument("-v", "--verbosity",
                     default=0, choices=[0, 1, 2],
                     help="increase output verbosity")
 
-settings.configure(USE_TZ = True)
+
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
@@ -63,13 +78,10 @@ register= args.register
 pilotID	= uuid.uuid1()
 host	= socket.gethostname()
 
-# This will work but it's not TZ aware so there will be runtime warnings
-# from the backend DB on the server side: ts = str(datetime.datetime.now())
 
-ts	= str(timezone.now())
-
-pilotData = urllib.parse.urlencode({'uuid' : pilotID, 'host' : host, 'ts' : ts})
-
+# create and serialize pilot
+p = Pilot()
+pilotData = urllib.parse.urlencode(p)
 pilotData = pilotData.encode('UTF-8')
 
 if(verb>0):
@@ -79,26 +91,39 @@ if(verb>0):
 if(tst): # if in test mode simply bail
     exit(0)
 
-# contact the server
 try:
-    if(register):	# POST
-        url = "pilots/addpilot"
-        response = urllib.request.urlopen(server+url, pilotData)
-    else:		# GET
-        response = urllib.request.urlopen(server+url)
-        
+    url = "pilots/addpilot"
+    response = urllib.request.urlopen(server+url, pilotData)
 except URLError:
     exit(1)		# silent exit with an error code set
     
-# get the reponse from the server    
-headers		= response.info()
-data		= response.read()
 
-response_url	= response.geturl()
-response_date	= headers['date']
-
+data = response.read()
 if(verb >0):
     print (data)
-    
+
+
+cnt = p.timeout
+url = "pilots/request/?uuid=%s" % p['uuid']
+while(cnt>0):
+    print(cnt)
+    response = urllib.request.urlopen(server+url)
+    data = response.read()
+    print('-->',data)
+    time.sleep(1)
+    cnt-=1
 exit(0)
 
+
+
+# bits for later
+#    if(register):	# POST
+#else:		# GET
+
+      
+
+# headers		= response.info()
+# data		= response.read()
+
+# response_url	= response.geturl()
+# response_date	= headers['date']

@@ -1,4 +1,5 @@
 import datetime
+import uuid
 
 from django.shortcuts			import render
 from django.http			import HttpResponse
@@ -25,21 +26,26 @@ def detail(request):
     return HttpResponse(data)
 
 
+def req_work(request):
+    pilot_uuid	= request.GET.get('uuid','')
+    print(pilot_uuid)
+    return HttpResponse('')
+
+
 @csrf_exempt
 def addpilot(request):
     
     post	= request.POST
-    ts_created	= post['ts']
-    uuid	= post['uuid']
-    host	= post['host']
-    cluster	= 'default' # fixme
+    p_uuid	= post['uuid']
     
-    ts_created	= post['ts']
-
-    ts_reg	= timezone.now() # This is not TZ-aware: ts_reg = datetime.datetime.now()
-
-    p = pilot(cluster=cluster, host=host, uuid=uuid, ts_created=ts_created, ts_reg=ts_reg)
+    p = pilot(
+        cluster		= 'default', # fixme
+        host		= post['host'],
+        uuid		= p_uuid,
+        ts_created	= post['ts'],
+        ts_reg		= timezone.now() # The following is not TZ-aware: ts_reg = datetime.datetime.now()
+    )
 
     p.save()
     
-    return HttpResponse("You're looking at the pilot gateway" )
+    return HttpResponse("%s" % p_uuid )
