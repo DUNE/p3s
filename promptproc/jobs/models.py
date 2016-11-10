@@ -2,7 +2,9 @@ from django.db import models
 
 # Create your models here.
 class job(models.Model):
-    stage_name	= models.CharField(max_length=20)
+    state	= models.CharField(max_length=32, default='')
+    uuid	= models.CharField(max_length=32, default='')
+    stage_name	= models.CharField(max_length=32, default='')
     ts_def	= models.DateTimeField('ts_def', blank=True, null=True)
     ts_dispatch	= models.DateTimeField('ts_dispatch', blank=True, null=True)
     ts_start	= models.DateTimeField('ts_start', blank=True, null=True)
@@ -10,5 +12,5 @@ class job(models.Model):
 
     
     def __str__(self):
-        return self.stage_name
+        return self.uuid
 #PositiveIntegerField

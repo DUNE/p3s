@@ -27,11 +27,6 @@ def detail(request):
 
 @csrf_exempt
 def gateway(request):
-#    pilot_id = request.GET.get('pilot','')
-#    print(pilot_id)
-#    ts = pilot.objects.get(id=pilot_id).ts_created
-#    print(ts)
-
     
     post	= request.POST
     ts_created	= post['ts']
@@ -40,8 +35,8 @@ def gateway(request):
     cluster	= 'default' # fixme
     
     ts_created	= post['ts']
-#    ts_reg	= datetime.datetime.now()
-    ts_reg	= timezone.now()
+
+    ts_reg	= timezone.now() # This is not TZ-aware: ts_reg = datetime.datetime.now()
 
     p = pilot(cluster=cluster, host=host, uuid=uuid, ts_created=ts_created, ts_reg=ts_reg)
 
