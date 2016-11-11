@@ -2,14 +2,13 @@
 '''This is a stub for the p3s pilot'''
 
 from django.conf import settings
+from django.utils import timezone
 
 import argparse
 import uuid
 import socket
 import time
 import datetime
-
-from django.utils import timezone
 
 import urllib
 from urllib import request
