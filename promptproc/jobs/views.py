@@ -19,7 +19,7 @@ def add():
     ts_def	= timezone.now()
     j_uuid	= uuid.uuid1()
 
-    j = job(state='defined', uuid=j_uuid, stage_name='testing!', ts_def=ts_def)
+    j = job(state='defined', uuid=j_uuid, stage='testing!', ts_def=ts_def)
     j.save()
     return j_uuid
     

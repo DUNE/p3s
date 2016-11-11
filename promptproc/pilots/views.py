@@ -8,6 +8,7 @@ from django.utils			import timezone
 from django.core			import serializers
 
 from .models import pilot
+from jobs.models import job
 
 def detail(request):
     pilot_uuid	= request.GET.get('uuid','')
@@ -28,7 +29,9 @@ def detail(request):
 
 def req_work(request):
     pilot_uuid	= request.GET.get('uuid','')
-    print(pilot_uuid)
+    j = job.objects.order_by('-priority')
+    print(j[0].uuid)
+
     return HttpResponse('')
 
 

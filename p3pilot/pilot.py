@@ -24,10 +24,7 @@ settings.configure(USE_TZ = True)
 class Pilot(dict):
     def __init__(self):
         self['host']	= socket.gethostname()
-        self['ts']	= str(timezone.now())	# This will work but it's not TZ aware
-        					# so there will be runtime warnings
-						# from the backend DB on the server side:
-                                                # ts = str(datetime.datetime.now())
+        self['ts']	= str(timezone.now()) # ts = str(datetime.datetime.now()): problems with DB due to TZ
         self['uuid']	= uuid.uuid1()
         self.timeout	= 10
         self.period	= 1
