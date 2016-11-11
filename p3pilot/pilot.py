@@ -18,6 +18,7 @@ from urllib import parse
 
 from urllib.error import URLError
 
+#########################################################
 settings.configure(USE_TZ = True)
 
 #-------------------------
@@ -69,12 +70,6 @@ verb	= args.verbosity
 tst	= args.test
 register= args.register
 ########################################################################
-
-# find pilot parameters
-
-pilotID	= uuid.uuid1()
-host	= socket.gethostname()
-
 
 # create and serialize pilot
 p = Pilot()
