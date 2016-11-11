@@ -32,12 +32,12 @@ class Pilot(dict):
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-s", "--server",
+parser.add_argument("-S", "--server",
                     type=str,
                     default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
 
-parser.add_argument("-u", "--url",
+parser.add_argument("-U", "--url",
                     type=str,
                     default='',
                     help="url of the query to be added, defaults to empty string")
