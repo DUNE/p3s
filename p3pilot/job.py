@@ -50,6 +50,10 @@ parser.add_argument("-a", "--adjust",
                     action='store_true',
                     help="enables state or priority adjustments. Needs uuid.")
 
+parser.add_argument("-d", "--delete",
+                    action='store_true',
+                    help="deletes a job. Needs uuid.")
+
 parser.add_argument("-u", "--uuid",
                     type=str,
                     default='',
@@ -73,15 +77,12 @@ uuid	= args.uuid
 verb	= args.verbosity
 tst	= args.test
 adj	= args.adjust
+delete	= args.delete
 ########################################################################
 
 # Check if an adjustment of an existing job is requested,
 # and contact the server to do so. If not, proceed to attempt
 # a job registration
-
-if(uuid!='' and not adj):
-    exit(-1)
-
 if(adj): # adjust priority, state
     if(uuid==''):
         exit(-1)
@@ -99,23 +100,50 @@ if(adj): # adjust priority, state
 
     adjData = urllib.parse.urlencode(a)
     adjData = adjData.encode('UTF-8')
-    print(adjData)
-    #exit(0)
-try:
-    url = 'jobs/set'
-    response = urllib.request.urlopen(server+url, adjData) # POST
-except URLError:
-    exit(1)
+
+    try:
+        url = 'jobs/set'
+        response = urllib.request.urlopen(server+url, adjData) # POST
+    except URLError:
+        exit(1)
     
-data = response.read()
+    data = response.read()
 
-if(verb >0):
-    print (data)
+    if(verb >0):
+        print (data)
 
-exit(0)
+    exit(0)
+
+# Check if it was a deletion request
+if(delete):
+    if(uuid==''):
+        exit(-1)
+    d = dict()
+    d['uuid'] = uuid
+
+    delData = urllib.parse.urlencode(d)
+    delData = delData.encode('UTF-8')
+    print(delData)
+
+    try:
+        url = 'jobs/delete'
+        response = urllib.request.urlopen(server+url, delData) # POST
+    except URLError:
+        exit(1)
+    
+    data = response.read()
+
+    if(verb >0):
+        print (data)
+
+    exit(0)
+########################################################################
+if(uuid!=''): # should have handled adjust uuid-specific requests already, can't be here with uuid
+    exit(-1)
 
 
-# create and serialize job
+########################################################################
+# So we want to create and serialize job, and register it on the server
 j = Job()
 jobData = urllib.parse.urlencode(j)
 jobData = jobData.encode('UTF-8')

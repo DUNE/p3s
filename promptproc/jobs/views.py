@@ -64,6 +64,22 @@ def set(request):
     return HttpResponse("%s updated" % j_uuid )
 
 ###################################################
+@csrf_exempt
+def delete(request):
+    # fixme - improve error handling such as for missing or screwy arguments
+
+    post	= request.POST
+    j_uuid	= post['uuid']
+    
+    try:
+        j = job.objects.get(uuid=j_uuid)
+    except:
+        return HttpResponse("%s not found" % j_uuid )
+
+    j.delete()
+    return HttpResponse("%s deleted" % j_uuid )
+
+###################################################
 def add():
     ts_def	= timezone.now()
     j_uuid	= uuid.uuid1()
