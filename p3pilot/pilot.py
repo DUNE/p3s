@@ -42,7 +42,7 @@ parser.add_argument("-S", "--server",
 parser.add_argument("-w", "--workdir",
                     type=str,
                     default='/tmp',
-                    help="(defaults to /tmp) the path under which the pilot will create its own working directory named as its uuid")
+                    help="(defaults to /tmp) the path under which all pilots keep their logs etc")
 
 parser.add_argument("-U", "--url",
                     type=str,
