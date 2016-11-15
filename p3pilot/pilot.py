@@ -1,5 +1,9 @@
 #!/usr/bin/python
-'''This is a stub for the p3s pilot'''
+#########################################################
+# TZ-awarewness:					#
+# The following is not TZ-aware: datetime.datetime.now()#
+# so we are using timzone.now() where needed		#
+#########################################################
 
 from django.conf import settings
 from django.utils import timezone
@@ -20,10 +24,7 @@ from urllib import parse
 from urllib.error import URLError
 
 #########################################################
-settings.configure(USE_TZ = True)
-# NB. wec ould use ts = str(datetime.datetime.now())
-# but in Django this will cause problems with DB due to being
-# not TZ-aware
+settings.configure(USE_TZ = True) # see the above note on TZ
 
 #-------------------------
 class Pilot(dict):
@@ -33,7 +34,7 @@ class Pilot(dict):
         self['site']	= 'default' # FIXME - will need to get from env
         self['ts']	= str(timezone.now())
         self['uuid']	= uuid.uuid1()
-        self.timeout	= 3
+        self.cycles	= 1
         self.period	= 1
         
 #-------------------------
@@ -145,7 +146,7 @@ if(verb >0):
     print (data)
 
 
-cnt = p.timeout
+cnt = p.cycles
 url = "pilots/request/?uuid=%s" % p['uuid']
 while(cnt>0):
     print(cnt)
