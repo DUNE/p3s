@@ -95,17 +95,18 @@ def add():
     return j_uuid
     
 ###################################################
-def detail(request):
-    job_id = request.GET.get('job','')
-    latest = request.GET.get('latest','')
-    if(latest!=''):
-        add()
-        j = job.objects.latest(latest)
-        return HttpResponse("Job %s" % j.uuid)
+# Keep for a little longer... It was migrated to the monitor
+# def detail(request):
+#     job_id = request.GET.get('job','')
+#     latest = request.GET.get('latest','')
+#     if(latest!=''):
+#         add()
+#         j = job.objects.latest(latest)
+#         return HttpResponse("Job %s" % j.uuid)
 
-    if(job_id == ''):
-        return HttpResponse("Job not specified.")
-    print(job_id)
-    ts = job.objects.get(id=job_id).ts_def
-    print(ts)
-    return HttpResponse("You're looking at job %s." % job_id)
+#     if(job_id == ''):
+#         return HttpResponse("Job not specified.")
+#     print(job_id)
+#     ts = job.objects.get(id=job_id).ts_def
+#     print(ts)
+#     return HttpResponse("You're looking at job %s." % job_id)
