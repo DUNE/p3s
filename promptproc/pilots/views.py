@@ -10,6 +10,12 @@ from django.core			import serializers
 from .models import pilot
 from jobs.models import job
 
+#########################################################
+# TZ-awarewness:					#
+# The following is not TZ-aware: datetime.datetime.now()#
+# so we are using timzone.now() where needed		#
+#########################################################
+
 def detail(request):
     pilot_uuid	= request.GET.get('uuid','')
     pilot_pk	= request.GET.get('pk','')
@@ -22,19 +28,26 @@ def detail(request):
     else:
         p = pilot.objects.get(pk=pilot_pk)
         
-    data = serializers.serialize('json', [ p, ]) #    print(data)
+    data = serializers.serialize('json', [ p, ])
     
     return HttpResponse(data)
 
 
 def req_work(request):
+    # FIXME - the "order_by" is slow an is included here provisionally
+    # until I create a more optimal way to get the top priority jobs -mxp-
+    
     pilot_uuid	= request.GET.get('uuid','')
     j = job.objects.order_by('-priority')
     print(j[0].uuid)
 
+    p		= pilot.objects.get(uuid=pilot_uuid)
+    p.ts_lhb	= timezone.now()
+    p.save()
     return HttpResponse('')
 
 
+#########################################################
 @csrf_exempt
 def addpilot(request):
     
@@ -42,13 +55,15 @@ def addpilot(request):
     p_uuid	= post['uuid']
     
     p = pilot(
-        cluster		= 'default', # fixme
+        state		= post['state'],
+        site		= post['site'],
         host		= post['host'],
         uuid		= p_uuid,
-        ts_created	= post['ts'],
-        ts_reg		= timezone.now() # The following is not TZ-aware: ts_reg = datetime.datetime.now()
+        ts_cre		= post['ts'],
+        ts_reg		= timezone.now(),
+        ts_lhb		= timezone.now()
     )
 
     p.save()
     
-    return HttpResponse("%s" % p_uuid )
+    return HttpResponse("%s" % p_uuid ) # FIXME - think of a meaningful response -mxp-

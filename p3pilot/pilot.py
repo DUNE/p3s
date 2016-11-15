@@ -21,12 +21,17 @@ from urllib.error import URLError
 
 #########################################################
 settings.configure(USE_TZ = True)
+# NB. wec ould use ts = str(datetime.datetime.now())
+# but in Django this will cause problems with DB due to being
+# not TZ-aware
 
 #-------------------------
 class Pilot(dict):
     def __init__(self):
+        self['state']	= 'active' # FIXME
         self['host']	= socket.gethostname()
-        self['ts']	= str(timezone.now()) # ts = str(datetime.datetime.now()): problems with DB due to TZ
+        self['site']	= 'default' # FIXME - will need to get from env
+        self['ts']	= str(timezone.now())
         self['uuid']	= uuid.uuid1()
         self.timeout	= 3
         self.period	= 1
@@ -42,7 +47,7 @@ parser.add_argument("-S", "--server",
 parser.add_argument("-w", "--workdir",
                     type=str,
                     default='/tmp',
-                    help="(defaults to /tmp) the path under which all pilots keep their logs etc")
+                    help="(defaults to /tmp) the path for all pilots keep their logs etc")
 
 parser.add_argument("-U", "--url",
                     type=str,
@@ -75,8 +80,11 @@ workdir = args.workdir
 verb	= args.verbosity
 # Boolean
 tst	= args.test
+
+# dummy for now
 register= args.register
 ########################################################################
+
 
 # create and serialize pilot
 p = Pilot()
@@ -109,6 +117,8 @@ logfile.setFormatter(formatter)
 logger.addHandler(logfile)
 logger.info('starting pilot %s' % str(p['uuid']))
 
+
+# the pilot is a dict, so encoding is automatic:
 pilotData = urllib.parse.urlencode(p)
 pilotData = pilotData.encode('UTF-8')
 
@@ -142,7 +152,7 @@ while(cnt>0):
     response = urllib.request.urlopen(server+url)
     data = response.read()
     print('-->',data)
-    time.sleep(1)
+    time.sleep(10)
     cnt-=1
 
 logger.info('exiting normally')
