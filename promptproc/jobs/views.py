@@ -1,3 +1,9 @@
+#########################################################
+# TZ-awarewness:					#
+# The following is not TZ-aware: datetime.datetime.now()#
+# so we are using timezone.now() where needed		#
+#########################################################
+
 import uuid
 
 from django.shortcuts import render
