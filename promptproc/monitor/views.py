@@ -9,8 +9,8 @@ from django.views.decorators.csrf	import csrf_exempt
 from django.utils			import timezone
 from django.core			import serializers
 
-from .models import pilot
-from jobs.models import job
+from pilots.models	import pilot
+from jobs.models	import job
 
 #########################################################
 # TZ-awarewness:					#
@@ -18,7 +18,7 @@ from jobs.models import job
 # so we are using timzone.now() where needed		#
 #########################################################
 
-def detail(request):
+def pilots(request):
     pilot_uuid	= request.GET.get('uuid','')
     pilot_pk	= request.GET.get('pk','')
 

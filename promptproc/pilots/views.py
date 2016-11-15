@@ -16,23 +16,6 @@ from jobs.models import job
 # so we are using timzone.now() where needed		#
 #########################################################
 
-def detail(request):
-    pilot_uuid	= request.GET.get('uuid','')
-    pilot_pk	= request.GET.get('pk','')
-
-    if(pilot_uuid == '' and pilot_pk == ''):
-        return HttpResponse("Empty pilot id")
-
-    if(pilot_uuid != ''):
-        p = pilot.objects.get(uuid=pilot_uuid)
-    else:
-        p = pilot.objects.get(pk=pilot_pk)
-        
-    data = serializers.serialize('json', [ p, ])
-    
-    return HttpResponse(data)
-
-
 def req_work(request):
     # FIXME - the "order_by" is slow an is included here provisionally
     # until I create a more optimal way to get the top priority jobs -mxp-
@@ -67,3 +50,23 @@ def addpilot(request):
     p.save()
     
     return HttpResponse("%s" % p_uuid ) # FIXME - think of a meaningful response -mxp-
+
+
+######### CODE SAMPLES TEMPORARILY KEPT #################
+# def detail(request):
+#     pilot_uuid	= request.GET.get('uuid','')
+#     pilot_pk	= request.GET.get('pk','')
+
+#     if(pilot_uuid == '' and pilot_pk == ''):
+#         return HttpResponse("Empty pilot id")
+
+#     if(pilot_uuid != ''):
+#         p = pilot.objects.get(uuid=pilot_uuid)
+#     else:
+#         p = pilot.objects.get(pk=pilot_pk)
+        
+#     data = serializers.serialize('json', [ p, ])
+    
+#     return HttpResponse(data)
+
+
