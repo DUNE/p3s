@@ -102,13 +102,11 @@ if(adj):
     if(j_uuid==''):			exit(-1) # check if we have the key
     if(priority==-1 and state==''):	exit(-1) # nothing to adjust
 
-    a = dict() # create a dict to be serialized and sent to the server
-    a['uuid'] = j_uuid
+    a = dict(uuid=j_uuid) # create a dict to be serialized and sent to the server
     if(priority!=-1):	a['priority']	= str(priority)
     if(state!=''):	a['state']	= state
 
-    adjData = urllib.parse.urlencode(a)
-    adjData = adjData.encode('UTF-8')
+    adjData = data2post(a).utf8()
 
     try:
         url = 'jobs/set'
@@ -125,11 +123,7 @@ if(adj):
 # Check if it was a deletion request
 if(delete):
     if(j_uuid==''): exit(-1) # check if we have the key
-    d = dict()
-    d['uuid'] = j_uuid
-
-    delData = urllib.parse.urlencode(d)
-    delData = delData.encode('UTF-8') # print(delData)
+    delData = data2post(dict(uuid=j_uuid)).utf8()
 
     try:
         url = 'jobs/delete'
@@ -139,17 +133,14 @@ if(delete):
     
     data = response.read()
 
-    if(verb >0):
-        print (data)
+    if(verb >0): print (data)
 
     exit(0)
 
 ########################################################################
 # Catch-all for uuid: should have handled uuid-specific requests already,
 # if we are here it's an error
-if(j_uuid!=''):
-    exit(-1)
-
+if(j_uuid!=''): exit(-1)
 ########################## REGISTRATION ################################
 # Job registration section
 
