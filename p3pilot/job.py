@@ -34,6 +34,16 @@ class Job(dict):
         self['subhost']	= socket.gethostname() # submission host
         self['ts']	= str(timezone.now()) # see TZ note on top
 
+
+class Data2post():
+    def __init__(self, myDict):
+        encoding = urllib.parse.urlencode(myDict)
+        encoding = encoding.encode('UTF-8')
+        self.packaged = encoding
+
+    def utf8(self):
+        return self.packaged
+
 #-------------------------
 parser = argparse.ArgumentParser()
 
@@ -104,11 +114,8 @@ if(adj):
 
     a = dict() # create a dict to be serialized and sent to the server
     a['uuid'] = j_uuid
-    if(priority!=-1):
-        a['priority'] = str(priority)
-
-    if(state!=''):
-        a['state'] = state
+    if(priority!=-1):	a['priority']	= str(priority)
+    if(state!=''):	a['state']	= state
 
     adjData = urllib.parse.urlencode(a)
     adjData = adjData.encode('UTF-8')
@@ -120,9 +127,7 @@ if(adj):
         exit(1)
     
     data = response.read()
-
-    if(verb >0):
-        print (data)
+    if(verb >0): print (data)
 
     exit(0) # done with update/adjust
 
@@ -183,14 +188,9 @@ if(json_in!=''):
 # Collection of candidate jobs has been prepared.
 # Now contact the server and try to register.
 for j in jobList:
-    jobData = urllib.parse.urlencode(j)
-    jobData = jobData.encode('UTF-8')
-
-    if(verb>0):
-        print(jobData)
-
-    if(tst): # if in test mode skip contact with the server
-        continue
+    jobData = Data2post(j).utf8()
+    if(verb>0):	print(jobData)
+    if(tst):	continue # if in test mode skip contact with the server
 
     try:
         url = 'jobs/addjob'
@@ -203,7 +203,7 @@ for j in jobList:
     if(verb >0):
         print (data)
 
-#       
+# Grand finale      
 exit(0)
 ########################################################################
 
