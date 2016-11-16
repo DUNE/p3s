@@ -1,4 +1,9 @@
 #!/usr/bin/python
+#########################################################
+# TZ-awarewness:					#
+# The following is not TZ-aware: datetime.datetime.now()#
+# so we are using timzone.now() where needed		#
+#########################################################
 
 from django.conf import settings
 from django.utils import timezone
@@ -8,6 +13,8 @@ import uuid
 import socket
 import time
 import datetime
+import json
+from pprint import pprint
 
 import urllib
 from urllib import request
@@ -19,14 +26,13 @@ settings.configure(USE_TZ = True)
 
 #-------------------------
 class Job(dict):
-    def __init__(self):
+    def __init__(self, priority=0, stage='default', state='defined'):
         self['uuid']	= uuid.uuid1()
-        self['stage']	= 'default'
-        self['priority']= 0
-        self['state']	= 'defined'
+        self['stage']	= stage
+        self['priority']= priority
+        self['state']	= state
         self['subhost']	= socket.gethostname() # submission host
-        self['ts']	= str(timezone.now()) # ts = str(datetime.datetime.now()): problems with DB due to TZ
-        
+        self['ts']	= str(timezone.now()) # see TZ note on top
 
 #-------------------------
 parser = argparse.ArgumentParser()
@@ -83,19 +89,20 @@ verb	= args.verbosity
 tst	= args.test
 adj	= args.adjust
 delete	= args.delete
-########################################################################
+json_in	= args.json_in
 
-# Check if an adjustment of an existing job is requested,
-# and contact the server to do so. If not, proceed to attempt
-# a job registration
-if(adj): # adjust priority, state
+########################## UPDATE/ADJUSTMENT #############################
+# Check if an adjustment of an existing job is requested, and send a
+# request to the server to do so. Can adjust priority, state.
+
+if(adj):
     if(j_uuid==''):
-        exit(-1)
+        exit(-1) # check if we have the key
 
     if(priority==-1 and state==''):
-        exit(-1)
+        exit(-1) # nothing to adjust
 
-    a = dict()
+    a = dict() # create a dict to be serialized and sent to the server
     a['uuid'] = j_uuid
     if(priority!=-1):
         a['priority'] = str(priority)
@@ -117,18 +124,18 @@ if(adj): # adjust priority, state
     if(verb >0):
         print (data)
 
-    exit(0)
+    exit(0) # done with update/adjust
 
+###################### JOB DELETE ######################################
 # Check if it was a deletion request
 if(delete):
     if(j_uuid==''):
-        exit(-1)
+        exit(-1) # check if we have the key
     d = dict()
     d['uuid'] = j_uuid
 
     delData = urllib.parse.urlencode(d)
-    delData = delData.encode('UTF-8')
-    print(delData)
+    delData = delData.encode('UTF-8') # print(delData)
 
     try:
         url = 'jobs/delete'
@@ -142,34 +149,61 @@ if(delete):
         print (data)
 
     exit(0)
+
 ########################################################################
-if(j_uuid!=''): # should have handled adjust uuid-specific requests already, can't be here with uuid
+# Catch-all for uuid: should have handled uuid-specific requests already,
+# if we are here it's an error
+if(j_uuid!=''):
     exit(-1)
 
+########################## REGISTRATION ################################
+# Job registration section
 
-########################################################################
-# So we want to create and serialize job, and register it on the server
-j = Job()
-jobData = urllib.parse.urlencode(j)
-jobData = jobData.encode('UTF-8')
-
-if(verb>0):
-    print(jobData)
-
-if(tst): # if in test mode simply bail
-    exit(0)
-
-
-try:
-    url = 'jobs/addjob'
-    response = urllib.request.urlopen(server+url, jobData) # POST
-except URLError:
-    exit(1)
+jobList = []
     
-data = response.read()
+# Check if we want to read a json file with job templates and send
+# these entries to the server
+if(json_in!=''):
+    with open(json_in) as data_file:    
+        data = json.load(data_file)
 
-if(verb >0):
-    print (data)
+    for jj in data:
+        jobList.append(Job(
+            priority	= jj['priority'],
+            state	= jj['state'],
+            stage	= jj['stage'])
+        )
+
+    else:
+        # Create and serialize a single job, and register it on the server.
+        # This will be a default object, not useable unless updated later.
+        jobList.append(Job())
+
+
+# Collection of candidate jobs has been prepared.
+# Now contact the server and try to register.
+for j in jobList:
+    jobData = urllib.parse.urlencode(j)
+    jobData = jobData.encode('UTF-8')
+
+    if(verb>0):
+        print(jobData)
+
+    if(tst): # if in test mode skip contact with the server
+        continue
+
+    try:
+        url = 'jobs/addjob'
+        response = urllib.request.urlopen(server+url, jobData) # POST
+    except URLError:
+        exit(1)
     
+    data = response.read()
+
+    if(verb >0):
+        print (data)
+
+#       
 exit(0)
+########################################################################
 
