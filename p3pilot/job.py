@@ -21,6 +21,9 @@ from urllib import request
 from urllib import error
 from urllib.error import URLError
 
+# local import, requires PYTHONPATH to be set
+from comms import data2post
+
 #########################################################
 settings.configure(USE_TZ = True)
 
@@ -33,16 +36,6 @@ class Job(dict):
         self['state']	= state
         self['subhost']	= socket.gethostname() # submission host
         self['ts']	= str(timezone.now()) # see TZ note on top
-
-
-class Data2post():
-    def __init__(self, myDict):
-        encoding = urllib.parse.urlencode(myDict)
-        encoding = encoding.encode('UTF-8')
-        self.packaged = encoding
-
-    def utf8(self):
-        return self.packaged
 
 #-------------------------
 parser = argparse.ArgumentParser()
@@ -106,11 +99,8 @@ json_in	= args.json_in
 # request to the server to do so. Can adjust priority, state.
 
 if(adj):
-    if(j_uuid==''):
-        exit(-1) # check if we have the key
-
-    if(priority==-1 and state==''):
-        exit(-1) # nothing to adjust
+    if(j_uuid==''):			exit(-1) # check if we have the key
+    if(priority==-1 and state==''):	exit(-1) # nothing to adjust
 
     a = dict() # create a dict to be serialized and sent to the server
     a['uuid'] = j_uuid
@@ -134,8 +124,7 @@ if(adj):
 ###################### JOB DELETE ######################################
 # Check if it was a deletion request
 if(delete):
-    if(j_uuid==''):
-        exit(-1) # check if we have the key
+    if(j_uuid==''): exit(-1) # check if we have the key
     d = dict()
     d['uuid'] = j_uuid
 
@@ -179,16 +168,18 @@ if(json_in!=''):
             stage	= jj['stage'])
         )
 
-    else:
-        # Create and serialize a single job, and register it on the server.
-        # This will be a default object, not useable unless updated later.
-        jobList.append(Job())
+else:
+    # Create and serialize a single job, and register it on the server.
+    # This will be a default object, not useable unless updated later.
+    jobList.append(Job())
 
 
+if(verb>0):
+    print("Number of jobs to be submitted: %s" % len(jobList))
 # Collection of candidate jobs has been prepared.
 # Now contact the server and try to register.
 for j in jobList:
-    jobData = Data2post(j).utf8()
+    jobData = data2post(j).utf8()
     if(verb>0):	print(jobData)
     if(tst):	continue # if in test mode skip contact with the server
 
@@ -200,10 +191,19 @@ for j in jobList:
     
     data = response.read()
 
-    if(verb >0):
-        print (data)
+    if(verb >0): print (data)
 
 # Grand finale      
 exit(0)
 ########################################################################
+
+# Moved to Utils, kept here for reference for a short while
+# class Data2post():
+#     def __init__(self, myDict):
+#         encoding = urllib.parse.urlencode(myDict)
+#         encoding = encoding.encode('UTF-8')
+#         self.packaged = encoding
+
+#     def utf8(self):
+#         return self.packaged
 
