@@ -67,13 +67,18 @@ parser.add_argument("-v", "--verbosity",
                     type=int, default=0, choices=[0, 1, 2],
                     help="set output verbosity")
 
+parser.add_argument("-j", "--json_in",
+                    type=str,
+                    default='',
+                    help="file from which to read job templates (must be a list)")
+
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
 server	= args.server
 state	= args.state
 priority= args.priority
-uuid	= args.uuid
+j_uuid	= args.uuid
 verb	= args.verbosity
 tst	= args.test
 adj	= args.adjust
@@ -84,14 +89,14 @@ delete	= args.delete
 # and contact the server to do so. If not, proceed to attempt
 # a job registration
 if(adj): # adjust priority, state
-    if(uuid==''):
+    if(j_uuid==''):
         exit(-1)
 
     if(priority==-1 and state==''):
         exit(-1)
 
     a = dict()
-    a['uuid'] = uuid
+    a['uuid'] = j_uuid
     if(priority!=-1):
         a['priority'] = str(priority)
 
@@ -116,10 +121,10 @@ if(adj): # adjust priority, state
 
 # Check if it was a deletion request
 if(delete):
-    if(uuid==''):
+    if(j_uuid==''):
         exit(-1)
     d = dict()
-    d['uuid'] = uuid
+    d['uuid'] = j_uuid
 
     delData = urllib.parse.urlencode(d)
     delData = delData.encode('UTF-8')
@@ -138,7 +143,7 @@ if(delete):
 
     exit(0)
 ########################################################################
-if(uuid!=''): # should have handled adjust uuid-specific requests already, can't be here with uuid
+if(j_uuid!=''): # should have handled adjust uuid-specific requests already, can't be here with uuid
     exit(-1)
 
 

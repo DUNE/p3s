@@ -1,0 +1,18 @@
+[
+    {
+        "stage":	"adcfft",
+        "priority":	"0",
+	"state":	"defined"
+    },
+    {
+        "stage":	"sig",
+        "priority":	"1",
+	"state":	"defined"
+    },
+    {
+        "stage":	"vizfft",
+        "priority":	"2",
+	"state":	"defined"
+    }
+
+]
