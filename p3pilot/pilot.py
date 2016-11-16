@@ -23,6 +23,9 @@ from urllib import parse
 
 from urllib.error import URLError
 
+# local import, requires PYTHONPATH to be set
+from comms import data2post
+
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
@@ -93,8 +96,7 @@ p = Pilot()
 # Check if we can create a working directory
 # Example: /tmp/p3s/"pilot uuid"
 
-if not os.path.exists(workdir):
-    exit(-1)
+if not os.path.exists(workdir): exit(-1)
 
 allpilotdir = workdir+'/p3pilot'
 if not os.path.exists(allpilotdir):
@@ -105,8 +107,7 @@ if not os.path.exists(allpilotdir):
 
 logfilename = allpilotdir+'/'+str(p['uuid'])+'.log'
 
-if(verb>0):
-    print(logfilename)
+if(verb>0): print("Logfile: %s" % logfilename)
 
 logger = logging.getLogger('p3pilot')
 logger.setLevel(logging.DEBUG)
@@ -118,10 +119,7 @@ logfile.setFormatter(formatter)
 logger.addHandler(logfile)
 logger.info('starting pilot %s' % str(p['uuid']))
 
-
-# the pilot is a dict, so encoding is automatic:
-pilotData = urllib.parse.urlencode(p)
-pilotData = pilotData.encode('UTF-8')
+pilotData = data2post(p).utf8()
 
 if(verb>0):
     print(pilotData)
@@ -142,8 +140,7 @@ except URLError:
 logger.info("contact with server successful")
 
 data = response.read()
-if(verb >0):
-    print (data)
+if(verb >0): print (data)
 
 
 cnt = p.cycles

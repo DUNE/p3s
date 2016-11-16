@@ -94,6 +94,10 @@ adj	= args.adjust
 delete	= args.delete
 json_in	= args.json_in
 
+# prepare a list which may be used in a variety of operations,
+# contents will vary depending on context
+jobList = []
+
 ########################## UPDATE/ADJUSTMENT #############################
 # Check if an adjustment of an existing job is requested, and send a
 # request to the server to do so. Can adjust priority, state.
@@ -102,20 +106,25 @@ if(adj):
     if(j_uuid==''):			exit(-1) # check if we have the key
     if(priority==-1 and state==''):	exit(-1) # nothing to adjust
 
-    a = dict(uuid=j_uuid) # create a dict to be serialized and sent to the server
-    if(priority!=-1):	a['priority']	= str(priority)
-    if(state!=''):	a['state']	= state
+    if ',' in j_uuid:
+        jobList = j_uuid.split(',')
+    else:
+        jobList.append(j_uuid)
+        
+    for j in jobList:
+        a = dict(uuid=j) # create a dict to be serialized and sent to the server
+        if(priority!=-1):	a['priority']	= str(priority)
+        if(state!=''):		a['state']	= state
+        adjData = data2post(a).utf8()
 
-    adjData = data2post(a).utf8()
-
-    try:
-        url = 'jobs/set'
-        response = urllib.request.urlopen(server+url, adjData) # POST
-    except URLError:
-        exit(1)
+        try:
+            url = 'jobs/set'
+            response = urllib.request.urlopen(server+url, adjData) # POST
+        except URLError:
+            exit(1)
     
-    data = response.read()
-    if(verb >0): print (data)
+        data = response.read()
+        if(verb >0): print (data)
 
     exit(0) # done with update/adjust
 
@@ -123,17 +132,23 @@ if(adj):
 # Check if it was a deletion request
 if(delete):
     if(j_uuid==''): exit(-1) # check if we have the key
-    delData = data2post(dict(uuid=j_uuid)).utf8()
 
-    try:
-        url = 'jobs/delete'
-        response = urllib.request.urlopen(server+url, delData) # POST
-    except URLError:
-        exit(1)
+    if ',' in j_uuid:
+        jobList = j_uuid.split(',')
+    else:
+        jobList.append(j_uuid)
+
+    for j in jobList:
+        delData = data2post(dict(uuid=j)).utf8()
+
+        try:
+            url = 'jobs/delete'
+            response = urllib.request.urlopen(server+url, delData) # POST
+        except URLError:
+            exit(1)
     
-    data = response.read()
-
-    if(verb >0): print (data)
+        data = response.read()
+        if(verb >0): print (data)
 
     exit(0)
 
@@ -141,11 +156,8 @@ if(delete):
 # Catch-all for uuid: should have handled uuid-specific requests already,
 # if we are here it's an error
 if(j_uuid!=''): exit(-1)
-########################## REGISTRATION ################################
-# Job registration section
 
-jobList = []
-    
+########################## REGISTRATION ################################
 # Check if we want to read a json file with job templates and send
 # these entries to the server
 if(json_in!=''):
