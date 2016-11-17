@@ -1,15 +1,7 @@
+{% extends "monitor_base.html" %}
 {% load render_table from django_tables2 %}
 {% load static %}
-<!doctype html>
-<html>
-  <head>
-        <title>P3S Jobs</title>
 
-        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
-    </head>
-    <body>
-      <h2>P3S Jobs</h2>
-      Current time: {{ time }}<br/>
-        {% render_table jobs %}
-    </body>
-</html>
+
+{% block headline %}P3S Jobs{% endblock %}
+{% block table %}{% render_table jobs %}{% endblock %}
