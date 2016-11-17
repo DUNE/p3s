@@ -1,0 +1,18 @@
+{% load render_table from django_tables2 %}
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+        <title>P3S Pilots</title>
+        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+    </head>
+    <body>
+      <h2>{% block headline %}{% endblock %}</h2>
+      Current time: {{ time }}<br/>
+      
+      <div id="table">
+        {% block table %}{% endblock %}
+      </div>
+
+    </body>
+</html>
