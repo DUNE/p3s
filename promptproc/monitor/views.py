@@ -8,6 +8,7 @@ from django.shortcuts import render
 
 import datetime
 from django.utils import timezone
+from django.utils.timezone import utc
 
 import uuid
 
@@ -34,16 +35,23 @@ def pilots(request):
     pilot_uuid	= request.GET.get('uuid','')
     pilot_pk	= request.GET.get('pk','')
 
+    now = datetime.datetime.now()
     if(pilot_uuid == '' and pilot_pk == ''):
         return render(request, 'pilots.html',
                       {
                           'pilots': pilot.objects.all(),
-                          'time': str(timezone.now())
+                          'time': str(now)
                       }
         )
 
     if(pilot_uuid != ''):
-        p = pilot.objects.get(uuid=pilot_uuid)
+        return render(request, 'pilots.html',
+                      {
+                          'pilots': pilot.objects.filter(uuid=pilot_uuid),
+                          'time': str(now)
+                      }
+        )
+#        p = pilot.objects.get(uuid=pilot_uuid)
     else:
         p = pilot.objects.get(pk=pilot_pk)
         
@@ -60,10 +68,11 @@ def jobs(request):
         return HttpResponse("Job %s" % j.uuid)
 
     if(job_id == ''):
+        now = datetime.datetime.now()
         return render(request, 'jobs.html',
                       {
                           'jobs': job.objects.all(),
-                          'time': str(timezone.now())
+                          'time': str(now)
                       }
         )
 

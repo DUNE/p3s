@@ -2,6 +2,6 @@
 {% load render_table from django_tables2 %}
 {% load static %}
 
-
+{% block title %}Pilots{% endblock %}
 {% block headline %}P3S Pilots{% endblock %}
 {% block table %}{% render_table pilots %}{% endblock %}
