@@ -35,29 +35,26 @@ def pilots(request):
     pilot_uuid	= request.GET.get('uuid','')
     pilot_pk	= request.GET.get('pk','')
 
-    now = datetime.datetime.now()
+    now		= datetime.datetime.now()
+    domain	= request.get_host()
+    d=dict(domain=domain, time=str(now))
+    po = pilot.objects
     if(pilot_uuid == '' and pilot_pk == ''):
-        return render(request, 'pilots.html',
-                      {
-                          'pilots': pilot.objects.all(),
-                          'time': str(now)
-                      }
-        )
+        d['pilots'] = po.all()
 
     if(pilot_uuid != ''):
-        return render(request, 'pilots.html',
-                      {
-                          'pilots': pilot.objects.filter(uuid=pilot_uuid),
-                          'time': str(now)
-                      }
-        )
-#        p = pilot.objects.get(uuid=pilot_uuid)
-    else:
-        p = pilot.objects.get(pk=pilot_pk)
+        d['pilots'] = po.filter(uuid=pilot_uuid)
         
-    data = serializers.serialize('json', [ p, ])
+    if(pilot_pk != ''):
+        d['pilots'] = po.filter(pk=pilot_pk)
+        
+    return render(request, 'pilots.html', d)
     
-    return HttpResponse(data)
+#    return HttpResponse(data)
+# for later:
+#    data = serializers.serialize('json', [ p, ])
+###################################################
+#def data_handler(request):
 ###################################################
 def jobs(request):
     job_id = request.GET.get('job','')
