@@ -165,11 +165,9 @@ if(json_in!=''):
         data = json.load(data_file)
 
     for jj in data:
-        jobList.append(Job(
-            priority	= jj['priority'],
-            state	= jj['state'],
-            stage	= jj['stage'])
-        )
+        jobList.append(Job(priority	= jj['priority'],
+                           state	= jj['state'],
+                           stage	= jj['stage']))
 
 else:
     # Create and serialize a single job, and register it on the server.
@@ -199,14 +197,3 @@ for j in jobList:
 # Grand finale      
 exit(0)
 ########################################################################
-
-# Moved to Utils, kept here for reference for a short while
-# class Data2post():
-#     def __init__(self, myDict):
-#         encoding = urllib.parse.urlencode(myDict)
-#         encoding = encoding.encode('UTF-8')
-#         self.packaged = encoding
-
-#     def utf8(self):
-#         return self.packaged
-
