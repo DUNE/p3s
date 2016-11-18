@@ -1,3 +1,6 @@
+#########################################################
+#                      PILOTS                           #
+#########################################################
 import datetime
 import uuid
 
@@ -53,20 +56,7 @@ def addpilot(request):
 
 
 ######### CODE SAMPLES TEMPORARILY KEPT #################
-# def detail(request):
-#     pilot_uuid	= request.GET.get('uuid','')
-#     pilot_pk	= request.GET.get('pk','')
-
-#     if(pilot_uuid == '' and pilot_pk == ''):
-#         return HttpResponse("Empty pilot id")
-
-#     if(pilot_uuid != ''):
-#         p = pilot.objects.get(uuid=pilot_uuid)
-#     else:
-#         p = pilot.objects.get(pk=pilot_pk)
-        
 #     data = serializers.serialize('json', [ p, ])
-    
 #     return HttpResponse(data)
 
 

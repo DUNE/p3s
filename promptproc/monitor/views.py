@@ -111,6 +111,7 @@ def data_handler(request, what):
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
 
     t.set_site(domain)
+    RequestConfig(request).configure(t)
     d[what]=t
 
     return render(request, template, d)
