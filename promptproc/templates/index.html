@@ -1,0 +1,16 @@
+{% load render_table from django_tables2 %}
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <title>Welcome to P3S</title>
+        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+    </head>
+    <body>
+      <h2>P3S</h2>
+      Running on {{ domain }}. Current time: {{ time }}<br/>
+      <hr/>
+      <a href="http://{{ domain }}/monitor/pilots">Pilots</a><br/>
+      <a href="http://{{ domain }}/monitor/jobs">Jobs</a>
+    </body>
+</html>
