@@ -19,13 +19,16 @@ from jobs.models import job
 # so we are using timzone.now() where needed		#
 #########################################################
 
-def req_work(request):
+def request(request):
     # FIXME - the "order_by" is slow an is included here provisionally
     # until I create a more optimal way to get the top priority jobs -mxp-
     
     pilot_uuid	= request.GET.get('uuid','')
-    j = job.objects.order_by('-priority')
-    print(j[0].uuid)
+    try:
+        j = job.objects.order_by('-priority')
+        print(j[0].uuid)
+    except:
+        pass
 
     p		= pilot.objects.get(uuid=pilot_uuid)
     p.ts_lhb	= timezone.now()
