@@ -57,9 +57,12 @@ class PilotTable(tables.Table):
         return mark_safe('<a href="http://%s%s?uuid=%s">%s</a>'
                          % (self.site, reverse('pilots'), value, value))
     
+    def render_id(self,value):
+        return mark_safe('<a href="http://%s%s?pk=%s">%s</a>'
+                         % (self.site, reverse('pilots'), value, value))
     class Meta:
         model = pilot
-        attrs = {'class': 'paleblue'} # add class="paleblue" to <table> tag
+        attrs = {'class': 'paleblue'}
 #########################################################    
 class JobTable(tables.Table):
     def set_site(self, site=''):
@@ -69,17 +72,19 @@ class JobTable(tables.Table):
         return mark_safe('<a href="http://%s%s?uuid=%s">%s</a>'
                          % (self.site, reverse('jobs'), value, value))
     
+    def render_id(self,value):
+        return mark_safe('<a href="http://%s%s?pk=%s">%s</a>'
+                         % (self.site, reverse('jobs'), value, value))
+    
     class Meta:
         model = job
-        attrs = {'class': 'paleblue'} # add class="paleblue" to <table> tag
+        attrs = {'class': 'paleblue'}
 #########################################################    
 def pilots(request):
     return data_handler(request, 'pilots')
-
 #########################################################    
 def jobs(request):
     return data_handler(request, 'jobs')
-
 #########################################################    
 def data_handler(request, what):
     uuid	= request.GET.get('uuid','')
@@ -87,32 +92,29 @@ def data_handler(request, what):
 
     now		= datetime.datetime.now()
     domain	= request.get_host()
-    d=dict(domain=domain, time=str(now))
+    d		= dict(domain=domain, time=str(now))
 
-    objects	= None
-    t		= None
+    objects, t	= None, None
     
     if(what=='pilots'):
         template = 'pilots.html'
         objects = pilot.objects
-        t=PilotTable(objects.all())
+        if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
+        if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
+        if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
         
     if(what=='jobs'):
         template = 'jobs.html'
         objects = job.objects
-        t=JobTable(objects.all())
-        
+        if(uuid == '' and pk == ''):	t = JobTable(objects.all())
+        if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
+        if(pk != ''):			t = JobTable(objects.filter(pk=pk))
+
     t.set_site(domain)
-    
-    if(uuid == '' and pk == ''):
-        d[what]=t
-    if(uuid != ''):			d[what] = objects.filter(uuid=uuid)
-    if(pk != ''):			d[what] = objects.filter(pk=pk)
-        
+    d[what]=t
+
     return render(request, template, d)
 
-def dummy(a):
-    return HttpResponse("!")
 
 #########################################################    
 # for later:
