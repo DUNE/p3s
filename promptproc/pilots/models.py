@@ -7,8 +7,8 @@ from django.db import models
 class pilot(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     state	= models.CharField(max_length=16, default='')
-    site	= models.CharField(max_length=32)
-    host	= models.CharField(max_length=32)
+    site	= models.CharField(max_length=32, default='')
+    host	= models.CharField(max_length=32, default='')
     ts_cre	= models.DateTimeField('ts_cre', blank=True, null=True)
     ts_reg	= models.DateTimeField('ts_reg', blank=True, null=True)
     ts_lhb	= models.DateTimeField('ts_lhb', blank=True, null=True)
