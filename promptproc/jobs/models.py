@@ -14,12 +14,19 @@ class job(models.Model):
 
     def __str__(self):
         return self.uuid
-#    
-
+# The stage
 class stage(models.Model):
     name	= models.CharField(max_length=32, default='')
     priority	= models.PositiveIntegerField(default=0)
     njobs	= models.PositiveIntegerField(default=0)
+    
+    def __str__(self):
+        return self.name
+    
+# The priority policy
+class prioritypolicy(models.Model):
+    name	= models.CharField(max_length=32, default='')
+    value	= models.CharField(max_length=32, default='')
     
     def __str__(self):
         return self.name

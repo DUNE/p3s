@@ -56,6 +56,7 @@ def set(request):
     except:
         state = ''
 
+    #    print(j_uuid) print(priority) print(state)
     try:
         j = job.objects.get(uuid=j_uuid)
     except:

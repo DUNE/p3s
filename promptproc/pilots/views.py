@@ -10,8 +10,10 @@ from django.views.decorators.csrf	import csrf_exempt
 from django.utils			import timezone
 from django.core			import serializers
 
-from .models import pilot
-from jobs.models import job
+from django.conf			import settings
+
+from .models				import pilot
+from jobs.models			import job, prioritypolicy
 
 #########################################################
 # TZ-awarewness:					#
@@ -22,13 +24,34 @@ from jobs.models import job
 def request(request):
     j = None
     p_uuid	= request.GET.get('uuid','')
+
+    ordering = None
+    priolist = []
+    # FIXME: protect with exceptions or something -mxp-
     try:
-        top_jobs = job.objects.order_by('-priority')
-        j = top_jobs[0]
+        ordering = prioritypolicy.objects.get(name='order-within-priority').value
     except:
-        return HttpResponse('')
-    
-    if(j==None): return HttpResponse('') # extra safety
+        return HttpResponse('no policy found for order-within-priority')
+        
+    try:
+        jp = job.objects.values('priority').distinct()
+        for item in jp: priolist.append(item['priority'])
+    except:
+        return HttpResponse('no policy found for order-within-priority')
+
+    priolist.sort(reverse=True)
+    print(priolist)
+    for prio in priolist:
+        print('Trying:'+str(prio))
+        try:
+            tjs = job.objects.filter(priority=prio, state='defined').order_by(ordering)
+            print(tjs)
+            j = tjs[0]
+            break
+        except:
+            pass
+
+    if(j==None): return HttpResponse('No matching jobs in defined state found')
 
     j.state	= 'dispatched'
     j.p_uuid	= p_uuid
@@ -43,15 +66,6 @@ def request(request):
     
     data = serializers.serialize('json', [ j, ])
     return HttpResponse(data)
-
-    # jp = job.objects.values('priority').distinct()
-    # pl =  []
-    # for item in jp:
-    #     val = item['priority']
-    #     print(val)
-    #     pl.append(val)
-    # pl.sort(reverse=True)
-    # print(pl)
 
 #########################################################
 @csrf_exempt
