@@ -20,9 +20,6 @@ from jobs.models import job
 #########################################################
 
 def request(request):
-    # FIXME - the "order_by" is slow an is included here provisionally
-    # until I create a more optimal way to get the top priority jobs -mxp-
-
     j = None
     p_uuid	= request.GET.get('uuid','')
     try:
@@ -46,6 +43,15 @@ def request(request):
     
     data = serializers.serialize('json', [ j, ])
     return HttpResponse(data)
+
+    # jp = job.objects.values('priority').distinct()
+    # pl =  []
+    # for item in jp:
+    #     val = item['priority']
+    #     print(val)
+    #     pl.append(val)
+    # pl.sort(reverse=True)
+    # print(pl)
 
 #########################################################
 @csrf_exempt

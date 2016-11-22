@@ -7,78 +7,72 @@
 # so we are using timezone.now() where needed		#
 #########################################################
 
-from django.shortcuts import render
-
-import datetime
-from django.utils import timezone
-from django.utils.timezone import utc
-
+# python utiility classes
 import uuid
+import datetime
 
+# core django
 from django.shortcuts			import render
+from django.utils			import timezone
+from django.utils.timezone		import utc
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
-from django.utils			import timezone
 from django.core			import serializers
 from django.utils.safestring		import mark_safe
 
-from pilots.models	import pilot
-from jobs.models	import job
+# models used in the application:
+from pilots.models			import pilot
+from jobs.models			import job
 
-# machinery for customizing tables
-import django_tables2 as tables
-from django_tables2 import RequestConfig
-from django_tables2.utils import A
+# tables2 machinery
+import	django_tables2 as tables
+from	django_tables2			import RequestConfig
+from	django_tables2.utils		import A
 
-# just something for later, advanced tables, not used in the first cut
-from django.views.generic.base import TemplateView
 
+# we need this to make links to this service itse.
 try:
     from django.urls import reverse
 except ImportError:
     print("FATAL IMPORT ERROR")
     exit(-3)
 
+# just something for later - advanced tables:
+# from django.views.generic.base import TemplateView
 
 
-
-    
 #########################################################    
-# Code sample for later:
-#    uuid = tables.LinkColumn(viewname='dummy',
-#    args=[A('pk')], text='foo', orderable=False,
-#    empty_values=())
-#########################################################    
-class PilotTable(tables.Table):
+class MonitorTable(tables.Table):
     def set_site(self, site=''):
         self.site=site
+
+    def makelink(self, what, key, value):
+        return mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
+                         % (self.site, reverse(what), key, value, value))
         
-    def render_uuid(self,value):
-        return mark_safe('<a href="http://%s%s?uuid=%s">%s</a>'
-                         % (self.site, reverse('pilots'), value, value))
-    
-    def render_id(self,value):
-        return mark_safe('<a href="http://%s%s?pk=%s">%s</a>'
-                         % (self.site, reverse('pilots'), value, value))
+#########################################################    
+class PilotTable(MonitorTable):
+    def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
+    def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
+    def render_id(self,value):		return self.makelink('pilots',	'pk',	value)
+
     class Meta:
         model = pilot
         attrs = {'class': 'paleblue'}
+
 #########################################################    
-class JobTable(tables.Table):
+class JobTable(MonitorTable):
     def set_site(self, site=''):
         self.site=site
         
-    def render_uuid(self,value):
-        return mark_safe('<a href="http://%s%s?uuid=%s">%s</a>'
-                         % (self.site, reverse('jobs'), value, value))
-    
-    def render_id(self,value):
-        return mark_safe('<a href="http://%s%s?pk=%s">%s</a>'
-                         % (self.site, reverse('jobs'), value, value))
-    
+    def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
+    def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
+    def render_id(self,value):		return self.makelink('jobs',	'pk',	value)
+        
     class Meta:
         model = job
         attrs = {'class': 'paleblue'}
+
 #########################################################    
 def pilots(request):
     return data_handler(request, 'pilots')
@@ -121,3 +115,21 @@ def data_handler(request, what):
 #########################################################    
 # for later:
 #    data = serializers.serialize('json', [ p, ])
+#########################################################    
+# Code sample for later:
+#    uuid = tables.LinkColumn(viewname='dummy',
+#    args=[A('pk')], text='foo', orderable=False,
+#    empty_values=())
+#
+# def render_uuid(self,value): return mark_safe('<a
+# href="http://%s%s?uuid=%s">%s</a>' % (self.site, reverse('pilots'),
+# value, value))
+
+#     def render_j_uuid(self,value): return mark_safe('<a
+#     href="http://%s%s?uuid=%s">%s</a>' % (self.site, reverse('jobs'),
+#     value, value))
+    
+#     def render_id(self,value): return mark_safe('<a
+#     href="http://%s%s?pk=%s">%s</a>' % (self.site, reverse('pilots'),
+#     value, value))
+
