@@ -24,20 +24,27 @@ def request(request):
     # until I create a more optimal way to get the top priority jobs -mxp-
 
     j = None
-    pilot_uuid	= request.GET.get('uuid','')
+    p_uuid	= request.GET.get('uuid','')
     try:
-        j = job.objects.order_by('-priority')
-        print(j[0].uuid)
+        top_jobs = job.objects.order_by('-priority')
+        j = top_jobs[0]
     except:
         return HttpResponse('')
     
     if(j==None): return HttpResponse('') # extra safety
 
-    p		= pilot.objects.get(uuid=pilot_uuid)
+    j.state	= 'dispatched'
+    j.p_uuid	= p_uuid
+    j.ts_dis	= timezone.now()
+    j.save()
+    
+    p		= pilot.objects.get(uuid=p_uuid)
+    p.j_uuid	= j.uuid
+    p.state	= 'dispatched'
     p.ts_lhb	= timezone.now()
     p.save()
     
-    data = serializers.serialize('json', [ j[0], ])
+    data = serializers.serialize('json', [ j, ])
     return HttpResponse(data)
 
 #########################################################
