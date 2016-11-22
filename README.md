@@ -34,9 +34,9 @@ efficient and tried way to achieve this is the pilot-based job submission.
 
 ## Contents
 * Web service:
-** job queues and definitions
-** The pilot
-** various testing and debugging scripts
+   * job queues and definitions
+   * The pilot
+   * various testing and debugging scripts
 
 ## Software dependencies
 * Python3

@@ -75,8 +75,3 @@ def addpilot(request):
     return HttpResponse("%s" % p_uuid ) # FIXME - think of a meaningful response -mxp-
 
 
-######### CODE SAMPLES TEMPORARILY KEPT #################
-#     data = serializers.serialize('json', [ p, ])
-#     return HttpResponse(data)
-
-
