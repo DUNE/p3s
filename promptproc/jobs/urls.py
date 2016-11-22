@@ -3,7 +3,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-#    url(r'^$', views.detail, name='detail'), # migrated to monitor
+    url(r'^detail$', views.detail, name='detail'),
     url(r'^addjob$', views.addjob, name='add'),
     url(r'^set$', views.set, name='set'),
     url(r'^delete$', views.delete, name='delete'),

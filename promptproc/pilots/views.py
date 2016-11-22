@@ -22,19 +22,23 @@ from jobs.models import job
 def request(request):
     # FIXME - the "order_by" is slow an is included here provisionally
     # until I create a more optimal way to get the top priority jobs -mxp-
-    
+
+    j = None
     pilot_uuid	= request.GET.get('uuid','')
     try:
         j = job.objects.order_by('-priority')
         print(j[0].uuid)
     except:
-        pass
+        return HttpResponse('')
+    
+    if(j==None): return HttpResponse('') # extra safety
 
     p		= pilot.objects.get(uuid=pilot_uuid)
     p.ts_lhb	= timezone.now()
     p.save()
-    return HttpResponse('')
-
+    
+    data = serializers.serialize('json', [ j[0], ])
+    return HttpResponse(data)
 
 #########################################################
 @csrf_exempt

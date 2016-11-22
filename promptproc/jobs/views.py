@@ -6,10 +6,12 @@
 
 import uuid
 
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.core			import serializers
+
+from django.shortcuts			import render
+from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
-from django.utils import timezone
+from django.utils			import timezone
 
 from .models import job
 
@@ -95,18 +97,14 @@ def add():
     return j_uuid
     
 ###################################################
-# Keep for a little longer... It was migrated to the monitor
-# def detail(request):
-#     job_id = request.GET.get('job','')
-#     latest = request.GET.get('latest','')
-#     if(latest!=''):
-#         add()
-#         j = job.objects.latest(latest)
-#         return HttpResponse("Job %s" % j.uuid)
+def detail(request):
+    j_uuid = request.GET.get('uuid','')
 
-#     if(job_id == ''):
-#         return HttpResponse("Job not specified.")
-#     print(job_id)
-#     ts = job.objects.get(id=job_id).ts_def
-#     print(ts)
-#     return HttpResponse("You're looking at job %s." % job_id)
+    if(j_uuid == ''):
+        return HttpResponse("Job not specified.")
+    print(j_uuid)
+    j = job.objects.get(uuid=j_uuid)
+
+    data = serializers.serialize('json', [ j, ])
+    return HttpResponse(data)
+#    return HttpResponse("You're looking at job %s." % j_uuid)
