@@ -1,3 +1,5 @@
+import datetime
+
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.utils import timezone
@@ -7,11 +9,12 @@ from django.utils import timezone
 
 def index(request):
     domain = request.get_host()
-    print(domain)
+    # FIXME - deal with timestamp later -mxp-
     return render(request, 'index.html',
                   {
                       'domain':	domain,
-                      'time':	str(timezone.now())
+                      'time':	datetime.datetime.now().strftime('%x %X')
+#                      'time':	str(timezone.now())
                   }
     )
 

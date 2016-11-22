@@ -90,7 +90,8 @@ def data_handler(request, what):
     uuid	= request.GET.get('uuid','')
     pk		= request.GET.get('pk','')
 
-    now		= datetime.datetime.now()
+    # FIXME -beautify the timestamp later -mxp-
+    now		= datetime.datetime.now().strftime('%x %X')
     domain	= request.get_host()
     d		= dict(domain=domain, time=str(now))
 
