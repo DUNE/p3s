@@ -164,7 +164,17 @@ except:
     logger.error('exiting, failed to parse the server message: %s' % data)
     exit(1)
 
-#exit(0)
+if(p['status']=='FAIL'):
+    error = ''
+    try:
+        error	= msg['error']
+        logger.error('exiting, received FAIL status from server, error:%s' % error)
+    except:
+        logger.error('exiting, received FAIL status from server, no error returned')
+    exit(1)
+    
+    
+
 
 cnt = p.cycles
 url	= "pilots/request/?uuid=%s" % p['uuid']
