@@ -27,6 +27,8 @@ def request(request):
     j = None
     p_uuid	= request.GET.get('uuid','')
 
+    # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
+    return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
 
     ordering = None
     priolist = []
@@ -69,9 +71,6 @@ def request(request):
     
     return HttpResponse(json.dumps({'status':'OK', 'state':'dispatched', 'job':j.uuid}))
 
-#    data = serializers.serialize('json', [ j, ])
-#    return HttpResponse(data, mimetype='application/json')
-
 #########################################################
 @csrf_exempt
 def addpilot(request):
@@ -91,6 +90,11 @@ def addpilot(request):
 
     p.save()
 
+    # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
+    # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
+    
     return HttpResponse(json.dumps({'status':'OK', 'state':'active'}))
 
-
+################# DUSTY ATTIC ###########################
+#    data = serializers.serialize('json', [ j, ])
+#    return HttpResponse(data, mimetype='application/json')

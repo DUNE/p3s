@@ -131,9 +131,22 @@ if(adj):
 ###################### JOB DELETE ######################################
 # Check if it was a deletion request
 if(delete):
+    response = None
     if(j_uuid==''): exit(-1) # check if we have the key
 
-    if ',' in j_uuid:
+# DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
+    if(j_uuid=='ALL'):
+        try:
+            url = 'jobs/deleteall'
+            response = urllib.request.urlopen(server+url) # GET
+        except URLError:
+            exit(1)
+
+        data = response.read()
+        if(verb >0): print (data)
+
+# Normal delete, by key(s)
+    if ',' in j_uuid: # assume we have a CSV list
         jobList = j_uuid.split(',')
     else:
         jobList.append(j_uuid)

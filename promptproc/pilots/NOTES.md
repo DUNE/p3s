@@ -26,3 +26,8 @@ for item in jp:
 `
 settings.MY_EXAMPLE_SETTING
 `
+## Time
+### Finding a date/time in the past, by offset
+`
+t - timedelta(minutes=60)
+`

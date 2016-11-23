@@ -89,6 +89,16 @@ def delete(request):
     return HttpResponse("%s deleted" % j_uuid )
 
 ###################################################
+# SHOULD ONLY BE USED BY EXPRERTS, do not advertise
+def deleteall(request):
+    try:
+        j = job.objects.all().delete()
+    except:
+        return HttpResponse("DELETE ALL: FAILED")
+
+    return HttpResponse("DELETE ALL: SUCCESS")
+
+###################################################
 def add():
     ts_def	= timezone.now()
     j_uuid	= uuid.uuid1()

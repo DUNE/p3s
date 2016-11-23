@@ -10,6 +10,7 @@
 # python utiility classes
 import uuid
 import datetime
+from datetime import timedelta
 
 # core django
 from django.shortcuts			import render
@@ -97,6 +98,11 @@ def data_handler(request, what):
         if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
         if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
+
+        yest = datetime.datetime.now() - timedelta(days=1)
+
+        for o in objects.filter(ts_lhb__gte=yest):
+            print(o.ts_lhb)
         
     if(what=='jobs'):
         template = 'jobs.html'

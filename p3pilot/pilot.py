@@ -38,6 +38,15 @@ def rdec(r):
     return r.read().decode('utf-8')
 
 #-------------------------
+def logfail(msg, logger):
+    error = ''
+    try:
+        error	= msg['error'] # if the server told us what the error was, log it
+        logger.error('exiting, received FAIL status from server, error:%s' % error)
+    except:
+        logger.error('exiting, received FAIL status from server, no error returned')
+    exit(1)
+#-------------------------
 def communicate(url, data=None):
     try:
         if(data):
@@ -48,19 +57,19 @@ def communicate(url, data=None):
         logger.error('exiting, error at URL: %s' % url)
         exit(1)
 
-#-------------------------
+################# THE PILOT CLASS #######################
 class Pilot(dict):
-    def __init__(self):
+    def __init__(self, cycles=1, period=5):
         self['state']	= 'active' # start as active
         self['status']	= '' # status of server comms
         self['host']	= socket.gethostname()
         self['site']	= 'default' # FIXME - will need to get from env
         self['ts']	= str(timezone.now())
         self['uuid']	= uuid.uuid1()
-        self.cycles	= 1
-        self.period	= 1
-        
-#-------------------------
+        self.cycles	= cycles
+        self.period	= period
+#########################################################
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-S", "--server",
@@ -91,6 +100,16 @@ parser.add_argument("-v", "--verbosity",
                     default=0, choices=[0, 1, 2],
                     help="increase output verbosity")
 
+parser.add_argument("-c", "--cycles",
+                    type=int,
+                    default=1,
+                    help="how many cycles (with period in seconds) to stay alive")
+
+parser.add_argument("-p", "--period",
+                    type=int,
+                    default=5,
+                    help="period of the pilot cycle, in seconds")
+
 
 
 ########################### Parse all arguments #########################
@@ -100,13 +119,22 @@ args = parser.parse_args()
 server	= args.server
 url	= args.url
 workdir = args.workdir
-# numbers
+
+# misc
 verb	= args.verbosity
-# Boolean
+
+# scheduling
+period	= args.period
+cycles	= args.cycles
+
+# testing (pre-emptive exit with print)
 tst	= args.test
 
+
 ##################### CREATE A PILOT ###################################
-p = Pilot() # need uuid for the logfile etc, so do it now
+# NB. Need uuid for the logfile etc, so do it now
+p = Pilot(cycles=cycles, period=period)
+
 ################### BEGIN: PREPARE LOGGER ##############################
 # Check if we can create a working directory
 # Example: /tmp/p3s/"pilot uuid"
@@ -134,7 +162,7 @@ logfile.setFormatter(formatter)
 logger.addHandler(logfile)
 ##################### END: PREPARE LOGGER ##############################
 
-logger.info('starting pilot %s' % str(p['uuid']))
+logger.info('starting pilot %s on host %s with period %s and %s cycles' % (str(p['uuid']), p['host'], period, cycles))
 
 # Serialize in UTF-8
 pilotData = data2post(p).utf8()
@@ -155,7 +183,7 @@ data = rdec(response) # .read().decode('utf-8')
 if(verb>0): print(data)
 if(verb>1): logger.info('server response: %s' % data)
 
-
+msg = {}
 try:
     msg		= json.loads(data)
     p['status']	= msg['status']
@@ -164,23 +192,25 @@ except:
     logger.error('exiting, failed to parse the server message: %s' % data)
     exit(1)
 
-if(p['status']=='FAIL'):
-    error = ''
-    try:
-        error	= msg['error']
-        logger.error('exiting, received FAIL status from server, error:%s' % error)
-    except:
-        logger.error('exiting, received FAIL status from server, no error returned')
-    exit(1)
-    
-    
+# By now the pilot MUST have some sort of status set by the server's message
+if(p['status']=='FAIL'): logfail(msg, logger)
 
-
-cnt = p.cycles
+# if(p['status']=='FAIL'):
+#     error = ''
+#     try:
+#         error	= msg['error'] # if the server told us what the error was, log it
+#         logger.error('exiting, received FAIL status from server, error:%s' % error)
+#     except:
+#         logger.error('exiting, received FAIL status from server, no error returned')
+#     exit(1)
+    
+################ REGISTERED, ASK FOR JOB DISPATCH ######################
 url	= "pilots/request/?uuid=%s" % p['uuid']
 fullurl	= server+url
+
+# Lifecycle
+cnt = p.cycles
 while(cnt>0):
-    print(cnt)
     response = communicate(fullurl)
     data = rdec(response) # .read()
     print('-->',data)
