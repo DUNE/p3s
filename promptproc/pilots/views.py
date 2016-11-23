@@ -28,7 +28,7 @@ def request(request):
     p_uuid	= request.GET.get('uuid','')
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
-    return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
+    # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
 
     ordering = None
     priolist = []
@@ -56,7 +56,7 @@ def request(request):
         except:
             pass
 
-    if(j==None): return HttpResponse('No matching jobs in defined state found')
+    if(j==None): return HttpResponse(json.dumps({'status':'OK', 'state': 'waiting'}))
 
     j.state	= 'dispatched'
     j.p_uuid	= p_uuid
@@ -73,7 +73,7 @@ def request(request):
 
 #########################################################
 @csrf_exempt
-def addpilot(request):
+def register(request):
     
     post	= request.POST
     p_uuid	= post['uuid']
@@ -94,6 +94,29 @@ def addpilot(request):
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
     
     return HttpResponse(json.dumps({'status':'OK', 'state':'active'}))
+
+#########################################################
+@csrf_exempt
+def report(request):
+    
+    post	= request.POST
+    p_uuid	= post['uuid']
+    state	= post['state']
+    
+    p		= pilot.objects.get(uuid=p_uuid)
+    p.state	= state
+    p.ts_lhb	= timezone.now()
+    p.save()
+
+    if(state in ('running','finished')):
+        j = job.objects.get(uuid=p.j_uuid)
+        j.state=state
+        j.save()
+
+    # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
+    # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
+    
+    return HttpResponse(json.dumps({'status':'OK', 'state':state}))
 
 ################# DUSTY ATTIC ###########################
 #    data = serializers.serialize('json', [ j, ])

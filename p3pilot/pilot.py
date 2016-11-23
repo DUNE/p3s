@@ -68,6 +68,7 @@ class Pilot(dict):
         self['uuid']	= uuid.uuid1()
         self.cycles	= cycles
         self.period	= period
+        self.job	= '' # job to be yet received
 #########################################################
 
 parser = argparse.ArgumentParser()
@@ -162,26 +163,26 @@ logfile.setFormatter(formatter)
 logger.addHandler(logfile)
 ##################### END: PREPARE LOGGER ##############################
 
-logger.info('starting pilot %s on host %s with period %s and %s cycles' % (str(p['uuid']), p['host'], period, cycles))
+logger.info('START %s on host %s with period %s and %s cycles' % (str(p['uuid']), p['host'], period, cycles))
 
 # Serialize in UTF-8
 pilotData = data2post(p).utf8()
 
-if(verb>0): print(pilotData) # UTF-8
+if(verb>1): print(pilotData) # UTF-8
 if(verb>1): logger.info('pilot data: %s' % pilotData)
 
 # !if in test mode simply bail!
 if(tst): exit(0)
 
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
-fullurl	= server+"pilots/addpilot"
+fullurl	= server+"pilots/register"
 response = communicate(fullurl, pilotData) # will croak if unsuccessful
 
 logger.info("contact with server established")
 
-data = rdec(response) # .read().decode('utf-8')
-if(verb>0): print(data)
-if(verb>1): logger.info('server response: %s' % data)
+data = rdec(response)
+if(verb>1): print('REGISTER: server response: %s' % data)
+if(verb>1): logger.info('REGISTER: server response: %s' % data)
 
 msg = {}
 try:
@@ -195,6 +196,79 @@ except:
 # By now the pilot MUST have some sort of status set by the server's message
 if(p['status']=='FAIL'): logfail(msg, logger)
 
+################ REGISTERED, ASK FOR JOB DISPATCH ######################
+url	= "pilots/request/?uuid=%s" % p['uuid']
+fullurl	= server+url
+
+# Lifecycle
+cnt = p.cycles
+# ------
+while(cnt>0):
+    response = communicate(fullurl)
+    data = rdec(response)
+
+    if(verb>1): logger.info('BROKER: server response: %s' % data)
+
+    msg = {}
+    try:
+        msg		= json.loads(data)
+        p['status']	= msg['status']
+        p['state']	= msg['state']
+    except:
+        logger.error('exiting, failed to parse the server message: %s' % data)
+        exit(1)
+
+    if(p['status']=='FAIL'): logfail(msg, logger) # catch fail condition on the server
+
+    if(p['state']=='dispatched'): # got a job
+        try:
+            p['job']	= msg['job']
+        except:
+            logger.error('exiting, failed to parse the server message: %s' % data)
+            exit(1)
+
+        logger.info('JOB received: %s' % p['job'])
+    
+    if(p['state']=='waiting'): # didn't get a job
+        logger.info("WAIT")
+        continue
+
+    # Serialize in UTF-8
+    p['state']='running'
+    pilotData = data2post(p).utf8()
+    fullurl	= server+"pilots/report"
+    response = communicate(fullurl, pilotData) # will croak if unsuccessful
+
+    logger.info("contact with server established")
+    logger.info('JOB started: %s' %  p['job'])
+    time.sleep(20)
+
+    if(verb>1): print(pilotData) # UTF-8
+    if(verb>1): logger.info('pilot data: %s' % pilotData)
+
+    p['state']='finished'
+    pilotData = data2post(p).utf8()
+    fullurl	= server+"pilots/report"
+    response = communicate(fullurl, pilotData) # will croak if unsuccessful
+
+    logger.info("contact with server established")
+    logger.info('JOB finished: %s' %  p['job'])
+
+
+    
+    time.sleep(10)
+    logger.info('JOB finished: %s' % p['job'])
+    cnt-=1 # proceed to next cycle
+    
+    if(cnt==0): break
+    time.sleep(10)
+# ------
+
+logger.info('STOP %s' % str(p['uuid']))
+exit(0)
+
+
+######################### DUSTY ATTIC ##################################
 # if(p['status']=='FAIL'):
 #     error = ''
 #     try:
@@ -204,25 +278,6 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 #         logger.error('exiting, received FAIL status from server, no error returned')
 #     exit(1)
     
-################ REGISTERED, ASK FOR JOB DISPATCH ######################
-url	= "pilots/request/?uuid=%s" % p['uuid']
-fullurl	= server+url
-
-# Lifecycle
-cnt = p.cycles
-while(cnt>0):
-    response = communicate(fullurl)
-    data = rdec(response) # .read()
-    print('-->',data)
-    cnt-=1
-    if(cnt==0): break
-    time.sleep(10)
-
-logger.info('exiting normally')
-exit(0)
-
-
-
 # headers		= response.info()
 # data		= response.read()
 
