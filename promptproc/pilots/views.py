@@ -1,33 +1,36 @@
 #########################################################
 #                      PILOTS                           #
 #########################################################
+# TZ-awarewness:					#
+# The following is not TZ-aware: datetime.datetime.now()#
+# so we are using timzone.now() where needed		#
+#########################################################
+# General Python:
 import datetime
 import uuid
+import json
 
+# Django
 from django.shortcuts			import render
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
 from django.utils			import timezone
 from django.core			import serializers
-
 from django.conf			import settings
 
+# Local models
 from .models				import pilot
 from jobs.models			import job, prioritypolicy
 
 #########################################################
-# TZ-awarewness:					#
-# The following is not TZ-aware: datetime.datetime.now()#
-# so we are using timzone.now() where needed		#
-#########################################################
-
 def request(request):
     j = None
     p_uuid	= request.GET.get('uuid','')
 
+
     ordering = None
     priolist = []
-    # FIXME: protect with exceptions or something -mxp-
+
     try:
         ordering = prioritypolicy.objects.get(name='order-within-priority').value
     except:
@@ -64,8 +67,10 @@ def request(request):
     p.ts_lhb	= timezone.now()
     p.save()
     
-    data = serializers.serialize('json', [ j, ])
-    return HttpResponse(data)
+    return HttpResponse(json.dumps({'status':'OK', 'state':'dispatched', 'job':j.uuid}))
+
+#    data = serializers.serialize('json', [ j, ])
+#    return HttpResponse(data, mimetype='application/json')
 
 #########################################################
 @csrf_exempt
@@ -85,7 +90,7 @@ def addpilot(request):
     )
 
     p.save()
-    
-    return HttpResponse("%s" % p_uuid ) # FIXME - think of a meaningful response -mxp-
+
+    return HttpResponse(json.dumps({'status':'OK', 'state':'active'}))
 
 

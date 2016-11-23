@@ -4,10 +4,7 @@
 # The following is not TZ-aware: datetime.datetime.now()#
 # so we are using timzone.now() where needed		#
 #########################################################
-
-from django.conf import settings
-from django.utils import timezone
-
+# General Python:
 import os
 import argparse
 import uuid
@@ -15,13 +12,18 @@ import socket
 import time
 import datetime
 import logging
+import json
+
+# Django
+from django.conf	import settings
+from django.utils	import timezone
+
 
 import urllib
-from urllib import request
-from urllib import error
-from urllib import parse
-
-from urllib.error import URLError
+from urllib		import request
+from urllib		import error
+from urllib		import parse
+from urllib.error	import URLError
 
 # local import, requires PYTHONPATH to be set
 from comms import data2post
@@ -29,10 +31,28 @@ from comms import data2post
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
+
+# simple utilities
+#-------------------------
+def rdec(r):
+    return r.read().decode('utf-8')
+
+#-------------------------
+def communicate(url, data=None):
+    try:
+        if(data):
+            return urllib.request.urlopen(url, data)
+        else:
+            return urllib.request.urlopen(url)
+    except URLError:
+        logger.error('exiting, error at URL: %s' % url)
+        exit(1)
+
 #-------------------------
 class Pilot(dict):
     def __init__(self):
-        self['state']	= 'active' # FIXME
+        self['state']	= 'active' # start as active
+        self['status']	= '' # status of server comms
         self['host']	= socket.gethostname()
         self['site']	= 'default' # FIXME - will need to get from env
         self['ts']	= str(timezone.now())
@@ -85,14 +105,9 @@ verb	= args.verbosity
 # Boolean
 tst	= args.test
 
-# dummy for now
-register= args.register
-########################################################################
-
-
-# create and serialize pilot
-p = Pilot()
-
+##################### CREATE A PILOT ###################################
+p = Pilot() # need uuid for the logfile etc, so do it now
+################### BEGIN: PREPARE LOGGER ##############################
 # Check if we can create a working directory
 # Example: /tmp/p3s/"pilot uuid"
 
@@ -117,55 +132,68 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 logfile.setFormatter(formatter)
 
 logger.addHandler(logfile)
+##################### END: PREPARE LOGGER ##############################
+
 logger.info('starting pilot %s' % str(p['uuid']))
 
+# Serialize in UTF-8
 pilotData = data2post(p).utf8()
 
-if(verb>0):
-    print(pilotData)
+if(verb>0): print(pilotData) # UTF-8
+if(verb>1): logger.info('pilot data: %s' % pilotData)
+
+# !if in test mode simply bail!
+if(tst): exit(0)
+
+################ CONTACT SERVER TO REGISTER THE PILOT ##################
+fullurl	= server+"pilots/addpilot"
+response = communicate(fullurl, pilotData) # will croak if unsuccessful
+
+logger.info("contact with server established")
+
+data = rdec(response) # .read().decode('utf-8')
+if(verb>0): print(data)
+if(verb>1): logger.info('server response: %s' % data)
 
 
-if(tst): # if in test mode simply bail
-    exit(0)
-
-url	= "pilots/addpilot"
-fullurl	= server+url
 try:
-    response = urllib.request.urlopen(fullurl, pilotData)
-except URLError:
-    logger.error('when contacting the server at %s' % fullurl)
+    msg		= json.loads(data)
+    p['status']	= msg['status']
+    p['state']	= msg['state']
+except:
+    logger.error('exiting, failed to parse the server message: %s' % data)
     exit(1)
-    
 
-logger.info("contact with server successful")
-
-data = response.read()
-if(verb >0): print (data)
-
+#exit(0)
 
 cnt = p.cycles
-url = "pilots/request/?uuid=%s" % p['uuid']
+url	= "pilots/request/?uuid=%s" % p['uuid']
+fullurl	= server+url
 while(cnt>0):
     print(cnt)
-    response = urllib.request.urlopen(server+url)
-    data = response.read()
+    response = communicate(fullurl)
+    data = rdec(response) # .read()
     print('-->',data)
-    time.sleep(10)
     cnt-=1
+    if(cnt==0): break
+    time.sleep(10)
 
 logger.info('exiting normally')
 exit(0)
 
 
 
-# bits for later
-#    if(register):	# POST
-#else:		# GET
-
-      
-
 # headers		= response.info()
 # data		= response.read()
 
 # response_url	= response.geturl()
 # response_date	= headers['date']
+# response = urllib.request.urlopen(fullurl)
+
+# try:
+#     response = urllib.request.urlopen(fullurl, pilotData)
+# except URLError:
+#     logger.error('when contacting the server at %s' % fullurl)
+#     exit(1)
+    
+
