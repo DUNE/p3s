@@ -118,6 +118,32 @@ def report(request):
     
     return HttpResponse(json.dumps({'status':'OK', 'state':state}))
 
+###################################################
+@csrf_exempt
+def delete(request):
+    # fixme - improve error handling such as for missing or screwy arguments
+
+    post	= request.POST
+    p_uuid	= post['uuid']
+    print(p_uuid)
+    try:
+        p = pilot.objects.get(uuid=p_uuid)
+    except:
+        return HttpResponse("%s not found" % p_uuid )
+
+    p.delete()
+    return HttpResponse("%s deleted" % p_uuid )
+
+###################################################
+# SHOULD ONLY BE USED BY EXPRERTS, do not advertise
+def deleteall(request):
+    try:
+        p = pilot.objects.all().delete()
+    except:
+        return HttpResponse("DELETE ALL: FAILED")
+
+    return HttpResponse("DELETE ALL: SUCCESS")
+
 ################# DUSTY ATTIC ###########################
 #    data = serializers.serialize('json', [ j, ])
 #    return HttpResponse(data, mimetype='application/json')

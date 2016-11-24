@@ -111,7 +111,15 @@ parser.add_argument("-p", "--period",
                     default=5,
                     help="period of the pilot cycle, in seconds")
 
+parser.add_argument("-d", "--delete",
+                    action='store_true',
+                    help="deletes a pilot (for dev purposes). Needs uuid.")
 
+
+parser.add_argument("-u", "--uuid",
+                    type=str,
+                    default='',
+                    help="uuid of the pilot to be modified")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
@@ -123,6 +131,8 @@ workdir = args.workdir
 
 # misc
 verb	= args.verbosity
+delete	= args.delete
+p_uuid	= args.uuid
 
 # scheduling
 period	= args.period
@@ -131,6 +141,45 @@ cycles	= args.cycles
 # testing (pre-emptive exit with print)
 tst	= args.test
 
+
+###################### PILOT DELETE ####################################
+# Check if it was a deletion request
+if(delete):
+    response = None
+    if(p_uuid==''): exit(-1) # check if we have the key
+
+# DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
+    if(p_uuid=='ALL'):
+        try:
+            url = 'pilots/deleteall'
+            response = urllib.request.urlopen(server+url) # GET
+        except URLError:
+            exit(1)
+
+        data = response.read()
+        if(verb >0): print (data)
+        exit(0)
+
+    pilotList = []
+# Normal delete, by key(s)
+    if ',' in p_uuid: # assume we have a CSV list
+        pilotList = p_uuid.split(',')
+    else:
+        pilotList.append(p_uuid)
+
+    for pid in pilotList:
+        delData = data2post(dict(uuid=pid)).utf8()
+
+        try:
+            url = 'pilots/delete'
+            response = urllib.request.urlopen(server+url, delData) # POST
+        except URLError:
+            exit(1)
+    
+        data = response.read()
+        if(verb >0): print (data)
+
+    exit(0)
 
 ##################### CREATE A PILOT ###################################
 # NB. Need uuid for the logfile etc, so do it now
