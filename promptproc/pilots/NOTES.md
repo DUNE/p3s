@@ -1,5 +1,19 @@
 
 # DEVELOPMENT NOTES
+## Django Development Server
+It is multithreaded by default, which all but
+guarantees you will run into a race condition
+if you don't somehow lock the database (which
+is sqlite by default so unclear whether it's
+possible. Option to turn threading off:
+`
+--nothreading
+`
+
+In addition, there is a way to ensure atomicity by
+transaction-like behavior of requests, see 
+https://docs.djangoproject.com/en/1.10/topics/db/transactions/
+
 ## Pilots view:
 ### Serialization
 #### Using Django serializers

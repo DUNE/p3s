@@ -72,16 +72,17 @@ class Pilot(dict):
 #########################################################
 
 parser = argparse.ArgumentParser()
+logdefault = '/tmp/p3s/pilots'
 
 parser.add_argument("-S", "--server",
                     type=str,
                     default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
 
-parser.add_argument("-w", "--workdir",
+parser.add_argument("-l", "--logdir",
                     type=str,
-                    default='/tmp',
-                    help="(defaults to /tmp) the path for all pilots keep their logs etc")
+                    default=logdefault,
+                    help="(defaults to "+logdefault+") the path for all pilots keep their logs etc")
 
 parser.add_argument("-U", "--url",
                     type=str,
@@ -127,7 +128,7 @@ args = parser.parse_args()
 # strings
 server	= args.server
 url	= args.url
-workdir = args.workdir
+logdir	= args.logdir
 
 # misc
 verb	= args.verbosity
@@ -186,12 +187,12 @@ if(delete):
 p = Pilot(cycles=cycles, period=period)
 
 ################### BEGIN: PREPARE LOGGER ##############################
-# Check if we can create a working directory
-# Example: /tmp/p3s/"pilot uuid"
+# Check if we have a log directory
+# Example: /tmp/p3s/pilots"pilot uuid"
 
-if not os.path.exists(workdir): exit(-1)
+if(not os.path.exists(logdir)): os.makedirs(logdir)
 
-allpilotdir = workdir+'/p3pilot'
+allpilotdir = logdir+'/p3pilot'
 if not os.path.exists(allpilotdir):
     try:
         os.mkdir(allpilotdir)

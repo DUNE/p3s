@@ -123,8 +123,29 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
-
+############################## LOGGING #########################################
+LOG_DIR = '/tmp/p3s/'
+if(not os.path.exists(LOG_DIR)):
+    os.makedirs(LOG_DIR)
+    
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR+'server.log',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
 ################################################################################
 #                      CUSTOMIZATION OF THE APP BEHAVIOR: TBD                  #
 ################################################################################

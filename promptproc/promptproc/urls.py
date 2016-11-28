@@ -18,6 +18,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 #import jobs.views
 
+
 urlpatterns = [
     url(r'^',		include('info.urls')),
     url(r'^jobs/',	include('jobs.urls')),
