@@ -20,6 +20,7 @@ from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
 from django.core			import serializers
 from django.utils.safestring		import mark_safe
+from django.forms.models		import model_to_dict
 
 # models used in the application:
 from pilots.models			import pilot
@@ -65,10 +66,11 @@ class PilotTable(MonitorTable):
 class JobTable(MonitorTable):
     def set_site(self, site=''):
         self.site=site
-        
+
+    # devnote - shifting to "jobdetail"
     def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
     def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('jobs',	'pk',	value)
+    def render_id(self,value):		return self.makelink('jobdetail',	'pk',	value)
         
     class Meta:
         model = job
@@ -116,6 +118,33 @@ def data_handler(request, what):
     d[what]=t
 
     return render(request, template, d)
+
+#########################################################    
+def jobdetail(request):
+    pk	= request.GET.get('pk','')
+
+    j = model_to_dict(job.objects.get(pk=pk))
+    print(j.keys())
+    data = []
+
+    for a in j.keys():
+        data.append({'attribute': a, 'value': j[a]})
+#        data.append({'value': j[a]})
+    
+#    data = [
+#        {'name': 'Bradley'},
+#        {'name': 'Stevie'},
+#    ]
+
+    class NameTable(tables.Table):
+        attribute = tables.Column()
+        value = tables.Column()
+        class Meta:
+            attrs = {'class': 'paleblue'}
+
+    table = NameTable(data)
+    
+    return render(request, 'jobdetail.html', {'jobdetail' : table})
 
 
 #########################################################    
