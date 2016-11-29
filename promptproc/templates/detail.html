@@ -2,6 +2,6 @@
 {% load render_table from django_tables2 %}
 {% load static %}
 
-{% block title %}Jobs{% endblock %}
-{% block headline %}P3S Jobs{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block headline %}{{ title }}{% endblock %}
 {% block table %}{% render_table detail %}{% endblock %}

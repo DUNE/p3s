@@ -62,7 +62,7 @@ class MonitorTable(tables.Table):
 class PilotTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
     def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('pilots',	'pk',	value)
+    def render_id(self,value):		return self.makelink('pilotdetail',	'pk',	value)
 
     class Meta:
         model = pilot
@@ -92,6 +92,9 @@ def jobs(request):
 def jobdetail(request):
     return detail_handler(request, 'job')
 #########################################################    
+def pilotdetail(request):
+    return detail_handler(request, 'pilot')
+#########################################################    
 def data_handler(request, what):
     uuid	= request.GET.get('uuid','')
     pk		= request.GET.get('pk','')
@@ -102,22 +105,15 @@ def data_handler(request, what):
     d		= dict(domain=domain, time=str(now))
 
     objects, t	= None, None
+    template = 'universo.html'
     
     if(what=='pilots'):
-        template = 'pilots.html'
         objects = pilot.objects
         if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
         if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
 
-        yest = datetime.datetime.now() - timedelta(days=1)
-
-        # For later
-        #        for o in objects.filter(ts_lhb__gte=yest):
-        #            print(o.ts_lhb)
-        
     if(what=='jobs'):
-        template = 'jobs.html'
         objects = job.objects
         if(uuid == '' and pk == ''):	t = JobTable(objects.all())
         if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
@@ -125,8 +121,9 @@ def data_handler(request, what):
 
     t.set_site(domain)
     RequestConfig(request).configure(t)
-    d[what]=t # reference to "jobs" or "pilots" table, depending on the argument
-
+    d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
+    d['title']	= what
+    
     return render(request, template, d)
 
 #########################################################    
@@ -134,9 +131,13 @@ def detail_handler(request, what):
     pk	= request.GET.get('pk','')
     template, objects = None, None
     
+    template = 'detail.html'
+    
     if(what=='job'):
-        template = 'jobdetail.html'
         objects = job.objects
+
+    if(what=='pilot'):
+        objects = pilot.objects
 
     dicto	= model_to_dict(objects.get(pk=pk))
     data	= []
@@ -151,6 +152,7 @@ def detail_handler(request, what):
     t = DetailTable(data)
     RequestConfig(request).configure(t)
     d['detail'] = t
+    d['title']	= what
     return render(request, template, d)
 
 
@@ -175,3 +177,7 @@ def detail_handler(request, what):
 #     href="http://%s%s?pk=%s">%s</a>' % (self.site, reverse('pilots'),
 #     value, value))
 
+# handling time and time difference etc
+# yest = datetime.datetime.now() - timedelta(days=1)
+#        for o in objects.filter(ts_lhb__gte=yest):
+#            print(o.ts_lhb)
