@@ -258,6 +258,7 @@ while(cnt>0):
     data = rdec(response)
 
     if(verb>1): logger.info('BROKER: server response: %s' % data)
+    if(verb>1): print('BROKER: server response: %s' % data)
 
     msg = {}
     try:

@@ -58,6 +58,10 @@ class MonitorTable(tables.Table):
         return mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
                          % (self.site, reverse(what), key, value, value))
         
+
+#########################################################    
+# NOTE THAT WE INSTRUMENT SOME COLUMNS WHILE DECIDING TO#
+# NOT DISPLAY THEM. THIS IS TEMPORARY/HISTORICAL        #
 #########################################################    
 class PilotTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
@@ -65,8 +69,9 @@ class PilotTable(MonitorTable):
     def render_id(self,value):		return self.makelink('pilotdetail',	'pk',	value)
 
     class Meta:
-        model = pilot
-        attrs = {'class': 'paleblue'}
+        model	= pilot
+        attrs	= {'class': 'paleblue'}
+        exclude	= ('uuid', 'j_uuid', )
 
 #########################################################    
 class JobTable(MonitorTable):
@@ -77,6 +82,7 @@ class JobTable(MonitorTable):
     class Meta:
         model = job
         attrs = {'class': 'paleblue'}
+        exclude	= ('uuid', 'p_uuid', )
 
 #########################################################    
 def pilots(request):
