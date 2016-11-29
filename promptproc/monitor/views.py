@@ -70,10 +70,6 @@ class PilotTable(MonitorTable):
 
 #########################################################    
 class JobTable(MonitorTable):
-    def set_site(self, site=''):
-        self.site=site
-
-    # devnote - shifting to "jobdetail"
     def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
     def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
     def render_id(self,value):		return self.makelink('jobdetail',	'pk',	value)
