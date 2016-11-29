@@ -39,9 +39,15 @@ except ImportError:
     print("FATAL IMPORT ERROR")
     exit(-3)
 
-# just something for later - advanced tables:
-# from django.views.generic.base import TemplateView
+# just something for later - advanced tables: from django.views.generic.base import TemplateView
 
+
+#########################################################    
+class DetailTable(tables.Table):
+    attribute	= tables.Column()
+    value	= tables.Column()
+    class Meta:
+        attrs	= {'class': 'paleblue'}
 
 #########################################################    
 class MonitorTable(tables.Table):
@@ -83,6 +89,9 @@ def pilots(request):
 def jobs(request):
     return data_handler(request, 'jobs')
 #########################################################    
+def jobdetail(request):
+    return detail_handler(request, 'job')
+#########################################################    
 def data_handler(request, what):
     uuid	= request.GET.get('uuid','')
     pk		= request.GET.get('pk','')
@@ -103,8 +112,9 @@ def data_handler(request, what):
 
         yest = datetime.datetime.now() - timedelta(days=1)
 
-        for o in objects.filter(ts_lhb__gte=yest):
-            print(o.ts_lhb)
+        # For later
+        #        for o in objects.filter(ts_lhb__gte=yest):
+        #            print(o.ts_lhb)
         
     if(what=='jobs'):
         template = 'jobs.html'
@@ -115,13 +125,9 @@ def data_handler(request, what):
 
     t.set_site(domain)
     RequestConfig(request).configure(t)
-    d[what]=t
+    d[what]=t # reference to "jobs" or "pilots" table, depending on the argument
 
     return render(request, template, d)
-
-#########################################################    
-def jobdetail(request):
-    return detail_handler(request, 'job')
 
 #########################################################    
 def detail_handler(request, what):
@@ -132,20 +138,20 @@ def detail_handler(request, what):
         template = 'jobdetail.html'
         objects = job.objects
 
-    d		= model_to_dict(objects.get(pk=pk))
+    dicto	= model_to_dict(objects.get(pk=pk))
     data	= []
 
-    for a in d.keys(): data.append({'attribute': a, 'value': d[a]})
+    # FIXME -beautify the timestamp later -mxp-
+    now		= datetime.datetime.now().strftime('%x %X')
+    domain	= request.get_host()
+    d		= dict(domain=domain, time=str(now))
 
-    class DetailTable(tables.Table):
-        attribute = tables.Column()
-        value = tables.Column()
-        class Meta:
-            attrs = {'class': 'paleblue'}
+    for a in dicto.keys(): data.append({'attribute': a, 'value': dicto[a]})
 
-    table = DetailTable(data)
-    
-    return render(request, template, {'detail' : table})
+    t = DetailTable(data)
+    RequestConfig(request).configure(t)
+    d['detail'] = t
+    return render(request, template, d)
 
 
 #########################################################    
