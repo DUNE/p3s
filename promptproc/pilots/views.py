@@ -22,12 +22,19 @@ from django.conf			import settings
 from .models				import pilot
 from jobs.models			import job, prioritypolicy
 
+
+
+#########################################################
+# pilot status can only take two values, 'OK' or 'FAIL' #
+# while it's state can be more complex                  #
 #########################################################
 def request(request):
     j = None
     p_uuid	= request.GET.get('uuid','')
+    # FIXME - need to pritect the followling line:
+    p		= pilot.objects.get(uuid=p_uuid)
 
-    # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
+    # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS: (will bail here)
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
 
     ordering = None
@@ -36,13 +43,16 @@ def request(request):
     try:
         ordering = prioritypolicy.objects.get(name='order-within-priority').value
     except:
-        return HttpResponse('no policy found for order-within-priority')
-        
+        p.state	= 'failed brokerage'
+        p.ts_lhb	= timezone.now()
+        p.save()
+        return HttpResponse(json.dumps({'status':'FAIL', 'state': p.state, 'error':'missing policy'}))
     try:
         jp = job.objects.values('priority').distinct()
         for item in jp: priolist.append(item['priority'])
     except:
-        return HttpResponse('no policy found for order-within-priority')
+        return HttpResponse(json.dumps({'status':'OK', 'state': 'no jobs'}))
+
 
     priolist.sort(reverse=True)
     print(priolist)
@@ -56,14 +66,13 @@ def request(request):
         except:
             pass
 
-    if(j==None): return HttpResponse(json.dumps({'status':'OK', 'state': 'waiting'}))
+    if(j==None): return HttpResponse(json.dumps({'status':'OK', 'state': 'no jobs'}))
 
     j.state	= 'dispatched'
     j.p_uuid	= p_uuid
     j.ts_dis	= timezone.now()
     j.save()
     
-    p		= pilot.objects.get(uuid=p_uuid)
     p.j_uuid	= j.uuid
     p.state	= 'dispatched'
     p.ts_lhb	= timezone.now()
