@@ -121,30 +121,31 @@ def data_handler(request, what):
 
 #########################################################    
 def jobdetail(request):
+    return detail_handler(request, 'job')
+
+#########################################################    
+def detail_handler(request, what):
     pk	= request.GET.get('pk','')
-
-    j = model_to_dict(job.objects.get(pk=pk))
-    print(j.keys())
-    data = []
-
-    for a in j.keys():
-        data.append({'attribute': a, 'value': j[a]})
-#        data.append({'value': j[a]})
+    template, objects = None, None
     
-#    data = [
-#        {'name': 'Bradley'},
-#        {'name': 'Stevie'},
-#    ]
+    if(what=='job'):
+        template = 'jobdetail.html'
+        objects = job.objects
 
-    class NameTable(tables.Table):
+    d		= model_to_dict(objects.get(pk=pk))
+    data	= []
+
+    for a in d.keys(): data.append({'attribute': a, 'value': d[a]})
+
+    class DetailTable(tables.Table):
         attribute = tables.Column()
         value = tables.Column()
         class Meta:
             attrs = {'class': 'paleblue'}
 
-    table = NameTable(data)
+    table = DetailTable(data)
     
-    return render(request, 'jobdetail.html', {'jobdetail' : table})
+    return render(request, template, {'detail' : table})
 
 
 #########################################################    
