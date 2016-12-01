@@ -45,7 +45,7 @@ def logfail(msg, logger):
         logger.error('exiting, received FAIL status from server, error:%s' % error)
     except:
         logger.error('exiting, received FAIL status from server, no error returned')
-    exit(1)
+    exit(2)
 #-------------------------
 def communicate(url, data=None):
     try:
@@ -147,7 +147,7 @@ tst	= args.test
 # Check if it was a deletion request
 if(delete):
     response = None
-    if(p_uuid==''): exit(-1) # check if we have the key
+    if(p_uuid==''): exit(-2) # check if we have the key
 
 # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
     if(p_uuid=='ALL'):
@@ -187,17 +187,13 @@ if(delete):
 p = Pilot(cycles=cycles, period=period)
 
 ################### BEGIN: PREPARE LOGGER ##############################
-# Check if we have a log directory
-# Example: /tmp/p3s/pilots"pilot uuid"
+# Check if we have a log directory, example: /tmp/p3s/pilots
 
-if(not os.path.exists(logdir)): os.makedirs(logdir)
-
-#allpilotdir = logdir
-#if not os.path.exists(allpilotdir):
-#    try:
-#        os.mkdir(allpilotdir)
-#    except:
-#        exit(-1)
+if(not os.path.exists(logdir)):
+    try:
+        os.makedirs(logdir)
+    except:
+        exit(-1) # we can't log it
 
 logfilename = logdir+'/'+str(p['uuid'])+'.log'
 
