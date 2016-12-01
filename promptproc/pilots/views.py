@@ -120,6 +120,7 @@ def report(request):
     post	= request.POST
     p_uuid	= post['uuid']
     state	= post['state']
+    event	= post['event']
     
     p		= pilot.objects.get(uuid=p_uuid)
     p.state	= state
@@ -128,8 +129,10 @@ def report(request):
 
     if(state in ('running','finished')):
         try:
-            j = job.objects.get(uuid=p.j_uuid)
-            j.state=state
+            j		= job.objects.get(uuid=p.j_uuid)
+            j.state	= state
+            if(event=='jobstart'):	j.ts_sta = timezone.now()
+            if(event=='jobstop'):	j.ts_sto = timezone.now()
             j.save()
         except:
             return HttpResponse(json.dumps({'status':	'FAIL',

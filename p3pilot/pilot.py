@@ -96,6 +96,7 @@ class Pilot(dict):
         self['site']	= 'default' # FIXME - will need to get from env
         self['ts']	= str(timezone.now())
         self['uuid']	= uuid.uuid1()
+        self['event']	= '' # what just happned in the pilot
         self.cycles	= cycles
         self.period	= period
         self.job	= '' # job to be yet received
@@ -310,9 +311,10 @@ while(cnt>0):
         logger.info('JOB received: %s' % p['job'])
     
 
-    # Serialize in UTF-8
+######################## GOT A JOB TO DO ###############################
     p['state']='running'
-    pilotData = data2post(p).utf8()
+    p['event']='jobstart'
+    pilotData = data2post(p).utf8() # Serialize in UTF-8
     fullurl	= server+"pilots/report"
     response = communicate(fullurl, pilotData) # will croak if unsuccessful
 
@@ -326,6 +328,7 @@ while(cnt>0):
     if(verb>1): logger.info('pilot data: %s' % pilotData)
 
     p['state']='finished'
+    p['event']='jobstop'
     pilotData = data2post(p).utf8()
     fullurl	= server+"pilots/report"
     response = communicate(fullurl, pilotData) # will croak if unsuccessful
