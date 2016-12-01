@@ -27,6 +27,18 @@ from comms import data2post
 #########################################################
 settings.configure(USE_TZ = True)
 
+Usage		= '''Usage:
+
+For command line options run the pilot with "--help" option.
+
+* Bulk injection *
+
+Option "-j" allows to inject a collection of jobs based on
+the contents of a JSON file. See the "examples" directory
+for a sample.
+
+'''
+
 #-------------------------
 class Job(dict):
     def __init__(self, priority=0, stage='default', state='defined'):
@@ -40,49 +52,32 @@ class Job(dict):
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-S", "--server",
-                    type=str,
-                    default='http://localhost:8000/',
+parser.add_argument("-g", "--usage",	action='store_true',
+                    help="print usage notes and exit")
+parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
-
-parser.add_argument("-s", "--state",
-                    type=str,
-                    default='',
+parser.add_argument("-s", "--state",	type=str,	default='',
                     help="sets the job state, needs *adjust* option to be activated")
-
-parser.add_argument("-p", "--priority",
-                    type=int,
-                    default=-1,
+parser.add_argument("-p", "--priority",	type=int,	default=-1,
                     help="sets the job priority, needs *adjust* option to be activated")
-
-parser.add_argument("-a", "--adjust",
-                    action='store_true',
+parser.add_argument("-a", "--adjust",	action='store_true',
                     help="enables state or priority adjustments. Needs uuid.")
-
-parser.add_argument("-d", "--delete",
-                    action='store_true',
+parser.add_argument("-d", "--delete",	action='store_true',
                     help="deletes a job. Needs uuid.")
-
-parser.add_argument("-u", "--uuid",
-                    type=str,
-                    default='',
+parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the job to be adjusted")
-
-parser.add_argument("-t", "--test",
-                    action='store_true',
+parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
-
-parser.add_argument("-v", "--verbosity",
-                    type=int, default=0, choices=[0, 1, 2],
+parser.add_argument("-v", "--verbosity",	type=int, default=0, choices=[0, 1, 2],
                     help="set output verbosity")
 
-parser.add_argument("-j", "--json_in",
-                    type=str,
-                    default='',
+parser.add_argument("-j", "--json_in",	type=str,	default='',
                     help="file from which to read job templates (must be a list)")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
+
+usage	= args.usage
 
 server	= args.server
 state	= args.state
@@ -97,6 +92,11 @@ json_in	= args.json_in
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
 jobList = []
+
+###################### USAGE REQUESTED? ################################
+if(usage):
+    print(Usage)
+    exit(0)
 
 ########################## UPDATE/ADJUSTMENT #############################
 # Check if an adjustment of an existing job is requested, and send a

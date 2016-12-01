@@ -41,6 +41,13 @@ def request(request):
     priolist = []
 
     try:
+        # this contains (for example) the name of the column by
+        # which to sort within same tier of priority, for example ts_def.
+        # So it has to be consistent with the models.
+        # Look for "ordering" later in the code.        # this contains (for example) the name of the column by
+        # which to sort within same tier of priority, for example ts_def.
+        # So it has to be consistent with the models.
+        # Look for "ordering" later in the code. 
         ordering = prioritypolicy.objects.get(name='order-within-priority').value
     except:
         p.state	= 'failed brokerage'
