@@ -192,14 +192,14 @@ p = Pilot(cycles=cycles, period=period)
 
 if(not os.path.exists(logdir)): os.makedirs(logdir)
 
-allpilotdir = logdir+'/p3pilot'
-if not os.path.exists(allpilotdir):
-    try:
-        os.mkdir(allpilotdir)
-    except:
-        exit(-1)
+#allpilotdir = logdir
+#if not os.path.exists(allpilotdir):
+#    try:
+#        os.mkdir(allpilotdir)
+#    except:
+#        exit(-1)
 
-logfilename = allpilotdir+'/'+str(p['uuid'])+'.log'
+logfilename = logdir+'/'+str(p['uuid'])+'.log'
 
 if(verb>0): print("Logfile: %s" % logfilename)
 
