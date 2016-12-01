@@ -59,13 +59,12 @@ def request(request):
     
     j = None # placeholder for the job
     
-    priolist.sort(reverse=True)
-    print(priolist)
+    priolist.sort(reverse=True) #  print(priolist)
     for prio in priolist: # should skip is list is empty and so the job stays None
-        print('Trying prio:'+str(prio))
+        # print('Trying prio:'+str(prio))
         try:
             tjs = job.objects.filter(priority=prio, state='defined').order_by(ordering)
-            print(tjs)
+            # print(tjs)
             j = tjs[0]
             break
         except:
@@ -128,9 +127,14 @@ def report(request):
     p.save()
 
     if(state in ('running','finished')):
-        j = job.objects.get(uuid=p.j_uuid)
-        j.state=state
-        j.save()
+        try:
+            j = job.objects.get(uuid=p.j_uuid)
+            j.state=state
+            j.save()
+        except:
+            return HttpResponse(json.dumps({'status':	'FAIL',
+                                            'state':	state,
+                                            'error':	'failed to update job state'}))
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
@@ -144,7 +148,7 @@ def delete(request):
 
     post	= request.POST
     p_uuid	= post['uuid']
-    print(p_uuid)
+    # print(p_uuid)
     try:
         p = pilot.objects.get(uuid=p_uuid)
     except:

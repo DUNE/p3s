@@ -3,40 +3,5 @@
         "stage":	"stage1",
         "priority":	"1",
 	"state":	"defined"
-    },
-    {
-        "stage":	"stage2",
-        "priority":	"2",
-	"state":	"defined"
-    },
-    {
-        "stage":	"stage3",
-        "priority":	"3",
-	"state":	"defined"
-    },
-    {
-        "stage":	"stage4",
-        "priority":	"4",
-	"state":	"defined"
-    },
-    {
-        "stage":	"stage5",
-        "priority":	"5",
-	"state":	"defined"
-    },
-    {
-        "stage":	"stage6",
-        "priority":	"6",
-	"state":	"defined"
-    },
-    {
-        "stage":	"stage7",
-        "priority":	"7",
-	"state":	"defined"
-    },
-    {
-        "stage":	"stage8",
-        "priority":	"8",
-	"state":	"defined"
     }
 ]

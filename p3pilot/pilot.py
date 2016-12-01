@@ -51,6 +51,15 @@ input and local file system problem.
 -1	problem in creation of log file or its directory
 -2	pilot ID missing in operation that needs it
 
+* Pilot States
+active		registered on the server, no attempt at brokerage yet
+no jobs		no jobs matched this pilot
+dispatched	got a job and preparing its execution
+running		running the payload job
+finished	job has completed
+stopped		stopped after exhausting all brokerage attempts.
+
+
 '''
 
 # simple utilities
@@ -255,6 +264,7 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 #########################################################################
 #########################################################################
 
+jobcount=0
 url	= "pilots/request/?uuid=%s" % p['uuid']
 fullurl	= server+url
 
@@ -285,9 +295,10 @@ while(cnt>0):
     if(p['state']=='no jobs'): # didn't get a job
         logger.info("No jobs on the server")
         cnt-=1 # proceed to next cycle
-        if(cnt==0): break
-        time.sleep(10)
-        continue
+        if(cnt==0): # EXHAUSTED ALL ATTEMPTS TO GET A JOB
+            break
+        time.sleep(period)
+        continue # NEXT ITERATION
 
     if(p['state']=='dispatched'): # got a job
         try:
@@ -321,18 +332,26 @@ while(cnt>0):
 
     logger.info("contact with server established")
     logger.info('JOB finished: %s' %  p['job'])
-
+    jobcount+=1
     cnt-=1 # proceed to next cycle
     
     if(cnt==0): break
     time.sleep(period)
 # ------
 
-logger.info('STOP %s' % str(p['uuid']))
+
+######################## FINISHING UP ##################################
+
+p['state']='stopped'
+pilotData = data2post(p).utf8()
+fullurl	= server+"pilots/report"
+response = communicate(fullurl, pilotData) # will croak if unsuccessful
+
+logger.info('JOBS DONE: %s' % str(jobcount))
+logger.info('STOP %s on host %s after %s cycles' % (str(p['uuid']), p['host'], cycles))
 exit(0)
 
-
-######################### DUSTY ATTIC ##################################
+#
 # if(p['status']=='FAIL'):
 #     error = ''
 #     try:
