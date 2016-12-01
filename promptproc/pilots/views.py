@@ -29,10 +29,9 @@ from jobs.models			import job, prioritypolicy
 # while it's state can be more complex                  #
 #########################################################
 def request(request):
-    j = None
     p_uuid	= request.GET.get('uuid','')
-    # FIXME - need to pritect the followling line:
-    p		= pilot.objects.get(uuid=p_uuid)
+    # Fetch the pilot! FIXME - need to pritect the followling line:
+    p = pilot.objects.get(uuid=p_uuid)
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS: (will bail here)
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
@@ -44,27 +43,26 @@ def request(request):
         # this contains (for example) the name of the column by
         # which to sort within same tier of priority, for example ts_def.
         # So it has to be consistent with the models.
-        # Look for "ordering" later in the code.        # this contains (for example) the name of the column by
-        # which to sort within same tier of priority, for example ts_def.
-        # So it has to be consistent with the models.
         # Look for "ordering" later in the code. 
         ordering = prioritypolicy.objects.get(name='order-within-priority').value
     except:
-        p.state	= 'failed brokerage'
+        p.state		= 'failed brokerage'
+        p.status	= 'FAIL'
         p.ts_lhb	= timezone.now()
         p.save()
         return HttpResponse(json.dumps({'status':'FAIL', 'state': p.state, 'error':'missing policy'}))
     try:
         jp = job.objects.values('priority').distinct()
         for item in jp: priolist.append(item['priority'])
-    except:
-        return HttpResponse(json.dumps({'status':'OK', 'state': 'no jobs'}))
-
-
+    except: 	# return HttpResponse(json.dumps({'status':'OK', 'state': 'no jobs'}))
+        pass	# let it bail below
+    
+    j = None # placeholder for the job
+    
     priolist.sort(reverse=True)
     print(priolist)
-    for prio in priolist:
-        print('Trying:'+str(prio))
+    for prio in priolist: # should skip is list is empty and so the job stays None
+        print('Trying prio:'+str(prio))
         try:
             tjs = job.objects.filter(priority=prio, state='defined').order_by(ordering)
             print(tjs)
@@ -73,7 +71,12 @@ def request(request):
         except:
             pass
 
-    if(j==None): return HttpResponse(json.dumps({'status':'OK', 'state': 'no jobs'}))
+    if(j==None):
+        p.state		= 'no jobs'
+        p.status	= 'OK'
+        p.ts_lhb	= timezone.now()
+        p.save()
+        return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
 
     j.state	= 'dispatched'
     j.p_uuid	= p_uuid

@@ -154,7 +154,7 @@ if(delete):
     if(p_uuid=='ALL'):
         response = None
         url = 'pilots/deleteall'
-        communicate(server+url)
+        response = communicate(server+url)
         # try:
         #     url = 'pilots/deleteall'
         #     response = urllib.request.urlopen(server+url) # GET
@@ -175,7 +175,7 @@ if(delete):
     for pid in pilotList:
         delData = data2post(dict(uuid=pid)).utf8()
         url = 'pilots/delete'
-        communicate(server+url, delData)
+        response = communicate(server+url, delData)
         # try:
         #     url = 'pilots/delete'
         #     response = urllib.request.urlopen(server+url, delData) # POST
@@ -251,9 +251,9 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 
 #########################################################################
 #########################################################################
-#########################################################################
-#########################################################################
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
+#########################################################################
+#########################################################################
 
 url	= "pilots/request/?uuid=%s" % p['uuid']
 fullurl	= server+url
@@ -261,6 +261,9 @@ fullurl	= server+url
 cnt = p.cycles # Lifecycle
 ####################### MAIN LOOP #######################################
 while(cnt>0):
+    if(verb>1): print('Attempts left: %s' % str(cnt))
+    if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
+
     response	= communicate(fullurl)
     data	= rdec(response)
 
@@ -275,7 +278,16 @@ while(cnt>0):
         logger.error('exiting, failed to parse the server message: %s' % data)
         exit(3)
 
+    # Failure reported from brokerage on the server
     if(p['status']=='FAIL'): logfail(msg, logger) # catch fail condition on the server
+
+    # No failure, but no jobs on the server, skip the cycle
+    if(p['state']=='no jobs'): # didn't get a job
+        logger.info("No jobs on the server")
+        cnt-=1 # proceed to next cycle
+        if(cnt==0): break
+        time.sleep(10)
+        continue
 
     if(p['state']=='dispatched'): # got a job
         try:
@@ -286,9 +298,6 @@ while(cnt>0):
 
         logger.info('JOB received: %s' % p['job'])
     
-    if(p['state']=='waiting'): # didn't get a job
-        logger.info("WAIT")
-        continue
 
     # Serialize in UTF-8
     p['state']='running'
@@ -298,7 +307,9 @@ while(cnt>0):
 
     logger.info("contact with server established")
     logger.info('JOB started: %s' %  p['job'])
-    time.sleep(20)
+
+    # FAKE JOB
+    time.sleep(20) 
 
     if(verb>1): print(pilotData) # UTF-8
     if(verb>1): logger.info('pilot data: %s' % pilotData)
@@ -311,14 +322,10 @@ while(cnt>0):
     logger.info("contact with server established")
     logger.info('JOB finished: %s' %  p['job'])
 
-
-    
-    time.sleep(10)
-    logger.info('JOB finished: %s' % p['job'])
     cnt-=1 # proceed to next cycle
     
     if(cnt==0): break
-    time.sleep(10)
+    time.sleep(period)
 # ------
 
 logger.info('STOP %s' % str(p['uuid']))

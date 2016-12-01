@@ -77,16 +77,41 @@ def set(request):
 def delete(request):
     # fixme - improve error handling such as for missing or screwy arguments
 
-    post	= request.POST
-    j_uuid	= post['uuid']
-    
-    try:
-        j = job.objects.get(uuid=j_uuid)
-    except:
-        return HttpResponse("%s not found" % j_uuid )
+    post		= request.POST
+    j_uuid, j_pk	= None, None
 
-    j.delete()
-    return HttpResponse("%s deleted" % j_uuid )
+    try:
+        j_uuid = post['uuid']
+    except:
+        pass
+
+    try:
+        j_pk = post['pk']
+    except:
+        pass
+
+    if(j_uuid is None and j_pk is None):
+        return HttpResponse("Missing key for deletion")
+
+    if(j_uuid):
+        try:
+            j = job.objects.get(uuid=j_uuid)
+        except:
+            return HttpResponse("%s not found" % j_uuid )
+
+        j.delete()
+        return HttpResponse("%s deleted" % j_uuid )
+
+    if(j_pk):
+        try:
+            j = job.objects.get(pk=j_pk)
+        except:
+            return HttpResponse("%s not found" % j_pk )
+
+        j.delete()
+        return HttpResponse("%s deleted" % j_pk )
+    
+    return HttpResponse("Inconsistent state in job deletion view")
 
 ###################################################
 # SHOULD ONLY BE USED BY EXPRERTS, do not advertise

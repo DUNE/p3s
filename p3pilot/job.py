@@ -66,6 +66,8 @@ parser.add_argument("-d", "--delete",	action='store_true',
                     help="deletes a job. Needs uuid.")
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the job to be adjusted")
+parser.add_argument("-i", "--id",	type=str,	default='',
+                    help="id of the job to be adjusted (pk)")
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
 parser.add_argument("-v", "--verbosity",	type=int, default=0, choices=[0, 1, 2],
@@ -83,6 +85,7 @@ server	= args.server
 state	= args.state
 priority= args.priority
 j_uuid	= args.uuid
+j_id	= args.id
 verb	= args.verbosity
 tst	= args.test
 adj	= args.adjust
@@ -132,10 +135,10 @@ if(adj):
 # Check if it was a deletion request
 if(delete):
     response = None
-    if(j_uuid==''): exit(-1) # check if we have the key
+    if(j_uuid=='' and j_id==''): exit(-1) # check if we have the key
 
 # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
-    if(j_uuid=='ALL'):
+    if(j_uuid=='ALL' or j_id=='ALL'):
         try:
             url = 'jobs/deleteall'
             response = urllib.request.urlopen(server+url) # GET
@@ -145,23 +148,44 @@ if(delete):
         data = response.read()
         if(verb >0): print (data)
 
-# Normal delete, by key(s)
-    if ',' in j_uuid: # assume we have a CSV list
-        jobList = j_uuid.split(',')
-    else:
-        jobList.append(j_uuid)
+    # Normal delete, by key(s)
+    # UUID:
+    if(j_uuid!=''):
+        if ',' in j_uuid: # assume we have a CSV list
+            jobList = j_uuid.split(',')
+        else:
+            jobList.append(j_uuid)
 
-    for j in jobList:
-        delData = data2post(dict(uuid=j)).utf8()
+        for j in jobList:
+            delData = data2post(dict(uuid=j)).utf8()
 
-        try:
-            url = 'jobs/delete'
-            response = urllib.request.urlopen(server+url, delData) # POST
-        except URLError:
-            exit(1)
+            try:
+                url = 'jobs/delete'
+                response = urllib.request.urlopen(server+url, delData) # POST
+            except URLError:
+                exit(1)
     
-        data = response.read()
-        if(verb >0): print (data)
+            data = response.read()
+            if(verb >0): print (data)
+
+    # ID (PK):
+    if(j_id!=''):
+        if ',' in j_id: # assume we have a CSV list
+            jobList = j_id.split(',')
+        else:
+            jobList.append(j_id)
+
+        for j in jobList:
+            delData = data2post(dict(pk=j)).utf8()
+
+            try:
+                url = 'jobs/delete'
+                response = urllib.request.urlopen(server+url, delData) # POST
+            except URLError:
+                exit(1)
+    
+            data = response.read()
+            if(verb >0): print (data)
 
     exit(0)
 

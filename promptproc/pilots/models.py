@@ -8,7 +8,7 @@ class pilot(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     j_uuid	= models.CharField(max_length=36, default='')
     state	= models.CharField(max_length=16, default='')
-#    state	= models.CharField(max_length=16, default='')
+    status	= models.CharField(max_length=16, default='')
     site	= models.CharField(max_length=32, default='')
     host	= models.CharField(max_length=32, default='')
     ts_cre	= models.DateTimeField('ts_cre', blank=True, null=True)
