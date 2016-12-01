@@ -1,5 +1,7 @@
 [
     {
+	"name":		"simple p3s job, stage 1",
+	"timeout":	"100",
         "stage":	"stage1",
         "priority":	"1",
 	"state":	"defined"

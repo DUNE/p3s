@@ -33,6 +33,8 @@ def addjob(request):
         priority	= post['priority'],
         state		= post['state'],
         ts_def		= post['ts'],
+        timelimit	= post['timeout'],
+        name		= post['name'],
     )
 
     j.save()

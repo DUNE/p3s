@@ -41,7 +41,8 @@ for a sample.
 
 #-------------------------
 class Job(dict):
-    def __init__(self, priority=0, stage='default', state='defined'):
+    def __init__(self, name='', priority=0, stage='default', state='defined'):
+        self['name']	= name
         self['uuid']	= uuid.uuid1()
         self['stage']	= stage
         self['priority']= priority
@@ -202,9 +203,13 @@ if(json_in!=''):
         data = json.load(data_file)
 
     for jj in data:
-        jobList.append(Job(priority	= jj['priority'],
-                           state	= jj['state'],
-                           stage	= jj['stage']))
+        print(jj)
+        j = Job()
+        for k in jj.keys(): j[k] = jj[k]
+        jobList.append(j)
+        # jobList.append(Job(priority	= jj['priority'],
+        #                    state	= jj['state'],
+        #                    stage	= jj['stage']))
 
 else:
     # Create and serialize a single job, and register it on the server.
@@ -212,10 +217,9 @@ else:
     jobList.append(Job())
 
 
-if(verb>0):
-    print("Number of jobs to be submitted: %s" % len(jobList))
-# Collection of candidate jobs has been prepared.
-# Now contact the server and try to register.
+if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
+
+# Collection of candidate jobs has been prepared. Contact the server, try to register.
 for j in jobList:
     jobData = data2post(j).utf8()
     if(verb>0):	print(jobData)

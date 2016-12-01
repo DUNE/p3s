@@ -1,41 +1,57 @@
 [
     {
+	"name":		"simple p3s job, stage 1",
+	"timeout":	"100",
         "stage":	"stage1",
         "priority":	"1",
 	"state":	"defined"
     },
     {
+	"name":		"simple p3s job, stage 2",
+	"timeout":	"100",
         "stage":	"stage2",
         "priority":	"2",
 	"state":	"defined"
     },
     {
+	"name":		"simple p3s job, stage 3",
+	"timeout":	"100",
         "stage":	"stage3",
         "priority":	"3",
 	"state":	"defined"
     },
     {
+	"name":		"simple p3s job, stage 4",
+	"timeout":	"100",
         "stage":	"stage4",
         "priority":	"4",
 	"state":	"defined"
     },
     {
+	"name":		"simple p3s job, stage 5",
+	"timeout":	"100",
         "stage":	"stage5",
         "priority":	"5",
 	"state":	"defined"
     },
     {
+	"name":		"simple p3s job, stage 6",
+	"timeout":	"100",
         "stage":	"stage6",
         "priority":	"6",
 	"state":	"defined"
     },
     {
+	"name":		"simple p3s job, stage 7",
+	"timeout":	"100",
         "stage":	"stage7",
         "priority":	"7",
 	"state":	"defined"
     },
     {
         "stage":	"stage8",
+	"name":		"simple p3s job, stage 8",
+	"timeout":	"100",
         "priority":	"8",
 	"state":	"defined"
     }

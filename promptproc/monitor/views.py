@@ -32,14 +32,13 @@ from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
 
-# we need this to make links to this service itse.
+# we need this to make links to this service itself.
 try:
     from django.urls import reverse
 except ImportError:
     print("FATAL IMPORT ERROR")
     exit(-3)
 
-# just something for later - advanced tables: from django.views.generic.base import TemplateView
 
 
 #########################################################    
@@ -159,8 +158,10 @@ def detail_handler(request, what):
 
 
 #########################################################    
-# for later:
-#    data = serializers.serialize('json', [ p, ])
+# just something for later - advanced tables:
+# from django.views.generic.base import TemplateView
+#
+# for later:  data = serializers.serialize('json', [ p, ])
 #########################################################    
 # Code sample for later:
 #    uuid = tables.LinkColumn(viewname='dummy',
