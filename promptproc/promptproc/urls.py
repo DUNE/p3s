@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^',		include('info.urls')),
     url(r'^jobs/',	include('jobs.urls')),
     url(r'^pilots/',	include('pilots.urls')),
+    url(r'^workflows/',	include('workflows.urls')),
     url(r'^monitor/',	include('monitor.urls')),
 
     # The ADMIN

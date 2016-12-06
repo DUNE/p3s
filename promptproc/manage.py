@@ -1,17 +1,22 @@
 #!/usr/bin/env python
 ####################################################################
 #   THIS FILE HAS BEEN CUSTOMIZED, KEEP IT IN THE REPO   -mxp-     #
+#   For example:                                                   #
+#     - startup: initialize workflows                              #
 ####################################################################
 
 
 import os
 import sys
 
+
+
 if __name__ == "__main__":
 
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "promptproc.settings")
-
+    
     import promptproc.startup as startup
+    # Run the startup/initialization:
     startup.run()
     
     try:
