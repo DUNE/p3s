@@ -39,6 +39,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'workflows.apps.WorkflowsConfig',
     'jobs.apps.JobsConfig',
     'pilots.apps.PilotsConfig',
     'django.contrib.admin',
