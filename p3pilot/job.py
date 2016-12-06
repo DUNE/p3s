@@ -197,7 +197,9 @@ if(j_uuid!=''): exit(-1)
 
 ########################## REGISTRATION ################################
 # Check if we want to read a json file with job templates and send
-# these entries to the server
+# these entries to the server. Currently the only option to add a job
+# programmatically.
+
 if(json_in!=''):
     with open(json_in) as data_file:    
         data = json.load(data_file)
@@ -207,34 +209,30 @@ if(json_in!=''):
         j = Job()
         for k in jj.keys(): j[k] = jj[k]
         jobList.append(j)
-        # jobList.append(Job(priority	= jj['priority'],
-        #                    state	= jj['state'],
-        #                    stage	= jj['stage']))
 
-else:
-    # Create and serialize a single job, and register it on the server.
-    # This will be a default object, not useable unless updated later.
-    jobList.append(Job())
+        #else:	# Create and serialize a single job -  jobList.append(Job())
 
 
-if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
+    if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
-# Collection of candidate jobs has been prepared. Contact the server, try to register.
-for j in jobList:
-    jobData = data2post(j).utf8()
-    if(verb>0):	print(jobData)
-    if(tst):	continue # if in test mode skip contact with the server
+    # Collection of candidate jobs has been prepared.
+    # Contact the server, try to register.
+    for j in jobList:
+        jobData = data2post(j).utf8()
+        if(verb>0):	print(jobData)
+        if(tst):	continue # if in test mode skip contact with the server
 
-    try:
-        url = 'jobs/addjob'
-        response = urllib.request.urlopen(server+url, jobData) # POST
-    except URLError:
-        exit(1)
+        try:
+            url = 'jobs/addjob'
+            response = urllib.request.urlopen(server+url, jobData) # POST
+        except URLError:
+            exit(1)
     
-    data = response.read()
+        data = response.read()
+        if(verb >0): print (data)
 
-    if(verb >0): print (data)
 
-# Grand finale      
+
+###################### GRAND FINALE ####################################
 exit(0)
 ########################################################################
