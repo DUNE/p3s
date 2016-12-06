@@ -10,7 +10,7 @@
 # python utiility classes
 import uuid
 import datetime
-from datetime import timedelta
+from datetime				import timedelta
 
 # core django
 from django.shortcuts			import render
@@ -22,9 +22,10 @@ from django.core			import serializers
 from django.utils.safestring		import mark_safe
 from django.forms.models		import model_to_dict
 
-# models used in the application:
+# Models used in the application:
 from pilots.models			import pilot
 from jobs.models			import job
+from workflows.models			import dag
 
 # tables2 machinery
 import	django_tables2 as tables
@@ -32,7 +33,7 @@ from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
 
-# we need this to make links to this service itself.
+# We need this to make links to this service itself.
 try:
     from django.urls import reverse
 except ImportError:
@@ -84,11 +85,21 @@ class JobTable(MonitorTable):
         exclude	= ('uuid', 'p_uuid', )
 
 #########################################################    
+class DagTable(MonitorTable):
+        
+    class Meta:
+        model = dag
+        attrs = {'class': 'paleblue'}
+
+#########################################################    
 def pilots(request):
     return data_handler(request, 'pilots')
 #########################################################    
 def jobs(request):
     return data_handler(request, 'jobs')
+#########################################################    
+def workflows(request):
+    return data_handler(request, 'workflows')
 #########################################################    
 def jobdetail(request):
     return detail_handler(request, 'job')
@@ -120,6 +131,10 @@ def data_handler(request, what):
         if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
 
+    if(what=='workflows'):
+        objects = dag.objects
+        t = DagTable(objects.all())
+        
     t.set_site(domain)
     RequestConfig(request).configure(t)
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument

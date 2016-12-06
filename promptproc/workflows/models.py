@@ -10,14 +10,13 @@ from django.db import models
 # Edges correspond to data, Vertices correspond to jobs.
 # When a DAG instantiated as a workflow, data and job objects are created.
 
-class dag(dict):
+class dag(models.Model):
     _init = False
-    def __init__(self, name=''):
-        self['name']	= name
-    
+    name	= models.CharField(max_length=64, default='')		# human-readable description
+   
 
     def __str__(self):
-        return self['name']
+        return self.name
 
 
 class dagEdge(models.Model):
