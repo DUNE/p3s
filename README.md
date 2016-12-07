@@ -1,9 +1,9 @@
 # ProtoDUNE Prompt Processing System (p3s)
 ## Design Paper
-Supporting documents and an outline of the actual design can be found in
+Supporting documents and an outline of the design can be found in
 the FNAL DocDB 1861 (authorization required for access).
 
-## Intro
+## Motivation
 The p3s is the computing platform for protoDUNE to support Data Quality Management (DQM).
 Its requirements and mode of operation are different from a typical production system in the following:
 * there are stringent ETA requirements for processing jobs since for DQM purposes
@@ -27,9 +27,9 @@ In order to continue operation in case of a network outage which could make
 EOS inaccessible, the system mush be able to optionally feed from the online buffer
 without putting too much extra I/O load on it.
 
-## Approach
+## Just-in-time job execution
 The near-time nature of prompt processing requires "just-in-time" job submission
-and not be subjected to the often unpredictable latencies in batch systems. An
+and not be subjected to the often unpredictable latencies found in batch systems. An
 efficient and tried way to achieve this is the pilot-based job submission.
 
 ## Contents
@@ -44,6 +44,8 @@ efficient and tried way to achieve this is the pilot-based job submission.
 * django-tables2
 * RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
 * Apache
+* NetworkX
+
 
 
 
