@@ -101,6 +101,9 @@ def jobs(request):
 def workflows(request):
     return data_handler(request, 'workflows')
 #########################################################    
+def dags(request):
+    return data_handler(request, 'dags')
+#########################################################    
 def jobdetail(request):
     return detail_handler(request, 'job')
 #########################################################    
@@ -131,7 +134,7 @@ def data_handler(request, what):
         if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
 
-    if(what=='workflows'):
+    if(what=='workflows' or what=='dags'): # FIXME
         objects = dag.objects
         t = DagTable(objects.all())
         
