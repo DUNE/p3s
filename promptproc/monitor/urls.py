@@ -9,4 +9,5 @@ urlpatterns = [
     url(r'^workflows',	views.workflows,	name='workflows'),
     url(r'^jobdetail',	views.jobdetail,	name='jobdetail'),
     url(r'^pilotdetail',views.pilotdetail,	name='pilotdetail'),
+    url(r'^dagdetail',	views.dagdetail,	name='dagdetail'),
 ]

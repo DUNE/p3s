@@ -43,13 +43,14 @@ except ImportError:
 
 
 #########################################################    
+##### BASE CLASSES FOR MONITOR AND DETAIL TABLES ########
 class DetailTable(tables.Table):
     attribute	= tables.Column()
     value	= tables.Column()
     class Meta:
         attrs	= {'class': 'paleblue'}
 
-#########################################################    
+#--------------------------------------------------------
 class MonitorTable(tables.Table):
     def set_site(self, site=''):
         self.site=site
@@ -59,6 +60,8 @@ class MonitorTable(tables.Table):
                          % (self.site, reverse(what), key, value, value))
         
 
+#########################################################    
+############### SUMMARY TABLES ##########################    
 #########################################################    
 # NOTE THAT WE INSTRUMENT SOME COLUMNS WHILE DECIDING TO#
 # NOT DISPLAY THEM. THIS IS TEMPORARY/HISTORICAL        #
@@ -73,7 +76,7 @@ class PilotTable(MonitorTable):
         attrs	= {'class': 'paleblue'}
         exclude	= ('uuid', 'j_uuid', )
 
-#########################################################    
+#--------------------------------------------------------
 class JobTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
     def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
@@ -83,36 +86,34 @@ class JobTable(MonitorTable):
         model = job
         attrs = {'class': 'paleblue'}
         exclude	= ('uuid', 'p_uuid', )
-
-#########################################################    
+#--------------------------------------------------------
 class DagTable(MonitorTable):
+    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+    def render_name(self,value):return self.makelink('dags', 'name', value)
         
     class Meta:
         model = dag
         attrs = {'class': 'paleblue'}
 
-#########################################################    
+######## REQUEST ROUTERS (SUMMARIES) ####################    
 def pilots(request):
     return data_handler(request, 'pilots')
-#########################################################    
+
+#--------------------------------------------------------
 def jobs(request):
     return data_handler(request, 'jobs')
-#########################################################    
+#--------------------------------------------------------
 def workflows(request):
     return data_handler(request, 'workflows')
-#########################################################    
+#--------------------------------------------------------
 def dags(request):
     return data_handler(request, 'dags')
-#########################################################    
-def jobdetail(request):
-    return detail_handler(request, 'job')
-#########################################################    
-def pilotdetail(request):
-    return detail_handler(request, 'pilot')
+
 #########################################################    
 def data_handler(request, what):
     uuid	= request.GET.get('uuid','')
     pk		= request.GET.get('pk','')
+    name	= request.GET.get('name','')
 
     # FIXME -beautify the timestamp later -mxp-
     now		= datetime.datetime.now().strftime('%x %X')
@@ -136,7 +137,9 @@ def data_handler(request, what):
 
     if(what=='workflows' or what=='dags'): # FIXME
         objects = dag.objects
-        t = DagTable(objects.all())
+        if(pk != ''):			t = DagTable(objects.filter(pk=pk))
+        if(name != ''):			t = DagTable(objects.filter(name=name))
+        if(pk == '' and name == ''):	t = DagTable(objects.all())
         
     t.set_site(domain)
     RequestConfig(request).configure(t)
@@ -144,6 +147,16 @@ def data_handler(request, what):
     d['title']	= what
     
     return render(request, template, d)
+
+########## REQUEST ROUTERS (DETAILS) ####################    
+def jobdetail(request):
+    return detail_handler(request, 'job')
+#--------------------------------------------------------
+def pilotdetail(request):
+    return detail_handler(request, 'pilot')
+#--------------------------------------------------------
+def dagdetail(request):
+    return detail_handler(request, 'dag')
 
 #########################################################    
 def detail_handler(request, what):
@@ -157,6 +170,9 @@ def detail_handler(request, what):
 
     if(what=='pilot'):
         objects = pilot.objects
+
+    if(what=='dag'):
+        objects = dag.objects
 
     dicto	= model_to_dict(objects.get(pk=pk))
     data	= []
