@@ -189,19 +189,21 @@ def detail_handler(request, what):
     now		= datetime.datetime.now().strftime('%x %X')
     d		= dict(domain=domain, time=str(now))
 
-    template, objects, aux1 = None, None, None
+    template, objects, aux1, aux2 = None, None, None, None
     
-    template = 'detail.html'
     
     if(what=='job'):
+        template = 'detail.html'
         d['title']	= what
         objects		= job.objects
 
     if(what=='pilot'):
+        template = 'detail.html'
         d['title']	= what
         objects = pilot.objects
 
     if(what=='dag'):
+        template = 'detail2.html'
         objects = dag.objects
         theDag = objects.get(pk=pk)
         theDagName = theDag.name
