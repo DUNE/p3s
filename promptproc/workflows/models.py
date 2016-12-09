@@ -22,10 +22,11 @@ class dagVertex(models.Model):
         return self.name
 
 class dagEdge(models.Model):
-    source	= models.CharField(max_length=36, default='')	# source
-    target	= models.CharField(max_length=36, default='')	# target
     name	= models.CharField(max_length=64, default='')	# human-readable description
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
+
+    source	= models.CharField(max_length=36, default='')	# source
+    target	= models.CharField(max_length=36, default='')	# target
     
     def __str__(self):
         return self.source+':'+self.target
@@ -34,8 +35,8 @@ class dagEdge(models.Model):
 ####################################  WORKFLOW #####################################################
 class workflow(models.Model):
     uuid	= models.CharField(max_length=36, default='')
-    name	= models.CharField(max_length=64, default='')	# human-readable description
-    dag		= models.CharField(max_length=64, default='')	# dag name (type of wf)
+    name	= models.CharField(max_length=64, default='')	# not expected to be unique
+    dag		= models.CharField(max_length=64, default='')	# dag name (as a type of wf)
     
     def __str__(self):
         return self.name
