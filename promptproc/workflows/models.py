@@ -16,6 +16,7 @@ class dag(models.Model):
 
 class dagVertex(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
+    dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
     
     def __str__(self):
         return self.name
@@ -24,6 +25,7 @@ class dagEdge(models.Model):
     source	= models.CharField(max_length=36, default='')	# source
     target	= models.CharField(max_length=36, default='')	# target
     name	= models.CharField(max_length=64, default='')	# human-readable description
+    dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
     
     def __str__(self):
         return self.source+':'+self.target

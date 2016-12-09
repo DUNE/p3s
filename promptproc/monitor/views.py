@@ -25,7 +25,7 @@ from django.forms.models		import model_to_dict
 # Models used in the application:
 from pilots.models			import pilot
 from jobs.models			import job
-from workflows.models			import dag
+from workflows.models			import dag, dagVertex, dagEdge
 
 # tables2 machinery
 import	django_tables2 as tables
@@ -69,7 +69,8 @@ class MonitorTable(tables.Table):
 class PilotTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
     def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('pilotdetail',	'pk',	value)
+    def render_id(self,value):		return self.makelink('pilotdetail',
+                                                             'pk', value)
 
     class Meta:
         model	= pilot
@@ -80,7 +81,8 @@ class PilotTable(MonitorTable):
 class JobTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
     def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('jobdetail',	'pk',	value)
+    def render_id(self,value):		return self.makelink('jobdetail',
+	                                                     'pk', value)
         
     class Meta:
         model = job
@@ -93,6 +95,26 @@ class DagTable(MonitorTable):
         
     class Meta:
         model = dag
+        attrs = {'class': 'paleblue'}
+
+#--------------------------------------------------------
+# Simpler inheritance (compared to jobs etc) is provisional
+class DagVertexTable(tables.Table):
+#    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+#    def render_name(self,value):return self.makelink('dags', 'name', value)
+        
+    class Meta:
+        model = dagVertex
+        attrs = {'class': 'paleblue'}
+
+#--------------------------------------------------------
+# Simpler inheritance (compared to jobs etc) is provisional
+class DagEdgeTable(tables.Table):
+#    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+#    def render_name(self,value):return self.makelink('dags', 'name', value)
+        
+    class Meta:
+        model = dagEdge
         attrs = {'class': 'paleblue'}
 
 ######## REQUEST ROUTERS (SUMMARIES) ####################    
@@ -120,7 +142,7 @@ def data_handler(request, what):
     domain	= request.get_host()
     d		= dict(domain=domain, time=str(now))
 
-    objects, t	= None, None
+    objects, t, aux1	= None, None, None
     template = 'universo.html'
     
     if(what=='pilots'):
@@ -160,34 +182,51 @@ def dagdetail(request):
 
 #########################################################    
 def detail_handler(request, what):
-    pk	= request.GET.get('pk','')
-    template, objects = None, None
+    pk 		= request.GET.get('pk','')
+    domain	= request.get_host()
+
+    # FIXME -beautify the timestamp later -mxp-
+    now		= datetime.datetime.now().strftime('%x %X')
+    d		= dict(domain=domain, time=str(now))
+
+    template, objects, aux1 = None, None, None
     
     template = 'detail.html'
     
     if(what=='job'):
-        objects = job.objects
+        d['title']	= what
+        objects		= job.objects
 
     if(what=='pilot'):
+        d['title']	= what
         objects = pilot.objects
 
     if(what=='dag'):
         objects = dag.objects
-
+        theDag = objects.get(pk=pk)
+        theDagName = theDag.name
+        aux1 = DagVertexTable(dagVertex.objects.filter(dag=theDagName))
+        aux2 = DagEdgeTable(dagEdge.objects.filter(dag=theDagName))
+        d['title']	= what+' name: '+theDagName
+                             
     dicto	= model_to_dict(objects.get(pk=pk))
     data	= []
 
-    # FIXME -beautify the timestamp later -mxp-
-    now		= datetime.datetime.now().strftime('%x %X')
-    domain	= request.get_host()
-    d		= dict(domain=domain, time=str(now))
 
     for a in dicto.keys(): data.append({'attribute': a, 'value': dicto[a]})
 
     t = DetailTable(data)
     RequestConfig(request).configure(t)
     d['detail'] = t
-    d['title']	= what
+
+    # FIXME - admittedly hacky but we best improve a more final version
+    if(aux1):
+        d['aux1'] = aux1
+        d['aux1title'] = 'Vertices for '+theDagName
+    if(aux2):
+        d['aux2'] = aux2
+        d['aux2title'] = 'Edges for '+theDagName
+
     return render(request, template, d)
 
 

@@ -7,12 +7,27 @@
         <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
     </head>
     <body>
-      <a href="http://{{ domain }}">p&#2384;s home</a><br/>
-      <h2>{% block headline %}{% endblock %}</h2>
-      Current time: {{ time }}<br/>
+      <a href="http://{{ domain }}"><h2>p&#2384;s home</h2></a><br/>
+      <div id="time" align="right">
+	Current time: {{ time }}<br/>
+      </div>
+<hr/>
+      <h3>{% block headline %}{% endblock %}</h3>
       
       <div id="table">
         {% block table %}{% endblock %}
+      </div>
+<hr/>
+      <h3>{% block aux1title %}{% endblock %}</h3>
+      <div id="aux1">
+        {% block aux1 %}{% endblock %}
+      </div>
+
+    </body>
+<hr/>
+      <h3>{% block aux2title %}{% endblock %}</h3>
+      <div id="aux2">
+        {% block aux2 %}{% endblock %}
       </div>
 
     </body>
