@@ -21,34 +21,14 @@ if(graphml!=''):
     g = nx.read_graphml("t.graphml")
 
 if(out):
+    print("---- NODES ----")
     print(g.nodes())
-    print(g.edges())
+    for n in g.nodes():
+        print(n)
+
+print("---- EDGES ----")
+for e in g.edges():
+    x = g.edge[e[0]][e[1]]
+    print(e,x)
     
 exit(0)
-
-
-g = nx.DiGraph()
-g.add_node("foo")
-g.add_node("moo")
-g.add_node("goo")
-
-g.add_edge("foo","moo")
-g.add_edge("foo","goo")
-
-g.node['foo']['voltage']=220
-g.node['foo']['current']=10
-
-g.node['moo']['current']=5
-g.node['moo']['voltage']=110
-
-d = json_graph.node_link_data(g)
-print(d)
-
-h = json_graph.node_link_graph(d)
-
-print("---------------")
-print(h)
-
-
-
-print(h.nodes())
