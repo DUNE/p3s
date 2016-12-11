@@ -1,4 +1,9 @@
 import urllib
+
+###################################################################
+# Just want to encapsulate some voodoo which encodes a dictionary #
+# in UTF-8, as is customary                                       #
+###################################################################
 class data2post():
     def __init__(self, myDict):
         encoding = urllib.parse.urlencode(myDict)
