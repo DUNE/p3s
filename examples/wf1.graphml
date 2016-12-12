@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="impedance" attr.type="long" for="edge" id="d2" />
+  <key attr.name="current" attr.type="long" for="node" id="d1" />
+  <key attr.name="voltage" attr.type="long" for="node" id="d0" />
+  
+  <graph edgedefault="directed">
+    <node id="foo">
+      <data key="d1">10</data>
+      <data key="d0">220</data>
+    </node>
+
+    <node id="moo">
+      <data key="d0">110</data>
+      <data key="d1">5</data>
+    </node>
+
+    <node id="goo">
+      <data key="d1">110</data>
+      <data key="d0">10</data>
+    </node>
+
+    <edge source="foo" target="moo">
+      <data key="d2">100</data>
+    </edge>
+    
+    <edge source="foo" target="goo">
+      <data key="d2">200</data>
+    </edge>
+  </graph>
+</graphml>
