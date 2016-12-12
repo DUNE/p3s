@@ -24,6 +24,8 @@ from urllib.error import URLError
 # local import, requires PYTHONPATH to be set
 from comms import data2post
 
+import networkx as nx
+
 #########################################################
 settings.configure(USE_TZ = True)
 
@@ -52,7 +54,13 @@ class Job(dict):
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-g", "--usage",	action='store_true',
+parser.add_argument("-g", "--graphml",	type=str,	default='',
+                    help="GraphML file to be read and parsed.")
+
+parser.add_argument("-o", "--out",	action='store_true',
+                    help="output the graph to stdout")
+
+parser.add_argument("-H", "--usage",	action='store_true',
                     help="print usage notes and exit")
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
@@ -90,7 +98,8 @@ verb	= args.verbosity
 tst	= args.test
 adj	= args.adjust
 delete	= args.delete
-json_in	= args.json_in
+graphml	= args.graphml
+out	= args.out
 
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
@@ -199,36 +208,20 @@ if(j_uuid!=''): exit(-1)
 # these entries to the server. Currently the only option to add a job
 # programmatically.
 
-if(json_in!=''):
-    with open(json_in) as data_file:    
-        data = json.load(data_file)
+if(graphml!=''):
+    if(verb > 1): print ('Reading file', graphml)
+    g = nx.read_graphml(graphml)
 
-    for jj in data:
-        print(jj)
-        j = Job()
-        for k in jj.keys(): j[k] = jj[k]
-        jobList.append(j)
+    if(out):
+        print("---- NODES ----")
+        print(g.nodes())
+        for n in g.nodes():
+            print(n)
 
-        #else:	# Create and serialize a single job -  jobList.append(Job())
-
-
-    if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
-
-    # Collection of candidate jobs has been prepared.
-    # Contact the server, try to register.
-    for j in jobList:
-        jobData = data2post(j).utf8()
-        if(verb>0):	print(jobData)
-        if(tst):	continue # if in test mode skip contact with the server
-
-        try:
-            url = 'jobs/addjob'
-            response = urllib.request.urlopen(server+url, jobData) # POST
-        except URLError:
-            exit(1)
-    
-        data = response.read()
-        if(verb >0): print (data)
+        print("---- EDGES ----")
+        for e in g.edges():
+            x = g.edge[e[0]][e[1]]
+            print(e,x)
 
 
 
