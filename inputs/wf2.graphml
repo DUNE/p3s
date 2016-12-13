@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="name" attr.type="string" for="edge" id="d2" />
+  
+  <graph edgedefault="directed">
+    <node id="adc">
+    </node>
+
+    <node id="fft">
+    </node>
+
+    <node id="adcViz">
+    </node>
+
+    <node id="signal">
+    </node>
+
+    <edge source="adc" target="fft">
+      <data key="d2">decompressed data</data>
+    </edge>
+    
+    <edge source="adc" target="adcViz">
+      <data key="d2">decompressed data</data>
+    </edge>
+
+    <edge source="fft" target="singal">
+      <data key="d2">fft data</data>
+    </edge>
+  </graph>
+</graphml>
