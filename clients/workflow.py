@@ -26,6 +26,8 @@ from comms import data2post
 
 import networkx as nx
 
+import io
+
 #########################################################
 settings.configure(USE_TZ = True)
 
@@ -224,6 +226,20 @@ if(graphml!=''):
             print(e,x)
 
 
+    f = io.StringIO()
+    s = '\n'.join(nx.generate_graphml(g))
+
+    #print(s)
+    dagData = data2post(dict({'graphml':s})).utf8()
+    #print('dagData %s' % dagData)
+    try:
+        url = 'workflows/adddag'
+        response = urllib.request.urlopen(server+url, dagData) # POST
+    except URLError:
+        exit(1)
+    
+    data = response.read()
+    if(verb >0): print (data)
 
 ###################### GRAND FINALE ####################################
 exit(0)
