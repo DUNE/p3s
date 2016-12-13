@@ -23,7 +23,7 @@
       <data key="d2">decompressed data</data>
     </edge>
 
-    <edge source="fft" target="singal">
+    <edge source="fft" target="signal">
       <data key="d2">fft data</data>
     </edge>
   </graph>

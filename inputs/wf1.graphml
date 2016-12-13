@@ -3,21 +3,21 @@
   <key attr.name="name" attr.type="string" for="edge" id="d2" />
   
   <graph edgedefault="directed">
-    <node id="foo">
+    <node id="adc">
     </node>
 
-    <node id="moo">
+    <node id="adcViz">
     </node>
 
-    <node id="goo">
+    <node id="stats">
     </node>
 
-    <edge source="foo" target="moo">
-      <data key="d2">edgeName1</data>
+    <edge source="adc" target="adcViz">
+      <data key="d2">decomp</data>
     </edge>
     
-    <edge source="foo" target="goo">
-      <data key="d2">edgeName2</data>
+    <edge source="adc" target="stats">
+      <data key="d2">decomp</data>
     </edge>
   </graph>
 </graphml>
