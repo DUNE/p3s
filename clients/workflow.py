@@ -178,8 +178,9 @@ if(get):
     except URLError:
         exit(1)
     
-        data = response.read()
-        if(verb >0): print (data)
+    data = response.read().decode("utf-8") 
+    print (data)
+    exit(0)
 ########################## REGISTRATION ################################
 # Forms a DAG (workflow template) on the server based on a graph
 # description stored in a GraphML file

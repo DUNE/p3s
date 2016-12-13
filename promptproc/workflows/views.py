@@ -101,14 +101,22 @@ def addworkflow(request):
 def getdag(request):
     name = request.GET.get('name','')
 
-    if(name == ''):
-        return HttpResponse("DAG not specified.")
-    
-    print(name)
-    for de in dagEdge.objects.filter(dag=name):
-        print(de)
+    if(name == ''): return HttpResponse("DAG not specified.")
+    g = fetchdag(name)
+    s = '\n'.join(nx.generate_graphml(g))
+    return HttpResponse(s)
 
-    return HttpResponse("")
+###################################################
+def fetchdag(dag): # inflate DAG from RDBMS
+    g = nx.DiGraph()
+    
+    for dv in dagVertex.objects.filter(dag=dag):
+        g.add_node(dv.name)
+        
+    for de in dagEdge.objects.filter(dag=dag):
+        g.add_edge(de.source, de.target)
+
+    return g
 
     # print("---------------")
     # d0 = json_graph.node_link_data(g)
