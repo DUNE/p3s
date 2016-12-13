@@ -18,17 +18,18 @@ out	= args.out
 g = None # the graph we are going to experiment with
 
 if(graphml!=''):
-    g = nx.read_graphml("t.graphml")
+    g = nx.read_graphml(graphml)
 
 if(out):
     print("---- NODES ----")
     print(g.nodes())
-    for n in g.nodes():
+    for n in g.nodes(data=True):
         print(n)
 
-print("---- EDGES ----")
-for e in g.edges():
-    x = g.edge[e[0]][e[1]]
-    print(e,x)
+    print("---- EDGES ----")
+    for e in g.edges(data=True):
+        print(e)
+#        x = g.edge[e[0]][e[1]]
+#        print(e,x)
     
 exit(0)

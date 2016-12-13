@@ -5,8 +5,8 @@
 # so we are using timzone.now() where needed		#
 #########################################################
 
-from django.conf import settings
-from django.utils import timezone
+from django.conf	import settings
+from django.utils	import timezone
 
 import argparse
 import uuid
@@ -14,19 +14,19 @@ import socket
 import time
 import datetime
 import json
-from pprint import pprint
+from pprint		import pprint
 
 import urllib
-from urllib import request
-from urllib import error
-from urllib.error import URLError
-
-# local import, requires PYTHONPATH to be set
-from comms import data2post
+from urllib		import request
+from urllib		import error
+from urllib.error	import URLError
 
 import networkx as nx
-
 import io
+
+# local import, requires PYTHONPATH to be set
+from comms		import data2post
+
 
 #########################################################
 settings.configure(USE_TZ = True)
@@ -38,20 +38,25 @@ For command line options run the pilot with "--help" option.
 * Workflow definitions * 
 
 Option "-g" allows to read and parse contents of a graphML file containing
-a workflow description.
+a workflow description, and send it to the server. A name can be suppplied
+via a command line argument, and if absent it is derived from the name of
+the file containing the graph.
 
 '''
 
 #-------------------------
-class Job(dict):
-    def __init__(self, name='', priority=0, stage='default', state='defined'):
-        self['name']	= name
-        self['uuid']	= uuid.uuid1()
-        self['stage']	= stage
-        self['priority']= priority
-        self['state']	= state
-        self['subhost']	= socket.gethostname() # submission host
-        self['ts']	= str(timezone.now()) # see TZ note on top
+class Dag(dict):
+    def __init__(self, name='default', description='', graphml=''):
+        self['name']		= name
+        self['description']	= description
+        self['graphml']		= graphml
+
+        # self['uuid']	= uuid.uuid1()
+        # self['stage']	= stage
+        # self['priority']= priority
+        # self['state']	= state
+        # self['subhost']	= socket.gethostname() # submission host
+        # self['ts']	= str(timezone.now()) # see TZ note on top
 
 #-------------------------
 parser = argparse.ArgumentParser()
@@ -59,8 +64,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-g", "--graphml",	type=str,	default='',
                     help="GraphML file to be read and parsed.")
 
+parser.add_argument("-n", "--name",	type=str,	default='',
+                    help="GraphML file to be read and parsed.")
+
+parser.add_argument("-D", "--description",	type=str,	default='',
+                    help="Description of the workflow (graph)")
+
 parser.add_argument("-o", "--out",	action='store_true',
                     help="output the graph to stdout")
+
+
 
 parser.add_argument("-H", "--usage",	action='store_true',
                     help="print usage notes and exit")
@@ -100,7 +113,10 @@ verb	= args.verbosity
 tst	= args.test
 adj	= args.adjust
 delete	= args.delete
+
+name	= args.name
 graphml	= args.graphml
+description = args.description
 out	= args.out
 
 # prepare a list which may be used in a variety of operations,
@@ -211,7 +227,13 @@ if(j_uuid!=''): exit(-1)
 # programmatically.
 
 if(graphml!=''):
-    if(verb > 1): print ('Reading file', graphml)
+    
+    if(name==''):
+        basename = graphml.rsplit( ".", 1 )[0]
+        segs = basename.rsplit("/",1)
+        name = segs[-1]
+    
+    if(verb > 1): print ('Request for DAG "%s". Reading file %s' % (name, graphml))
     g = nx.read_graphml(graphml)
 
     if(out):
@@ -226,11 +248,13 @@ if(graphml!=''):
             print(e,x)
 
 
-    f = io.StringIO()
+    # f = io.StringIO()
     s = '\n'.join(nx.generate_graphml(g))
 
     #print(s)
-    dagData = data2post(dict({'graphml':s})).utf8()
+    d = Dag(name=name, description=description, graphml=s)
+    dagData = data2post(d).utf8()
+    # dagData = data2post(dict({'name': name, 'graphml':s})).utf8()
     #print('dagData %s' % dagData)
     try:
         url = 'workflows/adddag'

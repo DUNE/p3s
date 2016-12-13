@@ -90,8 +90,8 @@ class JobTable(MonitorTable):
         exclude	= ('uuid', 'p_uuid', )
 #--------------------------------------------------------
 class DagTable(MonitorTable):
-    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
-    def render_name(self,value):return self.makelink('dags', 'name', value)
+    # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+    def render_name(self,value):return self.makelink('dagdetail', 'name', value)
         
     class Meta:
         model = dag
@@ -105,6 +105,7 @@ class DagVertexTable(tables.Table):
         
     class Meta:
         model = dagVertex
+        exclude = ('dag',)
         attrs = {'class': 'paleblue'}
 
 #--------------------------------------------------------
@@ -115,6 +116,7 @@ class DagEdgeTable(tables.Table):
         
     class Meta:
         model = dagEdge
+        exclude = ('dag',)
         attrs = {'class': 'paleblue'}
 
 ######## REQUEST ROUTERS (SUMMARIES) ####################    
@@ -183,6 +185,7 @@ def dagdetail(request):
 #########################################################    
 def detail_handler(request, what):
     pk 		= request.GET.get('pk','')
+    name 	= request.GET.get('name','')
     domain	= request.get_host()
 
     # FIXME -beautify the timestamp later -mxp-
@@ -205,13 +208,15 @@ def detail_handler(request, what):
     if(what=='dag'):
         template = 'detail2.html'
         objects = dag.objects
-        theDag = objects.get(pk=pk)
+        theDag = objects.get(name=name)
         theDagName = theDag.name
         aux1 = DagVertexTable(dagVertex.objects.filter(dag=theDagName))
         aux2 = DagEdgeTable(dagEdge.objects.filter(dag=theDagName))
         d['title']	= what+' name: '+theDagName
                              
-    dicto	= model_to_dict(objects.get(pk=pk))
+    dicto = {}
+    if(pk!=''):		dicto	= model_to_dict(objects.get(pk=pk))
+    if(name!=''):	dicto	= model_to_dict(objects.get(name=name))
     data	= []
 
 

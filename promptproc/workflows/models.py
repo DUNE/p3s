@@ -1,13 +1,14 @@
 from django.db import models
 
-##################################### DAG ##########################################################
+##################################### DAG #######################################################
 # Workflow topology is a DAG:Edges correspond to data, Vertices correspond to jobs.
 # When a DAG instantiated as a workflow, data and job objects are created. The DAG
 # is like an abstract class for the Workflow.
 
 class dag(models.Model):
     _init = False
-    name	= models.CharField(max_length=64, default='')		# human-readable description
+    name	= models.CharField(max_length=64, primary_key = True, default='')
+    description	= models.TextField(default='')
    
 
     def __str__(self):
@@ -32,7 +33,7 @@ class dagEdge(models.Model):
         return self.source+':'+self.target
 
 
-####################################  WORKFLOW #####################################################
+####################################  WORKFLOW ##################################################
 class workflow(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     name	= models.CharField(max_length=64, default='')	# not expected to be unique
