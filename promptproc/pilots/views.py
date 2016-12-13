@@ -90,10 +90,12 @@ def request(request):
     p.save()
 
     # Will redo this later - the format of the job infor going back to the pilot:
-    return HttpResponse(json.dumps({'status':'OK',
-                                    'state':'dispatched',
-                                    'job':j.uuid,
-                                    'payload':j.payload}))
+    to_pilot = {'status':	'OK',
+                'state':	'dispatched',
+                'job':		j.uuid,
+                'payload':	j.payload}
+    
+    return HttpResponse(json.dumps(to_pilot))
 
 #########################################################
 #

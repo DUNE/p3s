@@ -13,12 +13,13 @@ import time
 import datetime
 import logging
 import json
+import subprocess
 
 # Django
 from django.conf	import settings
 from django.utils	import timezone
 
-
+# HTTP comms
 import urllib
 from urllib		import request
 from urllib		import error
@@ -266,10 +267,9 @@ except:
 if(p['status']=='FAIL'): logfail(msg, logger)
 
 
-#########################################################################
+
 #########################################################################
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
-#########################################################################
 #########################################################################
 
 jobcount=0
@@ -298,18 +298,16 @@ while(cnt>0):     # "Poll the server" loop.
         logger.error('exiting, failed to parse the server message: %s' % data)
         exit(3)
 
-    # Failure reported from brokerage on the server, will exit
+    # Failure reported from brokerage on the server, will log and exit
     if(p['status']=='FAIL'): logfail(msg, logger)
 
-    # No failure, but no jobs on the server, skip the cycle.
-    if(p['state']=='no jobs'): # didn't get a job
+    if(p['state']=='no jobs'): # didn't get a job, skip the cycle.
         logger.info("No jobs on the server")
-        cnt-=1 # proceed to next cycle
-        if(cnt==0): # EXHAUSTED ALL ATTEMPTS TO GET A JOB
+        cnt-=1
+        if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
             break
         time.sleep(period)
-        continue # NEXT ITERATION
-
+        continue # NEXT ITERATION of "Poll the server" loop.
     ###################### GOT A JOB TO DO ###############################
     payload = ''
     if(p['state']=='dispatched'): # means pilot was matched with a job
@@ -330,13 +328,14 @@ while(cnt>0):     # "Poll the server" loop.
     response = communicate(fullurl, pilotData) # will croak if unsuccessful
 
     logger.info("contact with server established")
-    logger.info('JOB started: %s' %  p['job'])
+    logger.info('JOB starting: %s' %  p['job'])
 
     # FIXME - FAKE JOB
-    time.sleep(20) 
+    x=subprocess.run([payload], stdout=subprocess.PIPE)
+    #time.sleep(20) 
 
     if(verb>1): print(pilotData) # UTF-8
-    if(verb>1): logger.info('pilot data: %s' % pilotData)
+    if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
 
     p['state']='finished'
     p['event']='jobstop'
