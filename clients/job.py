@@ -41,10 +41,10 @@ for a sample.
 
 #-------------------------
 class Job(dict):
-    def __init__(self, name='', priority=0, stage='default', state='defined'):
+    def __init__(self, name='', priority=0, jobtype='default', state='defined'):
         self['name']	= name
         self['uuid']	= uuid.uuid1()
-        self['stage']	= stage
+        self['jobtype']	= jobtype
         self['priority']= priority
         self['state']	= state
         self['subhost']	= socket.gethostname() # submission host

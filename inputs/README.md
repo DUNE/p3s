@@ -1,5 +1,6 @@
-# p3s examples
+# p3s inputs
 
+# Jobs
 The files name "job_template*" are meant to be used with the script
 like "job" in the p3pilot directory, which interact with the server.
 They allow the user to inject the database with multiple job
@@ -9,3 +10,6 @@ python3 job.py -j mytemplates.json
 `
 
 The template file is supposed to represent a JSON list.
+
+# Workflows
+Worflows can be stored in a few formats, for now we stick with GraphML

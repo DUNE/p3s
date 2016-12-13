@@ -29,7 +29,7 @@ def addjob(request):
     
     j = job(
         uuid		= j_uuid,
-        stage		= post['stage'],
+        jobtype		= post['jobtype'],
         priority	= post['priority'],
         state		= post['state'],
         ts_def		= post['ts'],

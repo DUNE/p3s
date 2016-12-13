@@ -1,56 +1,56 @@
 [
     {
-	"name":		"simple p3s job, stage 1",
+	"name":		"simple p3s job, jobtype 1",
 	"timeout":	"100",
-        "stage":	"stage1",
+        "jobtype":	"jobtype1",
         "priority":	"1",
 	"state":	"defined"
     },
     {
-	"name":		"simple p3s job, stage 2",
+	"name":		"simple p3s job, jobtype 2",
 	"timeout":	"100",
-        "stage":	"stage2",
+        "jobtype":	"jobtype2",
         "priority":	"2",
 	"state":	"defined"
     },
     {
-	"name":		"simple p3s job, stage 3",
+	"name":		"simple p3s job, jobtype 3",
 	"timeout":	"100",
-        "stage":	"stage3",
+        "jobtype":	"jobtype3",
         "priority":	"3",
 	"state":	"defined"
     },
     {
-	"name":		"simple p3s job, stage 4",
+	"name":		"simple p3s job, jobtype 4",
 	"timeout":	"100",
-        "stage":	"stage4",
+        "jobtype":	"jobtype4",
         "priority":	"4",
 	"state":	"defined"
     },
     {
-	"name":		"simple p3s job, stage 5",
+	"name":		"simple p3s job, jobtype 5",
 	"timeout":	"100",
-        "stage":	"stage5",
+        "jobtype":	"jobtype5",
         "priority":	"5",
 	"state":	"defined"
     },
     {
-	"name":		"simple p3s job, stage 6",
+	"name":		"simple p3s job, jobtype 6",
 	"timeout":	"100",
-        "stage":	"stage6",
+        "jobtype":	"jobtype6",
         "priority":	"6",
 	"state":	"defined"
     },
     {
-	"name":		"simple p3s job, stage 7",
+	"name":		"simple p3s job, jobtype 7",
 	"timeout":	"100",
-        "stage":	"stage7",
+        "jobtype":	"jobtype7",
         "priority":	"7",
 	"state":	"defined"
     },
     {
-        "stage":	"stage8",
-	"name":		"simple p3s job, stage 8",
+        "jobtype":	"jobtype8",
+	"name":		"simple p3s job, jobtype 8",
 	"timeout":	"100",
         "priority":	"8",
 	"state":	"defined"

@@ -3,7 +3,7 @@ from .models import job, stage, prioritypolicy
 
 ############
 class jobAdmin(admin.ModelAdmin):
-    list_display = ('uuid', 'p_uuid', 'stage', 'priority', 'state', 'ts_def', 'ts_dis', 'ts_sta', 'ts_sto')
+    list_display = ('uuid', 'p_uuid', 'jobtype', 'priority', 'state', 'ts_def', 'ts_dis', 'ts_sta', 'ts_sto')
     empty_value_display = '-empty-'
     
 admin.site.register(job, jobAdmin)
