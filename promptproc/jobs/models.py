@@ -8,6 +8,7 @@ class job(models.Model):
     name	= models.CharField(max_length=64, default='')		# human-readable
     p_uuid	= models.CharField(max_length=36, default='')		# pilot uuid
     jobtype	= models.CharField(max_length=16, default='')		#
+    payload	= models.CharField(max_length=256,default='')		# provisional, url/path
     priority	= models.PositiveIntegerField(default=0)		# higher wins
     timelimit	= models.PositiveIntegerField(default=1000)		# in seconds
     state	= models.CharField(max_length=16, default='')		# e.g. 'running'

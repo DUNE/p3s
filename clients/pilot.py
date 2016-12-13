@@ -106,25 +106,32 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
+
 parser.add_argument("-U", "--url",	type=str,	default='',
                     help="url of the query to be added, defaults to empty string")
+
 parser.add_argument("-g", "--usage",	action='store_true',
                     help="print usage notes and exit")
+
 parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
                     help="(defaults to "+logdefault+") the path for all pilots keep their logs etc")
+
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
-parser.add_argument("-r", "--register",	action='store_true',
-                    help="when set, the pilot will attempt to register with the server")
+
 parser.add_argument("-v", "--verbosity",	type=int,
                     default=0, choices=[0, 1, 2],
                     help="increase output verbosity")
+
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
                     help="how many cycles (with period in seconds) to stay alive")
+
 parser.add_argument("-p", "--period",	type=int,	default=5,
                     help="period of the pilot cycle, in seconds")
+
 parser.add_argument("-d", "--delete",	action='store_true',
                     help="deletes a pilot (for dev purposes). Needs uuid.")
+
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the pilot to be modified")
 
@@ -271,7 +278,8 @@ fullurl	= server+url
 
 cnt = p.cycles # Lifecycle
 ####################### MAIN LOOP #######################################
-while(cnt>0):
+while(cnt>0):     # "Poll the server" loop.
+
     if(verb>1): print('Attempts left: %s' % str(cnt))
     if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
 
@@ -281,7 +289,8 @@ while(cnt>0):
     if(verb>1): logger.info('BROKER: server response: %s' % data)
     if(verb>1): print('BROKER: server response: %s' % data)
 
-    msg = {}
+    msg = {} # Message from the server
+    
     try:
         msg = json.loads(data)
         p['status'], p['state']	= msg['status'], msg['state']
@@ -289,10 +298,10 @@ while(cnt>0):
         logger.error('exiting, failed to parse the server message: %s' % data)
         exit(3)
 
-    # Failure reported from brokerage on the server
-    if(p['status']=='FAIL'): logfail(msg, logger) # catch fail condition on the server
+    # Failure reported from brokerage on the server, will exit
+    if(p['status']=='FAIL'): logfail(msg, logger)
 
-    # No failure, but no jobs on the server, skip the cycle
+    # No failure, but no jobs on the server, skip the cycle.
     if(p['state']=='no jobs'): # didn't get a job
         logger.info("No jobs on the server")
         cnt-=1 # proceed to next cycle
@@ -301,17 +310,19 @@ while(cnt>0):
         time.sleep(period)
         continue # NEXT ITERATION
 
-    if(p['state']=='dispatched'): # got a job
+    ###################### GOT A JOB TO DO ###############################
+    payload = ''
+    if(p['state']=='dispatched'): # means pilot was matched with a job
         try:
-            p['job']	= msg['job']
+            p['job']	= msg['job'] # uuid of the job
+            payload	= msg['payload']
         except:
             logger.error('exiting, failed to parse the server message: %s' % data)
             exit(3)
 
-        logger.info('JOB received: %s' % p['job'])
+        logger.info('JOB received: %s %s' % (p['job'], payload))
     
 
-######################## GOT A JOB TO DO ###############################
     p['state']='running'
     p['event']='jobstart'
     pilotData = data2post(p).utf8() # Serialize in UTF-8
@@ -321,7 +332,7 @@ while(cnt>0):
     logger.info("contact with server established")
     logger.info('JOB started: %s' %  p['job'])
 
-    # FAKE JOB
+    # FIXME - FAKE JOB
     time.sleep(20) 
 
     if(verb>1): print(pilotData) # UTF-8

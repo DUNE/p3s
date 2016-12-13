@@ -3,6 +3,7 @@
 	"name":		"simple p3s job, type 1",
 	"timeout":	"100",
         "jobtype":	"type1",
+        "payload":	"/bin/true",
         "priority":	"1",
 	"state":	"defined"
     }

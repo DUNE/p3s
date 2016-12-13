@@ -28,6 +28,8 @@ from jobs.models			import job, prioritypolicy
 # pilot status can only take two values, 'OK' or 'FAIL' #
 # while it's state can be more complex                  #
 #########################################################
+#
+# This is request for a job:
 def request(request):
     p_uuid	= request.GET.get('uuid','')
     # Fetch the pilot! FIXME - need to pritect the followling line:
@@ -86,10 +88,16 @@ def request(request):
     p.state	= 'dispatched'
     p.ts_lhb	= timezone.now()
     p.save()
-    
-    return HttpResponse(json.dumps({'status':'OK', 'state':'dispatched', 'job':j.uuid}))
+
+    # Will redo this later - the format of the job infor going back to the pilot:
+    return HttpResponse(json.dumps({'status':'OK',
+                                    'state':'dispatched',
+                                    'job':j.uuid,
+                                    'payload':j.payload}))
 
 #########################################################
+#
+# The pilot attempts to register with the server:
 @csrf_exempt
 def register(request):
     
@@ -161,7 +169,7 @@ def delete(request):
     return HttpResponse("%s deleted" % p_uuid )
 
 ###################################################
-# SHOULD ONLY BE USED BY EXPRERTS, do not advertise
+# SHOULD ONLY BE USED BY EXPERTS, do not advertise
 def deleteall(request):
     try:
         p = pilot.objects.all().delete()
