@@ -73,6 +73,8 @@ parser.add_argument("-D", "--description",	type=str,	default='',
 parser.add_argument("-o", "--out",	action='store_true',
                     help="output the graph to stdout")
 
+parser.add_argument("-G", "--get",	action='store_true',
+                    help="get a DAG from server, needs the name")
 
 
 parser.add_argument("-H", "--usage",	action='store_true',
@@ -114,6 +116,7 @@ tst	= args.test
 adj	= args.adjust
 delete	= args.delete
 
+get	= args.get
 name	= args.name
 graphml	= args.graphml
 description = args.description
@@ -128,44 +131,14 @@ if(usage):
     print(Usage)
     exit(0)
 
-########################## UPDATE/ADJUSTMENT #############################
-# Check if an adjustment of an existing job is requested, and send a
-# request to the server to do so. Can adjust priority, state.
-
-if(adj):
-    if(j_uuid==''):			exit(-1) # check if we have the key
-    if(priority==-1 and state==''):	exit(-1) # nothing to adjust
-
-    if ',' in j_uuid:
-        jobList = j_uuid.split(',')
-    else:
-        jobList.append(j_uuid)
-        
-    for j in jobList:
-        a = dict(uuid=j) # create a dict to be serialized and sent to the server
-        if(priority!=-1):	a['priority']	= str(priority)
-        if(state!=''):		a['state']	= state
-        adjData = data2post(a).utf8()
-
-        try:
-            url = 'jobs/set'
-            response = urllib.request.urlopen(server+url, adjData) # POST
-        except URLError:
-            exit(1)
-    
-        data = response.read()
-        if(verb >0): print (data)
-
-    exit(0) # done with update/adjust
-
-###################### JOB DELETE ######################################
+###################### DAG DELETE ######################################
 # Check if it was a deletion request
 if(delete):
     response = None
     if(name==''): exit(-1) # check if we have the key
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
-    if(name=='ALL'):
+    if(name=='ALL'): # FIXME - not implemented, see "normal delete" which works
         try:
             url = 'workflows/deleteall'
             response = urllib.request.urlopen(server+url) # GET
@@ -196,18 +169,24 @@ if(delete):
     exit(0)
 
 ########################################################################
-# Catch-all for uuid: should have handled uuid-specific requests already,
-# if we are here it's an error
-if(j_uuid!=''): exit(-1)
-
+if(get):
+    response = None
+    if(name==''): exit(-1) # check if we have the key
+    try:
+        url = 'workflows/getdag?name='+name
+        response = urllib.request.urlopen(server+url) # GET
+    except URLError:
+        exit(1)
+    
+        data = response.read()
+        if(verb >0): print (data)
 ########################## REGISTRATION ################################
-# Check if we want to read a json file with job templates and send
-# these entries to the server. Currently the only option to add a job
-# programmatically.
+# Forms a DAG (workflow template) on the server based on a graph
+# description stored in a GraphML file
+
 
 if(graphml!=''):
-    
-    if(name==''):
+    if(name==''): # default to the root of the file name
         basename = graphml.rsplit( ".", 1 )[0]
         segs = basename.rsplit("/",1)
         name = segs[-1]
@@ -230,11 +209,9 @@ if(graphml!=''):
     # f = io.StringIO()
     s = '\n'.join(nx.generate_graphml(g))
 
-    #print(s)
     d = Dag(name=name, description=description, graphml=s)
     dagData = data2post(d).utf8()
-    # dagData = data2post(dict({'name': name, 'graphml':s})).utf8()
-    #print('dagData %s' % dagData)
+    
     try:
         url = 'workflows/adddag'
         response = urllib.request.urlopen(server+url, dagData) # POST

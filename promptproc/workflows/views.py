@@ -86,6 +86,30 @@ def adddag(request):
         de.save()
     return HttpResponse("RESPONSE %s" % graphml )
 
+###################################################
+@csrf_exempt
+def addworkflow(request):
+    
+    post	= request.POST
+    dag		= post['dag']
+    
+    wf_uuid	= uuid.uuid1()
+
+    return HttpResponse("RESPONSE %s" % dag )
+    
+###################################################
+def getdag(request):
+    name = request.GET.get('name','')
+
+    if(name == ''):
+        return HttpResponse("DAG not specified.")
+    
+    print(name)
+    for de in dagEdge.objects.filter(dag=name):
+        print(de)
+
+    return HttpResponse("")
+
     # print("---------------")
     # d0 = json_graph.node_link_data(g)
     # print(d0)

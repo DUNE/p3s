@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import dag, dagEdge, dagVertex
+from .models import dag, dagEdge, dagVertex, workflow
 
 #########################################################    
 class dagAdmin(admin.ModelAdmin):
@@ -19,3 +19,9 @@ class dagEdgeAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
     
 admin.site.register(dagEdge, dagEdgeAdmin)
+#--------------------------------------------------------
+class workflowAdmin(admin.ModelAdmin):
+    list_display = ('dag', 'name',)
+    empty_value_display = '-empty-'
+    
+admin.site.register(workflow, workflowAdmin)

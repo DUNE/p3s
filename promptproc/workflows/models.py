@@ -17,7 +17,7 @@ class dag(models.Model):
     def __str__(self):
         return self.name
 
-
+# -------
 class dagVertex(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
@@ -25,6 +25,7 @@ class dagVertex(models.Model):
     def __str__(self):
         return self.name
 
+# -------
 class dagEdge(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
@@ -44,4 +45,10 @@ class workflow(models.Model):
     
     def __str__(self):
         return self.name
-
+# -------
+# class workflowVertex(models.Model):
+#     name	= models.CharField(max_length=64, default='')	# human-readable description
+#     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
+    
+#     def __str__(self):
+#         return self.name
