@@ -42,13 +42,25 @@ class workflow(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     name	= models.CharField(max_length=64, default='')	# not expected to be unique
     dag		= models.CharField(max_length=64, default='')	# dag name (as a type of wf)
+    ts_def	= models.DateTimeField('ts_def', blank=True, null=True)	# definition
     
     def __str__(self):
         return self.name
 # -------
-# class workflowVertex(models.Model):
-#     name	= models.CharField(max_length=64, default='')	# human-readable description
-#     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
+class wfVertex(models.Model):
+    name	= models.CharField(max_length=64, default='')	# human-readable description
+    wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
     
-#     def __str__(self):
-#         return self.name
+    def __str__(self):
+        return self.name
+# -------
+class wfEdge(models.Model):
+    name	= models.CharField(max_length=64, default='')	# human-readable description
+    wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
+
+    source	= models.CharField(max_length=36, default='')	# source
+    target	= models.CharField(max_length=36, default='')	# target
+    
+    def __str__(self):
+        return self.source+':'+self.target
+

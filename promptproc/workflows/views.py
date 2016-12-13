@@ -4,10 +4,11 @@ from django.views.decorators.csrf	import csrf_exempt
 from django.utils			import timezone
 
 import io
+import uuid
 import networkx as nx
 from networkx.readwrite import json_graph
 
-from .models import dag, dagVertex, dagEdge
+from .models import workflow, dag, dagVertex, dagEdge
 
 
 def init(request):
@@ -21,7 +22,7 @@ def init(request):
 
 ###################################################
 @csrf_exempt
-def delete(request):
+def deletedag(request):
     
     post	= request.POST
     name	= post['name']
@@ -58,7 +59,6 @@ def adddag(request):
     g = nx.read_graphml(f)
 
     ts_def   = timezone.now()
-    
     vertices = nx.topological_sort(g)
 
     newDag		= dag()
@@ -84,6 +84,7 @@ def adddag(request):
         de.name	  = e[2]['name']
         de.dag    = name
         de.save()
+
     return HttpResponse("RESPONSE %s" % graphml )
 
 ###################################################
@@ -92,8 +93,37 @@ def addworkflow(request):
     
     post	= request.POST
     dag		= post['dag']
-    
+    print('!', dag)
     wf_uuid	= uuid.uuid1()
+
+    g = fetchdag(dag)
+    
+    ts_def   = timezone.now()
+    vertices = nx.topological_sort(g)
+
+    wf		= workflow()
+    wf.ts_def	= ts_def
+    wf.uuid	= wf_uuid
+    wf.dag	= dag
+    wf.name	= dag # FIXME
+
+    wf.save()
+    
+    for n in g.nodes(data=True):
+        print(n)
+        dv = dagVertex()
+#        dv.name  = n[0]
+#        dv.dag   = name
+#        dv.save()
+        
+    for e in g.edges(data=True):
+        print(e)
+        de = dagEdge()
+#        de.source = e[0]
+#        de.target = e[1]
+#        de.name	  = e[2]['name']
+#        de.dag    = name
+#        de.save()
 
     return HttpResponse("RESPONSE %s" % dag )
     

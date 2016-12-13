@@ -6,5 +6,6 @@ urlpatterns = [
     url(r'^init$',	views.init,	name='init'),
     url(r'^adddag$',	views.adddag,	name='adddag'),
     url(r'^getdag$',	views.getdag,	name='getdag'),
-    url(r'^delete$',	views.delete,	name='delete'),
+    url(r'^addworkflow$',views.addworkflow,name='addworkflow'),
+    url(r'^deletedag$',	views.deletedag,name='deletedag'),
 ]

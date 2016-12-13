@@ -85,10 +85,13 @@ parser.add_argument("-s", "--state",	type=str,	default='',
                     help="sets the job state, needs *adjust* option to be activated")
 parser.add_argument("-p", "--priority",	type=int,	default=-1,
                     help="sets the job priority, needs *adjust* option to be activated")
-parser.add_argument("-a", "--adjust",	action='store_true',
-                    help="enables state or priority adjustments. Needs uuid.")
+
+parser.add_argument("-a", "--add",	type=str,	default='',
+                    help="Add a workflow. Argument is the name of the prototype DAG (stored on the server).")
+
 parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a job. Needs uuid.")
+                    help="deletes a dag. Needs name.")
+
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the job to be adjusted")
 parser.add_argument("-i", "--id",	type=str,	default='',
@@ -113,7 +116,7 @@ j_uuid	= args.uuid
 j_id	= args.id
 verb	= args.verbosity
 tst	= args.test
-adj	= args.adjust
+add	= args.add
 delete	= args.delete
 
 get	= args.get
@@ -158,7 +161,7 @@ if(delete):
         delData = data2post(dict(name=w)).utf8()
 
         try:
-            url = 'workflows/delete'
+            url = 'workflows/deletedag'
             response = urllib.request.urlopen(server+url, delData) # POST
         except URLError:
             exit(1)
@@ -222,6 +225,20 @@ if(graphml!=''):
     data = response.read()
     if(verb >0): print (data)
 
+    exit(0)
+########################################################################
+if(add!=''):
+    wfData = data2post({'dag':add}).utf8()
+    try:
+        url = 'workflows/addworkflow'
+        response = urllib.request.urlopen(server+url, wfData) # POST
+    except URLError:
+        exit(1)
+    
+    data = response.read()
+    if(verb >0): print (data)
+
+    exit(0)
+
 ###################### GRAND FINALE ####################################
 exit(0)
-########################################################################
