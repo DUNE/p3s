@@ -4,6 +4,9 @@
 # The following is not TZ-aware: datetime.datetime.now()#
 # so we are using timzone.now() where needed		#
 #########################################################
+# Please disregard bits of code "left for later" - most #
+# will be used for future development                   #
+#########################################################
 
 from django.conf	import settings
 from django.utils	import timezone
@@ -41,6 +44,9 @@ Option "-g" allows to read and parse contents of a graphML file containing
 a workflow description, and send it to the server. A name can be suppplied
 via a command line argument, and if absent it is derived from the name of
 the file containing the graph.
+
+Workflows are created based on templates which are DAGs which must be
+exist on the server.
 
 '''
 
@@ -92,8 +98,6 @@ parser.add_argument("-a", "--add",	type=str,	default='',
 parser.add_argument("-d", "--delete",	action='store_true',
                     help="deletes a dag. Needs name.")
 
-parser.add_argument("-u", "--uuid",	type=str,	default='',
-                    help="uuid of the job to be adjusted")
 parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the job to be adjusted (pk)")
 parser.add_argument("-t", "--test",	action='store_true',
@@ -112,7 +116,7 @@ usage	= args.usage
 server	= args.server
 state	= args.state
 priority= args.priority
-j_uuid	= args.uuid
+
 j_id	= args.id
 verb	= args.verbosity
 tst	= args.test
@@ -223,7 +227,7 @@ if(graphml!=''):
         exit(1)
     
     data = response.read()
-    if(verb >0): print (data)
+    if(out): print (data)
 
     exit(0)
 ########################################################################
@@ -235,8 +239,8 @@ if(add!=''):
     except URLError:
         exit(1)
     
-    data = response.read()
-    if(verb >0): print (data)
+    data = response.read().decode("utf-8") 
+    if(out): print (data)
 
     exit(0)
 

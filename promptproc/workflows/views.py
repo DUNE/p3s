@@ -8,8 +8,8 @@ import uuid
 import networkx as nx
 from networkx.readwrite import json_graph
 
-from .models import workflow, dag, dagVertex, dagEdge
-
+from .models import dag, dagVertex, dagEdge
+from .models import workflow, wfVertex, wfEdge
 
 def init(request):
     d = dag(name='test')
@@ -92,14 +92,10 @@ def adddag(request):
 def addworkflow(request):
     
     post	= request.POST
-    dag		= post['dag']
-    print('!', dag)
+    dag		= post['dag'] #  print('!', dag)
     wf_uuid	= uuid.uuid1()
 
-    g = fetchdag(dag)
-    
     ts_def   = timezone.now()
-    vertices = nx.topological_sort(g)
 
     wf		= workflow()
     wf.ts_def	= ts_def
@@ -108,24 +104,30 @@ def addworkflow(request):
     wf.name	= dag # FIXME
 
     wf.save()
-    
-    for n in g.nodes(data=True):
-        print(n)
-        dv = dagVertex()
-#        dv.name  = n[0]
-#        dv.dag   = name
-#        dv.save()
-        
-    for e in g.edges(data=True):
-        print(e)
-        de = dagEdge()
-#        de.source = e[0]
-#        de.target = e[1]
-#        de.name	  = e[2]['name']
-#        de.dag    = name
-#        de.save()
 
-    return HttpResponse("RESPONSE %s" % dag )
+
+    g = nx.DiGraph()
+    
+    for dv in dagVertex.objects.filter(dag=dag):
+        name = dv.name
+        wv = wfVertex()
+        wv.name = name
+        wv.wf  = wf.name # FIXME
+        wv.save()
+        g.add_node(name, wf=dag)
+        
+        
+    for de in dagEdge.objects.filter(dag=dag):
+        name = de.name
+        we = wfEdge()
+        we.name = name
+        we.source = de.source
+        we.target = de.target
+        we.save()
+        g.add_edge(de.source, de.target)
+
+    s = '\n'.join(nx.generate_graphml(g))
+    return HttpResponse(s)
     
 ###################################################
 def getdag(request):
