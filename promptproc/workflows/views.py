@@ -1,6 +1,7 @@
 from django.shortcuts			import render
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
+from django.utils			import timezone
 
 import io
 import networkx as nx
@@ -20,6 +21,22 @@ def init(request):
 
 ###################################################
 @csrf_exempt
+def delete(request):
+    
+    post	= request.POST
+    name	= post['name']
+
+    try:
+        d = dag.objects.get(name=name)
+        d.delete()
+        for v in dagVertex.objects.filter(dag=name):	v.delete()
+        for e in dagEdge.objects.filter(dag=name):	e.delete()
+        return HttpResponse("Deleted DAG %s" % name )
+    except:
+        return HttpResponse("Failed to delete DAG %s" % name )
+
+###################################################
+@csrf_exempt
 def adddag(request):
     
     post	= request.POST
@@ -29,33 +46,31 @@ def adddag(request):
     description	= post['description']
 
     print(name)
-
-    d = None
-    try: # cleanout: names are unique
-        d = dag.objects.get(name=name)
-        d.delete()
-        for v in dagVertex.objects.filter(dag=name):	v.delete()
-        for e in dagEdge.objects.filter(dag=name):	e.delete()
-    except:
-        pass
-
-    newDag = dag()
-    newDag.name = name
-    newDag.description = description
-
-    newDag.save()
+    x = delete(request)
+    
     fn = "/tmp/p3s/"+name+".graphml"
     f = open(fn, "w") # FXIME: this has yet to work: f = io.StringIO()
     f.write(graphml)
     f.close()
 
-    print(graphml)
     
     f = open(fn, "r")
     g = nx.read_graphml(f)
 
+    ts_def   = timezone.now()
+    
+    vertices = nx.topological_sort(g)
+
+    newDag		= dag()
+    newDag.name		= name
+    newDag.description	= description
+    newDag.nvertices	= len(vertices)
+    newDag.ts_def	= ts_def
+    newDag.root		= vertices[0]
+    newDag.save()
+
     for n in g.nodes(data=True):
-        print(n)
+        #        print(n)
         dv = dagVertex()
         dv.name  = n[0]
         dv.dag   = name

@@ -9,6 +9,9 @@ class dag(models.Model):
     _init = False
     name	= models.CharField(max_length=64, primary_key = True, default='')
     description	= models.TextField(default='')
+    nvertices	= models.IntegerField(default=0, null=True)
+    root	= models.CharField(max_length=64, default='')
+    ts_def	= models.DateTimeField('ts_def', blank=True, null=True)	# definition
    
 
     def __str__(self):
