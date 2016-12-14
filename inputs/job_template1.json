@@ -3,7 +3,7 @@
 	"name":		"simple p3s job, type 1",
 	"timeout":	"100",
         "jobtype":	"type1",
-        "payload":	"/bin/ddate",
+        "payload":	"/home/maxim/projects/p3s/inputs/workload1.py",
         "priority":	"1",
 	"state":	"defined"
     }
