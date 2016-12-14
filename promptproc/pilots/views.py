@@ -1,5 +1,5 @@
 #########################################################
-#                      PILOTS                           #
+#                PILOTS VIEW                            #
 #########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#

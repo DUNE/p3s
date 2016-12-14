@@ -274,7 +274,7 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 
 jobcount=0
 url	= "pilots/request/?uuid=%s" % p['uuid']
-fullurl	= server+url
+jobRequestURL	= server+url
 
 cnt = p.cycles # Lifecycle
 ####################### MAIN LOOP #######################################
@@ -283,7 +283,7 @@ while(cnt>0):     # "Poll the server" loop.
     if(verb>1): print('Attempts left: %s' % str(cnt))
     if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
 
-    response	= communicate(fullurl)
+    response	= communicate(jobRequestURL)
     data	= rdec(response)
 
     if(verb>1): logger.info('BROKER: server response: %s' % data)
@@ -368,27 +368,11 @@ logger.info('JOBS DONE: %s' % str(jobcount))
 logger.info('STOP %s on host %s after %s cycles' % (str(p['uuid']), p['host'], cycles))
 exit(0)
 
-#
-# if(p['status']=='FAIL'):
-#     error = ''
-#     try:
-#         error	= msg['error'] # if the server told us what the error was, log it
-#         logger.error('exiting, received FAIL status from server, error:%s' % error)
-#     except:
-#         logger.error('exiting, received FAIL status from server, no error returned')
-#     exit(1)
-    
+######################## DUSTY ATTIC ###################################
 # headers		= response.info()
 # data		= response.read()
 
 # response_url	= response.geturl()
 # response_date	= headers['date']
-# response = urllib.request.urlopen(fullurl)
 
-# try:
-#     response = urllib.request.urlopen(fullurl, pilotData)
-# except URLError:
-#     logger.error('when contacting the server at %s' % fullurl)
-#     exit(1)
-    
 
