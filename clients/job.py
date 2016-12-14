@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 #########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#
