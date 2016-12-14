@@ -47,6 +47,9 @@ except ImportError:
 class DetailTable(tables.Table):
     attribute	= tables.Column()
     value	= tables.Column()
+    
+    def set_site(self, site=''):
+        self.site=site
     class Meta:
         attrs	= {'class': 'paleblue'}
 
@@ -186,6 +189,7 @@ def dagdetail(request):
 def detail_handler(request, what):
     pk 		= request.GET.get('pk','')
     name 	= request.GET.get('name','')
+    o_uuid 	= request.GET.get('uuid','')
     domain	= request.get_host()
 
     # FIXME -beautify the timestamp later -mxp-
@@ -217,12 +221,20 @@ def detail_handler(request, what):
     dicto = {}
     if(pk!=''):		dicto	= model_to_dict(objects.get(pk=pk))
     if(name!=''):	dicto	= model_to_dict(objects.get(name=name))
+    if(o_uuid!=''):	dicto	= model_to_dict(objects.get(uuid=o_uuid))
     data	= []
 
 
-    for a in dicto.keys(): data.append({'attribute': a, 'value': dicto[a]})
+    for a in dicto.keys():
+        if(a!='j_uuid'):
+            data.append({'attribute': a, 'value': dicto[a]})
+        else:
+            x = mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
+                         % (domain, reverse(jobdetail), 'uuid',dicto[a], dicto[a]))
+            data.append({'attribute': a, 'value': x})
 
     t = DetailTable(data)
+    t.set_site(domain)
     RequestConfig(request).configure(t)
     d['detail'] = t
 
