@@ -135,9 +135,10 @@ def report(request):
     p		= pilot.objects.get(uuid=p_uuid)
     p.state	= state
     p.ts_lhb	= timezone.now()
-    p.save()
 
     if(state in ('running','finished')):
+        p.status	= 'OK'
+        p.save()
         try:
             j		= job.objects.get(uuid=p.j_uuid)
             j.state	= state
@@ -148,7 +149,14 @@ def report(request):
             return HttpResponse(json.dumps({'status':	'FAIL',
                                             'state':	state,
                                             'error':	'failed to update job state'}))
-
+    if(state=='exception'):
+        p.status	= 'FAIL'
+        p.save()
+        j = job.objects.get(uuid=p.j_uuid)
+        j.state	= state
+        if(event=='exception'):	j.ts_sto = timezone.now()
+        j.save()
+        
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
     

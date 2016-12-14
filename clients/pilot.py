@@ -330,21 +330,25 @@ while(cnt>0):     # "Poll the server" loop.
     logger.info("contact with server established")
     logger.info('JOB starting: %s' %  p['job'])
 
-    # FIXME - FAKE JOB
-    x=subprocess.run([payload], stdout=subprocess.PIPE)
-    #time.sleep(20) 
+    # EXECUTION
+    try:
+        x=subprocess.run([payload], stdout=subprocess.PIPE)
+        if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
+        p['state']='finished'
+        p['event']='jobstop'
+        pilotData = data2post(p).utf8()
+        fullurl	= server+"pilots/report"
+        response = communicate(fullurl, pilotData) # will croak if unsuccessful
 
-    if(verb>1): print(pilotData) # UTF-8
-    if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
+        logger.info("contact with server established")
+        logger.info('JOB finished: %s' %  p['job'])
+    except:
+        p['state']='exception'
+        p['event']='exception'
+        pilotData = data2post(p).utf8()
+        fullurl	= server+"pilots/report"
+        response = communicate(fullurl, pilotData) # will croak if unsuccessful
 
-    p['state']='finished'
-    p['event']='jobstop'
-    pilotData = data2post(p).utf8()
-    fullurl	= server+"pilots/report"
-    response = communicate(fullurl, pilotData) # will croak if unsuccessful
-
-    logger.info("contact with server established")
-    logger.info('JOB finished: %s' %  p['job'])
     jobcount+=1
     cnt-=1 # proceed to next cycle
     
