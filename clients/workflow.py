@@ -243,6 +243,7 @@ if(add!=''):
         name=add
 
     d ={'dag':add, 'name':name, 'description':description}
+
     wfData = data2post(d).utf8()
     try:
         url = 'workflows/addworkflow'

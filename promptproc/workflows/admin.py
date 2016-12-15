@@ -23,7 +23,7 @@ admin.site.register(dagEdge, dagEdgeAdmin)
 
 ######################## WF #############################    
 class workflowAdmin(admin.ModelAdmin):
-    list_display = ('dag', 'name', 'uuid', 'ts_def',)
+    list_display = ('name', 'dag', 'description', 'ts_def',)
     empty_value_display = '-empty-'
     
 admin.site.register(workflow, workflowAdmin)

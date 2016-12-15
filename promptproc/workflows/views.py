@@ -107,7 +107,7 @@ def addworkflow(request):
     wf.uuid	= wf_uuid
     wf.dag	= dag
     wf.name	= name
-    wf.name	= description
+    wf.description= description
 
     wf.save()
 
