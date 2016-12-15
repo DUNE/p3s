@@ -33,7 +33,9 @@ SECRET_KEY = 'y!m33zq-79&%-!r=e!&+jd2cq&ca85e(4q-9dsgsb4xx)g5p*+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# -mxp- Please note this is for strictly development enviroment
+# and wiill be meaningless elsewhere
+ALLOWED_HOSTS = ['tranquility.local','serenity.local', 'felicity.local', 'ferocity.local', 'sagacity.local',]
 
 
 # Application definition
