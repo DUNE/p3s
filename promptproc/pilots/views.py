@@ -132,10 +132,12 @@ def report(request):
     p_uuid	= post['uuid']
     state	= post['state']
     event	= post['event']
+    jobcount	= post['jobcount']
     
     p		= pilot.objects.get(uuid=p_uuid)
     p.state	= state
     p.ts_lhb	= timezone.now()
+    p.jobcount	= jobcount
 
     if(state in 'active','stopped'):
         p.status	= 'OK'

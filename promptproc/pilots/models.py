@@ -14,6 +14,7 @@ class pilot(models.Model):
     ts_cre	= models.DateTimeField('ts_cre', blank=True, null=True)
     ts_reg	= models.DateTimeField('ts_reg', blank=True, null=True)
     ts_lhb	= models.DateTimeField('ts_lhb', blank=True, null=True)
+    jobcount	= models.PositiveIntegerField(default=0) # number of processed jobs
 
     # time autofill:
     #    auto_now=True

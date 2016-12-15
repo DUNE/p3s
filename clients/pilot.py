@@ -90,7 +90,7 @@ def communicate(url, data=None):
 
 ########################### THE PILOT CLASS #############################
 class Pilot(dict):
-    def __init__(self, cycles=1, period=5):
+    def __init__(self, jobcount=0, cycles=1, period=5):
         self['state']	= 'active' # start as active
         self['status']	= '' # status of server comms
         self['host']	= socket.gethostname()
@@ -98,6 +98,7 @@ class Pilot(dict):
         self['ts']	= str(timezone.now())
         self['uuid']	= uuid.uuid1()
         self['event']	= '' # what just happned in the pilot
+        self['jobcount']= jobcount
         self.cycles	= cycles
         self.period	= period
         self.job	= '' # job to be yet received
@@ -263,11 +264,12 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
 #########################################################################
 
-jobcount=0
 url	= "pilots/request/?uuid=%s" % p['uuid']
 jobRequestURL	= server+url
 
 cnt = p.cycles # Lifecycle
+
+p['jobcount'] = 0
 ####################### MAIN LOOP #######################################
 while(cnt>0):     # "Poll the server" loop.
 
@@ -326,6 +328,7 @@ while(cnt>0):     # "Poll the server" loop.
         if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
         p['state']	='finished'
         p['event']	='jobstop'
+        p['jobcount']  += 1
         pilotData	= data2post(p).utf8()
         response	= communicate(reportURL, pilotData) # will croak if unsuccessful
 
@@ -337,12 +340,11 @@ while(cnt>0):     # "Poll the server" loop.
         pilotData	= data2post(p).utf8()
         response = communicate(reportURL, pilotData) # will croak if unsuccessful
 
-    p['state']	='active'
-    #    p['event']	='jobstop'
+    # declare the 'active' state again
+    p['state']	='active'    #    p['event']	='jobstop'
     pilotData	= data2post(p).utf8()
     response	= communicate(reportURL, pilotData) # will croak if unsuccessful
     
-    jobcount+=1
     cnt-=1 # proceed to next cycle
     
     if(cnt==0): break # don't wait another sleep cycle
@@ -357,7 +359,10 @@ pilotData	= data2post(p).utf8()
 
 response	= communicate(reportURL, pilotData) # will croak if unsuccessful
 
-logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(jobcount)))
+logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(p['jobcount'])))
+
+if(verb>0): print("Stopped. Processed jobs: %s" % str(p['jobcount']))
+
 exit(0)
 
 ######################## DUSTY ATTIC ###################################
