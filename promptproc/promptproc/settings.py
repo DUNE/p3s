@@ -35,7 +35,12 @@ DEBUG = True
 
 # -mxp- Please note this is for strictly development enviroment
 # and wiill be meaningless elsewhere
-ALLOWED_HOSTS = ['tranquility.local','serenity.local', 'felicity.local', 'ferocity.local', 'sagacity.local',]
+ALLOWED_HOSTS = ['localhost',
+                 'tranquility.local',
+                 'serenity.local',
+                 'felicity.local',
+                 'ferocity.local',
+                 'sagacity.local',]
 
 
 # Application definition
