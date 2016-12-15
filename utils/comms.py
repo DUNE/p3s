@@ -12,3 +12,6 @@ class data2post():
 
     def utf8(self):
         return self.packaged
+
+    def __str__(self):
+        return self.packaged

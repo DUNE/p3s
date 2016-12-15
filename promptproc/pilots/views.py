@@ -136,6 +136,10 @@ def report(request):
     p.state	= state
     p.ts_lhb	= timezone.now()
 
+    if(state in 'active','stopped'):
+        p.status	= 'OK'
+        p.save()
+    
     if(state in ('running','finished')):
         p.status	= 'OK'
         p.save()

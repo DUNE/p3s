@@ -103,6 +103,7 @@ class Pilot(dict):
         self.job	= '' # job to be yet received
         
 #########################################################################
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
@@ -157,6 +158,12 @@ cycles	= args.cycles
 # testing (pre-emptive exit with print)
 tst	= args.test
 
+## This will eventually need to be factored out into a proper module ###
+reportURL	= server+'pilots/report'
+registerURL	= server+'pilots/register'
+deleteallURL	= server+'pilots/deleteall'
+deleteURL	= server+'pilots/delete'
+
 ###################### USAGE REQUESTED? ################################
 if(usage):
     print(Usage)
@@ -170,35 +177,20 @@ if(delete):
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
     if(p_uuid=='ALL'):
-        response = None
-        url = 'pilots/deleteall'
-        response = communicate(server+url)
-        # try:
-        #     url = 'pilots/deleteall'
-        #     response = urllib.request.urlopen(server+url) # GET
-        # except URLError:
-        #     exit(1)
-
-        data = response.read()
+        response	= communicate(deleteallURL)
+        data		= response.read()
         if(verb >0): print (data)
         exit(0)
 
-    pilotList = []
-    # Normal delete, by key(s)
+    pilotList = []    # Normal delete, by key(s)
     if ',' in p_uuid: # assume we have a CSV list
         pilotList = p_uuid.split(',')
     else:
         pilotList.append(p_uuid)
 
     for pid in pilotList:
-        delData = data2post(dict(uuid=pid)).utf8()
-        url = 'pilots/delete'
-        response = communicate(server+url, delData)
-        # try:
-        #     url = 'pilots/delete'
-        #     response = urllib.request.urlopen(server+url, delData) # POST
-        # except URLError:
-        #     exit(1)
+        delData		= data2post(dict(uuid=pid)).utf8()
+        response	= communicate(deleteURL, delData)
     
         if(verb >0):
             data = response.read()
@@ -233,7 +225,7 @@ logfile.setFormatter(formatter)
 logger.addHandler(logfile)
 ##################### END: PREPARE LOGGER ##############################
 
-logger.info('START %s on host %s with period %s and %s cycles' % (str(p['uuid']), p['host'], period, cycles))
+logger.info('START %s on host %s, talking to server %s with period %s and %s cycles' % (str(p['uuid']), p['host'], server, period, cycles))
 
 # Serialize in UTF-8
 pilotData = data2post(p).utf8()
@@ -245,8 +237,7 @@ if(verb>1): logger.info('pilot data: %s' % pilotData)
 if(tst): exit(0)
 
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
-fullurl	= server+"pilots/register"
-response = communicate(fullurl, pilotData) # will croak if unsuccessful
+response = communicate(registerURL, pilotData) # will croak if unsuccessful
 
 logger.info("contact with server established")
 
@@ -324,8 +315,7 @@ while(cnt>0):     # "Poll the server" loop.
     p['state']='running'
     p['event']='jobstart'
     pilotData = data2post(p).utf8() # Serialize in UTF-8
-    fullurl	= server+"pilots/report"
-    response = communicate(fullurl, pilotData) # will croak if unsuccessful
+    response = communicate(reportURL, pilotData) # will croak if unsuccessful
 
     logger.info("contact with server established")
     logger.info('JOB starting: %s' %  p['job'])
@@ -334,42 +324,44 @@ while(cnt>0):     # "Poll the server" loop.
     try:
         x=subprocess.run([payload], stdout=subprocess.PIPE)
         if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
-        p['state']='finished'
-        p['event']='jobstop'
-        pilotData = data2post(p).utf8()
-        fullurl	= server+"pilots/report"
-        response = communicate(fullurl, pilotData) # will croak if unsuccessful
+        p['state']	='finished'
+        p['event']	='jobstop'
+        pilotData	= data2post(p).utf8()
+        response	= communicate(reportURL, pilotData) # will croak if unsuccessful
 
         logger.info("contact with server established")
         logger.info('JOB finished: %s' %  p['job'])
     except:
-        p['state']='exception'
-        p['event']='exception'
-        pilotData = data2post(p).utf8()
-        fullurl	= server+"pilots/report"
-        response = communicate(fullurl, pilotData) # will croak if unsuccessful
+        p['state']	='exception'
+        p['event']	='exception'
+        pilotData	= data2post(p).utf8()
+        response = communicate(reportURL, pilotData) # will croak if unsuccessful
 
+    p['state']	='active'
+    #    p['event']	='jobstop'
+    pilotData	= data2post(p).utf8()
+    response	= communicate(reportURL, pilotData) # will croak if unsuccessful
+    
     jobcount+=1
     cnt-=1 # proceed to next cycle
     
-    if(cnt==0): break
+    if(cnt==0): break # don't wait another sleep cycle
     time.sleep(period)
 # ------
 
 
 ######################## FINISHING UP ##################################
 
-p['state']='stopped'
-pilotData = data2post(p).utf8()
-fullurl	= server+"pilots/report"
-response = communicate(fullurl, pilotData) # will croak if unsuccessful
+p['state']	= 'stopped'
+pilotData	= data2post(p).utf8()
+print('!!!!', pilotData)
+response	= communicate(reportURL, pilotData) # will croak if unsuccessful
 
-logger.info('JOBS DONE: %s' % str(jobcount))
-logger.info('STOP %s on host %s after %s cycles' % (str(p['uuid']), p['host'], cycles))
+logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(jobcount)))
 exit(0)
 
 ######################## DUSTY ATTIC ###################################
-# headers		= response.info()
+# headers	= response.info()
 # data		= response.read()
 
 # response_url	= response.geturl()
