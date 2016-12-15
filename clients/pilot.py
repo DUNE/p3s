@@ -354,7 +354,7 @@ while(cnt>0):     # "Poll the server" loop.
 
 p['state']	= 'stopped'
 pilotData	= data2post(p).utf8()
-print('!!!!', pilotData)
+
 response	= communicate(reportURL, pilotData) # will croak if unsuccessful
 
 logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(jobcount)))

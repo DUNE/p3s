@@ -1,24 +1,36 @@
 # ProtoDUNE Prompt Processing System (p3s)
-## Design Paper
+## Design Paper and Motivation
 Supporting documents and an outline of the design can be found in
 the FNAL DocDB 1861 (authorization required for access).
 
-## Motivation
 The p3s is the computing platform for protoDUNE to support Data Quality Management (DQM).
-Its requirements and mode of operation are different from a typical production system in the following:
+Its requirements and mode of operation are different from a typical production system
+in the following:
 * there are stringent ETA requirements for processing jobs since for DQM purposes
 the results become stale (not actionable) very fast
 * only a portion of the data (configurable) needs to be processed
 * in any stage of processing a portion of the data unknown apriory can be dropped
 in order to optimize throughput
-* processing streams are initiated purely automatically in contrast to a managed
-production campaign
+* there is no retry mechanism since any substantial delay in processing a unit
+of data makes the result relevant (again, the focus is on ETA)
+* processing streams are initiated purely automatically and in real time
+by the data arriving from DAQ
+* there is practically no data handling system since it would introduce more
+complexity, latency and potentially failure modes. Instead, p3s relies on
+federated storage such as provided by an instance of XRootD. A high-performance
+NAS could be an alternative. In either case, the data is essentially local
+on the cluster.
 
 ## Workflow
 While workflow in p3s will be simple compared to a typical production system,
 it still includes a few steps and can be modeled as a simple DAG. Different stages
 in the workflow may need to be dynamically prioritized in order to get deliverables
-in a timely mannter
+in a timely manner.
+
+A workflow is instantiated based on a DAG template. DAG templates are persistent
+in the database and can be added or deleted at will. A convenient external
+representation of a DAG is a XML file describing the corresponding graph,
+which can be readily parsed and used for both import and expor tof DAGs.
 
 ## Location of the input data
 The protoDUNE DAQ writes the data to its own "online buffer" from which it is
@@ -47,7 +59,13 @@ efficient and tried way to achieve this is the pilot-based job submission.
 * NetworkX
 
 
+## TODO
 
+### Time limits
+* loss of the pilot heartbeat
+* wall clock limit on the job execution
 
+### Brokerage
+* better policy management
 
 
