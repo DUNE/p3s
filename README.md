@@ -12,7 +12,7 @@ the results become stale (not actionable) very fast
 * in any stage of processing a portion of the data unknown apriory can be dropped
 in order to optimize throughput
 * there is no retry mechanism since any substantial delay in processing a unit
-of data makes the result relevant (again, the focus is on ETA)
+of data makes the result less relevant (again, the focus is on ETA)
 * processing streams are initiated purely automatically and in real time
 by the data arriving from DAQ
 * there is practically no data handling system since it would introduce more
@@ -32,6 +32,10 @@ in the database and can be added or deleted at will. A convenient external
 representation of a DAG is a XML file describing the corresponding graph,
 which can be readily parsed and used for both import and expor tof DAGs.
 
+## Phased development
+* Phase I: service supporting individual jobs, triggered by incoming data
+* Phase II: workflows
+
 ## Location of the input data
 The protoDUNE DAQ writes the data to its own "online buffer" from which it is
 transferred to CERN EOS (centralized distributed high-performance disk storage).
@@ -44,19 +48,22 @@ The near-time nature of prompt processing requires "just-in-time" job submission
 and not be subjected to the often unpredictable latencies found in batch systems. An
 efficient and tried way to achieve this is the pilot-based job submission.
 
-## Contents
+## Components
 * Web service:
    * job queues and definitions
-   * The pilot
-   * various testing and debugging scripts
-
+   * handling of pilots' requests for registration and payload
+* Clients
+   * The *pilot* - submission and management of pilot data on the server
+   * The *job* - submission of job definitions to the server and management of job data on the server
+   
 ## Software dependencies
 * Python3
 * Django 1.10
 * django-tables2
 * RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
 * Apache
-* NetworkX
+* NetworkX and GraphML (latter optional)
+
 
 
 ## TODO
@@ -68,4 +75,13 @@ efficient and tried way to achieve this is the pilot-based job submission.
 ### Brokerage
 * better policy management
 
+## Installation and Integration
+* PosgeSQL
+* Apache
+* XRootD
+
+## Storage management
+* Cleanup after job execution
+* FLushing of obsolete data
+* Clearing older DB entries
 
