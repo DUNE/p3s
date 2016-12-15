@@ -26,6 +26,7 @@ from django.forms.models		import model_to_dict
 from pilots.models			import pilot
 from jobs.models			import job
 from workflows.models			import dag, dagVertex, dagEdge
+from workflows.models			import workflow, wfVertex, wfEdge
 
 # tables2 machinery
 import	django_tables2 as tables
@@ -101,6 +102,16 @@ class DagTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 
 #--------------------------------------------------------
+class WfTable(MonitorTable):
+    # FIXME rendering later
+    # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+    # def render_name(self,value):return self.makelink('dagdetail', 'name', value)
+        
+    class Meta:
+        model = workflow
+        attrs = {'class': 'paleblue'}
+
+#--------------------------------------------------------
 # Simpler inheritance (compared to jobs etc) is provisional
 class DagVertexTable(tables.Table):
 #    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
@@ -162,11 +173,17 @@ def data_handler(request, what):
         if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
 
-    if(what=='workflows' or what=='dags'): # FIXME
+    if(what=='dags'):
         objects = dag.objects
         if(pk != ''):			t = DagTable(objects.filter(pk=pk))
         if(name != ''):			t = DagTable(objects.filter(name=name))
         if(pk == '' and name == ''):	t = DagTable(objects.all())
+        
+    if(what=='workflows'):
+        objects = workflow.objects
+        if(pk != ''):			t = WfTable(objects.filter(pk=pk))
+        if(name != ''):			t = WfTable(objects.filter(name=name))
+        if(pk == '' and name == ''):	t = WfTable(objects.all())
         
     t.set_site(domain)
     RequestConfig(request).configure(t)
