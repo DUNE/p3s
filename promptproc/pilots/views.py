@@ -42,11 +42,12 @@ def request(request):
     priolist = []
 
     try:
-        # this contains (for example) the name of the column by
-        # which to sort within same tier of priority, for example ts_def.
-        # So it has to be consistent with the models.
-        # Look for "ordering" later in the code. 
-        ordering = prioritypolicy.objects.get(name='order-within-priority').value
+        # this contains (for example) the name of the column by which to sort within same tier of priority,
+        # for example "ts_def". So it has to be consistent with the models. Look for "ordering" in the code.
+        # DB-based value, example:
+        # ordering = prioritypolicy.objects.get(name='order-within-priority').value
+        # For dev purposes, fixed value (to avoid missing values after fresh install):
+        ordering = 'ts_def'
     except:
         p.state		= 'failed brokerage'
         p.status	= 'FAIL'
