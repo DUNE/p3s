@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="name" attr.type="string" for="edge" id="d2" />
+  
+  <graph edgedefault="directed">
+    <node id="NOOP1">
+    </node>
+
+    <node id="filter">
+    </node>
+
+    <node id="NOOP2">
+    </node>
+
+    <edge source="NOOP1" target="filter">
+      <data key="d2">raw.txt</data>
+    </edge>
+    
+    <edge source="filter" target="NOOP2">
+      <data key="d2">filtered</data>
+    </edge>
+  </graph>
+</graphml>
