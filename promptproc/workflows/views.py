@@ -1,3 +1,6 @@
+###################################################
+############ WORKFLOWS VIEWS ######################
+###################################################
 from django.shortcuts			import render
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
@@ -47,7 +50,7 @@ def adddag(request):
     description	= post['description']
 
     print(name)
-    x = delete(request)
+    x = deletedag(request)
     
     fn = "/tmp/p3s/"+name+".graphml"
     f = open(fn, "w") # FXIME: this has yet to work: f = io.StringIO()
@@ -92,7 +95,9 @@ def adddag(request):
 def addworkflow(request):
     
     post	= request.POST
-    dag		= post['dag'] #  print('!', dag)
+    dag		= post['dag']
+    name	= post['name']
+    description	= post['description']
     wf_uuid	= uuid.uuid1()
 
     ts_def   = timezone.now()
@@ -101,7 +106,8 @@ def addworkflow(request):
     wf.ts_def	= ts_def
     wf.uuid	= wf_uuid
     wf.dag	= dag
-    wf.name	= dag # FIXME
+    wf.name	= name
+    wf.name	= description
 
     wf.save()
 

@@ -27,7 +27,7 @@ from urllib.error	import URLError
 import networkx as nx
 import io
 
-# local import, requires PYTHONPATH to be set
+# local import, may require PYTHONPATH to be set
 from comms		import data2post
 
 
@@ -68,13 +68,17 @@ class Dag(dict):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-g", "--graphml",	type=str,	default='',
-                    help="GraphML file to be read and parsed.")
+                    help="GraphML file to be read and parsed, to then create a DAG on the server.")
 
 parser.add_argument("-n", "--name",	type=str,	default='',
-                    help="GraphML file to be read and parsed.")
+                    help="The name of the DAG or workflow to be manipulated, depending on the context.")
+
+parser.add_argument("-a", "--add",	type=str,	default='',
+                    help='''Add a workflow. Argument is the name of the prototype DAG (stored on the server).
+                    If no special name is provided for the workflow via the *name* argument, defaults to the DAG name''')
 
 parser.add_argument("-D", "--description",	type=str,	default='',
-                    help="Description of the workflow (graph)")
+                    help="Description of the DAG or workflow.")
 
 parser.add_argument("-o", "--out",	action='store_true',
                     help="output the graph to stdout")
@@ -85,18 +89,21 @@ parser.add_argument("-G", "--get",	action='store_true',
 
 parser.add_argument("-H", "--usage",	action='store_true',
                     help="print usage notes and exit")
+
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
-parser.add_argument("-s", "--state",	type=str,	default='',
-                    help="sets the job state, needs *adjust* option to be activated")
-parser.add_argument("-p", "--priority",	type=int,	default=-1,
-                    help="sets the job priority, needs *adjust* option to be activated")
-
-parser.add_argument("-a", "--add",	type=str,	default='',
-                    help="Add a workflow. Argument is the name of the prototype DAG (stored on the server).")
 
 parser.add_argument("-d", "--delete",	action='store_true',
                     help="deletes a dag. Needs name.")
+
+
+##########################
+parser.add_argument("-s", "--state",	type=str,	default='',
+                    help="sets the job state, needs *adjust* option to be activated")
+
+parser.add_argument("-p", "--priority",	type=int,	default=-1,
+                    help="sets the job priority, needs *adjust* option to be activated")
+
 
 parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the job to be adjusted (pk)")
@@ -232,7 +239,11 @@ if(graphml!=''):
     exit(0)
 ########################################################################
 if(add!=''):
-    wfData = data2post({'dag':add}).utf8()
+    if(name==''):
+        name=add
+
+    d ={'dag':add, 'name':name, 'description':description}
+    wfData = data2post(d).utf8()
     try:
         url = 'workflows/addworkflow'
         response = urllib.request.urlopen(server+url, wfData) # POST

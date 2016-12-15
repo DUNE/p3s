@@ -17,7 +17,7 @@
     </edge>
     
     <edge source="filter" target="NOOP2">
-      <data key="d2">filtered</data>
+      <data key="d2">filtered.txt</data>
     </edge>
   </graph>
 </graphml>

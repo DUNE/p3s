@@ -41,6 +41,7 @@ class dagEdge(models.Model):
 class workflow(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     name	= models.CharField(max_length=64, default='')	# not expected to be unique
+    description	= models.TextField(default='')
     dag		= models.CharField(max_length=64, default='')	# dag name (as a type of wf)
     ts_def	= models.DateTimeField('ts_def', blank=True, null=True)	# definition
     
