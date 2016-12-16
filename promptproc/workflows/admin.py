@@ -35,7 +35,7 @@ class wfVertexAdmin(admin.ModelAdmin):
 admin.site.register(wfVertex, wfVertexAdmin)
 #--------------------------------------------------------
 class wfEdgeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'source', 'target',)
+    list_display = ('name', 'source', 'target', 'wf',)
     empty_value_display = '-empty-'
     
 admin.site.register(wfEdge, wfEdgeAdmin)

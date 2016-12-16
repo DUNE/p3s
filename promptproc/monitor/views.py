@@ -105,11 +105,13 @@ class DagTable(MonitorTable):
 class WfTable(MonitorTable):
     # FIXME rendering later
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
-    # def render_name(self,value):return self.makelink('dagdetail', 'name', value)
+    
+    def render_dag(self,value):return self.makelink('dagdetail', 'name', value)
         
     class Meta:
         model = workflow
         attrs = {'class': 'paleblue'}
+        exclude	= ('uuid', )
 
 #--------------------------------------------------------
 # Simpler inheritance (compared to jobs etc) is provisional
@@ -131,6 +133,28 @@ class DagEdgeTable(tables.Table):
     class Meta:
         model = dagEdge
         exclude = ('dag',)
+        attrs = {'class': 'paleblue'}
+
+#--------------------------------------------------------
+# Simpler inheritance (compared to jobs etc) is provisional
+class WfVertexTable(tables.Table):
+#    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+#    def render_name(self,value):return self.makelink('dags', 'name', value)
+        
+    class Meta:
+        model = wfVertex
+        exclude = ('wf',)
+        attrs = {'class': 'paleblue'}
+
+#--------------------------------------------------------
+# Simpler inheritance (compared to jobs etc) is provisional
+class WfEdgeTable(tables.Table):
+#    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+#    def render_name(self,value):return self.makelink('dags', 'name', value)
+        
+    class Meta:
+        model = wfEdge
+        exclude = ('wf',)
         attrs = {'class': 'paleblue'}
 
 ######## REQUEST ROUTERS (SUMMARIES) ####################    
@@ -202,6 +226,10 @@ def pilotdetail(request):
 def dagdetail(request):
     return detail_handler(request, 'dag')
 
+#--------------------------------------------------------
+def wfdetail(request):
+    return detail_handler(request, 'workflow')
+
 #########################################################    
 def detail_handler(request, what):
     pk 		= request.GET.get('pk','')
@@ -225,15 +253,25 @@ def detail_handler(request, what):
         template = 'detail.html'
         d['title']	= what
         objects = pilot.objects
-
+        
+    theName = None
     if(what=='dag'):
         template = 'detail2.html'
         objects = dag.objects
         theDag = objects.get(name=name)
-        theDagName = theDag.name
-        aux1 = DagVertexTable(dagVertex.objects.filter(dag=theDagName))
-        aux2 = DagEdgeTable(dagEdge.objects.filter(dag=theDagName))
-        d['title']	= what+' name: '+theDagName
+        theName = theDag.name
+        aux1 = DagVertexTable(dagVertex.objects.filter(dag=theName))
+        aux2 = DagEdgeTable(dagEdge.objects.filter(dag=theName))
+        d['title']	= what+' name: '+theName
+                             
+    if(what=='workflow'):
+        template = 'detail2.html'
+        objects = workflow.objects
+        theWF = objects.get(name=name)
+        theName = theWF.name
+        aux1 = WfVertexTable(wfVertex.objects.filter(wf=theName))
+        aux2 = WfEdgeTable(wfEdge.objects.filter(wf=theName))
+        d['title']	= what+' name: '+theName
                              
     dicto = {}
     if(pk!=''):		dicto	= model_to_dict(objects.get(pk=pk))
@@ -258,10 +296,10 @@ def detail_handler(request, what):
     # FIXME - admittedly hacky but we best improve a more final version
     if(aux1):
         d['aux1'] = aux1
-        d['aux1title'] = 'Vertices for '+theDagName
+        d['aux1title'] = 'Vertices for '+theName
     if(aux2):
         d['aux2'] = aux2
-        d['aux2title'] = 'Edges for '+theDagName
+        d['aux2title'] = 'Edges for '+theName
 
     return render(request, template, d)
 

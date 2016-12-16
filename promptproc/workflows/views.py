@@ -115,20 +115,21 @@ def addworkflow(request):
     g = nx.DiGraph()
     
     for dv in dagVertex.objects.filter(dag=dag):
-        name = dv.name
-        wv = wfVertex()
-        wv.name = name
-        wv.wf  = wf.name # FIXME
+        name	= dv.name
+        wv	= wfVertex()
+        wv.name	= name
+        wv.wf	= wf.name
         wv.save()
         g.add_node(name, wf=dag)
         
         
     for de in dagEdge.objects.filter(dag=dag):
-        name = de.name
-        we = wfEdge()
-        we.name = name
+        name	= de.name
+        we	= wfEdge()
+        we.name	= name
         we.source = de.source
         we.target = de.target
+        we.wf	= wf.name
         we.save()
         g.add_edge(de.source, de.target)
 

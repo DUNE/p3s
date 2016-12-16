@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^jobdetail',	views.jobdetail,	name='jobdetail'),
     url(r'^pilotdetail',views.pilotdetail,	name='pilotdetail'),
     url(r'^dagdetail',	views.dagdetail,	name='dagdetail'),
+    url(r'^wfdetail',	views.wfdetail,		name='wfdetail'),
 ]
