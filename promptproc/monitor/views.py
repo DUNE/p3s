@@ -106,6 +106,7 @@ class WfTable(MonitorTable):
     # FIXME rendering later
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
     
+    def render_name(self,value):return self.makelink('wfdetail', 'name', value)
     def render_dag(self,value):return self.makelink('dagdetail', 'name', value)
         
     class Meta:
