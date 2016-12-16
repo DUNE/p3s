@@ -23,19 +23,19 @@ admin.site.register(dagEdge, dagEdgeAdmin)
 
 ######################## WF #############################    
 class workflowAdmin(admin.ModelAdmin):
-    list_display = ('name', 'dag', 'description', 'ts_def',)
+    list_display = ('name', 'uuid','dag', 'description', 'ts_def',)
     empty_value_display = '-empty-'
     
 admin.site.register(workflow, workflowAdmin)
 #--------------------------------------------------------
 class wfVertexAdmin(admin.ModelAdmin):
-    list_display = ('name', 'wf')
+    list_display = ('name', 'wf', 'wfuuid',)
     empty_value_display = '-empty-'
     
 admin.site.register(wfVertex, wfVertexAdmin)
 #--------------------------------------------------------
 class wfEdgeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'source', 'target', 'wf',)
+    list_display = ('name', 'source', 'target', 'wf', 'wfuuid',)
     empty_value_display = '-empty-'
     
 admin.site.register(wfEdge, wfEdgeAdmin)

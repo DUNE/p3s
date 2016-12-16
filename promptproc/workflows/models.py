@@ -51,6 +51,7 @@ class workflow(models.Model):
 class wfVertex(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
     wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
+    wfuuid	= models.CharField(max_length=36, default='')
     
     def __str__(self):
         return self.name
@@ -58,6 +59,7 @@ class wfVertex(models.Model):
 class wfEdge(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
     wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
+    wfuuid	= models.CharField(max_length=36, default='')
 
     source	= models.CharField(max_length=36, default='')	# source
     target	= models.CharField(max_length=36, default='')	# target

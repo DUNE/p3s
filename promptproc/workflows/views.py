@@ -98,13 +98,13 @@ def addworkflow(request):
     dag		= post['dag']
     name	= post['name']
     description	= post['description']
-    wf_uuid	= uuid.uuid1()
+    wfuuid	= uuid.uuid1()
 
     ts_def   = timezone.now()
 
     wf		= workflow()
     wf.ts_def	= ts_def
-    wf.uuid	= wf_uuid
+    wf.uuid	= wfuuid
     wf.dag	= dag
     wf.name	= name
     wf.description= description
@@ -119,6 +119,7 @@ def addworkflow(request):
         wv	= wfVertex()
         wv.name	= name
         wv.wf	= wf.name
+        wv.wfuuid= wfuuid
         wv.save()
         g.add_node(name, wf=dag)
         
@@ -127,6 +128,7 @@ def addworkflow(request):
         name	= de.name
         we	= wfEdge()
         we.name	= name
+        we.wfuuid= wfuuid
         we.source = de.source
         we.target = de.target
         we.wf	= wf.name

@@ -106,13 +106,13 @@ class WfTable(MonitorTable):
     # FIXME rendering later
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
     
-    def render_name(self,value):return self.makelink('wfdetail', 'name', value)
+    def render_uuid(self,value):return self.makelink('wfdetail', 'uuid', value)
     def render_dag(self,value):return self.makelink('dagdetail', 'name', value)
         
     class Meta:
         model = workflow
         attrs = {'class': 'paleblue'}
-        exclude	= ('uuid', )
+        # we actually want that: exclude	= ('uuid', )
 
 #--------------------------------------------------------
 # Simpler inheritance (compared to jobs etc) is provisional
@@ -144,7 +144,7 @@ class WfVertexTable(tables.Table):
         
     class Meta:
         model = wfVertex
-        exclude = ('wf',)
+        exclude = ('wf','wfuuid',)
         attrs = {'class': 'paleblue'}
 
 #--------------------------------------------------------
@@ -155,7 +155,7 @@ class WfEdgeTable(tables.Table):
         
     class Meta:
         model = wfEdge
-        exclude = ('wf',)
+        exclude = ('wf','wfuuid',)
         attrs = {'class': 'paleblue'}
 
 ######## REQUEST ROUTERS (SUMMARIES) ####################    
@@ -268,10 +268,10 @@ def detail_handler(request, what):
     if(what=='workflow'):
         template = 'detail2.html'
         objects = workflow.objects
-        theWF = objects.get(name=name)
+        theWF = objects.get(uuid=o_uuid)
         theName = theWF.name
-        aux1 = WfVertexTable(wfVertex.objects.filter(wf=theName))
-        aux2 = WfEdgeTable(wfEdge.objects.filter(wf=theName))
+        aux1 = WfVertexTable(wfVertex.objects.filter(wfuuid=o_uuid))
+        aux2 = WfEdgeTable(wfEdge.objects.filter(wfuuid=o_uuid))
         d['title']	= what+' name: '+theName
                              
     dicto = {}
