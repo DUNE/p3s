@@ -4,7 +4,7 @@ from .models import workflow, wfEdge, wfVertex
 
 ####################### DAG #############################    
 class dagAdmin(admin.ModelAdmin):
-    list_display = ('name',)
+    list_display = ('name', 'description', 'nvertices', 'root', 'ts_def')
     empty_value_display = '-empty-'
     
 admin.site.register(dag, dagAdmin)

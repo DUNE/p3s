@@ -28,7 +28,7 @@ import networkx as nx
 import io
 
 # local import, may require PYTHONPATH to be set
-from comms		import data2post
+from comms		import data2post, rdec
 
 
 #########################################################
@@ -68,23 +68,24 @@ class Dag(dict):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-g", "--graphml",	type=str,	default='',
-                    help="GraphML file to be read and parsed, to then create a DAG on the server.")
+                    help="Create a DAG on the server, using a GraphML file as input.")
 
 parser.add_argument("-n", "--name",	type=str,	default='',
                     help="The name of the DAG or workflow to be manipulated, depending on the context.")
 
 parser.add_argument("-a", "--add",	type=str,	default='',
                     help='''Add a workflow. Argument is the name of the prototype DAG (stored on the server).
-                    If no special name is provided for the workflow via the *name* argument, defaults to the DAG name''')
+                    If no special name is provided for the workflow via the *name* argument,
+                    defaults to the name of the parent DAG''')
 
 parser.add_argument("-D", "--description",	type=str,	default='',
-                    help="Description of the DAG or workflow.")
+                    help="Description of the DAG or workflow (optional).")
 
 parser.add_argument("-o", "--out",	action='store_true',
                     help="output the graph to stdout")
 
 parser.add_argument("-G", "--get",	action='store_true',
-                    help="get a DAG from server, needs the name")
+                    help="get a DAG from server - needs the name of the DAG")
 
 
 parser.add_argument("-H", "--usage",	action='store_true',
@@ -94,26 +95,23 @@ parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/'
                     help="the server address, defaults to http://localhost:8000/")
 
 parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a dag. Needs name.")
+                    help="deletes a dag or a workflow. Needs a name or uuid.")
 
-
-##########################
-parser.add_argument("-s", "--state",	type=str,	default='',
-                    help="sets the job state, needs *adjust* option to be activated")
-
-parser.add_argument("-p", "--priority",	type=int,	default=-1,
-                    help="sets the job priority, needs *adjust* option to be activated")
-
-
-parser.add_argument("-i", "--id",	type=str,	default='',
-                    help="id of the job to be adjusted (pk)")
-parser.add_argument("-t", "--test",	action='store_true',
-                    help="when set, forms a request but does not contact the server")
 parser.add_argument("-v", "--verbosity",	type=int, default=0, choices=[0, 1, 2],
                     help="set output verbosity")
 
-parser.add_argument("-j", "--json_in",	type=str,	default='',
-                    help="file from which to read job templates (must be a list)")
+parser.add_argument("-u", "--uuid",	type=str,	default='',
+                    help="uuid of the objet to be modified or deleted")
+
+########################## Left for later (maybe) ######################
+# parser.add_argument("-s", "--state",	type=str,	default='',
+#                    help="sets the job state, needs *adjust* option to be activated")
+#parser.add_argument("-p", "--priority",	type=int,	default=-1,
+#                    help="sets the job priority, needs *adjust* option to be activated")
+#parser.add_argument("-i", "--id",	type=str,	default='',
+#                    help="id of the job to be adjusted (pk)")
+#parser.add_argument("-t", "--test",	action='store_true',
+#                    help="when set, forms a request but does not contact the server")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
@@ -121,14 +119,13 @@ args = parser.parse_args()
 usage	= args.usage
 
 server	= args.server
-state	= args.state
-priority= args.priority
 
-j_id	= args.id
 verb	= args.verbosity
-tst	= args.test
+
 add	= args.add
 delete	= args.delete
+
+o_uuid	= args.uuid # object uuid
 
 get	= args.get
 name	= args.name
@@ -140,27 +137,40 @@ out	= args.out
 # contents will vary depending on context
 wfList = []
 
-###################### USAGE REQUESTED? ################################
+###################### USAGE PRINT AND EXIT ############################
 if(usage):
     print(Usage)
     exit(0)
 
-###################### DAG DELETE ######################################
+######################### DAG DELETE ###################################
 # Check if it was a deletion request
 if(delete):
     response = None
-    if(name==''): exit(-1) # check if we have the key
+    if(name=='' and o_uuid==''): exit(-1) # check if we have the key
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
-    if(name=='ALL'): # FIXME - not implemented, see "normal delete" which works
+    if(name=='ALL'):
         try:
-            url = 'workflows/deleteall'
+            url = 'workflows/deleteall?what=dag'
             response = urllib.request.urlopen(server+url) # GET
         except URLError:
             exit(1)
 
         data = response.read()
         if(verb >0): print (data)
+        exit(0)
+
+    if(o_uuid=='ALL'):
+        try:
+            url = 'workflows/deleteall?what=workflow'
+            response = urllib.request.urlopen(server+url) # GET
+        except URLError:
+            exit(1)
+
+        data = response.read()
+        if(verb >0): print (data)
+        exit(0)
+    
 
     # Normal delete
     if ',' in name: # assume we have a CSV list
@@ -192,7 +202,7 @@ if(get):
     except URLError:
         exit(1)
     
-    data = response.read().decode("utf-8") 
+    data = rdec(response)
     print (data)
     exit(0)
 ########################## REGISTRATION ################################
@@ -251,7 +261,7 @@ if(add!=''):
     except URLError:
         exit(1)
     
-    data = response.read().decode("utf-8") 
+    data = rdec(response)
     if(out): print (data)
 
     exit(0)

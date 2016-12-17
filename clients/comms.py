@@ -15,3 +15,7 @@ class data2post():
 
     def __str__(self):
         return self.packaged
+###################################################################
+def rdec(r):
+    return r.read().decode('utf-8')
+

@@ -24,20 +24,69 @@ def init(request):
     return HttpResponse("WF INIT %s %s" % (d, status))
 
 ###################################################
+# SHOULD ONLY BE USED BY EXPERTS, do not advertise
+def deleteall(request):
+    what = request.GET.get('what','')
+    if(what==''):
+        return HttpResponse("DELETE ALL: SPECIFICATION OF OBJECTS TO BE DELETED MISSING")
+
+    success = True
+    if(what=='dag'): 
+        try:
+            dag.objects.all().delete()
+        except:
+            success = False
+
+    if(what=='workflow'): 
+        try:
+            wfVertex.objects.all().delete()
+        except:
+            success = False
+
+        try:
+            wfEdge.objects.all().delete()
+        except:
+            success = False
+
+        try:
+            workflow.objects.all().delete()
+        except:
+            success = False
+
+    if(success):
+        return HttpResponse("Deleted ALL %s" % what )
+    else:
+        return HttpResponse("Problems deleting ALL %s" % what )
+
+
+###################################################
 @csrf_exempt
 def deletedag(request):
     
     post	= request.POST
     name	= post['name']
 
+    success = True
     try:
         d = dag.objects.get(name=name)
         d.delete()
-        for v in dagVertex.objects.filter(dag=name):	v.delete()
-        for e in dagEdge.objects.filter(dag=name):	e.delete()
-        return HttpResponse("Deleted DAG %s" % name )
     except:
-        return HttpResponse("Failed to delete DAG %s" % name )
+        success = False
+    
+    try:
+        for v in dagVertex.objects.filter(dag=name): v.delete()
+    except:
+        success = False
+
+    try:
+        for e in dagEdge.objects.filter(dag=name): e.delete()
+    except:
+        success = False
+
+    if(success):
+        return HttpResponse("Deleted DAG %s" % name )
+    else:
+        return HttpResponse("Problems deleting DAG %s" % name )
 
 ###################################################
 @csrf_exempt

@@ -27,7 +27,7 @@ from urllib		import parse
 from urllib.error	import URLError
 
 # local import, requires PYTHONPATH to be set
-from comms import data2post
+from comms import data2post, rdec
 
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
@@ -64,10 +64,6 @@ stopped		stopped after exhausting all brokerage attempts.
 '''
 
 # simple utilities
-#-------------------------
-def rdec(r):
-    return r.read().decode('utf-8')
-
 #-------------------------
 def logfail(msg, logger):
     error = ''

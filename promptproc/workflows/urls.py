@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^getdag$',	views.getdag,	name='getdag'),
     url(r'^addworkflow$',views.addworkflow,name='addworkflow'),
     url(r'^deletedag$',	views.deletedag,name='deletedag'),
+    url(r'^deleteall$',	views.deleteall,name='deleteall'),
 ]
