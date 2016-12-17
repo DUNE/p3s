@@ -26,8 +26,8 @@ from urllib		import error
 from urllib		import parse
 from urllib.error	import URLError
 
-# local import, requires PYTHONPATH to be set
-from comms import data2post, rdec, communicate
+# local import (utils)
+from comms import data2post, rdec, communicate, logfail
 
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
@@ -55,7 +55,7 @@ input and local file system problem.
 * Pilot States
 active		registered on the server, no attempt at brokerage yet
 no jobs		no jobs matched this pilot
-dispatched	got a job and preparing its execution
+dispatched	got a job and preparing its execution (may still fail)
 running		running the payload job
 finished	job has completed
 stopped		stopped after exhausting all brokerage attempts.
@@ -63,16 +63,6 @@ stopped		stopped after exhausting all brokerage attempts.
 
 '''
 
-# simple utilities
-#-------------------------
-def logfail(msg, logger):
-    error = ''
-    try:
-        error	= msg['error'] # if the server told us what the error was, log it
-        logger.error('exiting, received FAIL status from server, error:%s' % error)
-    except:
-        logger.error('exiting, received FAIL status from server, no error returned')
-    exit(2)
 ########################### THE PILOT CLASS #############################
 class Pilot(dict):
     def __init__(self, jobcount=0, cycles=1, period=5):
@@ -149,23 +139,24 @@ reportURL	= server+'pilots/report'
 registerURL	= server+'pilots/register'
 deleteallURL	= server+'pilots/deleteall'
 deleteURL	= server+'pilots/delete'
-
+jobReqURL	= server+'pilots/request/?uuid=%s'
 ###################### USAGE REQUESTED? ################################
 if(usage):
     print(Usage)
     exit(0)
 
-###################### PILOT DELETE ####################################
-# Check if it was a deletion request
+#################### PILOT DELETE AND EXIT #############################
+# Check if it was a deletion request. Note we don't have a logger yet,
+# since a log is always tied to a working pilot, so we don't log
+# deletion errors to a file in this function.
 if(delete):
     response = None
     if(p_uuid==''): exit(-2) # check if we have the key
 
-    # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
+    # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD. Do not document "ALL"!
     if(p_uuid=='ALL'):
-        response	= communicate(deleteallURL)
-        data		= response.read()
-        if(verb >0): print (data)
+        response = communicate(deleteallURL)
+        if(verb>0): print (rdec(response))
         exit(0)
 
     pilotList = []    # Normal delete, by key(s)
@@ -177,19 +168,18 @@ if(delete):
     for pid in pilotList:
         delData		= data2post(dict(uuid=pid)).utf8()
         response	= communicate(deleteURL, delData)
-    
-        if(verb >0):
-            data = response.read()
-            print (data)
+        if(verb>0): print (rdec(response))
 
     exit(0)
 
+########################################################################
 ##################### CREATE A PILOT ###################################
 # NB. Need uuid for the logfile etc, so do it now
 p = Pilot(cycles=cycles, period=period)
 
 ################### BEGIN: PREPARE LOGGER ##############################
-# Check if we have a log directory, example: /tmp/p3s/pilots
+# Check if we have a log directory, example: /tmp/p3s/pilots.
+# Create if necessary
 
 if(not os.path.exists(logdir)):
     try:
@@ -197,7 +187,7 @@ if(not os.path.exists(logdir)):
     except:
         exit(-1) # we can't log it
 
-logfilename = logdir+'/'+str(p['uuid'])+'.log'
+logfilename = logdir+'/'+str(p['uuid'])+'.log' # note it uses the pilot uuid
 
 if(verb>0): print("Logfile: %s" % logfilename)
 
@@ -209,17 +199,20 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 logfile.setFormatter(formatter)
 
 logger.addHandler(logfile)
-##################### END: PREPARE LOGGER ##############################
+logger.info('START %s on host %s, talking to server %s with period %s and %s cycles' %
+            (str(p['uuid']), p['host'], server, period, cycles))
 
-logger.info('START %s on host %s, talking to server %s with period %s and %s cycles' % (str(p['uuid']), p['host'], server, period, cycles))
+#########################################################################
+######## LOGGER IS READY, REGISTER WITH THE SERVER ######################
+#########################################################################
 
-# Serialize in UTF-8
+# Serialize the pilot in UTF-8
 pilotData = data2post(p).utf8()
 
 if(verb>1): print(pilotData) # UTF-8
-if(verb>1): logger.info('pilot data: %s' % pilotData)
+if(verb>1): logger.info('Pilot data in UTF-8: %s' % pilotData)
 
-# !if in test mode simply bail!
+# If in test mode simply bail, we just wanted to check if the pilot data was OK
 if(tst): exit(0)
 
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
@@ -228,10 +221,10 @@ response = communicate(registerURL, pilotData, logger) # will croak if unsuccess
 logger.info("contact with server established!")
 
 data = rdec(response)
-if(verb>1): print('REGISTER: server response: %s' % data)
-if(verb>1): logger.info('REGISTER: server response: %s' % data)
+if(verb>1): print('REGISTER: server response: %s'	% data)
+if(verb>1): logger.info('REGISTER: server response: %s'	% data)
 
-msg = {}
+msg = {} # we expect a message from the server formatted in json
 try:
     msg		= json.loads(data)
     p['status']	= msg['status']
@@ -243,18 +236,12 @@ except:
 # By now the pilot MUST have some sort of status set by the server's message
 if(p['status']=='FAIL'): logfail(msg, logger)
 
-
-
 #########################################################################
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
 #########################################################################
-
-url	= "pilots/request/?uuid=%s" % p['uuid']
-jobRequestURL	= server+url
-
-cnt = p.cycles # Lifecycle
-
-p['jobcount'] = 0
+jobRequestURL	= jobReqURL % p['uuid']
+cnt		= p.cycles # Number of cycles to go through before exit
+p['jobcount']	= 0 # will count how many jobs were eceuted in this pilot
 ####################### MAIN LOOP #######################################
 while(cnt>0):     # "Poll the server" loop.
 
@@ -315,9 +302,8 @@ while(cnt>0):     # "Poll the server" loop.
         p['event']	='jobstop'
         p['jobcount']  += 1
         pilotData	= data2post(p).utf8()
-        response	= communicate(reportURL, pilotData) # will croak if unsuccessful
+        response	= communicate(reportURL, pilotData, logger) # will croak if unsuccessful
 
-        logger.info("contact with server established")
         logger.info('JOB finished: %s' %  p['job'])
     except:
         p['state']	='exception'
@@ -332,20 +318,17 @@ while(cnt>0):     # "Poll the server" loop.
     
     cnt-=1 # proceed to next cycle
     
-    if(cnt==0): break # don't wait another sleep cycle
-    time.sleep(period)
-# ------
-
+    if(cnt==0): break	# don't wait another sleep cycle
+    time.sleep(period)	# wait before the next cycle
 
 ######################## FINISHING UP ##################################
 
 p['state']	= 'stopped'
 pilotData	= data2post(p).utf8()
 
-response	= communicate(reportURL, pilotData) # will croak if unsuccessful
+response	= communicate(reportURL, pilotData, logger) # will croak if unsuccessful
 
 logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(p['jobcount'])))
-
 if(verb>0): print("Stopped. Processed jobs: %s" % str(p['jobcount']))
 
 exit(0)

@@ -30,4 +30,13 @@ def communicate(url, data=None, logger=None):
     except URLError:
         if(logger): logger.error('exiting, error at URL: %s' % url)
         exit(1)
+###################################################################
+def logfail(msg, logger):
+    error = ''
+    try:
+        error	= msg['error'] # if the server told us what the error was, log it
+        logger.error('exiting, received FAIL status from server, error:%s' % error)
+    except:
+        logger.error('exiting, received FAIL status from server, no error returned')
+    exit(2)
 

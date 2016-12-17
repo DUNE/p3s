@@ -15,11 +15,37 @@ in order to optimize throughput
 of data makes the result less relevant (again, the focus is on ETA)
 * processing streams are initiated purely automatically and in real time
 by the data arriving from DAQ
-* there is practically no data handling system since it would introduce more
-complexity, latency and potentially failure modes. Instead, p3s relies on
-federated storage such as provided by an instance of XRootD. A high-performance
-NAS could be an alternative. In either case, the data is essentially local
-on the cluster.
+* there is no distinct data handling system for two reasons. First, the cluster
+which runs p3s is either literally local or can access data through a POSIX-like
+interface with some moderate development and deployment effort. Second, a data
+handling system would introduce additional complexity, latency and potentially
+failure modes. Instead, p3s relies on federated storage such as provided by an
+instance of XRootD. A high-performance NAS could be an alternative. In either case,
+for purposes of access and processing the data is essentially local on the cluster.
+
+## Job dispatch
+### Pilots
+To minimize latency and provide the ability to run transparently on
+a few local resources (e.g. the cluster at EHN1, CERN Tier-0 and perhaps
+some other facilities on or around CERN campus) any reliance on the flavor
+of the underlying batch system needs to be eliminated. In addition,
+latencies inherent in any batch system should be optimally mitigated. Both
+problems are addressed by utilizing a pilot-based job dispatch, where
+the pilots (agents) contact a central service and only receive jobs in
+case the batch slot is secured and the environment validated. This also
+combats a few failure modes.
+
+### Pilot States
+An example of what states a pilot can go through during its lifecycle
+is given below:
+* active registered on the server, no attempt at brokerage yet
+* no jobs no jobs matched this pilot
+* dispatched got a job and preparing its execution (may still fail)
+* running running the payload job
+* finished job has completed
+* stopped stopped after exhausting all brokerage attempts.
+
+
 
 ## Workflow
 While workflow in p3s will be simple compared to a typical production system,
@@ -57,8 +83,8 @@ efficient and tried way to achieve this is the pilot-based job submission.
    * The *job* - submission of job definitions to the server and management of job data on the server
    
 ## Software dependencies
-* Python3
-* Django 1.10
+* Python3+
+* Django 1.10+
 * django-tables2
 * RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
 * Apache
@@ -67,6 +93,9 @@ efficient and tried way to achieve this is the pilot-based job submission.
 
 
 ## TODO
+
+### Models
+Pilot - add cycles, period and list of jobs done.
 
 ### Time limits
 * loss of the pilot heartbeat
