@@ -45,3 +45,11 @@ settings.MY_EXAMPLE_SETTING
 `
 t - timedelta(minutes=60)
 `
+Local time using Django timezine:
+`
+timezone.localtime(value).strftime("%Y%m%d%H%M")
+`
+
+Note that Django timezone will complain if you use
+pytz to adjust datetime (which Django is trying to make
+TZ-aware by itself).

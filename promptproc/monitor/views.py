@@ -16,11 +16,13 @@ from datetime				import timedelta
 from django.shortcuts			import render
 from django.utils			import timezone
 from django.utils.timezone		import utc
+from django.utils.timezone		import activate
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
 from django.core			import serializers
 from django.utils.safestring		import mark_safe
 from django.forms.models		import model_to_dict
+from django.conf			import settings
 
 # Models used in the application:
 from pilots.models			import pilot
@@ -42,7 +44,6 @@ except ImportError:
     exit(-3)
 
 
-
 #########################################################    
 ##### BASE CLASSES FOR MONITOR AND DETAIL TABLES ########
 class DetailTable(tables.Table):
@@ -62,6 +63,9 @@ class MonitorTable(tables.Table):
     def makelink(self, what, key, value):
         return mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
                          % (self.site, reverse(what), key, value, value))
+
+    def renderDateTime(self, dt): # common format defined here.
+        return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
         
 
 #########################################################    
@@ -73,8 +77,11 @@ class MonitorTable(tables.Table):
 class PilotTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
     def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('pilotdetail',
-                                                             'pk', value)
+    def render_id(self,value):		return self.makelink('pilotdetail','pk', value)
+
+    def render_ts_cre(self, value):	return self.renderDateTime(value)
+    def render_ts_reg(self, value):	return self.renderDateTime(value)
+    def render_ts_lhb(self, value):	return self.renderDateTime(value)
 
     class Meta:
         model	= pilot
@@ -85,9 +92,12 @@ class PilotTable(MonitorTable):
 class JobTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
     def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('jobdetail',
-	                                                     'pk', value)
-        
+    def render_id(self,value):		return self.makelink('jobdetail','pk',	value)
+    def render_ts_def(self, value):	return self.renderDateTime(value)
+    def render_ts_dis(self, value):	return self.renderDateTime(value)
+    def render_ts_sta(self, value):	return self.renderDateTime(value)
+    def render_ts_sto(self, value):	return self.renderDateTime(value)
+    
     class Meta:
         model = job
         attrs = {'class': 'paleblue'}
@@ -332,3 +342,4 @@ def detail_handler(request, what):
 # yest = datetime.datetime.now() - timedelta(days=1)
 #        for o in objects.filter(ts_lhb__gte=yest):
 #            print(o.ts_lhb)
+#    print(timezone.get_current_timezone_name())

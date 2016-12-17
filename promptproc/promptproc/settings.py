@@ -41,7 +41,8 @@ ALLOWED_HOSTS = ['localhost',
                  'felicity.local',
                  'ferocity.local',
                  'sagacity.local',]
-
+# -mxp- common time format
+TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
 # Application definition
 
