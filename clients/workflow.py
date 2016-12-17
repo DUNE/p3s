@@ -95,7 +95,10 @@ parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/'
                     help="the server address, defaults to http://localhost:8000/")
 
 parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a dag or a workflow. Needs a name or uuid.")
+                    help="deletes a dag or a workflow. Needs a name or uuid, and the type (what).")
+
+parser.add_argument("-w", "--what",	type=str,	default='',
+                    help="dag or workflow (for deletion).")
 
 parser.add_argument("-v", "--verbosity",	type=int, default=0, choices=[0, 1, 2],
                     help="set output verbosity")
@@ -124,6 +127,7 @@ verb	= args.verbosity
 
 add	= args.add
 delete	= args.delete
+what	= args.what
 
 o_uuid	= args.uuid # object uuid
 
@@ -135,7 +139,7 @@ out	= args.out
 
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
-wfList = []
+objList = []
 
 ###################### USAGE PRINT AND EXIT ############################
 if(usage):
@@ -149,46 +153,51 @@ if(delete):
     if(name=='' and o_uuid==''): exit(-1) # check if we have the key
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
-    if(name=='ALL'):
+    if(name=='ALL' or o_uuid=='ALL'):
         try:
-            url = 'workflows/deleteall?what=dag'
+            url = "workflows/deleteall?what=%s" % what
             response = urllib.request.urlopen(server+url) # GET
         except URLError:
             exit(1)
 
-        data = response.read()
-        if(verb >0): print (data)
+        if(verb>0): print (rdec(response))
         exit(0)
 
-    if(o_uuid=='ALL'):
-        try:
-            url = 'workflows/deleteall?what=workflow'
-            response = urllib.request.urlopen(server+url) # GET
-        except URLError:
-            exit(1)
+    # if(o_uuid=='ALL'):
+    #     try:
+    #         url = 'workflows/deleteall?what=workflow'
+    #         response = urllib.request.urlopen(server+url) # GET
+    #     except URLError:
+    #         exit(1)
 
-        data = response.read()
-        if(verb >0): print (data)
-        exit(0)
+    #     if(verb>0): print (rdec(response))
+    #     exit(0)
     
 
     # Normal delete
-    if ',' in name: # assume we have a CSV list
-        wfList = name.split(',')
+    delArg = None
+    if(name!=''):	delArg = name
+    if(o_uuid!=''):	delArg = o_uuid
+    
+    if ',' in delArg: # assume we have a CSV list
+        objList = delArg.split(',')
     else:
-        wfList.append(name)
+        objList.append(delArg)
+        
 
-    for w in wfList:
-        delData = data2post(dict(name=w)).utf8()
+    dicto = None
+    for o in objList:
+        if(what=='dag'):	dicto = dict(what=what, name=name)
+        if(what=='workflow'):	dicto = dict(what=what, uuid=o_uuid)
+        delData = data2post(dicto).utf8()
 
         try:
-            url = 'workflows/deletedag'
+            url = 'workflows/delete'
             response = urllib.request.urlopen(server+url, delData) # POST
         except URLError:
             exit(1)
     
-        data = response.read()
-        if(verb >0): print (data)
+        if(verb>0): print (rdec(response))
 
     exit(0)
 
@@ -202,8 +211,7 @@ if(get):
     except URLError:
         exit(1)
     
-    data = rdec(response)
-    print (data)
+    print (rdec(response))
     exit(0)
 ########################## REGISTRATION ################################
 # Forms a DAG (workflow template) on the server based on a graph
@@ -243,8 +251,7 @@ if(graphml!=''):
     except URLError:
         exit(1)
     
-    data = response.read()
-    if(out): print (data)
+    if(out): print (rdec(response))
 
     exit(0)
 ########################################################################
@@ -256,13 +263,12 @@ if(add!=''):
 
     wfData = data2post(d).utf8()
     try:
-        url = 'workflows/addworkflow'
+        url = 'workflows/addwf'
         response = urllib.request.urlopen(server+url, wfData) # POST
     except URLError:
         exit(1)
     
-    data = rdec(response)
-    if(out): print (data)
+    if(out): print (rdec(response))
 
     exit(0)
 

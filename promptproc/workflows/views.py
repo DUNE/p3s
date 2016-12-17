@@ -36,18 +36,24 @@ def deleteall(request):
             dag.objects.all().delete()
         except:
             success = False
+        try:
+            dagVertex.objects.all().delete()
+        except:
+            success = False
+        try:
+            dagEdge.objects.all().delete()
+        except:
+            success = False
 
     if(what=='workflow'): 
         try:
             wfVertex.objects.all().delete()
         except:
             success = False
-
         try:
             wfEdge.objects.all().delete()
         except:
             success = False
-
         try:
             workflow.objects.all().delete()
         except:
@@ -61,33 +67,57 @@ def deleteall(request):
 
 ###################################################
 @csrf_exempt
-def deletedag(request):
-    
+def delete(request):
     post	= request.POST
-    name	= post['name']
+    what	= post['what']
+    
+    keyname	= ''
+    
+    success = True
+    
+    if(what=='dag'):
+        keyname = post['name']
+        success	= deldag(keyname)
 
+    if(what=='workflow'):
+        keyname	= post['uuid']
+        try:
+            w = workflow.objects.get(uuid=keyname)
+            w.delete()
+        except:
+            success = False
+        try:
+            for v in wfVertex.objects.filter(wfuuid=keyname): v.delete()
+        except:
+            success = False
+        try:
+            for e in wfEdge.objects.filter(wfuuid=keyname): e.delete()
+        except:
+            success = False
+
+    if(success):
+        return HttpResponse("Deleted %s %s" % (what, keyname) )
+    else:
+        return HttpResponse("Problems deleting %s %s" % (what, keyname) )
+
+###################################################
+def deldag(name):
     success = True
     try:
         d = dag.objects.get(name=name)
         d.delete()
     except:
         success = False
-    
     try:
         for v in dagVertex.objects.filter(dag=name): v.delete()
     except:
         success = False
-
     try:
         for e in dagEdge.objects.filter(dag=name): e.delete()
     except:
         success = False
-
-    if(success):
-        return HttpResponse("Deleted DAG %s" % name )
-    else:
-        return HttpResponse("Problems deleting DAG %s" % name )
-
+        
+    return success
 ###################################################
 @csrf_exempt
 def adddag(request):
@@ -98,8 +128,7 @@ def adddag(request):
     graphml	= post['graphml']
     description	= post['description']
 
-    print(name)
-    x = deletedag(request)
+    x = deldag(name)
     
     fn = "/tmp/p3s/"+name+".graphml"
     f = open(fn, "w") # FXIME: this has yet to work: f = io.StringIO()
@@ -141,7 +170,7 @@ def adddag(request):
 
 ###################################################
 @csrf_exempt
-def addworkflow(request):
+def addwf(request):
     
     post	= request.POST
     dag		= post['dag']
