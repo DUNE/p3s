@@ -75,6 +75,11 @@ class MonitorTable(tables.Table):
 # NOT DISPLAY THEM. THIS IS TEMPORARY/HISTORICAL        #
 #########################################################    
 class PilotTable(MonitorTable):
+    ts_cre	= tables.Column(verbose_name='created')
+    ts_reg	= tables.Column(verbose_name='registered')
+    ts_lhb	= tables.Column(verbose_name='last heartbeat')
+    jobcount	= tables.Column(verbose_name='jobs')
+    
     def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
     def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
     def render_id(self,value):		return self.makelink('pilotdetail','pk', value)
@@ -90,6 +95,15 @@ class PilotTable(MonitorTable):
 
 #--------------------------------------------------------
 class JobTable(MonitorTable):
+
+    ts_def	= tables.Column(verbose_name='defined')
+    ts_dis	= tables.Column(verbose_name='dispatched')
+    ts_sta	= tables.Column(verbose_name='started')
+    ts_sto	= tables.Column(verbose_name='stopped')
+    jobtype	= tables.Column(verbose_name='type')
+    priority	= tables.Column(verbose_name='Pri.')
+    timelimit	= tables.Column(verbose_name='t.limit')
+
     def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
     def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
     def render_id(self,value):		return self.makelink('jobdetail','pk',	value)
@@ -105,6 +119,10 @@ class JobTable(MonitorTable):
 #--------------------------------------------------------
 class DagTable(MonitorTable):
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+
+    ts_def	= tables.Column(verbose_name='defined')
+    nvertices	= tables.Column(verbose_name='nvert')
+    
     def render_name(self,value):return self.makelink('dagdetail', 'name', value)
         
     class Meta:
@@ -115,6 +133,9 @@ class DagTable(MonitorTable):
 class WfTable(MonitorTable):
     # FIXME rendering later
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+    
+    ts_def	= tables.Column(verbose_name='defined')
+    dag		= tables.Column(verbose_name='DAG')
     
     def render_uuid(self,value):return self.makelink('wfdetail', 'uuid', value)
     def render_dag(self,value):return self.makelink('dagdetail', 'name', value)
