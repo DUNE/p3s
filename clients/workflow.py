@@ -163,18 +163,8 @@ if(delete):
         if(verb>0): print (rdec(response))
         exit(0)
 
-    # if(o_uuid=='ALL'):
-    #     try:
-    #         url = 'workflows/deleteall?what=workflow'
-    #         response = urllib.request.urlopen(server+url) # GET
-    #     except URLError:
-    #         exit(1)
 
-    #     if(verb>0): print (rdec(response))
-    #     exit(0)
-    
-
-    # Normal delete
+    # Normal delete (not ALL items)
     delArg = None
     if(name!=''):	delArg = name
     if(o_uuid!=''):	delArg = o_uuid
@@ -201,7 +191,7 @@ if(delete):
 
     exit(0)
 
-########################################################################
+###################### GET DAG (DIAGNOSTICS) ###########################
 if(get):
     response = None
     if(name==''): exit(-1) # check if we have the key

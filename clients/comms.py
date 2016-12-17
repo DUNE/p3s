@@ -1,4 +1,5 @@
 import urllib
+import logging
 
 ###################################################################
 # Just want to encapsulate some voodoo which encodes a dictionary #
@@ -18,4 +19,15 @@ class data2post():
 ###################################################################
 def rdec(r):
     return r.read().decode('utf-8')
+
+###################################################################
+def communicate(url, data=None, logger=None):
+    try:
+        if(data):
+            return urllib.request.urlopen(url, data)
+        else:
+            return urllib.request.urlopen(url)
+    except URLError:
+        if(logger): logger.error('exiting, error at URL: %s' % url)
+        exit(1)
 

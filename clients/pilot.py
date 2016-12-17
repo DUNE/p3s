@@ -27,7 +27,7 @@ from urllib		import parse
 from urllib.error	import URLError
 
 # local import, requires PYTHONPATH to be set
-from comms import data2post, rdec
+from comms import data2post, rdec, communicate
 
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
@@ -73,17 +73,6 @@ def logfail(msg, logger):
     except:
         logger.error('exiting, received FAIL status from server, no error returned')
     exit(2)
-#-------------------------
-def communicate(url, data=None):
-    try:
-        if(data):
-            return urllib.request.urlopen(url, data)
-        else:
-            return urllib.request.urlopen(url)
-    except URLError:
-        logger.error('exiting, error at URL: %s' % url)
-        exit(1)
-
 ########################### THE PILOT CLASS #############################
 class Pilot(dict):
     def __init__(self, jobcount=0, cycles=1, period=5):
@@ -234,9 +223,9 @@ if(verb>1): logger.info('pilot data: %s' % pilotData)
 if(tst): exit(0)
 
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
-response = communicate(registerURL, pilotData) # will croak if unsuccessful
+response = communicate(registerURL, pilotData, logger) # will croak if unsuccessful
 
-logger.info("contact with server established")
+logger.info("contact with server established!")
 
 data = rdec(response)
 if(verb>1): print('REGISTER: server response: %s' % data)
