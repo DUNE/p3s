@@ -1,4 +1,8 @@
 import urllib
+from urllib		import request
+from urllib		import error
+from urllib.error	import URLError
+
 import logging
 
 ###################################################################

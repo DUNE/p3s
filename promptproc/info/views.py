@@ -17,8 +17,5 @@ def index(request):
                       'domain':		domain,
                       'hostname':	hostname,
                       'time':		timeString,
-                      
-                      # FIXME - deal with timestamp later -mxp-
-                      # 'time': str(timezone.now())
                   }
     )

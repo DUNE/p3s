@@ -28,7 +28,7 @@ import networkx as nx
 import io
 
 # local import, may require PYTHONPATH to be set
-from comms		import data2post, rdec
+from comms		import data2post, rdec, communicate
 
 
 #########################################################
@@ -141,6 +141,11 @@ out	= args.out
 # contents will vary depending on context
 objList = []
 
+deleteallURL	= server+'workflows/deleteall?what=%s'
+deleteURL	= server+'workflows/delete'
+getdagURL	= server+'workflows/getdag?name=%s'
+adddagURL	= server+'workflows/adddag'
+addwfURL	= server+'workflows/addwf'
 ###################### USAGE PRINT AND EXIT ############################
 if(usage):
     print(Usage)
@@ -154,12 +159,7 @@ if(delete):
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
     if(name=='ALL' or o_uuid=='ALL'):
-        try:
-            url = "workflows/deleteall?what=%s" % what
-            response = urllib.request.urlopen(server+url) # GET
-        except URLError:
-            exit(1)
-
+        response = communicate(deleteallURL % what)
         if(verb>0): print (rdec(response))
         exit(0)
 
@@ -179,14 +179,8 @@ if(delete):
     for o in objList:
         if(what=='dag'):	dicto = dict(what=what, name=name)
         if(what=='workflow'):	dicto = dict(what=what, uuid=o_uuid)
-        delData = data2post(dicto).utf8()
-
-        try:
-            url = 'workflows/delete'
-            response = urllib.request.urlopen(server+url, delData) # POST
-        except URLError:
-            exit(1)
-    
+        delData	= data2post(dicto).utf8()
+        response= communicate(deletlURL, delData) # POST
         if(verb>0): print (rdec(response))
 
     exit(0)
@@ -195,13 +189,8 @@ if(delete):
 if(get):
     response = None
     if(name==''): exit(-1) # check if we have the key
-    try:
-        url = 'workflows/getdag?name='+name
-        response = urllib.request.urlopen(server+url) # GET
-    except URLError:
-        exit(1)
-    
-    print (rdec(response))
+    response = communicate(getdagURL % name)
+    if(verb>0): print (rdec(response))
     exit(0)
 ########################## REGISTRATION ################################
 # Forms a DAG (workflow template) on the server based on a graph
@@ -233,15 +222,9 @@ if(graphml!=''):
     s = '\n'.join(nx.generate_graphml(g))
 
     d = Dag(name=name, description=description, graphml=s)
-    dagData = data2post(d).utf8()
-    
-    try:
-        url = 'workflows/adddag'
-        response = urllib.request.urlopen(server+url, dagData) # POST
-    except URLError:
-        exit(1)
-    
-    if(out): print (rdec(response))
+    dagData	= data2post(d).utf8()
+    response	= communicate(adddagURL, dagData)
+    if(verb>1): print (rdec(response))
 
     exit(0)
 ########################################################################
@@ -251,14 +234,9 @@ if(add!=''):
 
     d ={'dag':add, 'name':name, 'description':description}
 
-    wfData = data2post(d).utf8()
-    try:
-        url = 'workflows/addwf'
-        response = urllib.request.urlopen(server+url, wfData) # POST
-    except URLError:
-        exit(1)
-    
-    if(out): print (rdec(response))
+    wfData	= data2post(d).utf8()
+    response	= communicate(addwfURL, wfData)
+    if(verb>1): print (rdec(response))
 
     exit(0)
 
