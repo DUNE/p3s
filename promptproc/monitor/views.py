@@ -120,6 +120,9 @@ class JobTable(MonitorTable):
 class DagTable(MonitorTable):
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
 
+
+    def render_ts_def(self, value):	return self.renderDateTime(value)
+    
     ts_def	= tables.Column(verbose_name='defined')
     nvertices	= tables.Column(verbose_name='nvert')
     
@@ -133,6 +136,9 @@ class DagTable(MonitorTable):
 class WfTable(MonitorTable):
     # FIXME rendering later
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
+
+
+    def render_ts_def(self, value):	return self.renderDateTime(value)
     
     ts_def	= tables.Column(verbose_name='defined')
     dag		= tables.Column(verbose_name='DAG')
