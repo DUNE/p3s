@@ -216,7 +216,7 @@ def data_handler(request, what):
     name	= request.GET.get('name','')
 
     # FIXME -beautify the timestamp later -mxp-
-    now		= datetime.datetime.now().strftime('%x %X')
+    now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
     domain	= request.get_host()
     d		= dict(domain=domain, time=str(now))
 
