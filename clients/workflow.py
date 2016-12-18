@@ -74,9 +74,6 @@ parser.add_argument("-a", "--add",	type=str,	default='',
 parser.add_argument("-D", "--description",	type=str,	default='',
                     help="Description of the DAG or workflow (optional).")
 
-parser.add_argument("-o", "--out",	action='store_true',
-                    help="output the graph to stdout")
-
 parser.add_argument("-G", "--get",	action='store_true',
                     help="get a DAG from server - needs the name of the DAG")
 
@@ -94,7 +91,7 @@ parser.add_argument("-w", "--what",	type=str,	default='',
                     help="dag or workflow (for deletion).")
 
 parser.add_argument("-v", "--verbosity",	type=int, default=0, choices=[0, 1, 2],
-                    help="set output verbosity")
+                    help="set output verbosity - also needs to be set for outputting reponses from the server (data as well)")
 
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the objet to be modified or deleted")
@@ -128,7 +125,6 @@ get	= args.get
 name	= args.name
 graphml	= args.graphml
 description = args.description
-out	= args.out
 
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
