@@ -17,7 +17,7 @@ of data makes the result less relevant (again, the focus is on ETA)
 by the data arriving from DAQ
 * there is no distinct data handling system for two reasons. First, the cluster
 which runs p3s is either literally local or can access data through a POSIX-like
-interface with some moderate development and deployment effort. Second, a data
+interface with some modest development and deployment effort. Second, a data
 handling system would introduce additional complexity, latency and potentially
 failure modes. Instead, p3s relies on federated storage such as provided by an
 instance of XRootD. A high-performance NAS could be an alternative. In either case,
@@ -38,12 +38,12 @@ combats a few failure modes.
 ### Pilot States
 An example of what states a pilot can go through during its lifecycle
 is given below:
-* active registered on the server, no attempt at brokerage yet
-* no jobs no jobs matched this pilot
-* dispatched got a job and preparing its execution (may still fail)
-* running running the payload job
-* finished job has completed
-* stopped stopped after exhausting all brokerage attempts.
+* *active*: registered on the server, no attempt at brokerage yet
+* *no jobs*: no jobs matched this pilot
+* *dispatched*: got a job and preparing its execution (may still fail)
+* *running*: running the payload job
+* *finished*: job has completed
+* *stopped*: stopped after exhausting all brokerage attempts.
 
 
 
