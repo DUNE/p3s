@@ -19,18 +19,10 @@ import datetime
 import json
 from pprint		import pprint
 
-import urllib
-from urllib		import request
-from urllib		import error
-from urllib.error	import URLError
-
 import networkx as nx
-import io
 
 from comms		import data2post, rdec, communicate
 from serverURL		import serverURL
-
-
 #########################################################
 settings.configure(USE_TZ = True)
 
@@ -49,78 +41,40 @@ Workflows are created based on templates which are DAGs which must be
 exist on the server.
 
 '''
-
 #-------------------------
 class Dag(dict):
     def __init__(self, name='default', description='', graphml=''):
         self['name']		= name
         self['description']	= description
         self['graphml']		= graphml
-
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-g", "--graphml",	type=str,	default='',
-                    help="Create a DAG on the server, using a GraphML file as input.")
-
-parser.add_argument("-n", "--name",	type=str,	default='',
-                    help="The name of the DAG or workflow to be manipulated, depending on the context.")
-
+parser.add_argument("-G", "--get",	action='store_true', help="get a DAG from server - needs the name of the DAG")
+parser.add_argument("-H", "--usage",	action='store_true', help="print usage notes and exit")
+parser.add_argument("-d", "--delete",	action='store_true', help="deletes a dag or a workflow. Needs name/uuid/type (what).")
+parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
+parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/', help="the server, default: http://localhost:8000/")
+parser.add_argument("-w", "--what",	type=str,	default='', help="dag or workflow (for deletion).")
+parser.add_argument("-v", "--verbosity",type=int,	default=0, choices=[0, 1, 2], help="set verbosity - also needed for data output.")
+parser.add_argument("-u", "--uuid",	type=str,	default='', help="uuid of the objet to be modified or deleted")
+parser.add_argument("-g", "--graphml",	type=str,	default='', help="Create a DAG on the server from a GraphML file.")
+parser.add_argument("-n", "--name",	type=str,	default='', help="The name of the DAG or workflow to be manipulated.")
 parser.add_argument("-a", "--add",	type=str,	default='',
-                    help='''Add a workflow. Argument is the name of the prototype DAG (stored on the server).
+                    help='''Add a workflow. Argument is the name of the prototype DAG (already stored on the server).
                     If no special name is provided for the workflow via the *name* argument,
                     defaults to the name of the parent DAG''')
-
-parser.add_argument("-D", "--description",	type=str,	default='',
-                    help="Description of the DAG or workflow (optional).")
-
-parser.add_argument("-G", "--get",	action='store_true',
-                    help="get a DAG from server - needs the name of the DAG")
-
-
-parser.add_argument("-H", "--usage",	action='store_true',
-                    help="print usage notes and exit")
-
-parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
-                    help="the server address, defaults to http://localhost:8000/")
-
-parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a dag or a workflow. Needs a name or uuid, and the type (what).")
-
-parser.add_argument("-w", "--what",	type=str,	default='',
-                    help="dag or workflow (for deletion).")
-
-parser.add_argument("-v", "--verbosity",	type=int, default=0, choices=[0, 1, 2],
-                    help="set output verbosity - also needs to be set for outputting reponses from the server (data as well)")
-
-parser.add_argument("-u", "--uuid",	type=str,	default='',
-                    help="uuid of the objet to be modified or deleted")
-
-########################## Left for later (maybe) ######################
-# parser.add_argument("-s", "--state",	type=str,	default='',
-#                    help="sets the job state, needs *adjust* option to be activated")
-#parser.add_argument("-p", "--priority",	type=int,	default=-1,
-#                    help="sets the job priority, needs *adjust* option to be activated")
-#parser.add_argument("-i", "--id",	type=str,	default='',
-#                    help="id of the job to be adjusted (pk)")
-#parser.add_argument("-t", "--test",	action='store_true',
-#                    help="when set, forms a request but does not contact the server")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
 usage	= args.usage
-
 server	= args.server
-
 verb	= args.verbosity
-
 add	= args.add
 delete	= args.delete
 what	= args.what
-
 o_uuid	= args.uuid # object uuid
-
 get	= args.get
 name	= args.name
 graphml	= args.graphml
@@ -147,7 +101,6 @@ if(delete):
         response = communicate(URLs['workflow']['deleteallURL'] % what)
         if(verb>0): print (rdec(response))
         exit(0)
-
 
     # Normal delete (not ALL items)
     delArg = None
@@ -184,11 +137,11 @@ if(get):
 
 if(graphml!=''):
     if(name==''): # default to the root of the file name
-        basename = graphml.rsplit( ".", 1 )[0]
+        basename = graphml.rsplit( ".", 1 )[0] # admittedly crafty
         segs = basename.rsplit("/",1)
         name = segs[-1]
     
-    if(verb > 1): print ('Request for DAG "%s". Reading file %s' % (name, graphml))
+    if(verb>1): print ('Request for DAG "%s". Reading file %s' % (name, graphml))
     g = nx.read_graphml(graphml)
 
     if(verb>0):

@@ -16,11 +16,6 @@ import datetime
 import json
 from pprint import pprint
 
-import urllib
-from urllib import request
-from urllib import error
-from urllib.error import URLError
-
 from comms import data2post, rdec, communicate, logfail
 from serverURL import serverURL
 
@@ -65,7 +60,7 @@ parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/'
                     help="the server address, defaults to http://localhost:8000/")
 parser.add_argument("-s", "--state",	type=str,	default='',
                     help="sets the job state, needs *adjust* option to be activated")
-parser.add_argument("-p", "--priority",	type=int,	default=-1,
+parser.add_argument("-p", "--priority",	type=int,	default=0,
                     help="sets the job priority, needs *adjust* option to be activated")
 parser.add_argument("-a", "--adjust",	action='store_true',
                     help="enables state or priority adjustments. Needs uuid.")
@@ -182,40 +177,25 @@ if(delete):
 if(j_uuid!=''): exit(-1)
 
 ########################## REGISTRATION ################################
-# Check if we want to read a json file with job templates and send
-# these entries to the server. Currently the only option to add a job
-# programmatically.
+# Check if we want to read a json file with job templates and register
 
 if(json_in!=''):
     with open(json_in) as data_file:    
         data = json.load(data_file)
 
     for jj in data:
-        print(jj)
         j = Job()
         for k in jj.keys(): j[k] = jj[k]
         jobList.append(j)
 
-        #else:	# Create and serialize a single job -  jobList.append(Job())
-
-
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
-    # Collection of candidate jobs has been prepared.
-    # Contact the server, try to register.
+    # Contact the server, try to register the job(s)
     for j in jobList:
         jobData = data2post(j).utf8()
-        if(verb>0):	print(jobData)
-        if(tst):	continue # if in test mode skip contact with the server
-
-        try:
-            url = 'jobs/addjob'
-            response = urllib.request.urlopen(server+url, jobData) # POST
-        except URLError:
-            exit(1)
-    
-        data = response.read()
-        if(verb >0): print (data)
+        if(verb>0): print(jobData)
+        response = communicate(URLs['job']['addjobURL'], jobData) # POST
+        if(verb>0): print (rdec(response))
 
 
 

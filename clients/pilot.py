@@ -19,13 +19,6 @@ import subprocess
 from django.conf	import settings
 from django.utils	import timezone
 
-# HTTP comms
-import urllib
-from urllib		import request
-from urllib		import error
-from urllib		import parse
-from urllib.error	import URLError
-
 # local import (utils)
 from comms import data2post, rdec, communicate, logfail
 from serverURL import serverURL
