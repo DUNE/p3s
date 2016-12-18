@@ -27,8 +27,8 @@ from urllib.error	import URLError
 import networkx as nx
 import io
 
-# local import, may require PYTHONPATH to be set
 from comms		import data2post, rdec, communicate
+from serverURL		import serverURL
 
 
 #########################################################
@@ -56,13 +56,6 @@ class Dag(dict):
         self['name']		= name
         self['description']	= description
         self['graphml']		= graphml
-
-        # self['uuid']	= uuid.uuid1()
-        # self['stage']	= stage
-        # self['priority']= priority
-        # self['state']	= state
-        # self['subhost']	= socket.gethostname() # submission host
-        # self['ts']	= str(timezone.now()) # see TZ note on top
 
 #-------------------------
 parser = argparse.ArgumentParser()
@@ -141,16 +134,12 @@ out	= args.out
 # contents will vary depending on context
 objList = []
 
-deleteallURL	= server+'workflows/deleteall?what=%s'
-deleteURL	= server+'workflows/delete'
-getdagURL	= server+'workflows/getdag?name=%s'
-adddagURL	= server+'workflows/adddag'
-addwfURL	= server+'workflows/addwf'
 ###################### USAGE PRINT AND EXIT ############################
 if(usage):
     print(Usage)
     exit(0)
-
+########################################################################
+URLs = serverURL(server=server)
 ######################### DAG DELETE ###################################
 # Check if it was a deletion request
 if(delete):
@@ -159,7 +148,7 @@ if(delete):
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
     if(name=='ALL' or o_uuid=='ALL'):
-        response = communicate(deleteallURL % what)
+        response = communicate(URLs['workflow']['deleteallURL'] % what)
         if(verb>0): print (rdec(response))
         exit(0)
 
@@ -180,7 +169,7 @@ if(delete):
         if(what=='dag'):	dicto = dict(what=what, name=name)
         if(what=='workflow'):	dicto = dict(what=what, uuid=o_uuid)
         delData	= data2post(dicto).utf8()
-        response= communicate(deletlURL, delData) # POST
+        response= communicate(URLs['workflow']['deleteURL'], delData) # POST
         if(verb>0): print (rdec(response))
 
     exit(0)
@@ -189,7 +178,7 @@ if(delete):
 if(get):
     response = None
     if(name==''): exit(-1) # check if we have the key
-    response = communicate(getdagURL % name)
+    response = communicate(URLs['workflow']['getdagURL'] % name)
     if(verb>0): print (rdec(response))
     exit(0)
 ########################## REGISTRATION ################################
@@ -206,24 +195,21 @@ if(graphml!=''):
     if(verb > 1): print ('Request for DAG "%s". Reading file %s' % (name, graphml))
     g = nx.read_graphml(graphml)
 
-    if(out):
+    if(verb>0):
+        print("NODES and EDGES representation")
         print("---- NODES ----")
         print(g.nodes())
-        for n in g.nodes():
-            print(n)
+        for n in g.nodes(): print(n)
 
         print("---- EDGES ----")
-        for e in g.edges():
-            x = g.edge[e[0]][e[1]]
-            print(e,x)
+        for e in g.edges(): print(e,g.edge[e[0]][e[1]])
 
-
-    # f = io.StringIO()
     s = '\n'.join(nx.generate_graphml(g))
 
     d = Dag(name=name, description=description, graphml=s)
     dagData	= data2post(d).utf8()
-    response	= communicate(adddagURL, dagData)
+    response	= communicate(URLs['workflow']['adddagURL'], dagData)
+
     if(verb>1): print (rdec(response))
 
     exit(0)
@@ -235,7 +221,7 @@ if(add!=''):
     d ={'dag':add, 'name':name, 'description':description}
 
     wfData	= data2post(d).utf8()
-    response	= communicate(addwfURL, wfData)
+    response	= communicate(URLs['workflow']['addwfURL'], wfData)
     if(verb>1): print (rdec(response))
 
     exit(0)

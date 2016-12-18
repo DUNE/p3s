@@ -21,8 +21,8 @@ from urllib import request
 from urllib import error
 from urllib.error import URLError
 
-# local import, requires PYTHONPATH to be set
-from comms import data2post
+from comms import data2post, rdec, communicate, logfail
+from serverURL import serverURL
 
 #########################################################
 settings.configure(USE_TZ = True)
@@ -108,11 +108,14 @@ if(usage):
     print(Usage)
     exit(0)
 
+URLs = serverURL(server=server)
+
 ########################## UPDATE/ADJUSTMENT #############################
 # Check if an adjustment of an existing job is requested, and send a
 # request to the server to do so. Can adjust priority, state.
 
 if(adj):
+    response = None
     if(j_uuid==''):			exit(-1) # check if we have the key
     if(priority==-1 and state==''):	exit(-1) # nothing to adjust
 
@@ -126,15 +129,8 @@ if(adj):
         if(priority!=-1):	a['priority']	= str(priority)
         if(state!=''):		a['state']	= state
         adjData = data2post(a).utf8()
-
-        try:
-            url = 'jobs/set'
-            response = urllib.request.urlopen(server+url, adjData) # POST
-        except URLError:
-            exit(1)
-    
-        data = response.read()
-        if(verb >0): print (data)
+        response = communicate(URLs['job']['jobsetURL'], adjData)
+        if(verb>0): print(rdec(response))
 
     exit(0) # done with update/adjust
 
@@ -146,14 +142,9 @@ if(delete):
 
 # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
     if(j_uuid=='ALL' or j_id=='ALL'):
-        try:
-            url = 'jobs/deleteall'
-            response = urllib.request.urlopen(server+url) # GET
-        except URLError:
-            exit(1)
-
-        data = response.read()
-        if(verb >0): print (data)
+        response = communicate(URLs['job']['deleteallURL'])
+        if(verb >0): print (rdec(response))
+        exit(0)
 
     # Normal delete, by key(s)
     # UUID:
@@ -165,16 +156,10 @@ if(delete):
 
         for j in jobList:
             delData = data2post(dict(uuid=j)).utf8()
-
-            try:
-                url = 'jobs/delete'
-                response = urllib.request.urlopen(server+url, delData) # POST
-            except URLError:
-                exit(1)
-    
-            data = response.read()
-            if(verb >0): print (data)
-
+            response = communicate(URLs['job']['deleteURL'], delData) # POST
+            if(verb>0): print (rdec(response))
+        exit(0)
+        
     # ID (PK):
     if(j_id!=''):
         if ',' in j_id: # assume we have a CSV list
@@ -184,15 +169,10 @@ if(delete):
 
         for j in jobList:
             delData = data2post(dict(pk=j)).utf8()
+            response = communicate(URLs['job']['deleteURL'], delData) # POST
+            if(verb>0): print (rdec(response))
+        exit(0)
 
-            try:
-                url = 'jobs/delete'
-                response = urllib.request.urlopen(server+url, delData) # POST
-            except URLError:
-                exit(1)
-    
-            data = response.read()
-            if(verb >0): print (data)
 
     exit(0)
 

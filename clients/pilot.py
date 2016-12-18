@@ -28,7 +28,7 @@ from urllib.error	import URLError
 
 # local import (utils)
 from comms import data2post, rdec, communicate, logfail
-
+from serverURL import serverURL
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
@@ -134,12 +134,8 @@ cycles	= args.cycles
 # testing (pre-emptive exit with print)
 tst	= args.test
 
-## This will eventually need to be factored out into a proper module ###
-reportURL	= server+'pilots/report'
-registerURL	= server+'pilots/register'
-deleteallURL	= server+'pilots/deleteall'
-deleteURL	= server+'pilots/delete'
-jobReqURL	= server+'pilots/request/?uuid=%s'
+URLs = serverURL(server=server)
+
 ###################### USAGE REQUESTED? ################################
 if(usage):
     print(Usage)
@@ -155,7 +151,7 @@ if(delete):
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD. Do not document "ALL"!
     if(p_uuid=='ALL'):
-        response = communicate(deleteallURL)
+        response = communicate(URLs['pilot']['deleteallURL'])
         if(verb>0): print (rdec(response))
         exit(0)
 
@@ -167,7 +163,7 @@ if(delete):
 
     for pid in pilotList:
         delData		= data2post(dict(uuid=pid)).utf8()
-        response	= communicate(deleteURL, delData)
+        response	= communicate(URLs['pilot']['deleteURL'], delData)
         if(verb>0): print (rdec(response))
 
     exit(0)
@@ -216,7 +212,7 @@ if(verb>1): logger.info('Pilot data in UTF-8: %s' % pilotData)
 if(tst): exit(0)
 
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
-response = communicate(registerURL, pilotData, logger) # will croak if unsuccessful
+response = communicate(URLs['pilot']['registerURL'], pilotData, logger) # will croak if unsuccessful
 
 logger.info("contact with server established!")
 
@@ -239,7 +235,7 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 #########################################################################
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
 #########################################################################
-jobRequestURL	= jobReqURL % p['uuid']
+jobRequestURL	= URLs['pilot']['jobReqURL'] % p['uuid']
 cnt		= p.cycles # Number of cycles to go through before exit
 p['jobcount']	= 0 # will count how many jobs were eceuted in this pilot
 ####################### MAIN LOOP #######################################
@@ -289,7 +285,7 @@ while(cnt>0):     # "Poll the server" loop.
     p['state']='running'
     p['event']='jobstart'
     pilotData = data2post(p).utf8() # Serialize in UTF-8
-    response = communicate(reportURL, pilotData) # will croak if unsuccessful
+    response = communicate(URLs['pilot']['reportURL'], pilotData) # will croak if unsuccessful
 
     logger.info("contact with server established")
     logger.info('JOB starting: %s' %  p['job'])
@@ -302,19 +298,19 @@ while(cnt>0):     # "Poll the server" loop.
         p['event']	='jobstop'
         p['jobcount']  += 1
         pilotData	= data2post(p).utf8()
-        response	= communicate(reportURL, pilotData, logger) # will croak if unsuccessful
+        response	= communicate(URLs['pilot']['reportURL'], pilotData, logger) # will croak if unsuccessful
 
         logger.info('JOB finished: %s' %  p['job'])
     except:
         p['state']	='exception'
         p['event']	='exception'
         pilotData	= data2post(p).utf8()
-        response = communicate(reportURL, pilotData) # will croak if unsuccessful
+        response = communicate(URLs['pilot']['reportURL'], pilotData) # will croak if unsuccessful
 
     # declare the 'active' state again
     p['state']	='active'    #    p['event']	='jobstop'
     pilotData	= data2post(p).utf8()
-    response	= communicate(reportURL, pilotData) # will croak if unsuccessful
+    response	= communicate(URLs['pilot']['reportURL'], pilotData) # will croak if unsuccessful
     
     cnt-=1 # proceed to next cycle
     
@@ -326,7 +322,7 @@ while(cnt>0):     # "Poll the server" loop.
 p['state']	= 'stopped'
 pilotData	= data2post(p).utf8()
 
-response	= communicate(reportURL, pilotData, logger) # will croak if unsuccessful
+response	= communicate(URLs['pilot']['reportURL'], pilotData, logger) # will croak if unsuccessful
 
 logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(p['jobcount'])))
 if(verb>0): print("Stopped. Processed jobs: %s" % str(p['jobcount']))
