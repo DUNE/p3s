@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import job, stage, prioritypolicy
+from .models import job, jobtype, prioritypolicy
 
 ############
 class jobAdmin(admin.ModelAdmin):
@@ -9,11 +9,11 @@ class jobAdmin(admin.ModelAdmin):
 admin.site.register(job, jobAdmin)
 
 ############
-class stageAdmin(admin.ModelAdmin):
+class jobtypeAdmin(admin.ModelAdmin):
     list_display = ('name', 'priority', 'njobs')
     empty_value_display = '-empty-'
     
-admin.site.register(stage, stageAdmin)
+admin.site.register(jobtype, jobtypeAdmin)
 
 ############
 class prioritypolicyAdmin(admin.ModelAdmin):

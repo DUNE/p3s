@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'workflows.apps.WorkflowsConfig',
     'jobs.apps.JobsConfig',
     'pilots.apps.PilotsConfig',
+    'data.apps.DataConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

@@ -196,12 +196,14 @@ class WfEdgeTable(tables.Table):
         attrs = {'class': 'paleblue'}
 
 ######## REQUEST ROUTERS (SUMMARIES) ####################    
-def pilots(request):
-    return data_handler(request, 'pilots')
-
-#--------------------------------------------------------
 def jobs(request):
     return data_handler(request, 'jobs')
+#--------------------------------------------------------
+def data(request):
+    return data_handler(request, 'jobs')
+#--------------------------------------------------------
+def pilots(request):
+    return data_handler(request, 'pilots')
 #--------------------------------------------------------
 def workflows(request):
     return data_handler(request, 'workflows')

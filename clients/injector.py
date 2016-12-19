@@ -25,13 +25,15 @@ from serverURL import serverURL
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
-logdefault	= '/tmp/p3s/injector.log'
+host		= socket.gethostname()
+logdefault	= '/tmp/p3s/'
 datadir		= '/home/maxim/p3sdata'
 Usage		= '''Usage:
 
 For command line options run the injector with "--help" option.
 
 '''
+
 #########################################################################
 
 parser = argparse.ArgumentParser()
@@ -43,7 +45,7 @@ parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
 
 parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
-                    help="(defaults to "+logdefault+") the path for all pilots keep their logs etc")
+                    help="Log directory (defaults to "+logdefault+"). The file name in logdir will be 'injector.log'")
 
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
@@ -58,23 +60,16 @@ parser.add_argument("-c", "--cycles",	type=int,	default=1,
 parser.add_argument("-p", "--period",	type=int,	default=5,
                     help="period of the pilot cycle, in seconds")
 
-parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a pilot (for dev purposes). Needs uuid.")
-
-parser.add_argument("-u", "--uuid",	type=str,	default='',
-                    help="uuid of the pilot to be modified")
-
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
 # strings
 server	= args.server
+
 logdir	= args.logdir
 
 # misc
 verb	= args.verbosity
-delete	= args.delete
-p_uuid	= args.uuid
 usage	= args.usage
 
 # scheduling
@@ -91,3 +86,29 @@ if(usage):
     print(Usage)
     exit(0)
 
+################### BEGIN: PREPARE LOGGER ##############################
+# Check if we have a log directory, example: /tmp/p3s/. Create if not
+if(not os.path.exists(logdir)):
+    try:
+        os.makedirs(logdir)
+    except:
+        exit(-1) # we can't log it
+
+logfilename = logdir+'/injector.log'
+
+if(verb>0): print("Logfile: %s" % logfilename)
+
+logger = logging.getLogger('injector')
+logger.setLevel(logging.DEBUG)
+logfile = logging.FileHandler(logfilename)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logfile.setFormatter(formatter)
+
+logger.addHandler(logfile)
+logger.info('START injector on host %s, talking to server %s with period %s and %s cycles' %
+            (host, server, period, cycles))
+
+#########################################################################
+######## LOGGER IS READY, REGISTER WITH THE SERVER ######################
+#########################################################################

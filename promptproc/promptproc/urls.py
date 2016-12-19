@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^pilots/',	include('pilots.urls')),
     url(r'^workflows/',	include('workflows.urls')),
     url(r'^monitor/',	include('monitor.urls')),
+    url(r'^data/',	include('data.urls')),
 
     # The ADMIN
     url(r'^admin/',	admin.site.urls),

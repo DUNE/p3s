@@ -7,6 +7,7 @@ class job(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     name	= models.CharField(max_length=64, default='')		# human-readable
     p_uuid	= models.CharField(max_length=36, default='')		# pilot uuid
+    wfuuid	= models.CharField(max_length=36, default='')		# workflow uuid
     jobtype	= models.CharField(max_length=16, default='')		#
     payload	= models.CharField(max_length=256,default='')		# provisional, url/path
     params	= models.CharField(max_length=256,default='')		# cmd line args
@@ -21,17 +22,8 @@ class job(models.Model):
     def __str__(self):
         return self.uuid
 
-# Dataset is a general class for a collection of files ingested or
-# produced by a job
-class dataset(models.Model):
-    uuid	= models.CharField(max_length=36, default='')
     
-    def __str__(self):
-        return self.uuid
-
-    
-# The stage
-class stage(models.Model):
+class jobtype(models.Model):
     name	= models.CharField(max_length=32, default='')
     priority	= models.PositiveIntegerField(default=0)
     njobs	= models.PositiveIntegerField(default=0)
