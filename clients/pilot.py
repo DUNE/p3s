@@ -78,10 +78,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
 
-parser.add_argument("-U", "--url",	type=str,	default='',
-                    help="url of the query to be added, defaults to empty string")
-
-parser.add_argument("-g", "--usage",	action='store_true',
+parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
 
 parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
@@ -111,7 +108,6 @@ args = parser.parse_args()
 
 # strings
 server	= args.server
-url	= args.url
 logdir	= args.logdir
 
 # misc
