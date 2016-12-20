@@ -124,7 +124,6 @@ cycles	= args.cycles
 # testing (pre-emptive exit with print)
 tst	= args.test
 
-URLs = serverURL(server=server)
 API  = serverAPI(server=server)
 
 ###################### USAGE REQUESTED? ################################
@@ -259,11 +258,10 @@ while(cnt>0):     # "Poll the server" loop.
 
     p['state']='running'
     p['event']='jobstart'
-    pilotData = data2post(p).utf8() # Serialize in UTF-8
-    response = communicate(URLs['pilot']['reportURL'], pilotData) # will croak if unsuccessful
 
-    logger.info("contact with server established")
-    logger.info('JOB starting: %s' %  p['job'])
+    logger.info('JOB to be started: %s' %  p['job'])
+    resp = API.reportPilot(p)
+    if(verb>0): logger.info('About to start job, server response was: %s' % resp)
 
     # EXECUTION
     try:
@@ -272,20 +270,17 @@ while(cnt>0):     # "Poll the server" loop.
         p['state']	='finished'
         p['event']	='jobstop'
         p['jobcount']  += 1
-        pilotData	= data2post(p).utf8()
-        response	= communicate(URLs['pilot']['reportURL'], pilotData, logger) # will croak if unsuccessful
-
+        response = API.reportPilot(p)
         logger.info('JOB finished: %s' %  p['job'])
     except:
         p['state']	='exception'
         p['event']	='exception'
-        pilotData	= data2post(p).utf8()
-        response = communicate(URLs['pilot']['reportURL'], pilotData) # will croak if unsuccessful
+        response = API.reportPilot(p)
+        logger.info('JOB exception: %s' %  p['job'])
 
     # declare the 'active' state again
     p['state']	='active'    #    p['event']	='jobstop'
-    pilotData	= data2post(p).utf8()
-    response	= communicate(URLs['pilot']['reportURL'], pilotData) # will croak if unsuccessful
+    response = API.reportPilot(p)
     
     cnt-=1 # proceed to next cycle
     
@@ -295,10 +290,7 @@ while(cnt>0):     # "Poll the server" loop.
 ######################## FINISHING UP ##################################
 
 p['state']	= 'stopped'
-pilotData	= data2post(p).utf8()
-
-response	= communicate(URLs['pilot']['reportURL'], pilotData, logger) # will croak if unsuccessful
-
+response = API.reportPilot(p)
 logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(p['jobcount'])))
 if(verb>0): print("Stopped. Processed jobs: %s" % str(p['jobcount']))
 

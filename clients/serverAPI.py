@@ -65,7 +65,7 @@ class serverAPI(dict):
 
     ############# PILOT
     def deleteAllPilots(self):
-        return rdec( communicate(self['pilot']['deleteallURL']))
+        return rdec(communicate(self['pilot']['deleteallURL']))
 
     def deletePilot(self, p_uuid):
         return rdec(communicate(self['pilot']['deleteURL'], data2post(dict(uuid=p_uuid)).utf8()))
@@ -79,3 +79,6 @@ class serverAPI(dict):
 
     def jobRequest(self, p_uuid):
         return rdec(communicate(self['pilot']['jobReqURL'] % p_uuid))
+
+    def reportPilot(self, p):
+        return rdec(communicate(self['pilot']['reportURL'], data2post(p).utf8()))
