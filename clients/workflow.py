@@ -22,7 +22,6 @@ from pprint		import pprint
 import networkx as nx
 
 from comms		import data2post, rdec, communicate
-from serverURL		import serverURL
 from serverAPI		import serverAPI
 #########################################################
 def printGraph(g):        
@@ -99,18 +98,16 @@ if(usage):
     print(Usage)
     exit(0)
 ########################################################################
-URLs = serverURL(server=server)
 API  = serverAPI(server=server)
 ######################### DAG DELETE ###################################
 # Check if it was a deletion request
 if(delete):
-    response = None
     if(name=='' and o_uuid==''): exit(-1) # check if we have the key
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
     if(name=='ALL' or o_uuid=='ALL'):
-        response = communicate(URLs['workflow']['deleteallURL'] % what)
-        if(verb>0): print (rdec(response))
+        resp = API.deleteAllDagWF(what)
+        if(verb>0): print(resp)
         exit(0)
 
     # Normal delete (not ALL items)
@@ -123,14 +120,12 @@ if(delete):
     else:
         objList.append(delArg)
         
-
-    dicto = None
     for o in objList:
-        if(what=='dag'):	dicto = dict(what=what, name=name)
-        if(what=='workflow'):	dicto = dict(what=what, uuid=o_uuid)
-        delData	= data2post(dicto).utf8()
-        response= communicate(URLs['workflow']['deleteURL'], delData) # POST
-        if(verb>0): print (rdec(response))
+        dicto = None
+        if(what=='dag'):	dicto = dict(what=what, name=o)
+        if(what=='workflow'):	dicto = dict(what=what, uuid=o)
+        resp = API.deleteDagWF(dicto)
+        if(verb>0): print(resp)
 
     exit(0)
 

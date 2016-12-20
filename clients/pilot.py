@@ -22,6 +22,7 @@ from django.utils	import timezone
 # local import (utils)
 from comms import data2post, rdec, communicate, logfail
 from serverURL import serverURL
+from serverAPI import serverAPI
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
@@ -124,6 +125,7 @@ cycles	= args.cycles
 tst	= args.test
 
 URLs = serverURL(server=server)
+API  = serverAPI(server=server)
 
 ###################### USAGE REQUESTED? ################################
 if(usage):
@@ -140,8 +142,8 @@ if(delete):
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD. Do not document "ALL"!
     if(p_uuid=='ALL'):
-        response = communicate(URLs['pilot']['deleteallURL'])
-        if(verb>0): print (rdec(response))
+        resp = API.deleteAllPilots()
+        if(verb>0): print(resp)
         exit(0)
 
     pilotList = []    # Normal delete, by key(s)
@@ -151,9 +153,8 @@ if(delete):
         pilotList.append(p_uuid)
 
     for pid in pilotList:
-        delData		= data2post(dict(uuid=pid)).utf8()
-        response	= communicate(URLs['pilot']['deleteURL'], delData)
-        if(verb>0): print (rdec(response))
+        resp = API.deletePilot(pid)
+        if(verb>0): print (resp)
 
     exit(0)
 
@@ -187,35 +188,23 @@ logger.addHandler(logfile)
 logger.info('START %s on host %s, talking to server %s with period %s and %s cycles' %
             (str(p['uuid']), p['host'], server, period, cycles))
 
+
+API.setLogger(logger)
+API.setVerbosity(verb)
 #########################################################################
-######## LOGGER IS READY, REGISTER WITH THE SERVER ######################
-#########################################################################
-
-# Serialize the pilot in UTF-8
-pilotData = data2post(p).utf8()
-
-if(verb>1): print(pilotData) # UTF-8
-if(verb>1): logger.info('Pilot data in UTF-8: %s' % pilotData)
-
-# If in test mode simply bail, we just wanted to check if the pilot data was OK
-if(tst): exit(0)
-
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
-response = communicate(URLs['pilot']['registerURL'], pilotData, logger) # will croak if unsuccessful
+resp = API.registerPilot(p)
 
-logger.info("contact with server established!")
-
-data = rdec(response)
-if(verb>1): print('REGISTER: server response: %s'	% data)
-if(verb>1): logger.info('REGISTER: server response: %s'	% data)
+if(verb>1): print('REGISTER: server response: %s'	% resp)
+if(verb>1): logger.info('REGISTER: server response: %s'	% resp)
 
 msg = {} # we expect a message from the server formatted in json
 try:
-    msg		= json.loads(data)
+    msg		= json.loads(resp)
     p['status']	= msg['status']
     p['state']	= msg['state']
 except:
-    logger.error('exiting, failed to parse the server message: %s' % data)
+    logger.error('exiting, failed to parse the server message: %s' % resp)
     exit(3)
 
 # By now the pilot MUST have some sort of status set by the server's message
@@ -223,8 +212,6 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 
 #########################################################################
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
-#########################################################################
-jobRequestURL	= URLs['pilot']['jobReqURL'] % p['uuid']
 cnt		= p.cycles # Number of cycles to go through before exit
 p['jobcount']	= 0 # will count how many jobs were eceuted in this pilot
 ####################### MAIN LOOP #######################################
@@ -233,8 +220,7 @@ while(cnt>0):     # "Poll the server" loop.
     if(verb>1): print('Attempts left: %s' % str(cnt))
     if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
 
-    response	= communicate(jobRequestURL)
-    data	= rdec(response)
+    data = API.jobRequest(p['uuid'])
 
     if(verb>1): logger.info('BROKER: server response: %s' % data)
     if(verb>1): print('BROKER: server response: %s' % data)
