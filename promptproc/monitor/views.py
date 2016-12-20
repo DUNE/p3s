@@ -305,12 +305,16 @@ def detail_handler(request, what):
         d['title']	= what
         objects = pilot.objects
         
-    theName = None
+    theName = 'Not found'
     if(what=='dag'):
         template = 'detail2.html'
         objects = dag.objects
-        theDag = objects.get(name=name)
-        theName = theDag.name
+        try:
+            theDag = objects.get(name=name)
+            theName = theDag.name
+        except:
+            return HttpResponse("DAG '%s' not found" % name)
+
         aux1 = DagVertexTable(dagVertex.objects.filter(dag=theName))
         aux2 = DagEdgeTable(dagEdge.objects.filter(dag=theName))
         d['title']	= what+' name: '+theName

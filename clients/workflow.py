@@ -23,6 +23,7 @@ import networkx as nx
 
 from comms		import data2post, rdec, communicate
 from serverURL		import serverURL
+from serverAPI		import registerWorkflow
 #########################################################
 settings.configure(USE_TZ = True)
 
@@ -164,15 +165,9 @@ if(graphml!=''):
     exit(0)
 ########################################################################
 if(add!=''):
-    if(name==''):
-        name=add
-
-    d ={'dag':add, 'name':name, 'description':description}
-
-    wfData	= data2post(d).utf8()
-    response	= communicate(URLs['workflow']['addwfURL'], wfData)
-    if(verb>1): print (rdec(response))
-
+    if(name==''): name=add
+    resp = registerWorkflow(URLs, add, name, description)
+    if(verb>1): print (resp)
     exit(0)
 
 ###################### GRAND FINALE ####################################
