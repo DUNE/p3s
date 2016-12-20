@@ -23,8 +23,17 @@ import networkx as nx
 
 from comms		import data2post, rdec, communicate
 from serverURL		import serverURL
-from serverAPI		import registerWorkflow
+from serverAPI		import serverAPI
 #########################################################
+def printGraph(g):        
+    print("NODES and EDGES representation")
+    print("---- NODES ----")
+    print(g.nodes())
+    for n in g.nodes(): print(n)
+
+    print("---- EDGES ----")
+    for e in g.edges(): print(e,g.edge[e[0]][e[1]])
+
 settings.configure(USE_TZ = True)
 
 Usage		= '''Usage:
@@ -91,6 +100,7 @@ if(usage):
     exit(0)
 ########################################################################
 URLs = serverURL(server=server)
+API  = serverAPI(server=server)
 ######################### DAG DELETE ###################################
 # Check if it was a deletion request
 if(delete):
@@ -126,10 +136,9 @@ if(delete):
 
 ###################### GET DAG (DIAGNOSTICS) ###########################
 if(get):
-    response = None
     if(name==''): exit(-1) # check if we have the key
-    response = communicate(URLs['workflow']['getdagURL'] % name)
-    if(verb>0): print (rdec(response))
+    resp = API.getDag(name)
+    if(verb>0): print (rdec(resp))
     exit(0)
 ########################## REGISTRATION ################################
 # Forms a DAG (workflow template) on the server based on a graph
@@ -144,29 +153,20 @@ if(graphml!=''):
     
     if(verb>1): print ('Request for DAG "%s". Reading file %s' % (name, graphml))
     g = nx.read_graphml(graphml)
-
-    if(verb>0):
-        print("NODES and EDGES representation")
-        print("---- NODES ----")
-        print(g.nodes())
-        for n in g.nodes(): print(n)
-
-        print("---- EDGES ----")
-        for e in g.edges(): print(e,g.edge[e[0]][e[1]])
+    if(verb>0): printGraph(g)
 
     s = '\n'.join(nx.generate_graphml(g))
 
     d = Dag(name=name, description=description, graphml=s)
-    dagData	= data2post(d).utf8()
-    response	= communicate(URLs['workflow']['adddagURL'], dagData)
+    resp = API.setDag(d)
 
-    if(verb>1): print (rdec(response))
+    if(verb>1): print (resp)
 
     exit(0)
 ########################################################################
 if(add!=''):
     if(name==''): name=add
-    resp = registerWorkflow(URLs, add, name, description)
+    resp = API.registerWorkflow(add, name, description)
     if(verb>1): print (resp)
     exit(0)
 
