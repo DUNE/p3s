@@ -25,8 +25,9 @@ from django.forms.models		import model_to_dict
 from django.conf			import settings
 
 # Models used in the application:
-from pilots.models			import pilot
 from jobs.models			import job
+from data.models			import dataset
+from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow, wfVertex, wfEdge
 
@@ -74,26 +75,6 @@ class MonitorTable(tables.Table):
 # NOTE THAT WE INSTRUMENT SOME COLUMNS WHILE DECIDING TO#
 # NOT DISPLAY THEM. THIS IS TEMPORARY/HISTORICAL        #
 #########################################################    
-class PilotTable(MonitorTable):
-    ts_cre	= tables.Column(verbose_name='created')
-    ts_reg	= tables.Column(verbose_name='registered')
-    ts_lhb	= tables.Column(verbose_name='last heartbeat')
-    jobcount	= tables.Column(verbose_name='jobs')
-    
-    def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
-    def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('pilotdetail','pk', value)
-
-    def render_ts_cre(self, value):	return self.renderDateTime(value)
-    def render_ts_reg(self, value):	return self.renderDateTime(value)
-    def render_ts_lhb(self, value):	return self.renderDateTime(value)
-
-    class Meta:
-        model	= pilot
-        attrs	= {'class': 'paleblue'}
-        exclude	= ('uuid', 'j_uuid', )
-
-#--------------------------------------------------------
 class JobTable(MonitorTable):
 
     ts_def	= tables.Column(verbose_name='defined')
@@ -116,6 +97,32 @@ class JobTable(MonitorTable):
         model = job
         attrs = {'class': 'paleblue'}
         exclude	= ('uuid', 'p_uuid', )
+#--------------------------------------------------------
+class DataTable(MonitorTable):
+
+    class Meta:
+        model = dataset
+        attrs = {'class': 'paleblue'}
+#--------------------------------------------------------
+class PilotTable(MonitorTable):
+    ts_cre	= tables.Column(verbose_name='created')
+    ts_reg	= tables.Column(verbose_name='registered')
+    ts_lhb	= tables.Column(verbose_name='last heartbeat')
+    jobcount	= tables.Column(verbose_name='jobs')
+    
+    def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
+    def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
+    def render_id(self,value):		return self.makelink('pilotdetail','pk', value)
+
+    def render_ts_cre(self, value):	return self.renderDateTime(value)
+    def render_ts_reg(self, value):	return self.renderDateTime(value)
+    def render_ts_lhb(self, value):	return self.renderDateTime(value)
+
+    class Meta:
+        model	= pilot
+        attrs	= {'class': 'paleblue'}
+        exclude	= ('uuid', 'j_uuid', )
+
 #--------------------------------------------------------
 class DagTable(MonitorTable):
     # def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
@@ -200,7 +207,7 @@ def jobs(request):
     return data_handler(request, 'jobs')
 #--------------------------------------------------------
 def data(request):
-    return data_handler(request, 'jobs')
+    return data_handler(request, 'data')
 #--------------------------------------------------------
 def pilots(request):
     return data_handler(request, 'pilots')
@@ -225,17 +232,21 @@ def data_handler(request, what):
     objects, t, aux1	= None, None, None
     template = 'universo.html'
     
-    if(what=='pilots'):
-        objects = pilot.objects
-        if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
-        if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
-        if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
-
     if(what=='jobs'):
         objects = job.objects
         if(uuid == '' and pk == ''):	t = JobTable(objects.all())
         if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
+
+    if(what=='data'):
+        objects = dataset.objects
+        t = DataTable(objects.all())
+
+    if(what=='pilots'):
+        objects = pilot.objects
+        if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
+        if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
+        if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
 
     if(what=='dags'):
         objects = dag.objects

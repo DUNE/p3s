@@ -33,7 +33,13 @@ Usage		= '''Usage:
 For command line options run the injector with "--help" option.
 
 '''
-
+######################### THE DATASET CLASS #############################
+class Dataset(dict):
+    def __init__(self, wf='', name=''):
+        self['uuid']	= uuid.uuid1()
+        self['name']	= name
+        self['wf']	= wf
+        
 #########################################################################
 
 parser = argparse.ArgumentParser()
@@ -112,3 +118,33 @@ logger.info('START injector on host %s, talking to server %s with period %s and 
 #########################################################################
 ######## LOGGER IS READY, REGISTER WITH THE SERVER ######################
 #########################################################################
+d = Dataset()
+# Serialize the dataset in UTF-8
+dsData = data2post(d).utf8()
+
+if(verb>1): print(dsData) # UTF-8
+if(verb>1): logger.info('DS data in UTF-8: %s' % dsData)
+
+# If in test mode simply bail, we just wanted to check if the pilot data was OK
+if(tst): exit(0)
+
+################ CONTACT SERVER TO REGISTER THE PILOT ##################
+response = communicate(URLs['data']['registerURL'], dsData, logger) # will croak if unsuccessful
+
+# logger.info("contact with server established!")
+
+# data = rdec(response)
+# if(verb>1): print('REGISTER: server response: %s'	% data)
+# if(verb>1): logger.info('REGISTER: server response: %s'	% data)
+
+# msg = {} # we expect a message from the server formatted in json
+# try:
+#     msg		= json.loads(data)
+#     p['status']	= msg['status']
+#     p['state']	= msg['state']
+# except:
+#     logger.error('exiting, failed to parse the server message: %s' % data)
+#     exit(3)
+
+# # By now the pilot MUST have some sort of status set by the server's message
+# if(p['status']=='FAIL'): logfail(msg, logger)

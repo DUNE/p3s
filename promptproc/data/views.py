@@ -26,8 +26,15 @@ from .models				import dataset
 # Register data with the server:
 @csrf_exempt
 def register(request):
-    return HttpResponse("Data Registration")
+    post	= request.POST
+    ds_uuid	= post['uuid']
+    
+    d = dataset(
+        uuid		= ds_uuid,
+    )
 
+    d.save()
 
-
+    
+    return HttpResponse("DS %s" % ds_uuid)
 
