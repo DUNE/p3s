@@ -26,7 +26,7 @@ from django.conf			import settings
 
 # Models used in the application:
 from jobs.models			import job
-from data.models			import dataset
+from data.models			import dataset, datatype
 from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow, wfVertex, wfEdge
@@ -100,9 +100,16 @@ class JobTable(MonitorTable):
 #--------------------------------------------------------
 class DataTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('datadetail','uuid', value)
+    def render_datatype(self,value):	return self.makelink('datatypes','', value)
 
     class Meta:
         model = dataset
+        attrs = {'class': 'paleblue'}
+#--------------------------------------------------------
+class DataTypeTable(MonitorTable):
+
+    class Meta:
+        model = datatype
         attrs = {'class': 'paleblue'}
 #--------------------------------------------------------
 class PilotTable(MonitorTable):
@@ -210,6 +217,9 @@ def jobs(request):
 def data(request):
     return data_handler(request, 'data')
 #--------------------------------------------------------
+def datatypes(request):
+    return data_handler(request, 'datatypes')
+#--------------------------------------------------------
 def pilots(request):
     return data_handler(request, 'pilots')
 #--------------------------------------------------------
@@ -242,6 +252,10 @@ def data_handler(request, what):
     if(what=='data'):
         objects = dataset.objects
         t = DataTable(objects.all())
+
+    if(what=='datatypes'):
+        objects = datatype.objects
+        t = DataTypeTable(objects.all())
 
     if(what=='pilots'):
         objects = pilot.objects

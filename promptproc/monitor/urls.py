@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^workflows',	views.workflows,	name='workflows'),
     url(r'^jobdetail',	views.jobdetail,	name='jobdetail'),
     url(r'^datadetail',	views.datadetail,	name='datadetail'),
+    url(r'^datatypes',	views.datatypes,	name='datatypes'),
     url(r'^pilotdetail',views.pilotdetail,	name='pilotdetail'),
     url(r'^dagdetail',	views.dagdetail,	name='dagdetail'),
     url(r'^wfdetail',	views.wfdetail,		name='wfdetail'),
