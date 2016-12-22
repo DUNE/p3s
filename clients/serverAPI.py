@@ -18,7 +18,7 @@ class serverAPI(dict):
         self['data']	= {
             'registerdataURL':	server+'data/registerdata',
             'registertypeURL':	server+'data/registertype',
-            'adjdataURL':	server+'data/registerdata', # FIXME
+            'adjdataURL':	server+'data/adjustdata',
         }
 
         ### PILOT
@@ -108,5 +108,5 @@ class serverAPI(dict):
         return rdec(communicate(self['data']['registertypeURL'], data2post(d).utf8(), self.logger))
 
     def adjData(self, d):
-        return rdec(communicate(self['job']['adjjobURL'], data2post(d).utf8()))
+        return rdec(communicate(self['data']['adjdataURL'], data2post(d).utf8()))
 

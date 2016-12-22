@@ -31,6 +31,7 @@ def registerdata(request):
         uuid	= post['uuid'],
         name	= post['name'],
         state	= post['state'],
+        comment	= post['comment'],
         datatype= post['datatype'],
         wf     	= post['wf'],
         wfuuid 	= post['wfuuid'],
@@ -38,7 +39,7 @@ def registerdata(request):
 
     d.save()
 
-    
+    print(d.name, d.comment)
     return HttpResponse("DS %s" % d.name)
 
 #########################################################
@@ -58,4 +59,20 @@ def registertype(request):
 
     
     return HttpResponse("DT %s" % ds_uuid)
+
+#########################################################
+# Adjust data on the server:
+@csrf_exempt
+def adjustdata(request):
+    post	= request.POST
+    d_uuid	= post['uuid']
+
+
+    d = dataset.objects.get(uuid=d_uuid)
+
+    for k in ('name', 'state', 'comment', 'datatype', 'wf', 'wfuuid'):
+        if(k in post.keys()): d.__dict__[k]=post[k]
+    d.save()
+
+    return HttpResponse("DS %s" % d.name)
 

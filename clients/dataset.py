@@ -29,15 +29,26 @@ logdefault	= '/tmp/p3s/'
 datadir		= '/home/maxim/p3sdata'
 Usage		= '''Usage:
 
-For command line options run the injector with "--help" option.
+* Command line *
+For command line options run the script with "--help" option.
+
+* Registering data *
+JSON string submitted on the command line needs to be enclosed in single
+quotes and is ecpeted to have:
+- name
+- state
+- datatype
+- wf
+- wfuuid
 
 '''
 ######################### THE DATASET CLASS #############################
 class Dataset(dict):
-    def __init__(self, name='', state='', datatype='', wf='', wfuuid=''):
+    def __init__(self, name='', state='', comment='', datatype='', wf='', wfuuid=''):
         self['uuid']	= uuid.uuid1()
         self['name']	= name
         self['state']	= state
+        self['comment']	= comment
         self['datatype']= datatype
         self['wf']	= wf
         self['wfuuid']	= wfuuid
@@ -60,6 +71,9 @@ parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
 
 parser.add_argument("-r", "--registerdata",	action='store_true',
                     help="register dataset")
+
+parser.add_argument("-a", "--adjust",	action='store_true',
+                    help="adjust dataset")
 
 parser.add_argument("-R", "--registertype",	action='store_true',
                     help="register data type")
@@ -93,6 +107,7 @@ cycles	= args.cycles
 
 regData	= args.registerdata
 regType	= args.registertype
+adjust	= args.adjust
 
 API = serverAPI(server=server)
 
@@ -130,11 +145,10 @@ API.setVerbosity(verb)
 #########################################################################
 if(regData):
     if(jtxt!=''):
-        print(jtxt)
         j = json.loads(jtxt)
-        print()
         d = Dataset(name	=j["name"],
                     state	=j["state"],
+                    comment	=j["comment"],
                     datatype	=j["datatype"],
                     wf		=j["wf"],
                     wfuuid	=j["wfuuid"]
@@ -143,6 +157,16 @@ if(regData):
         d = Dataset()
 
     resp = API.registerData(d)
+
+    exit(0)
+        
+#########################################################################
+if(adjust):
+    if(jtxt!=''):
+        resp = API.adjData(json.loads(jtxt))
+    else:
+        exit(-1)
+
 
     exit(0)
         
