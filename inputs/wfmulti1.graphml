@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="key"	attr.type="string" for="edge" id="d1" />
+  <key attr.name="name"	attr.type="string" for="edge" id="d2" />
+  
+  <graph edgedefault="directed">
+    <node id="adc">
+    </node>
+
+    <node id="adcViz">
+    </node>
+
+    <node id="stats">
+    </node>
+
+    <edge source="adc" target="adcViz">
+      <data key="d1">mean.txt</data>
+    </edge>
+
+    <edge source="adc" target="adcViz">
+      <data key="d1">rms.txt</data>
+    </edge>
+    
+    <edge source="adc" target="stats">
+      <data key="d2">summary.txt</data>
+    </edge>
+  </graph>
+</graphml>
