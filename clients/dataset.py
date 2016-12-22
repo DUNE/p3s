@@ -34,10 +34,13 @@ For command line options run the injector with "--help" option.
 '''
 ######################### THE DATASET CLASS #############################
 class Dataset(dict):
-    def __init__(self, wf='', name=''):
+    def __init__(self, name='', state='', datatype='', wf='', wfuuid=''):
         self['uuid']	= uuid.uuid1()
         self['name']	= name
+        self['state']	= state
+        self['datatype']= datatype
         self['wf']	= wf
+        self['wfuuid']	= wfuuid
         
 #########################################################################
 
@@ -46,14 +49,20 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
 
+parser.add_argument("-j", "--json",	type=str,	default='',
+                    help="json description of the data to be sent")
+
 parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
 
 parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
                     help="Log directory (defaults to "+logdefault+"). The file name in logdir will be 'injector.log'")
 
-parser.add_argument("-t", "--test",	action='store_true',
-                    help="when set, forms a request but does not contact the server")
+parser.add_argument("-r", "--registerdata",	action='store_true',
+                    help="register dataset")
+
+parser.add_argument("-R", "--registertype",	action='store_true',
+                    help="register data type")
 
 parser.add_argument("-v", "--verbosity",	type=int,
                     default=0, choices=[0, 1, 2],
@@ -70,8 +79,8 @@ args = parser.parse_args()
 
 # strings
 server	= args.server
-
 logdir	= args.logdir
+jtxt	= args.json
 
 # misc
 verb	= args.verbosity
@@ -81,8 +90,9 @@ usage	= args.usage
 period	= args.period
 cycles	= args.cycles
 
-# testing (pre-emptive exit with print)
-tst	= args.test
+
+regData	= args.registerdata
+regType	= args.registertype
 
 API = serverAPI(server=server)
 
@@ -118,6 +128,21 @@ API.setLogger(logger)
 API.setVerbosity(verb)
 
 #########################################################################
-d = Dataset()
-resp = API.registerData(d)
+if(regData):
+    if(jtxt!=''):
+        print(jtxt)
+        j = json.loads(jtxt)
+        print()
+        d = Dataset(name	=j["name"],
+                    state	=j["state"],
+                    datatype	=j["datatype"],
+                    wf		=j["wf"],
+                    wfuuid	=j["wfuuid"]
+        )
+    else:
+        d = Dataset()
 
+    resp = API.registerData(d)
+
+    exit(0)
+        

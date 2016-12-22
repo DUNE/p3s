@@ -151,14 +151,14 @@ def adddag(request):
     newDag.save()
 
     for n in g.nodes(data=True):
-        #        print(n)
+        # print(n)
         dv = dagVertex()
         dv.name  = n[0]
         dv.dag   = name
         dv.save()
         
     for e in g.edges(data=True):
-        #        print(e)
+        print(e)
         de = dagEdge()
         de.source = e[0]
         de.target = e[1]

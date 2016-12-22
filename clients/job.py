@@ -34,7 +34,9 @@ for a sample.
 
 * Changing attributes of a job *
 
-Option "-a" allows to change the job state or priority.
+Option "-a" allows to change the job state or priority -
+with options "-s" and "-p" respectively. Can be used
+concurrently.
 
 * Relation to workflows *
 
@@ -44,7 +46,9 @@ or can belong to one.
 * Relation to data
 
 If a structured definition of input and/or output data is
-needed, a job must be defined as a part of a workflow.
+needed, a job must be defined as a part of a workflow. Otherwise
+it's up to the job itself to find its inputs and define its
+outputs
 
 '''
 
@@ -74,6 +78,7 @@ parser.add_argument("-d", "--delete",	action='store_true',	help="deletes a job. 
 parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
 parser.add_argument("-S", "--server",	type=str,		help="the server URL (default http://localhost:8000/)",
                     default='http://localhost:8000/')
+
 parser.add_argument("-s", "--state",	type=str,		help="sets the job state, needs *adjust* option",
                     default='')
 parser.add_argument("-p", "--priority",	type=int,		help="sets the job priority, needs *adjust* option",

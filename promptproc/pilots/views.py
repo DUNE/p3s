@@ -26,7 +26,8 @@ from jobs.models			import job, prioritypolicy
 
 #########################################################
 # pilot status can only take two values, 'OK' or 'FAIL' #
-# while it's state can be more complex                  #
+# while it's state can be more complex. This helps      #
+# reflect different failure modes                       #
 #########################################################
 #
 # This is request for a job:

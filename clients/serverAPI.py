@@ -5,35 +5,41 @@ class serverAPI(dict):
         self.server	= server
         self.logger	= logger
         self.verb	= verb
-        
+
+        ### JOB
         self['job']	= {
             'adjjobURL':	server+'jobs/adj',
             'deleteallURL':	server+'jobs/deleteall',
             'deleteURL':	server+'jobs/delete',
-            'addjobURL':	server+'jobs/addjob'
-
+            'addjobURL':	server+'jobs/addjob',
         }
+
+        ### DATA
         self['data']	= {
-            'registerURL':	server+'data/register',
-
+            'registerdataURL':	server+'data/registerdata',
+            'registertypeURL':	server+'data/registertype',
+            'adjdataURL':	server+'data/registerdata', # FIXME
         }
+
+        ### PILOT
         self['pilot']	= {
             'reportURL':	server+'pilots/report',
             'registerURL':	server+'pilots/register',
             'deleteURL':	server+'pilots/delete',
             'deleteallURL':	server+'pilots/deleteall',
-            'jobReqURL':	server+'pilots/request/?uuid=%s'
-
+            'jobReqURL':	server+'pilots/request/?uuid=%s',
         }
+
+        ### WORKFLOW
         self['workflow']	= {
             'addwfURL':		server+'workflows/addwf',
             'deleteallURL':	server+'workflows/deleteall?what=%s',
             'deleteURL':	server+'workflows/delete',
             'getdagURL':	server+'workflows/getdag?name=%s',
             'adddagURL':	server+'workflows/adddag',
-            'addwfURL':		server+'workflows/addwf'
-
+            'addwfURL':		server+'workflows/addwf',
         }
+
 
     def setLogger(self, logger):
         self.logger=logger
@@ -96,5 +102,11 @@ class serverAPI(dict):
         return rdec(communicate(self['job']['adjjobURL'], data2post(j).utf8()))
     ############# DATA
     def registerData(self, d):
-        return rdec(communicate(self['data']['registerURL'], data2post(d).utf8(), self.logger))
+        return rdec(communicate(self['data']['registerdataURL'], data2post(d).utf8(), self.logger))
+
+    def registerType(self, d):
+        return rdec(communicate(self['data']['registertypeURL'], data2post(d).utf8(), self.logger))
+
+    def adjData(self, d):
+        return rdec(communicate(self['job']['adjjobURL'], data2post(d).utf8()))
 

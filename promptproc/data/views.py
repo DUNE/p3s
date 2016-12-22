@@ -22,19 +22,40 @@ from django.conf			import settings
 from .models				import dataset
 
 #########################################################
-#
 # Register data with the server:
 @csrf_exempt
-def register(request):
+def registerdata(request):
     post	= request.POST
-    ds_uuid	= post['uuid']
     
     d = dataset(
-        uuid		= ds_uuid,
+        uuid	= post['uuid'],
+        name	= post['name'],
+        state	= post['state'],
+        datatype= post['datatype'],
+        wf     	= post['wf'],
+        wfuuid 	= post['wfuuid'],
     )
 
     d.save()
 
     
-    return HttpResponse("DS %s" % ds_uuid)
+    return HttpResponse("DS %s" % d.name)
+
+#########################################################
+# Register datatype with the server:
+@csrf_exempt
+def registertype(request):
+    post	= request.POST
+    name	= post['name']
+    comment	= post['comment']
+    
+    d = datatype(
+        name		= name,
+        comment		= comment,
+    )
+
+    d.save()
+
+    
+    return HttpResponse("DT %s" % ds_uuid)
 
