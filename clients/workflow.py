@@ -58,9 +58,9 @@ class Dag(dict):
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-G", "--get",	action='store_true', help="get a DAG from server - needs the name of the DAG")
-parser.add_argument("-H", "--usage",	action='store_true', help="print usage notes and exit")
-parser.add_argument("-d", "--delete",	action='store_true', help="deletes a dag or a workflow. Needs name/uuid/type (what).")
+parser.add_argument("-G", "--get",	help="get a DAG from server - needs the name of the DAG",	action='store_true')
+parser.add_argument("-H", "--usage",	help="print usage notes and exit",				action='store_true')
+parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs name/uuid+type (what)",	action='store_true')
 parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/', help="the server, default: http://localhost:8000/")
 parser.add_argument("-w", "--what",	type=str,	default='', help="dag or workflow (for deletion).")
