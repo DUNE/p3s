@@ -1,5 +1,4 @@
 from comms		import data2post, rdec, communicate
-from serverURL		import serverURL
 ########################################################################
 class serverAPI(dict):
     def __init__(self, server='http://localhost:8000/', logger=None, verb=0):

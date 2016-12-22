@@ -32,6 +32,20 @@ Option "-j" allows to inject a collection of jobs based on
 the contents of a JSON file. See the "examples" directory
 for a sample.
 
+* Changing attributes of a job *
+
+Option "-a" allows to change the job state or priority.
+
+* Relation to workflows *
+
+Jobs can be standalone i.e. not a part of any workflow,
+or can belong to one.
+
+* Relation to data
+
+If a structured definition of input and/or output data is
+needed, a job must be defined as a part of a workflow.
+
 '''
 
 #-------------------------
@@ -54,24 +68,23 @@ class Job(dict):
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-g", "--usage",	action='store_true',
-                    help="print usage notes and exit")
-parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
-                    help="the server address, defaults to http://localhost:8000/")
-parser.add_argument("-s", "--state",	type=str,	default='',
-                    help="sets the job state, needs *adjust* option to be activated")
-parser.add_argument("-p", "--priority",	type=int,	default=0,
-                    help="sets the job priority, needs *adjust* option to be activated")
-parser.add_argument("-a", "--adjust",	action='store_true',
-                    help="enables state or priority adjustments. Needs uuid.")
-parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a job. Needs uuid.")
-parser.add_argument("-u", "--uuid",	type=str,	default='',
-                    help="uuid of the job to be adjusted")
+parser.add_argument("-U", "--usage",	action='store_true',	help="print usage notes and exit")
+parser.add_argument("-a", "--adjust",	action='store_true',	help="enables state/priority adjustments. Needs uuid.")
+parser.add_argument("-d", "--delete",	action='store_true',	help="deletes a job. Needs uuid.")
+parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
+parser.add_argument("-S", "--server",	type=str,		help="the server URL (default http://localhost:8000/)",
+                    default='http://localhost:8000/')
+parser.add_argument("-s", "--state",	type=str,		help="sets the job state, needs *adjust* option",
+                    default='')
+parser.add_argument("-p", "--priority",	type=int,		help="sets the job priority, needs *adjust* option",
+	            default=0)
+
+parser.add_argument("-u", "--uuid",	type=str,		help="uuid of the job to be adjusted",
+                    default='')
+
 parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the job to be adjusted (pk)")
-parser.add_argument("-t", "--test",	action='store_true',
-                    help="when set, forms a request but does not contact the server")
+
 parser.add_argument("-v", "--verbosity",	type=int, default=0, choices=[0, 1, 2],
                     help="set output verbosity")
 
