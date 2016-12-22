@@ -14,11 +14,11 @@
     </node>
 
     <edge source="adc" target="adcViz">
-      <data key="d1">mean.txt</data>
+      <data key="d2">mean.txt</data>
     </edge>
 
     <edge source="adc" target="adcViz">
-      <data key="d1">rms.txt</data>
+      <data key="d2">rms.txt</data>
     </edge>
     
     <edge source="adc" target="stats">
