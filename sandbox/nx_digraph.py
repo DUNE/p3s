@@ -32,32 +32,40 @@ out	= args.out
 
 if(multi):
     g = nx.MultiDiGraph()
+    g.add_node("foo")
+    g.add_node("moo")
+    
+    g.node['foo']['voltage']=220
+
+    g.add_edge("foo","moo",key='ready')
+    g.add_edge("foo","moo",key='set')
+    g.add_edge("foo","moo",key='go', rules="reglement")
+
+    e = g.edge["foo"]["moo"]["ready"]
+    e["resistance"] = "futile"
+
 else:
     g = nx.DiGraph()
 
-g.add_node("foo")
-g.add_node("moo")
-g.add_node("goo")
-g.add_node("shoo")
+    g.add_node("foo")
+    g.node['foo']['voltage']=220
+    g.add_node("moo")
+    g.add_node("goo")
+    g.add_node("shoo")
 
-g.add_edge("foo","moo")
-g.add_edge("foo","goo")
+    g.add_edge("foo","moo")
+    g.add_edge("foo","goo")
+    g.add_edge("goo","shoo")
+    g.add_edge("moo","shoo")
 
-g.add_edge("goo","shoo")
-g.add_edge("moo","shoo")
+    efm = g.edge["foo"]["moo"]
+    efm['resistance']=10
+    g.node['foo']['voltage']=220
+    g.node['foo']['current']=10
+    g.node['moo']['current']=5
+    g.node['moo']['voltage']=110
 
-
-efm = g.edge["foo"]["moo"]
-efm['resistance']=10
-# efm['id']='efm'
     
-
-g.node['foo']['voltage']=220
-g.node['foo']['current']=10
-
-g.node['moo']['current']=5
-g.node['moo']['voltage']=110
-
 
 if(out!=''):
     nx.write_graphml(g, out)

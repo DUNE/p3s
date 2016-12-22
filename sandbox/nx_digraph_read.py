@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -23,10 +24,15 @@ if(graphml!=''):
 if(out):
     print("---- NODES ----")
     print(g.nodes())
+    
+    print("---- NODE DATA ----")
     for n in g.nodes(data=True):
         print(n)
 
     print("---- EDGES ----")
+    print(g.edges())
+    
+    print("---- EDGE DATA ----")
     for e in g.edges(data=True):
         print(e)
 #        x = g.edge[e[0]][e[1]]
