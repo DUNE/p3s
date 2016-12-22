@@ -16,7 +16,7 @@ import datetime
 import json
 from pprint import pprint
 
-from comms import data2post, rdec, communicate, logfail
+from comms import logfail
 from serverAPI import serverAPI
 
 #########################################################

@@ -48,7 +48,7 @@ class serverAPI(dict):
         return rdec(communicate(self['workflow']['addwfURL'], data2post(d).utf8()))
 
     def getDag(self, name):
-        return communicate(self['workflow']['getdagURL'] % name)
+        return rdec(communicate(self['workflow']['getdagURL'] % name))
 
 
     def setDag(self, dag):

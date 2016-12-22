@@ -21,7 +21,6 @@ from pprint		import pprint
 
 import networkx as nx
 
-from comms		import data2post, rdec, communicate
 from serverAPI		import serverAPI
 #########################################################
 def printGraph(g):        
@@ -133,7 +132,7 @@ if(delete):
 if(get):
     if(name==''): exit(-1) # check if we have the key
     resp = API.getDag(name)
-    if(verb>0): print (rdec(resp))
+    if(verb>0): print(resp)
     exit(0)
 ########################## REGISTRATION ################################
 # Forms a DAG (workflow template) on the server based on a graph

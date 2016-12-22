@@ -20,7 +20,7 @@ from django.conf	import settings
 from django.utils	import timezone
 
 # local import (utils)
-from comms import data2post, rdec, communicate, logfail
+from comms import logfail
 from serverAPI import serverAPI
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
