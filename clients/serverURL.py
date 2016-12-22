@@ -1,3 +1,9 @@
+#####################################################
+#   DEPRECATED AND SUBJECT TO BE COMPLETELY REMOVED
+#   SUPERCEDED BY "SERVERAPI"
+#####################################################
+
+
 class serverURL(dict):
     def __init__(self, server='http://localhost:8000/'):
         self.server	= server

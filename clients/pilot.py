@@ -21,7 +21,6 @@ from django.utils	import timezone
 
 # local import (utils)
 from comms import data2post, rdec, communicate, logfail
-from serverURL import serverURL
 from serverAPI import serverAPI
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
@@ -124,13 +123,13 @@ cycles	= args.cycles
 # testing (pre-emptive exit with print)
 tst	= args.test
 
-API  = serverAPI(server=server)
-
 ###################### USAGE REQUESTED? ################################
 if(usage):
     print(Usage)
     exit(0)
 
+### p3s interface defined here
+API  = serverAPI(server=server)
 #################### PILOT DELETE AND EXIT #############################
 # Check if it was a deletion request. Note we don't have a logger yet,
 # since a log is always tied to a working pilot, so we don't log

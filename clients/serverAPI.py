@@ -8,7 +8,7 @@ class serverAPI(dict):
         self.verb	= verb
         
         self['job']	= {
-            'jobsetURL':	server+'jobs/set',
+            'adjjobURL':	server+'jobs/adj',
             'deleteallURL':	server+'jobs/deleteall',
             'deleteURL':	server+'jobs/delete',
             'addjobURL':	server+'jobs/addjob'
@@ -82,3 +82,20 @@ class serverAPI(dict):
 
     def reportPilot(self, p):
         return rdec(communicate(self['pilot']['reportURL'], data2post(p).utf8()))
+    
+    ############# JOB
+    def deleteAllJobs(self):
+        return rdec(communicate(self['job']['deleteallURL']))
+
+    def deleteJob(self, d):
+        return rdec(communicate(self['job']['deleteURL'], data2post(d).utf8()))
+
+    def addJob(self, j):
+        return rdec(communicate(self['job']['addjobURL'], data2post(j).utf8()))
+    
+    def adjJob(self, j):
+        return rdec(communicate(self['job']['adjjobURL'], data2post(j).utf8()))
+    ############# DATA
+    def registerData(self, d):
+        return rdec(communicate(self['data']['registerURL'], data2post(d).utf8(), self.logger))
+

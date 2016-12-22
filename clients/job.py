@@ -17,7 +17,7 @@ import json
 from pprint import pprint
 
 from comms import data2post, rdec, communicate, logfail
-from serverURL import serverURL
+from serverAPI import serverAPI
 
 #########################################################
 settings.configure(USE_TZ = True)
@@ -103,7 +103,8 @@ if(usage):
     print(Usage)
     exit(0)
 
-URLs = serverURL(server=server)
+### p3s interface defined here
+API  = serverAPI(server=server)
 
 ########################## UPDATE/ADJUSTMENT #############################
 # Check if an adjustment of an existing job is requested, and send a
@@ -121,11 +122,10 @@ if(adj):
         
     for j in jobList:
         a = dict(uuid=j) # create a dict to be serialized and sent to the server
-        if(priority!=-1):	a['priority']	= str(priority)
-        if(state!=''):		a['state']	= state
-        adjData = data2post(a).utf8()
-        response = communicate(URLs['job']['jobsetURL'], adjData)
-        if(verb>0): print(rdec(response))
+        if(priority>0):	a['priority']	= str(priority)
+        if(state!=''):	a['state']	= state
+        resp = API.adjJob(a)
+        if(verb>0): print(resp)
 
     exit(0) # done with update/adjust
 
@@ -137,12 +137,11 @@ if(delete):
 
 # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
     if(j_uuid=='ALL' or j_id=='ALL'):
-        response = communicate(URLs['job']['deleteallURL'])
-        if(verb >0): print (rdec(response))
+        resp = API.deleteAllJobs()
+        if(verb>0): print(resp)
         exit(0)
 
-    # Normal delete, by key(s)
-    # UUID:
+    # Normal delete, by UUIDs:
     if(j_uuid!=''):
         if ',' in j_uuid: # assume we have a CSV list
             jobList = j_uuid.split(',')
@@ -150,12 +149,11 @@ if(delete):
             jobList.append(j_uuid)
 
         for j in jobList:
-            delData = data2post(dict(uuid=j)).utf8()
-            response = communicate(URLs['job']['deleteURL'], delData) # POST
-            if(verb>0): print (rdec(response))
+            resp = API.deleteJob(dict(uuid=j))
+            if(verb>0): print(resp)
         exit(0)
         
-    # ID (PK):
+    # Normal delete, by ID (PK):
     if(j_id!=''):
         if ',' in j_id: # assume we have a CSV list
             jobList = j_id.split(',')
@@ -163,9 +161,8 @@ if(delete):
             jobList.append(j_id)
 
         for j in jobList:
-            delData = data2post(dict(pk=j)).utf8()
-            response = communicate(URLs['job']['deleteURL'], delData) # POST
-            if(verb>0): print (rdec(response))
+            resp = API.deleteJob(dict(pk=j))
+            if(verb>0): print(resp)
         exit(0)
 
 
@@ -192,11 +189,8 @@ if(json_in!=''):
 
     # Contact the server, try to register the job(s)
     for j in jobList:
-        jobData = data2post(j).utf8()
-        if(verb>0): print(jobData)
-        response = communicate(URLs['job']['addjobURL'], jobData) # POST
-        if(verb>0): print (rdec(response))
-
+        resp = API.addJob(j)
+        if(verb>0): print(resp)
 
 
 ###################### GRAND FINALE ####################################
