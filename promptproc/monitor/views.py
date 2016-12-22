@@ -99,6 +99,7 @@ class JobTable(MonitorTable):
         exclude	= ('uuid', 'p_uuid', )
 #--------------------------------------------------------
 class DataTable(MonitorTable):
+    def render_uuid(self,value):	return self.makelink('datadetail','uuid', value)
 
     class Meta:
         model = dataset
@@ -271,6 +272,9 @@ def data_handler(request, what):
 def jobdetail(request):
     return detail_handler(request, 'job')
 #--------------------------------------------------------
+def datadetail(request):
+    return detail_handler(request, 'data')
+#--------------------------------------------------------
 def pilotdetail(request):
     return detail_handler(request, 'pilot')
 #--------------------------------------------------------
@@ -299,6 +303,11 @@ def detail_handler(request, what):
         template = 'detail.html'
         d['title']	= what
         objects		= job.objects
+        
+    if(what=='data'):
+        template = 'detail.html'
+        d['title']	= what
+        objects		= dataset.objects
 
     if(what=='pilot'):
         template = 'detail.html'
@@ -333,7 +342,6 @@ def detail_handler(request, what):
     if(name!=''):	dicto	= model_to_dict(objects.get(name=name))
     if(o_uuid!=''):	dicto	= model_to_dict(objects.get(uuid=o_uuid))
     data	= []
-
 
     for a in dicto.keys():
         if(a!='j_uuid'):

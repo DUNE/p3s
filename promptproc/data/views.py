@@ -39,7 +39,6 @@ def registerdata(request):
 
     d.save()
 
-    print(d.name, d.comment)
     return HttpResponse("DS %s" % d.name)
 
 #########################################################
@@ -66,7 +65,6 @@ def registertype(request):
 def adjustdata(request):
     post	= request.POST
     d_uuid	= post['uuid']
-
 
     d = dataset.objects.get(uuid=d_uuid)
 
