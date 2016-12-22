@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import argparse
 import networkx as nx
 from networkx.readwrite import json_graph
@@ -7,17 +8,33 @@ from io import StringIO
 #########################################################################
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-g", "--graphml",	type=str,	default='',
-                    help="GraphML file to be read and parsed.")
+parser.add_argument("-m", "--multi",	action='store_true',
+                    help="use multigraph")
 
-parser.add_argument("-o", "--out",	action='store_true',
-                    help="output the graph to stdout")
+parser.add_argument("-g", "--graphml",	type=str,	default='',
+                    help="GraphML file to be read and parsed (future dev).")
+
+parser.add_argument("-o", "--out",	type=str,	default='',
+                    help="if defined, the name of GraphML file to be generated.")
+
+parser.add_argument("-p", "--print",	action='store_true',
+                    help="output the graph to stdout as graphml")
+
+parser.add_argument("-j", "--json",	action='store_true',
+                    help="output the graph to stdout as json link and adjacency data")
 ########################### Parse all arguments #########################
-args = parser.parse_args()
+args	= parser.parse_args()
 graphml	= args.graphml
+prGraph	= args.print
+multi	= args.multi
+json	= args.json
 out	= args.out
 
-g = nx.DiGraph()
+if(multi):
+    g = nx.MultiDiGraph()
+else:
+    g = nx.DiGraph()
+
 g.add_node("foo")
 g.add_node("moo")
 g.add_node("goo")
@@ -41,18 +58,19 @@ g.node['foo']['current']=10
 g.node['moo']['current']=5
 g.node['moo']['voltage']=110
 
-print("---------------")
-d0 = json_graph.node_link_data(g)
-print(d0)
-print("---------------")
-d1= json_graph.adjacency_data(g)
-print(d1)
-print("---------------")
 
-f = io.StringIO()
-s = '\n'.join(nx.generate_graphml(g))
+if(out!=''):
+    nx.write_graphml(g, out)
+    
+if(json):
+    print("---------------LINK DATA------------------")
+    d0 = json_graph.node_link_data(g)
+    print(d0)
+    print("------------ADJACENCY DATA----------------")
+    d1= json_graph.adjacency_data(g)
+    print(d1)
+    print("------------------------------------------")
 
-print(s)
-f.write(s)
-
-G = nx.read_graphml(f)
+if(prGraph):
+    s = '\n'.join(nx.generate_graphml(g))
+    print(s)
