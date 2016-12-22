@@ -46,7 +46,7 @@ def addjob(request):
 
 ###################################################
 @csrf_exempt
-def set(request):
+def adj(request):
     # fixme - improve error handling such as for missing or screwy arguments
 
     post	= request.POST
