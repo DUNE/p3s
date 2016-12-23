@@ -1,11 +1,15 @@
 from django.db import models
 
-# Dataset is a general class for a collection of files ingested or
-# produced by a job
+# Dataset is a general class for a unit of data ingested or
+# produced by a job. When using directed multigraph as the model fo
+# workflow, this unit can remain just a file since multiple edges
+# can exist between the vertices.
+#
+# "name" is a human-readable description - populated by "key" in
+# networkx MultiDiGraph if coming from the client in GraphML format
+
 class dataset(models.Model):
     uuid	= models.CharField(max_length=36, default='')
-    # human-readable description - populated by "key" in networkx MultiDiGraph
-    # if coming from the client in GraphML format
     name	= models.CharField(max_length=64, default='')
     state	= models.CharField(max_length=64, default='')
     comment	= models.CharField(max_length=256, default='')

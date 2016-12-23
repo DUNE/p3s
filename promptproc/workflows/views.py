@@ -144,7 +144,8 @@ def adddag(request):
 
     ts_def   = timezone.now()
     vertices = nx.topological_sort(g)
-
+    print('*****',vertices)
+    
     newDag		= dag()
     newDag.name		= name
     newDag.description	= description
@@ -188,51 +189,50 @@ def adddag(request):
 def addwf(request):
     
     post	= request.POST
-    dag		= post['dag']
+    dagName	= post['dag']
     name	= post['name']
     description	= post['description']
     wfuuid	= uuid.uuid1()
 
     ts_def   = timezone.now()
 
+    rootName = dag.objects.get(name=dagName).root
+
+    # Create a Workflow object and populate it:
     wf		= workflow()
     wf.ts_def	= ts_def
     wf.uuid	= wfuuid
-    wf.dag	= dag
+    wf.dag	= dagName
     wf.name	= name
     wf.description= description
 
-    wf.save()
-
-
     g = nx.DiGraph()
-    
-    for dv in dagVertex.objects.filter(dag=dag):
+
+    for dv in dagVertex.objects.filter(dag=dagName):
         name	= dv.name
-        wv	= wfVertex()
-        wv.name	= name
-        wv.wf	= wf.name
-        wv.wfuuid= wfuuid
-        wv.save()
-        g.add_node(name, wf=dag)
+        g.add_node(name, wf=dagName)
 
         # NEW
         j = job(
             uuid		= uuid.uuid1(),
             wfuuid		= wfuuid,
-            jobtype		= 'jobtype',
-            payload		= 'payload',
-            priority		= 1,
-            state		= 'state',
+            jobtype		= dv.jobtype,
+            payload		= dv.payload,
+            priority		= dv.priority,
+            state		= 'template',
             ts_def		= ts_def,
-            timelimit		= 777,
-            name		= 'name',
+            timelimit		= dv.timelimit,
+            name		= dv.name,
         )
-        
+
+        if(dv.name == rootName):
+            print("Found root %s %s" %(j.name, j.uuid))
         j.save()
 
-        
-    for de in dagEdge.objects.filter(dag=dag):
+       
+    wf.save() # can only do it now since need rootuuid
+    
+    for de in dagEdge.objects.filter(dag=dagName):
         name	= de.name
         we	= wfEdge()
         we.name	= name
@@ -267,6 +267,8 @@ def fetchdag(dag): # inflate DAG from RDBMS
 
     return g
 
+
+################ DUSTY ATTIC ######################
     # print("---------------")
     # d0 = json_graph.node_link_data(g)
     # print(d0)
@@ -275,3 +277,8 @@ def fetchdag(dag): # inflate DAG from RDBMS
     # print(d1)
     # print("---------------")
 
+        # wv	= wfVertex()
+        # wv.name	= name
+        # wv.wf	= wf.name
+        # wv.wfuuid= wfuuid
+        # wv.save()

@@ -47,6 +47,7 @@ class dagEdge(models.Model):
 ####################################  WORKFLOW ##################################################
 class workflow(models.Model):
     uuid	= models.CharField(max_length=36, default='')
+    rootuuid	= models.CharField(max_length=36, default='')   # handle on the 1st job
     name	= models.CharField(max_length=64, default='')	# not expected to be unique
     description	= models.TextField(default='')
     dag		= models.CharField(max_length=64, default='')	# dag name (as a type of wf)
@@ -54,6 +55,14 @@ class workflow(models.Model):
     
     def __str__(self):
         return self.name
+
+    
+# -mxp-
+# These two models will be soon retired as they represent an extra layer
+# in the class hierarchy I would like to eliminate, sacrificing elegance for
+# practicality. Workflow shall include jobs and datasets directly,
+#without this abstract layer
+
 # -------
 class wfVertex(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
