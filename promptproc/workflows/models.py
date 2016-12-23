@@ -21,7 +21,11 @@ class dag(models.Model):
 class dagVertex(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
-    
+    jobtype	= models.CharField(max_length=16, default='')		#
+    payload	= models.CharField(max_length=256,default='')		# provisional, url/path
+    timelimit	= models.PositiveIntegerField(default=1000)		# in seconds
+    priority	= models.PositiveIntegerField(default=0)		# higher wins
+
     def __str__(self):
         return self.name
 
@@ -29,6 +33,9 @@ class dagVertex(models.Model):
 class dagEdge(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
+    
+    comment	= models.CharField(max_length=256, default='')
+    datatype	= models.CharField(max_length=64, default='')
 
     source	= models.CharField(max_length=36, default='')	# source
     target	= models.CharField(max_length=36, default='')	# target

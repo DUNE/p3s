@@ -14,6 +14,9 @@ from networkx.readwrite import json_graph
 from .models import dag, dagVertex, dagEdge
 from .models import workflow, wfVertex, wfEdge
 
+from jobs.models			import job
+from data.models			import dataset, datatype
+
 def init(request):
     d = dag(name='test')
     if(dag._init):
@@ -150,13 +153,21 @@ def adddag(request):
     newDag.root		= vertices[0]
     newDag.save()
 
-    for n in g.nodes(data=True):
-        # print(n)
+    dvFields = []
+    for f in dagVertex._meta.get_fields():dvFields.append(f.name)
+    for n in g.nodes(data=True):# print(n)
         dv = dagVertex()
         dv.name  = n[0]
         dv.dag   = name
+        dicto = n[1]
+        for k in dicto.keys():
+            if k in dvFields:
+                dv.__dict__[k]=dicto[k]
         dv.save()
         
+    deFields = []
+    for f in dagEdge._meta.get_fields():deFields.append(f.name)
+    print(deFields)
     for e in g.edges(data=True):
         print(e)
         de = dagEdge()
@@ -164,6 +175,10 @@ def adddag(request):
         de.target = e[1]
         de.name	  = e[2]['name']
         de.dag    = name
+        dicto = e[2]
+        for k in dicto.keys():
+            if k in deFields:
+                de.__dict__[k]=dicto[k]
         de.save()
 
     return HttpResponse("RESPONSE %s" % graphml )
@@ -200,7 +215,22 @@ def addwf(request):
         wv.wfuuid= wfuuid
         wv.save()
         g.add_node(name, wf=dag)
+
+        # NEW
+        j = job(
+            uuid		= uuid.uuid1(),
+            wfuuid		= wfuuid,
+            jobtype		= 'jobtype',
+            payload		= 'payload',
+            priority		= 1,
+            state		= 'state',
+            ts_def		= ts_def,
+            timelimit		= 777,
+            name		= 'name',
+        )
         
+        j.save()
+
         
     for de in dagEdge.objects.filter(dag=dag):
         name	= de.name
