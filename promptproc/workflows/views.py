@@ -33,6 +33,9 @@ def deleteall(request):
     if(what==''):
         return HttpResponse("DELETE ALL: SPECIFICATION OF OBJECTS TO BE DELETED MISSING")
 
+
+    ### ALL OF THIS WILL NEED TO BE IMPROVED WITH FOREIGN KEYS AND ALL -
+    ### WRITTEN THIS WAY TO GET TO SPEED.
     success = True
     if(what=='dag'): 
         try:
@@ -210,8 +213,6 @@ def addwf(request):
 
     for dv in dagVertex.objects.filter(dag=dagName):
         g.add_node(dv.name, wf=dagName)
-
-        # NEW
         j = job(
             uuid		= uuid.uuid1(),
             wfuuid		= wfuuid,
@@ -232,10 +233,18 @@ def addwf(request):
     wf.save() # can only do it now since need rootuuid
     
     for de in dagEdge.objects.filter(dag=dagName):
-        # NEW
+        s_cand = job.objects.filter(wfuuid=wfuuid, name=de.source)
+        if(len(s_cand)!=1): return HttpResponse("addwf: inconsistent graph")
+        t_cand = job.objects.filter(wfuuid=wfuuid, name=de.target)
+        if(len(t_cand)!=1): return HttpResponse("addwf: inconsistent graph")
+        sourceuuid = s_cand[0].uuid
+        targetuuid = t_cand[0].uuid
+
         d = dataset(
             uuid	= uuid.uuid1(),
             wfuuid	= wfuuid,
+            sourceuuid	= sourceuuid,
+            targetuuid	= targetuuid,
             name	= de.name,
             state	= 'template',
             comment	= de.comment,
@@ -244,15 +253,6 @@ def addwf(request):
         )
 
         d.save()
-
-        # name	= de.name
-        # we	= wfEdge()
-        # we.name	= name
-        # we.wfuuid= wfuuid
-        # we.source = de.source
-        # we.target = de.target
-        # we.wf	= wf.name
-        # we.save()
         g.add_edge(de.source, de.target)
 
     s = '\n'.join(nx.generate_graphml(g))
