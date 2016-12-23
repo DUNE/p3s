@@ -209,8 +209,7 @@ def addwf(request):
     g = nx.DiGraph()
 
     for dv in dagVertex.objects.filter(dag=dagName):
-        name	= dv.name
-        g.add_node(name, wf=dagName)
+        g.add_node(dv.name, wf=dagName)
 
         # NEW
         j = job(
@@ -219,7 +218,7 @@ def addwf(request):
             jobtype		= dv.jobtype,
             payload		= dv.payload,
             priority		= dv.priority,
-            state		= 'template',
+            state		= 'template', # FIXME
             ts_def		= ts_def,
             timelimit		= dv.timelimit,
             name		= dv.name,
@@ -233,14 +232,27 @@ def addwf(request):
     wf.save() # can only do it now since need rootuuid
     
     for de in dagEdge.objects.filter(dag=dagName):
-        name	= de.name
-        we	= wfEdge()
-        we.name	= name
-        we.wfuuid= wfuuid
-        we.source = de.source
-        we.target = de.target
-        we.wf	= wf.name
-        we.save()
+        # NEW
+        d = dataset(
+            uuid	= uuid.uuid1(),
+            wfuuid	= wfuuid,
+            name	= de.name,
+            state	= 'template',
+            comment	= de.comment,
+            datatype	= de.datatype,
+            wf     	= '',
+        )
+
+        d.save()
+
+        # name	= de.name
+        # we	= wfEdge()
+        # we.name	= name
+        # we.wfuuid= wfuuid
+        # we.source = de.source
+        # we.target = de.target
+        # we.wf	= wf.name
+        # we.save()
         g.add_edge(de.source, de.target)
 
     s = '\n'.join(nx.generate_graphml(g))

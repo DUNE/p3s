@@ -47,6 +47,7 @@ class dagEdge(models.Model):
 ####################################  WORKFLOW ##################################################
 class workflow(models.Model):
     uuid	= models.CharField(max_length=36, default='')
+    state	= models.CharField(max_length=64, default='')
     rootuuid	= models.CharField(max_length=36, default='')   # handle on the 1st job
     name	= models.CharField(max_length=64, default='')	# not expected to be unique
     description	= models.TextField(default='')
