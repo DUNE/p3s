@@ -33,6 +33,7 @@ class serverAPI(dict):
         ### WORKFLOW
         self['workflow']	= {
             'addwfURL':		server+'workflows/addwf',
+            'setwfstateURL':	server+'workflows/setwfstate',
             'deleteallURL':	server+'workflows/deleteall?what=%s',
             'deleteURL':	server+'workflows/delete',
             'getdagURL':	server+'workflows/getdag?name=%s',
@@ -53,6 +54,10 @@ class serverAPI(dict):
         d ={'dag':dag, 'name':name, 'state':state, 'description':description}
         return rdec(communicate(self['workflow']['addwfURL'], data2post(d).utf8()))
 
+    def setWorkflowState(self, wfuuid, state):
+        d = {'uuid': wfuuid, 'state': state}
+        return rdec(communicate(self['workflow']['setwfstateURL'], data2post(d).utf8()))
+        
     def getDag(self, name):
         return rdec(communicate(self['workflow']['getdagURL'] % name))
 

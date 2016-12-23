@@ -61,6 +61,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-G", "--get",	help="get a DAG from server - needs the name of the DAG",	action='store_true')
 parser.add_argument("-H", "--usage",	help="print usage notes and exit",				action='store_true')
 parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs name/uuid+type (what)",	action='store_true')
+parser.add_argument("-m", "--modify",	help="used to flip the state of a workflow, needs uuit",	action='store_true')
 parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/', help="the server, default: http://localhost:8000/")
 parser.add_argument("-w", "--what",	type=str,	default='', help="dag or workflow (for deletion).")
@@ -84,6 +85,7 @@ server	= args.server
 verb	= args.verbosity
 add	= args.add
 delete	= args.delete
+modify	= args.modify
 what	= args.what
 o_uuid	= args.uuid # object uuid
 get	= args.get
@@ -167,6 +169,12 @@ if(add!=''):
     resp = API.registerWorkflow(add, name, state, description)
     if(verb>1): print (resp)
     exit(0)
+########################################################################
+if(modify):
+    if(state=='template'): exit(0) # won't modify what's already a default
+    if(o_uuid==''): exit(-1) # can't proceed without a key
+    resp = API.setWorkflowState(o_uuid, state)
+    
 
 ###################### GRAND FINALE ####################################
 exit(0)

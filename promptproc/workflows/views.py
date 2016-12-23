@@ -265,6 +265,18 @@ def addwf(request):
     return HttpResponse(s)
     
 ###################################################
+@csrf_exempt
+def setwfstate(request):
+    post	= request.POST
+    wfuuid	= post['uuid']
+    state	= post['state']
+
+    wf = workflow.objects.get(uuid=wfuuid)
+    wf.state=state
+    wf.save()
+    
+    return HttpResponse(state)
+###################################################
 def getdag(request):
     name = request.GET.get('name','')
 
