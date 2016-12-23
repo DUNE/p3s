@@ -73,6 +73,9 @@ parser.add_argument("-a", "--add",	type=str,	default='',
                     If no special name is provided for the workflow via the *name* argument,
                     defaults to the name of the parent DAG''')
 
+parser.add_argument("-s", "--state",	type=str,	default='template', help='''set/modify the state of a workflow.
+Needs uuid to modify or can be used at creation time.''')
+
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
@@ -85,6 +88,7 @@ what	= args.what
 o_uuid	= args.uuid # object uuid
 get	= args.get
 name	= args.name
+state	= args.state
 graphml	= args.graphml
 description = args.description
 
@@ -160,7 +164,7 @@ if(graphml!=''):
 ########################################################################
 if(add!=''):
     if(name==''): name=add
-    resp = API.registerWorkflow(add, name, description)
+    resp = API.registerWorkflow(add, name, state, description)
     if(verb>1): print (resp)
     exit(0)
 

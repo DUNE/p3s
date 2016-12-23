@@ -49,8 +49,8 @@ class serverAPI(dict):
 
         
     ############# WORKFLOW
-    def registerWorkflow(self, dag, name, description):
-        d ={'dag':dag, 'name':name, 'description':description}
+    def registerWorkflow(self, dag, name, state, description):
+        d ={'dag':dag, 'name':name, 'state':state, 'description':description}
         return rdec(communicate(self['workflow']['addwfURL'], data2post(d).utf8()))
 
     def getDag(self, name):

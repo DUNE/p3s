@@ -194,6 +194,7 @@ def addwf(request):
     post	= request.POST
     dagName	= post['dag']
     name	= post['name']
+    state	= post['state']
     description	= post['description']
     wfuuid	= uuid.uuid1()
 
@@ -207,10 +208,15 @@ def addwf(request):
     wf.uuid	= wfuuid
     wf.dag	= dagName
     wf.name	= name
+    wf.state	= state
     wf.description= description
 
     g = nx.DiGraph()
 
+    # at creation time, the state of objects is set to 'template'
+    # and can be flipped to 'defined' optionally depending on
+    # the declared state of the workflow.
+    
     for dv in dagVertex.objects.filter(dag=dagName):
         g.add_node(dv.name, wf=dagName)
         j = job(
@@ -219,17 +225,17 @@ def addwf(request):
             jobtype		= dv.jobtype,
             payload		= dv.payload,
             priority		= dv.priority,
-            state		= 'template', # FIXME
+            state		= 'template',
             ts_def		= ts_def,
             timelimit		= dv.timelimit,
             name		= dv.name,
         )
 
         if(dv.name == rootName):
-            print("Found root %s %s" %(j.name, j.uuid))
+            wf.rootuuid = j.uuid
+            # print("Found root %s %s" %(j.name, j.uuid))
         j.save()
 
-       
     wf.save() # can only do it now since need rootuuid
     
     for de in dagEdge.objects.filter(dag=dagName):
@@ -249,7 +255,7 @@ def addwf(request):
             state	= 'template',
             comment	= de.comment,
             datatype	= de.datatype,
-            wf     	= '',
+            wf     	= name,
         )
 
         d.save()
