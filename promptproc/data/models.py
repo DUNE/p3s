@@ -27,6 +27,7 @@ class dataset(models.Model):
 
 class datatype(models.Model):
     name	= models.CharField(max_length=64,	primary_key=True)
+    ext		= models.CharField(max_length=8, default='')	# file extension
     comment	= models.CharField(max_length=256,	default='')
 
     

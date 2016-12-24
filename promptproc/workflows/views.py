@@ -214,8 +214,7 @@ def addwf(request):
     g = nx.DiGraph()
 
     # at creation time, the state of objects is set to 'template'
-    # and can be flipped to 'defined' optionally depending on
-    # the declared state of the workflow.
+    # and can be flipped to 'defined'
     
     for dv in dagVertex.objects.filter(dag=dagName):
         g.add_node(dv.name, wf=dagName)
@@ -240,18 +239,20 @@ def addwf(request):
     
     for de in dagEdge.objects.filter(dag=dagName):
         s_cand = job.objects.filter(wfuuid=wfuuid, name=de.source)
-        if(len(s_cand)!=1): return HttpResponse("addwf: inconsistent graph")
         t_cand = job.objects.filter(wfuuid=wfuuid, name=de.target)
-        if(len(t_cand)!=1): return HttpResponse("addwf: inconsistent graph")
+        if(len(s_cand)!=1): return HttpResponse("addwf: inconsistent graph - source")
+        if(len(t_cand)!=1): return HttpResponse("addwf: inconsistent graph - target")
         sourceuuid = s_cand[0].uuid
         targetuuid = t_cand[0].uuid
-
+        d_uuid	= str(uuid.uuid1())
+        dt	= datatype.objects.get(name=de.datatype)
+        ext	= dt.ext
         d = dataset(
-            uuid	= uuid.uuid1(),
+            uuid	= d_uuid,
             wfuuid	= wfuuid,
             sourceuuid	= sourceuuid,
             targetuuid	= targetuuid,
-            name	= de.name,
+            name	= d_uuid+ext,
             state	= 'template',
             comment	= de.comment,
             datatype	= de.datatype,
