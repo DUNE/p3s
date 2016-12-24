@@ -261,9 +261,19 @@ def addwf(request):
         d.save()
         g.add_edge(de.source, de.target)
 
+
+    if(state=='defined'):wf2defined(wf) # flips both wf and the root job
     s = '\n'.join(nx.generate_graphml(g))
     return HttpResponse(s)
     
+###################################################
+def wf2defined(wf):
+    wf.state	= 'defined'
+    wf.save()
+    j = job.objects.get(uuid=wf.rootuuid)
+    print('juuid',j.uuid)
+    j.state = 'defined'
+    j.save()
 ###################################################
 @csrf_exempt
 def setwfstate(request):
@@ -272,8 +282,12 @@ def setwfstate(request):
     state	= post['state']
 
     wf = workflow.objects.get(uuid=wfuuid)
-    wf.state=state
-    wf.save()
+    
+    if(state=='defined'):
+        wf2defined(wf)
+    else:        
+        wf.state=state
+        wf.save()
     
     return HttpResponse(state)
 ###################################################
