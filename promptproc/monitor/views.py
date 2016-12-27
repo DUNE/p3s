@@ -100,6 +100,7 @@ class JobTable(MonitorTable):
 #--------------------------------------------------------
 class DataTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('datadetail','uuid', value)
+    def render_wfuuid(self,value):	return self.makelink('wfdetail','uuid', value)
     def render_datatype(self,value):	return self.makelink('datatypes','', value)
 
     class Meta:
@@ -232,6 +233,7 @@ def dags(request):
 #########################################################    
 def data_handler(request, what):
     uuid	= request.GET.get('uuid','')
+    wfuuid	= request.GET.get('wfuuid','')
     pk		= request.GET.get('pk','')
     name	= request.GET.get('name','')
 
@@ -245,8 +247,10 @@ def data_handler(request, what):
     
     if(what=='jobs'):
         objects = job.objects
-        if(uuid == '' and pk == ''):	t = JobTable(objects.all())
+        if(uuid == '' and pk == '' and wfuuid == ''):	t = JobTable(objects.all())
+        
         if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
+        if(wfuuid != ''):		t = JobTable(objects.filter(wfuuid=wfuuid))
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
 
     if(what=='data'):
@@ -347,9 +351,12 @@ def detail_handler(request, what):
         objects = workflow.objects
         theWF = objects.get(uuid=o_uuid)
         theName = theWF.name
-        aux1 = WfVertexTable(wfVertex.objects.filter(wfuuid=o_uuid))
-        aux2 = WfEdgeTable(wfEdge.objects.filter(wfuuid=o_uuid))
-        d['title']	= what+' name: '+theName
+        aux1 = JobTable(job.objects.filter(wfuuid=o_uuid))
+        aux1.set_site(domain)
+        
+        aux2 = DataTable(dataset.objects.filter(wfuuid=o_uuid))
+        aux2.set_site(domain)
+        d['title']	= what+' name: '+theName+', uuid: '+o_uuid
                              
     dicto = {}
     if(pk!=''):		dicto	= model_to_dict(objects.get(pk=pk))
@@ -373,10 +380,10 @@ def detail_handler(request, what):
     # FIXME - admittedly hacky but we best improve a more final version
     if(aux1):
         d['aux1'] = aux1
-        d['aux1title'] = 'Vertices for '+theName
+        d['aux1title'] = 'Jobs for "'+theName+'"'
     if(aux2):
         d['aux2'] = aux2
-        d['aux2title'] = 'Edges for '+theName
+        d['aux2title'] = 'Data for "'+theName+'"'
 
     return render(request, template, d)
 
@@ -409,3 +416,5 @@ def detail_handler(request, what):
 #        for o in objects.filter(ts_lhb__gte=yest):
 #            print(o.ts_lhb)
 #    print(timezone.get_current_timezone_name())
+#        aux1 = WfVertexTable(wfVertex.objects.filter(wfuuid=o_uuid))
+        #        aux2 = WfEdgeTable(wfEdge.objects.filter(wfuuid=o_uuid))
