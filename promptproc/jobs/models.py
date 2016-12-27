@@ -1,4 +1,5 @@
-from django.db import models
+from django.db		import models
+from data.models	import dataset, datatype
 
 # The job class. Jobs may belong to stages, i.e. to a specific type,
 # which defined paramters such as default priority, certain policies etc
@@ -21,6 +22,16 @@ class job(models.Model):
 
     def __str__(self):
         return self.uuid
+
+
+    def childrenStateToggle(self, state):
+        for edge in dataset.objects.filter(sourceuuid=self.uuid):
+            for child in job.objects.filter(uuid=edge.targetuuid):
+                if(child.jobtype=='noop'):
+                    child.state='finished'
+                else:
+                    child.state = state
+                child.save()
 
     
 class jobtype(models.Model):

@@ -150,8 +150,11 @@ def report(request):
         try:
             j		= job.objects.get(uuid=p.j_uuid)
             j.state	= state
-            if(event=='jobstart'):	j.ts_sta = timezone.now()
-            if(event=='jobstop'):	j.ts_sto = timezone.now()
+            if(event=='jobstart'):
+                j.ts_sta = timezone.now()
+            if(event=='jobstop'): # timestamp and toggle children
+                j.ts_sto = timezone.now()
+                j.childrenStateToggle('defined')
             j.save()
         except:
             return HttpResponse(json.dumps({'status':	'FAIL',
@@ -167,7 +170,10 @@ def report(request):
         
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
-    
+
+
+    # this should work as a catch-all since all states are supposed to be picked up above
+    #
     return HttpResponse(json.dumps({'status':'OK', 'state':state}))
 
 ###################################################

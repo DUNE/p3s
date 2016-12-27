@@ -267,7 +267,7 @@ def addwf(request):
         g.add_edge(de.source, de.target)
 
 
-    if(state=='defined'):wf2defined(wf) # flips both wf and the root job
+    if(state=='defined'):wf2defined(wf) # toggles both wf and the root job
     s = '\n'.join(nx.generate_graphml(g))
     return HttpResponse(s)
     
@@ -276,8 +276,13 @@ def wf2defined(wf):
     wf.state	= 'defined'
     wf.save()
     j = job.objects.get(uuid=wf.rootuuid)
-    print('juuid',j.uuid)
-    j.state = 'defined'
+    if(j.jobtype=='noop'):
+        print('root job uuid, noop, toggle to finished',j.uuid)
+        j.state = 'finished'
+        j.childrenStateToggle('defined')
+    else:
+        print('root job uuid, toggle to defined',j.uuid)
+        j.state = 'defined'
     j.save()
 ###################################################
 @csrf_exempt
@@ -318,16 +323,5 @@ def fetchdag(dag): # inflate DAG from RDBMS
 
 
 ################ DUSTY ATTIC ######################
-    # print("---------------")
-    # d0 = json_graph.node_link_data(g)
-    # print(d0)
-    # print("---------------")
-    # d1= json_graph.adjacency_data(g)
-    # print(d1)
-    # print("---------------")
-
-        # wv	= wfVertex()
-        # wv.name	= name
-        # wv.wf	= wf.name
-        # wv.wfuuid= wfuuid
-        # wv.save()
+# d0 = json_graph.node_link_data(g)
+# d1= json_graph.adjacency_data(g)
