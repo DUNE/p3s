@@ -53,11 +53,13 @@ def deleteall(request):
 
     if(what=='workflow'): 
         try:
-            wfVertex.objects.all().delete()
+            # wfVertex.objects.all().delete()
+            job.objects.all().delete()
         except:
             success = False
         try:
-            wfEdge.objects.all().delete()
+            # wfEdge.objects.all().delete()
+            dataset.objects.all().delete()
         except:
             success = False
         try:
@@ -93,11 +95,13 @@ def delete(request):
         except:
             success = False
         try:
-            for v in wfVertex.objects.filter(wfuuid=keyname): v.delete()
+            # for v in wfVertex.objects.filter(wfuuid=keyname): v.delete()
+            for j in job.objects.filter(wfuuid=keyname): j.delete()
         except:
             success = False
         try:
-            for e in wfEdge.objects.filter(wfuuid=keyname): e.delete()
+            # for e in wfEdge.objects.filter(wfuuid=keyname): e.delete()
+            for ds in dataset.objects.filter(wfuuid=keyname): ds.delete()
         except:
             success = False
 

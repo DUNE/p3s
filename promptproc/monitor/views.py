@@ -346,11 +346,16 @@ def detail_handler(request, what):
         aux2 = DagEdgeTable(dagEdge.objects.filter(dag=theName))
         d['title']	= what+' name: '+theName
                              
+    theName = 'Not found'
     if(what=='workflow'):
         template = 'detail2.html'
         objects = workflow.objects
-        theWF = objects.get(uuid=o_uuid)
-        theName = theWF.name
+        try:
+            theWF = objects.get(uuid=o_uuid)
+            theName = theWF.name
+        except:
+            return HttpResponse("Workflow '%s' not found" % o_uuid)
+        
         aux1 = JobTable(job.objects.filter(wfuuid=o_uuid))
         aux1.set_site(domain)
         
