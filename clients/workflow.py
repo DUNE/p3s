@@ -23,30 +23,41 @@ import networkx as nx
 
 from serverAPI		import serverAPI
 #########################################################
+# simple printout for visual verification of a DAG
 def printGraph(g):        
-    print("NODES and EDGES representation")
+    print("NODES and EDGES representation of the DAG")
     print("---- NODES ----")
     print(g.nodes())
     for n in g.nodes(): print(n)
-
     print("---- EDGES ----")
     for e in g.edges(): print(e,g.edge[e[0]][e[1]])
-
+# ---
 settings.configure(USE_TZ = True)
 
 Usage		= '''Usage:
+For command line options run the script with "--help" option.
+* Terminology *
+DAG is an abstraction of a workflow i.e. it describes its topology
+and general characteristics of edges and vertices but does not
+correspond to a running process nor does it have a complete information
+to create a functional workflow. Workflows are created based on DAGs
+serving as templates.
 
-For command line options run the pilot with "--help" option.
+* DAG definition * 
+Option "-g" allows to use a graphML file containing a DAG description
+and send it to the server. A name can be suppplied via a command line
+argument, and if absent it is derived from the name of the file containing
+the graph.
+
+DAG names are unique which is enforced in the database.
 
 * Workflow definitions * 
 
-Option "-g" allows to read and parse contents of a graphML file containing
-a workflow description, and send it to the server. A name can be suppplied
-via a command line argument, and if absent it is derived from the name of
-the file containing the graph.
-
-Workflows are created based on templates which are DAGs which must be
-exist on the server.
+Workflows are created based on templates (DAGs) which must be
+exist on the server by the time a request for a new workflow is sent.
+A name can be optionally set for a workflow but it's not expected
+to be unique. Worflows are idnetified in the system by their UUIDs which
+are automatically generated.
 
 '''
 #-------------------------
@@ -59,7 +70,7 @@ class Dag(dict):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-G", "--get",	help="get a DAG from server - needs the name of the DAG",	action='store_true')
-parser.add_argument("-H", "--usage",	help="print usage notes and exit",				action='store_true')
+parser.add_argument("-U", "--usage",	help="print usage notes and exit",				action='store_true')
 parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs name/uuid+type (what)",	action='store_true')
 parser.add_argument("-m", "--modify",	help="used to flip the state of a workflow, needs uuit",	action='store_true')
 parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
@@ -142,9 +153,9 @@ if(get):
     exit(0)
 ########################## REGISTRATION ################################
 # Forms a DAG (workflow template) on the server based on a graph
-# description stored in a GraphML file
-
-
+# description stored in a GraphML file. Note that the content is
+# verified by NetworkX first, then a string in GraphML format is
+# forwarded to the server.
 if(graphml!=''):
     if(name==''): # default to the root of the file name
         basename = graphml.rsplit( ".", 1 )[0] # admittedly crafty
