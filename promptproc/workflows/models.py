@@ -31,8 +31,9 @@ class dagVertex(models.Model):
 
 # -------
 class dagEdge(models.Model):
-    name	= models.CharField(max_length=64, default='')	# human-readable description
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
+    name	= models.CharField(max_length=64, default='')	# a filename or a placeholder for one
+    dirpath	= models.CharField(max_length=256,default='')
     
     comment	= models.CharField(max_length=256, default='')
     datatype	= models.CharField(max_length=64, default='')

@@ -1,8 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
   <key attr.name="name"		attr.type="string"	for="edge" id="d1" />
-  <key attr.name="datatype"	attr.type="string"	for="edge" id="d2" />
-  <key attr.name="comment"	attr.type="string"	for="edge" id="d3" />
+  <key attr.name="dirpath"	attr.type="string"	for="edge" id="d2" />
+  <key attr.name="datatype"	attr.type="string"	for="edge" id="d3" />
+  <key attr.name="comment"	attr.type="string"	for="edge" id="d4" />
   
   <key attr.name="payload" 	attr.type="string"	for="node" id="d101" />
   <key attr.name="jobtype" 	attr.type="string"	for="node" id="d102" />
@@ -33,14 +34,16 @@
 
     <edge source="NOOP1" target="filter">
       <data key="d1">raw.txt</data>
-      <data key="d2">TXT</data>
-      <data key="d3">Simulated input</data>
+      <data key="d2">/home/maxim/p3sdata/</data>
+      <data key="d3">TXT</data>
+      <data key="d4">Simulated input</data>
     </edge>
     
     <edge source="filter" target="NOOP2">
       <data key="d1">filtered.txt</data>
-      <data key="d2">TXT</data>
-      <data key="d3">Simulated output</data>
+      <data key="d2">/home/maxim/p3sdata/</data>
+      <data key="d3">TXT</data>
+      <data key="d4">Simulated output</data>
     </edge>
   </graph>
 </graphml>

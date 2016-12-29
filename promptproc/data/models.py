@@ -9,8 +9,11 @@ from django.db import models
 # networkx MultiDiGraph if coming from the client in GraphML format
 
 class dataset(models.Model):
+    #
     uuid	= models.CharField(max_length=36, default='')
     name	= models.CharField(max_length=64, default='')
+    dirpath	= models.CharField(max_length=256,default='')
+    #
     state	= models.CharField(max_length=64, default='')
     comment	= models.CharField(max_length=256, default='')
     datatype	= models.CharField(max_length=64, default='')

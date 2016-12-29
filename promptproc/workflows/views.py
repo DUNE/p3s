@@ -274,6 +274,7 @@ def addwf(request):
             targetuuid	= targetuuid,
             name	= d_uuid+ext,
             state	= 'template',
+            dirpath	= de.dirpath,
             comment	= de.comment,
             datatype	= de.datatype,
             wf     	= name,
