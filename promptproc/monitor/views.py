@@ -316,7 +316,8 @@ def detail_handler(request, what):
 
     template, objects, aux1, aux2 = None, None, None, None
     
-    
+    theName = ''
+
     if(what=='job'):
         template = 'detail.html'
         d['title']	= what
@@ -332,8 +333,8 @@ def detail_handler(request, what):
         d['title']	= what
         objects = pilot.objects
         
-    theName = 'Not found'
     if(what=='dag'):
+        theName = 'Not found'
         template = 'detail2.html'
         objects = dag.objects
         try:
@@ -346,8 +347,8 @@ def detail_handler(request, what):
         aux2 = DagEdgeTable(dagEdge.objects.filter(dag=theName))
         d['title']	= what+' name: '+theName
                              
-    theName = 'Not found'
     if(what=='workflow'):
+        theName = 'Not found'
         template = 'detail2.html'
         objects = workflow.objects
         try:

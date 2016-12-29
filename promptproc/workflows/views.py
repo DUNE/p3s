@@ -214,12 +214,14 @@ def addwf(request):
     wf.name	= name
     wf.state	= state
     wf.description= description
+    # we'll save wf a bit later.
 
     g = nx.DiGraph()
 
     # at creation time, the state of objects is set to 'template'
-    # and can be flipped to 'defined'
-    
+    # and can be toggled to 'defined'
+
+    # Do the jobs
     for dv in dagVertex.objects.filter(dag=dagName):
         g.add_node(dv.name, wf=dagName)
         j = job(
@@ -234,23 +236,37 @@ def addwf(request):
             name		= dv.name,
         )
 
-        if(dv.name == rootName):
+        if(dv.name == rootName): # print("Found root %s %s" %(j.name, j.uuid))
             wf.rootuuid = j.uuid
-            # print("Found root %s %s" %(j.name, j.uuid))
+            
         j.save()
-
+    # ---
     wf.save() # can only do it now since need rootuuid
-    
+
+    # Now do the datasets for the flow
     for de in dagEdge.objects.filter(dag=dagName):
+        # even in a multigraph, an edge can only be associated with one
+        # source and one target. A source and a target can be connected
+        # by multiple edges in a multigraph, however. So check for
+        # the former condition.
+        
         s_cand = job.objects.filter(wfuuid=wfuuid, name=de.source)
         t_cand = job.objects.filter(wfuuid=wfuuid, name=de.target)
+        
         if(len(s_cand)!=1): return HttpResponse("addwf: inconsistent graph - source")
         if(len(t_cand)!=1): return HttpResponse("addwf: inconsistent graph - target")
+        
         sourceuuid = s_cand[0].uuid
         targetuuid = t_cand[0].uuid
+
+        # a "dataset" - a file in this case -
+        # is created with a name formed from its UUID and
+        # predefined extension (as per type object)
+        
         d_uuid	= str(uuid.uuid1())
         dt	= datatype.objects.get(name=de.datatype)
         ext	= dt.ext
+        
         d = dataset(
             uuid	= d_uuid,
             wfuuid	= wfuuid,

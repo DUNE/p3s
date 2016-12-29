@@ -59,6 +59,11 @@ A name can be optionally set for a workflow but it's not expected
 to be unique. Worflows are idnetified in the system by their UUIDs which
 are automatically generated.
 
+* Deletion *
+
+Until serious testing has been completed, please leave this
+operation to the experts, such as the author of this software.
+
 '''
 #-------------------------
 class Dag(dict):

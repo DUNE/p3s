@@ -114,3 +114,8 @@ Pilot - add cycles, period and list of jobs done.
 * FLushing of obsolete data
 * Clearing older DB entries
 
+## Workflow
+* Implement true dag traversal (i.e. for multiple edges coming to a node)
+   * in the job class
+   * in the GraphML source
+   
