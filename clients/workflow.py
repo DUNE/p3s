@@ -90,6 +90,11 @@ parser.add_argument("-a", "--add",	type=str,	default='',
                     If no special name is provided for the workflow via the *name* argument,
                     defaults to the name of the parent DAG''')
 
+parser.add_argument("-f", "--fileinfo",	type=str,	default='',
+                    help='''Provides file information for the workflow, overriding filenames
+                    and directory paths in the DAG template. Formatted as a JSON dictionary with
+                    the pattern {'source:target':{"name":"foo","dirpath":"bar"}} ''')
+
 parser.add_argument("-s", "--state",	type=str,	default='template', help='''set/modify the state of a workflow.
 Needs uuid to modify or can be used at creation time.''')
 
@@ -107,6 +112,7 @@ o_uuid	= args.uuid # object uuid
 get	= args.get
 name	= args.name
 state	= args.state
+fileinfo= args.fileinfo
 graphml	= args.graphml
 description = args.description
 
@@ -156,6 +162,7 @@ if(get):
     resp = API.getDag(name)
     if(verb>0): print(resp)
     exit(0)
+
 ########################## REGISTRATION ################################
 # Forms a DAG (workflow template) on the server based on a graph
 # description stored in a GraphML file. Note that the content is
@@ -179,17 +186,23 @@ if(graphml!=''):
     if(verb>1): print (resp)
 
     exit(0)
+
 ########################################################################
 if(add!=''):
     if(name==''): name=add
-    resp = API.registerWorkflow(add, name, state, description)
+    resp = API.registerWorkflow(add, name, state, fileinfo, description)
+    
     if(verb>1): print (resp)
     exit(0)
+
 ########################################################################
 if(modify):
     if(state=='template'): exit(0) # won't modify what's already a default
     if(o_uuid==''): exit(-1) # can't proceed without a key
     resp = API.setWorkflowState(o_uuid, state)
+    
+    if(verb>1): print (resp)
+    exit(0)
     
 
 ###################### GRAND FINALE ####################################

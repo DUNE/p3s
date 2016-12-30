@@ -1,6 +1,8 @@
 ###################################################
 ############ WORKFLOWS VIEWS ######################
 ###################################################
+import json
+
 from django.shortcuts			import render
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
@@ -194,14 +196,20 @@ def adddag(request):
 ###################################################
 @csrf_exempt
 def addwf(request):
+
+    fileinfo	= None
     
     post	= request.POST
     dagName	= post['dag']
     name	= post['name']
     state	= post['state']
+    filejson	= post['fileinfo']
     description	= post['description']
     wfuuid	= uuid.uuid1()
 
+    if(filejson!=''):
+        fileinfo = json.loads(filejson)
+    
     ts_def   = timezone.now()
 
     rootName = dag.objects.get(name=dagName).root
@@ -245,6 +253,8 @@ def addwf(request):
 
     # Now do the datasets for the flow
     for de in dagEdge.objects.filter(dag=dagName):
+
+        
         # even in a multigraph, an edge can only be associated with one
         # source and one target. A source and a target can be connected
         # by multiple edges in a multigraph, however. So check for
@@ -259,22 +269,33 @@ def addwf(request):
         sourceuuid = s_cand[0].uuid
         targetuuid = t_cand[0].uuid
 
-        # a "dataset" - a file in this case -
-        # is created with a name formed from its UUID and
-        # predefined extension (as per type object)
-        
+        # a "dataset" - a file in this case - is created by default with a name formed
+        # from its UUID and predefined extension (as per type object) - BUT
+        # can be overridden by "fileinfo"
+
+        # defaults
         d_uuid	= str(uuid.uuid1())
         dt	= datatype.objects.get(name=de.datatype)
         ext	= dt.ext
+        
+        dirpath	= de.dirpath
+        name	= d_uuid+ext
+
+        # optional overrides
+        if(fileinfo):
+            for k in fileinfo.keys():
+                if((de.source+":"+de.target)==k):
+                    name	=fileinfo[k]["name"]
+                    dirpath	=fileinfo[k]["dirpath"]
         
         d = dataset(
             uuid	= d_uuid,
             wfuuid	= wfuuid,
             sourceuuid	= sourceuuid,
             targetuuid	= targetuuid,
-            name	= d_uuid+ext,
+            name	= name,
             state	= 'template',
-            dirpath	= de.dirpath,
+            dirpath	= dirpath,
             comment	= de.comment,
             datatype	= de.datatype,
             wf     	= name,
