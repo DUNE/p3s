@@ -37,38 +37,12 @@ from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
 
-# We need this to make links to this service itself.
-try:
-    from django.urls import reverse
-except ImportError:
-    print("FATAL IMPORT ERROR")
-    exit(-3)
 
-
-# Migrating tables into a separate unit of code, in progress
+# The tables are defined separately
 from .monitorTables import *
 
 #########################################################    
-######## REQUEST ROUTERS (SUMMARIES) ####################    
-def jobs(request):
-    return data_handler(request, 'jobs')
-#--------------------------------------------------------
-def data(request):
-    return data_handler(request, 'data')
-#--------------------------------------------------------
-def datatypes(request):
-    return data_handler(request, 'datatypes')
-#--------------------------------------------------------
-def pilots(request):
-    return data_handler(request, 'pilots')
-#--------------------------------------------------------
-def workflows(request):
-    return data_handler(request, 'workflows')
-#--------------------------------------------------------
-def dags(request):
-    return data_handler(request, 'dags')
-
-#########################################################    
+# general request handler for summary type of a table
 def data_handler(request, what):
     uuid	= request.GET.get('uuid','')
     wfuuid	= request.GET.get('wfuuid','')
@@ -124,24 +98,8 @@ def data_handler(request, what):
     
     return render(request, template, d)
 
-########## REQUEST ROUTERS (DETAILS) ####################    
-def jobdetail(request):
-    return detail_handler(request, 'job')
-#--------------------------------------------------------
-def datadetail(request):
-    return detail_handler(request, 'data')
-#--------------------------------------------------------
-def pilotdetail(request):
-    return detail_handler(request, 'pilot')
-#--------------------------------------------------------
-def dagdetail(request):
-    return detail_handler(request, 'dag')
-
-#--------------------------------------------------------
-def wfdetail(request):
-    return detail_handler(request, 'workflow')
-
 #########################################################    
+# general request handler for detail type of a table
 def detail_handler(request, what):
     pk 		= request.GET.get('pk','')
     name 	= request.GET.get('name','')
@@ -223,12 +181,15 @@ def detail_handler(request, what):
     
     data	= []
 
+
+    # FIXME -- all this chaff to get special treatment for job uuid.
+    # Need to rethink.
     for a in dicto.keys():
         if(a!='j_uuid'):
             data.append({'attribute': a, 'value': dicto[a]})
         else:
             x = mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
-                         % (domain, reverse(jobdetail), 'uuid',dicto[a], dicto[a]))
+                         % (domain, 'jobdetail', 'uuid',dicto[a], dicto[a]))
             data.append({'attribute': a, 'value': x})
 
     t = DetailTable(data)
@@ -277,3 +238,4 @@ def detail_handler(request, what):
 #    print(timezone.get_current_timezone_name())
 #        aux1 = WfVertexTable(wfVertex.objects.filter(wfuuid=o_uuid))
         #        aux2 = WfEdgeTable(wfEdge.objects.filter(wfuuid=o_uuid))
+#                         % (domain, reverse(jobdetail), 'uuid',dicto[a], dicto[a]))
