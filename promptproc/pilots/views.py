@@ -21,7 +21,7 @@ from django.conf			import settings
 # Local models
 from .models				import pilot
 from jobs.models			import job, prioritypolicy
-
+from workflows.models			import workflow
 
 
 #########################################################
@@ -149,13 +149,29 @@ def report(request):
         p.save()
         try:
             j		= job.objects.get(uuid=p.j_uuid)
+            # IMPORTANT - that's where the job has its state set
+            # in normal running
+            
             j.state	= state
+            
             if(event=='jobstart'):
                 j.ts_sta = timezone.now()
+                j.save()
+
             if(event=='jobstop'): # timestamp and toggle children
                 j.ts_sto = timezone.now()
                 j.childrenStateToggle('defined')
-            j.save()
+                j.save()
+                # Check the workflow (may it's completed)
+                if(j.wfuuid!=''):
+                    done	= True
+                    jobsWF	= job.objects.filter(wfuuid=j.wfuuid)
+                    for q in jobsWF:
+                        if(q.state!='finished'): done = False
+
+                    wf = workflow.objects.get(uuid=j.wfuuid)
+                    wf.state = "finished"
+                    wf.save()
         except:
             return HttpResponse(json.dumps({'status':	'FAIL',
                                             'state':	state,

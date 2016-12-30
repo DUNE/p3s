@@ -58,7 +58,7 @@ class workflow(models.Model):
     def __str__(self):
         return self.name
 
-    
+
 # -mxp-
 # These two models will be soon retired as they represent an extra layer
 # in the class hierarchy I would like to eliminate, sacrificing elegance for

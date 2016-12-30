@@ -315,11 +315,11 @@ def wf2defined(wf):
     wf.save()
     j = job.objects.get(uuid=wf.rootuuid)
     if(j.jobtype=='noop'):
-        print('root job uuid, noop, toggle to finished',j.uuid)
+        # print('root job uuid, noop, toggle to finished',j.uuid)
         j.state = 'finished'
         j.childrenStateToggle('defined')
     else:
-        print('root job uuid, toggle to defined',j.uuid)
+        # print('root job uuid, toggle to defined',j.uuid)
         j.state = 'defined'
     j.save()
 ###################################################

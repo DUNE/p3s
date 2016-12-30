@@ -24,6 +24,8 @@ class job(models.Model):
         return self.uuid
 
 
+    # FIXME - obviously only linear DAG supported for now,
+    # true traversal TBD
     def childrenStateToggle(self, state):
         for edge in dataset.objects.filter(sourceuuid=self.uuid):
             for child in job.objects.filter(uuid=edge.targetuuid):
