@@ -19,15 +19,13 @@ import subprocess
 from django.conf	import settings
 from django.utils	import timezone
 
-# local import (utils)
-from comms import data2post, rdec, communicate, logfail
 from serverAPI import serverAPI
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
 host		= socket.gethostname()
 logdefault	= '/tmp/p3s/'
-datadir		= '/home/maxim/p3sdata'
+datadir		= '/home/maxim/p3sdata/'
 Usage		= '''Usage:
 
 For command line options run the injector with "--help" option.
@@ -43,6 +41,11 @@ class Dataset(dict):
 #########################################################################
 
 parser = argparse.ArgumentParser()
+
+parser.add_argument("-a", "--add",	type=str,	default='',
+                    help='''Add a workflow. Argument is the name of the prototype DAG (already stored on the server).
+                    If no special name is provided for the workflow via the *name* argument,
+                    defaults to the name of the parent DAG''')
 
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
                     help="the server address, defaults to http://localhost:8000/")
@@ -66,13 +69,15 @@ parser.add_argument("-c", "--cycles",	type=int,	default=1,
 parser.add_argument("-p", "--period",	type=int,	default=5,
                     help="period of the pilot cycle, in seconds")
 
+parser.add_argument("-f", "--filename",	type=str,	default='', help="file to watch")
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
 # strings
 server	= args.server
-
 logdir	= args.logdir
+filename = args.filename
+add	= args.add
 
 # misc
 verb	= args.verbosity
@@ -84,6 +89,9 @@ cycles	= args.cycles
 
 # testing (pre-emptive exit with print)
 tst	= args.test
+
+
+
 
 API = serverAPI(server=server)
 
@@ -118,13 +126,32 @@ logger.info('START injector on host %s, talking to server %s with period %s and 
 API.setLogger(logger)
 API.setVerbosity(verb)
 
+if(filename==''): exit(-1)
+
+jsonString =  '{"NOOP1:filter":{"dirpath":"'+datadir+'","name":"'+filename+'"}}'
+name=add
+description='test'
+state='defined'
+
+while(cycles>0):
+    if(os.path.isfile(datadir+filename)):
+        resp = API.registerWorkflow(add, name, state, jsonString, description)
+        print(resp)
+    cycles-=1
+    if(cycles==0): # EXHAUSTED ATTEMPTS TO FIND A FILE
+        break
+    time.sleep(period)
+
+exit(0)
+
+
 #########################################################################
 ######## LOGGER IS READY, REGISTER WITH THE SERVER ######################
 #########################################################################
-d = Dataset()
+#d = Dataset()
 
 ################ CONTACT SERVER TO REGISTER THE DATA ##################
-resp = API.registerData(d)
+#resp = API.registerData(d)
 
 # logger.info("contact with server established!")
 
