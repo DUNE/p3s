@@ -26,3 +26,11 @@ where "my" is the name of the object (node or edge in which case it will look li
 with actual names of the source and target"), and the dictionary within lists the attributes to
 be defined when the client is run (such as "workflow.py").
 
+# What's in this folder
+
+XML source files (which can have .graphml extension) can be expected to contain
+DAG descriptions in the GraphML format as described above. Various JSON files contain
+(as suggested by the name)
+* job description(s)
+* additional file parameters for a workflow
+* additional job parameters for a workflow

@@ -48,6 +48,7 @@ is given below:
 
 
 ## Workflow
+### Workflow as a DAG
 While workflow in p3s will be simple compared to a typical production system,
 it still includes a few steps and can be modeled as a simple DAG. Different stages
 in the workflow may need to be dynamically prioritized in order to get deliverables
@@ -56,13 +57,27 @@ in a timely manner.
 A workflow is instantiated based on a DAG template. DAG templates are persistent
 in the database and can be added or deleted at will. A convenient external
 representation of a DAG is a XML file describing the corresponding graph,
-which can be readily parsed and used for both import and expor tof DAGs.
+which can be readily parsed and used for both import and export of DAGs.
+
+### XML Schema
+At the time of writing, the GraphML schema is used as the "input language"
+describing graphs. It's one of standard schemas for describing graphs
+and editors and other tools exist for manipulating data in this format,
+altough it's human readable and can be easily edited by hand
+
+### Pairing Jobs to Data
+Setting the environment variables to supply information about I/O
+is preferred due to flexibility of such method.
+
+Dependencies between interfaces of jobs in a workflow need to be
+minimized.
+
 
 ## Phased development
 * Phase I: service supporting individual jobs, triggered by incoming data
 * Phase II: workflows
 
-## Location of the input data
+## Location of the input raw data
 The protoDUNE DAQ writes the data to its own "online buffer" from which it is
 transferred to CERN EOS (centralized distributed high-performance disk storage).
 In order to continue operation in case of a network outage which could make
@@ -111,7 +126,7 @@ Pilot - add cycles, period and list of jobs done.
 
 ## Storage management
 * Cleanup after job execution
-* FLushing of obsolete data
+* Flushing of obsolete data
 * Clearing older DB entries
 
 ## Workflow
