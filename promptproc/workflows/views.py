@@ -198,17 +198,22 @@ def adddag(request):
 def addwf(request):
 
     fileinfo	= None
+    jobinfo	= None
     
     post	= request.POST
     dagName	= post['dag']
     name	= post['name']
     state	= post['state']
     filejson	= post['fileinfo']
+    jobjson	= post['jobinfo']
     description	= post['description']
     wfuuid	= uuid.uuid1()
 
-    if(filejson!=''):
-        fileinfo = json.loads(filejson)
+    if(filejson!=''):	fileinfo = json.loads(filejson)
+    if(jobjson!=''):	jobinfo = json.loads(jobjson)
+
+    # print(jobjson)
+    # print(jobinfo)
     
     ts_def   = timezone.now()
 
@@ -232,11 +237,15 @@ def addwf(request):
     # Do the jobs
     for dv in dagVertex.objects.filter(dag=dagName):
         g.add_node(dv.name, wf=dagName)
+        payload	= dv.payload
+        if(jobinfo):
+            for k in jobinfo.keys():
+                if(k== dv.name): payload=jobinfo[k]["payload"]
         j = job(
             uuid		= uuid.uuid1(),
             wfuuid		= wfuuid,
             jobtype		= dv.jobtype,
-            payload		= dv.payload,
+            payload		= payload,
             priority		= dv.priority,
             state		= 'template',
             ts_def		= ts_def,
@@ -340,6 +349,8 @@ def setwfstate(request):
     wfuuid	= post['uuid']
     state	= post['state']
 
+    # print('setting state: %s %s' % (wfuuid, state))
+    
     wf = workflow.objects.get(uuid=wfuuid)
     
     if(state=='defined'):

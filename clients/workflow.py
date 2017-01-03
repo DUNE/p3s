@@ -77,7 +77,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-G", "--get",	help="get a DAG from server - needs the name of the DAG",	action='store_true')
 parser.add_argument("-U", "--usage",	help="print usage notes and exit",				action='store_true')
 parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs name/uuid+type (what)",	action='store_true')
-parser.add_argument("-m", "--modify",	help="used to flip the state of a workflow, needs uuit",	action='store_true')
+
+parser.add_argument("-m", "--modify",	help='''modifies the state of a workflow, needs uuid and the desired new state (except "template")''',
+                    action='store_true')
+
 parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/', help="the server, default: http://localhost:8000/")
 parser.add_argument("-w", "--what",	type=str,	default='', help="dag or workflow (for deletion).")
@@ -94,7 +97,11 @@ parser.add_argument("-f", "--fileinfo",	type=str,	default='',
                     help='''Provides file information for the workflow, overriding filenames
                     and directory paths in the DAG template. Can be a name of a JSON file if the string
                     contains ".json", otherwise the string itself provides the info, formatted as a JSON
-                    dictionary with the pattern {'source:target':{"name":"foo","dirpath":"bar"}} ''')
+                    dictionary with the pattern {'source:target':{"name":"foo","dirpath":"bar"}}. Can
+                    also include "comment":"my new comment" in the dictionary.''')
+
+parser.add_argument("-j", "--jobinfo",	type=str,	default='',
+                    help='''Provides job information for the workflow, similar to "fileinfo"''')
 
 parser.add_argument("-s", "--state",	type=str,	default='template', help='''set/modify the state of a workflow.
 Needs uuid to modify or can be used at creation time.''')
@@ -114,6 +121,7 @@ get	= args.get
 name	= args.name
 state	= args.state
 fileinfo= args.fileinfo
+jobinfo	= args.jobinfo
 graphml	= args.graphml
 description = args.description
 
@@ -203,9 +211,20 @@ if(add!=''):
         except:
             print('Problems reading input file %s' % fileinfo)
             exit(-1)
+            
+    if('.json' in jobinfo):
+        try:
+            f = open(jobinfo, 'r')
+            content = f.read()
+            f.close()
+            if(verb>1): print(content)
+            jobinfo = content
+        except:
+            print('Problems reading input file %s' % jobinfo)
+            exit(-1)
 #        exit(0)
 
-    resp = API.registerWorkflow(add, name, state, fileinfo, description)
+    resp = API.registerWorkflow(add, name, state, fileinfo, jobinfo, description)
     
     if(verb>1): print (resp)
     exit(0)
