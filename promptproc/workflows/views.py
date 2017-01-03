@@ -227,18 +227,15 @@ def addwf(request):
     wf.name	= name
     wf.state	= state
     wf.description= description
-    # we'll save wf a bit later.
+    # ATTN: we'll save the WF a bit later.
 
     g = nx.DiGraph()
 
-    # at creation time, the state of objects is set to 'template'
-    # and can be toggled to 'defined'
-
-    # Do the jobs
+    # +++++++++ JOBS
     for dv in dagVertex.objects.filter(dag=dagName):
         g.add_node(dv.name, wf=dagName)
-        payload	= dv.payload
-        if(jobinfo):
+        payload	= dv.payload	# default
+        if(jobinfo):		# need to overwrite some attributes
             for k in jobinfo.keys():
                 if(k== dv.name): payload=jobinfo[k]["payload"]
         j = job(
@@ -260,7 +257,7 @@ def addwf(request):
     # ---
     wf.save() # can only do it now since need rootuuid
 
-    # Now do the datasets for the flow
+    # +++++++++ DATA
     for de in dagEdge.objects.filter(dag=dagName):
 
         
@@ -279,8 +276,8 @@ def addwf(request):
         targetuuid = t_cand[0].uuid
 
         # a "dataset" - a file in this case - is created by default with a name formed
-        # from its UUID and predefined extension (as per type object) - BUT
-        # can be overridden by "fileinfo"
+        # from its UUID and predefined extension (as per type object)
+        # BUT! can be overridden by "fileinfo"
 
         # defaults
         d_uuid	= str(uuid.uuid1())
@@ -311,6 +308,8 @@ def addwf(request):
         d = dataset(
             uuid	= d_uuid,
             wfuuid	= wfuuid,
+            source	= de.source,
+            target	= de.target,
             sourceuuid	= sourceuuid,
             targetuuid	= targetuuid,
             name	= name,

@@ -222,8 +222,10 @@ if(add!=''):
         except:
             print('Problems reading input file %s' % jobinfo)
             exit(-1)
-#        exit(0)
 
+    # note that "fileinfo" and "jobinfo" default to an empty string when we parse
+    # arguments, and will be passed to the server even if they are indeed empty
+    
     resp = API.registerWorkflow(add, name, state, fileinfo, jobinfo, description)
     
     if(verb>1): print (resp)

@@ -18,8 +18,11 @@ class dataset(models.Model):
     comment	= models.CharField(max_length=256, default='')
     datatype	= models.CharField(max_length=64, default='')
 
-    wf		= models.CharField(max_length=64, default='')	# to which wf it belongs (name)
-    wfuuid	= models.CharField(max_length=36, default='')
+    wf		= models.CharField(max_length=64, default='')	# to which WF it belongs (name)
+    wfuuid	= models.CharField(max_length=36, default='')	# to which WF it belongs (uuid)
+
+    source	= models.CharField(max_length=36, default='')	# symbolic (from DAG),
+    target	= models.CharField(max_length=36, default='')	# source target
 
     sourceuuid	= models.CharField(max_length=36, default='')
     targetuuid	= models.CharField(max_length=36, default='')
