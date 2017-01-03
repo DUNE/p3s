@@ -92,8 +92,9 @@ parser.add_argument("-a", "--add",	type=str,	default='',
 
 parser.add_argument("-f", "--fileinfo",	type=str,	default='',
                     help='''Provides file information for the workflow, overriding filenames
-                    and directory paths in the DAG template. Formatted as a JSON dictionary with
-                    the pattern {'source:target':{"name":"foo","dirpath":"bar"}} ''')
+                    and directory paths in the DAG template. Can be a name of a JSON file if the string
+                    contains ".json", otherwise the string itself provides the info, formatted as a JSON
+                    dictionary with the pattern {'source:target':{"name":"foo","dirpath":"bar"}} ''')
 
 parser.add_argument("-s", "--state",	type=str,	default='template', help='''set/modify the state of a workflow.
 Needs uuid to modify or can be used at creation time.''')
@@ -190,6 +191,20 @@ if(graphml!=''):
 ########################################################################
 if(add!=''):
     if(name==''): name=add
+
+    f = None
+    if('.json' in fileinfo):
+        try:
+            f = open(fileinfo, 'r')
+            content = f.read()
+            f.close()
+            if(verb>1): print(content)
+            fileinfo = content
+        except:
+            print('Problems reading input file %s' % fileinfo)
+            exit(-1)
+#        exit(0)
+
     resp = API.registerWorkflow(add, name, state, fileinfo, description)
     
     if(verb>1): print (resp)

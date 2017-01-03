@@ -280,14 +280,25 @@ def addwf(request):
         
         dirpath	= de.dirpath
         name	= d_uuid+ext
+        comment	= de.comment # default comment
 
-        # optional overrides
+        # Optional overrides: client sends JSON data with "updates"
         if(fileinfo):
             for k in fileinfo.keys():
                 if((de.source+":"+de.target)==k):
-                    name	=fileinfo[k]["name"]
-                    dirpath	=fileinfo[k]["dirpath"]
-        
+                    try:
+                        name	=fileinfo[k]["name"]
+                    except:
+                        pass
+                    try:
+                        dirpath	=fileinfo[k]["dirpath"]
+                    except:
+                        pass
+                    try:
+                        comment	=fileinfo[k]["comment"]
+                    except:
+                        pass
+                        
         d = dataset(
             uuid	= d_uuid,
             wfuuid	= wfuuid,
@@ -296,7 +307,7 @@ def addwf(request):
             name	= name,
             state	= 'template',
             dirpath	= dirpath,
-            comment	= de.comment,
+            comment	= comment,
             datatype	= de.datatype,
             wf     	= name,
         )
