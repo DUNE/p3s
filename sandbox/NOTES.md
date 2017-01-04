@@ -1,5 +1,5 @@
 
-# DEVELOPMENT NOTES
+# SANDBOX NOTES
 ## Django Development Server
 It is multithreaded by default, which all but
 guarantees you will run into a race condition
