@@ -4,6 +4,7 @@
 	"timeout":	"100",
         "jobtype":	"type1",
         "payload":	"/home/maxim/projects/p3s/inputs/workload1.py",
+	"env":		{"P3S":"TRUE","POSTGRES":"FALSE"},
         "priority":	"1",
 	"state":	"defined"
     }

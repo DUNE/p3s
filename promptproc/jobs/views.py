@@ -33,6 +33,7 @@ def addjob(request):
         uuid		= j_uuid,
         jobtype		= post['jobtype'],
         payload		= post['payload'],
+        env		= post['env'],
         priority	= post['priority'],
         state		= post['state'],
         ts_def		= post['ts'],

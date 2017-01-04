@@ -58,12 +58,14 @@ class Job(dict):
                  priority=0,
                  jobtype='default',
                  payload='/bin/true',
+                 env='',
                  state='defined'):
         
         self['name']	= name
         self['uuid']	= uuid.uuid1()
         self['jobtype']	= jobtype
         self['payload']	= payload
+        self['env']	= env
         self['priority']= priority
         self['state']	= state
         self['subhost']	= socket.gethostname() # submission host
@@ -200,7 +202,11 @@ if(json_in!=''):
 
     for jj in data:
         j = Job()
-        for k in jj.keys(): j[k] = jj[k]
+        for k in jj.keys():
+            if isinstance(jj[k],dict):
+                j[k] = json.dumps(jj[k])
+            else:
+                j[k] = jj[k]
         jobList.append(j)
 
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
