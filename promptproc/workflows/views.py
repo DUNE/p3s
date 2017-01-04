@@ -234,15 +234,28 @@ def addwf(request):
     # +++++++++ JOBS
     for dv in dagVertex.objects.filter(dag=dagName):
         g.add_node(dv.name, wf=dagName)
-        payload	= dv.payload	# default
+        
+	# defaults:
+        payload	= dv.payload
+        env	= dv.env
         if(jobinfo):		# need to overwrite some attributes
             for k in jobinfo.keys():
-                if(k== dv.name): payload=jobinfo[k]["payload"]
+                if(k== dv.name):
+                    try:
+                        payload=jobinfo[k]["payload"]
+                    except:
+                        pass
+                    try:
+                        env=json.dumps(jobinfo[k]["env"])
+                    except:
+                        pass
+                    
         j = job(
             uuid		= uuid.uuid1(),
             wfuuid		= wfuuid,
             jobtype		= dv.jobtype,
             payload		= payload,
+            env			= env,
             priority		= dv.priority,
             state		= 'template',
             ts_def		= ts_def,

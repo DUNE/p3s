@@ -5,9 +5,10 @@
   
   <!-- ++++++ JOBS ++++++ -->
   <key attr.name="payload" 	attr.type="string"	for="node" id="d101" />
-  <key attr.name="jobtype" 	attr.type="string"	for="node" id="d102" />
-  <key attr.name="timelimit" 	attr.type="int"		for="node" id="d103" />
-  <key attr.name="priority" 	attr.type="int"		for="node" id="d104" />
+  <key attr.name="env" 		attr.type="string"	for="node" id="d102" />
+  <key attr.name="jobtype" 	attr.type="string"	for="node" id="d103" />
+  <key attr.name="timelimit" 	attr.type="int"		for="node" id="d104" />
+  <key attr.name="priority" 	attr.type="int"		for="node" id="d105" />
   
   <!-- ++++++ DATA ++++++ -->
   <key attr.name="name"		attr.type="string"	for="edge" id="d1" />
@@ -23,23 +24,26 @@
     <!-- ++++++ JOBS ++++++ -->
     <node id="NOOP1">
       <data key="d101"></data>
-      <data key="d102">noop</data>
-      <data key="d103">0</data>
+      <data key="d102"></data>
+      <data key="d103">noop</data>
       <data key="d104">0</data>
+      <data key="d105">0</data>
     </node>
 
     <node id="filter">
       <data key="d101">/bin/date</data>
-      <data key="d102">filter</data>
-      <data key="d103">7777</data>
-      <data key="d104">4</data>
+      <data key="d102">{"P3SMODE":"TEST"}</data>
+      <data key="d103">filter</data>
+      <data key="d104">7777</data>
+      <data key="d105">4</data>
     </node>
 
     <node id="NOOP2">
       <data key="d101"></data>
-      <data key="d102">noop</data>
-      <data key="d103">0</data>
+      <data key="d102"></data>
+      <data key="d103">noop</data>
       <data key="d104">0</data>
+      <data key="d105">0</data>
     </node>
 
     <!-- ++++++ DATA ++++++ -->
