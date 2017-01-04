@@ -91,7 +91,7 @@ def request(request):
     p.ts_lhb	= timezone.now()
     p.save()
 
-    # Will redo this later - the format of the job infor going back to the pilot:
+    # FIXME - the format of the job information going back to the pilot:
     to_pilot = {'status':	'OK',
                 'state':	'dispatched',
                 'job':		j.uuid,
@@ -146,8 +146,10 @@ def report(request):
     
     if(state in ('running','finished')):
         p.status	= 'OK'
-
         p.save()
+
+        # FIXME update WF status to running as necessary
+        
         try:
             j		= job.objects.get(uuid=p.j_uuid)
             # IMPORTANT - that's where the job has its state set

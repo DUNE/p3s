@@ -27,6 +27,7 @@ from serverAPI import serverAPI
 settings.configure(USE_TZ = True) # see the above note on TZ
 
 logdefault	= '/tmp/p3s/pilots'
+joblogdefault	= '/tmp/p3s/jobs'
 
 Usage		= '''Usage:
 
@@ -83,7 +84,10 @@ parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
 
 parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
-                    help="(defaults to "+logdefault+") the path for all pilots keep their logs etc")
+                    help="(defaults to "+logdefault+") the path for all pilots keep their logs")
+
+parser.add_argument("-L", "--joblogdir",type=str,	default=joblogdefault,
+                    help="(defaults to "+joblogdefault+") the path for all jobs keep their stdout and stderr")
 
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
@@ -96,7 +100,10 @@ parser.add_argument("-c", "--cycles",	type=int,	default=1,
                     help="how many cycles (with period in seconds) to stay alive")
 
 parser.add_argument("-p", "--period",	type=int,	default=5,
-                    help="period of the pilot cycle, in seconds")
+                    help="period of the wait-for-job cycle, in seconds")
+
+parser.add_argument("-b", "--beat",	type=int,	default=2,
+                    help="the heartbeat, in seconds")
 
 parser.add_argument("-d", "--delete",	action='store_true',
                     help="deletes a pilot (for dev purposes). Needs uuid.")
@@ -110,6 +117,7 @@ args = parser.parse_args()
 # strings
 server	= args.server
 logdir	= args.logdir
+joblogdir= args.joblogdir
 
 # misc
 verb	= args.verbosity
@@ -120,6 +128,7 @@ usage	= args.usage
 # scheduling
 period	= args.period
 cycles	= args.cycles
+beat	= args.beat
 
 # testing (pre-emptive exit with print)
 tst	= args.test
@@ -164,11 +173,17 @@ p = Pilot(cycles=cycles, period=period)
 
 ################### BEGIN: PREPARE LOGGER ##############################
 # Check if we have a log directory, example: /tmp/p3s/pilots.
-# Create if necessary
+# Create if necessary. Do same for job log directory.
 
 if(not os.path.exists(logdir)):
     try:
         os.makedirs(logdir)
+    except:
+        exit(-1) # we can't log it
+
+if(not os.path.exists(joblogdir)):
+    try:
+        os.makedirs(joblogdir)
     except:
         exit(-1) # we can't log it
 
@@ -265,25 +280,34 @@ while(cnt>0):     # "Poll the server" loop.
 
     # EXECUTION
     if True: # Switched to POPEN, keep the older code in place for a while
-        proc = subprocess.Popen(shlex.split(payload), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
-        err = None
+        proc = subprocess.Popen(shlex.split(payload),
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                shell=False)
+        errCode = None
         while True:
-            err = proc.poll()
-            if err is None:
+            errCode = proc.poll()
+            if errCode is None:
                 p['state']='running'
                 p['event']='heartbeat'
                 response = API.reportPilot(p)
-                print('waiting')
+                logger.info('HEARTBEAT')
             else:
+                jobout = open(joblogdir+'/'+ p['job']+'.out','w')
+                joberr = open(joblogdir+'/'+ p['job']+'.err','w')
+                jobout.write((proc.stdout.read().decode('utf-8')))
+                joberr.write((proc.stderr.read().decode('utf-8')))
                 break
-            time.sleep(2)
+            time.sleep(beat)
+
+        # Ended loop, assume job done (FIXME error handling)
         p['state']	='finished'
         p['event']	='jobstop'
         p['jobcount']  += 1
         response = API.reportPilot(p)
         logger.info('JOB finished: %s' %  p['job'])
 
-    else:
+    else: # Deprecated?
         try:
             x=subprocess.run([payload], stdout=subprocess.PIPE)
             if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
