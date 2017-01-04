@@ -14,6 +14,7 @@ import datetime
 import logging
 import json
 import subprocess
+import shlex
 
 # Django
 from django.conf	import settings
@@ -263,19 +264,39 @@ while(cnt>0):     # "Poll the server" loop.
     if(verb>0): logger.info('About to start job, server response was: %s' % resp)
 
     # EXECUTION
-    try:
-        x=subprocess.run([payload], stdout=subprocess.PIPE)
-        if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
+    if True: # Switched to POPEN, keep the older code in place for a while
+        proc = subprocess.Popen(shlex.split(payload), stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+        err = None
+        while True:
+            err = proc.poll()
+            if err is None:
+                p['state']='running'
+                p['event']='heartbeat'
+                response = API.reportPilot(p)
+                print('waiting')
+            else:
+                break
+            time.sleep(2)
         p['state']	='finished'
         p['event']	='jobstop'
         p['jobcount']  += 1
         response = API.reportPilot(p)
         logger.info('JOB finished: %s' %  p['job'])
-    except:
-        p['state']	='exception'
-        p['event']	='exception'
-        response = API.reportPilot(p)
-        logger.info('JOB exception: %s' %  p['job'])
+
+    else:
+        try:
+            x=subprocess.run([payload], stdout=subprocess.PIPE)
+            if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
+            p['state']	='finished'
+            p['event']	='jobstop'
+            p['jobcount']  += 1
+            response = API.reportPilot(p)
+            logger.info('JOB finished: %s' %  p['job'])
+        except:
+            p['state']	='exception'
+            p['event']	='exception'
+            response = API.reportPilot(p)
+            logger.info('JOB exception: %s' %  p['job'])
 
     # declare the 'active' state again
     p['state']	='active'    #    p['event']	='jobstop'

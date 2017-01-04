@@ -146,6 +146,7 @@ def report(request):
     
     if(state in ('running','finished')):
         p.status	= 'OK'
+
         p.save()
         try:
             j		= job.objects.get(uuid=p.j_uuid)

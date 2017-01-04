@@ -153,7 +153,7 @@ def adddag(request):
 
     ts_def   = timezone.now()
     vertices = nx.topological_sort(g)
-    print('*****',vertices)
+    # print('*****',vertices)
     
     newDag		= dag()
     newDag.name		= name
@@ -177,9 +177,9 @@ def adddag(request):
         
     deFields = []
     for f in dagEdge._meta.get_fields():deFields.append(f.name)
-    print(deFields)
+    # print(deFields)
     for e in g.edges(data=True):
-        print(e)
+        # print(e)
         de = dagEdge()
         de.source = e[0]
         de.target = e[1]
