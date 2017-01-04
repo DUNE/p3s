@@ -29,7 +29,7 @@ from jobs.models			import job
 from data.models			import dataset, datatype
 from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
-from workflows.models			import workflow, wfVertex, wfEdge
+from workflows.models			import workflow # wfVertex, wfEdge
 
 # tables2 machinery
 import	django_tables2 as tables

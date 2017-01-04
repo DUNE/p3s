@@ -15,8 +15,10 @@ class dataset(models.Model):
     dirpath	= models.CharField(max_length=256,default='')
     #
     state	= models.CharField(max_length=64, default='')
+    #
     comment	= models.CharField(max_length=256, default='')
     datatype	= models.CharField(max_length=64, default='')
+    datatag	= models.CharField(max_length=64, default='')
 
     wf		= models.CharField(max_length=64, default='')	# to which WF it belongs (name)
     wfuuid	= models.CharField(max_length=36, default='')	# to which WF it belongs (uuid)

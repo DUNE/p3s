@@ -13,7 +13,8 @@
   <key attr.name="name"		attr.type="string"	for="edge" id="d1" />
   <key attr.name="dirpath"	attr.type="string"	for="edge" id="d2" />
   <key attr.name="datatype"	attr.type="string"	for="edge" id="d3" />
-  <key attr.name="comment"	attr.type="string"	for="edge" id="d4" />
+  <key attr.name="datatag"	attr.type="string"	for="edge" id="d4" />
+  <key attr.name="comment"	attr.type="string"	for="edge" id="d5" />
 
   <!-- ++++++++++++++++++ -->
 
@@ -46,14 +47,16 @@
       <data key="d1">raw.txt</data>
       <data key="d2">/home/maxim/p3sdata/</data>
       <data key="d3">TXT</data>
-      <data key="d4">Simulated input</data>
+      <data key="d4">INPTXT</data>
+      <data key="d5">Simulated input</data>
     </edge>
     
     <edge source="filter" target="NOOP2">
       <data key="d1">filtered.txt</data>
       <data key="d2">/home/maxim/p3sdata/</data>
       <data key="d3">TXT</data>
-      <data key="d4">Simulated output</data>
+      <data key="d4">OUTTXT</data>
+      <data key="d5">Simulated output</data>
     </edge>
   </graph>
 

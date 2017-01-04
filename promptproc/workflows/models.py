@@ -37,9 +37,10 @@ class dagEdge(models.Model):
     
     comment	= models.CharField(max_length=256, default='')
     datatype	= models.CharField(max_length=64, default='')
+    datatag	= models.CharField(max_length=64, default='')
 
-    source	= models.CharField(max_length=36, default='')	# source
-    target	= models.CharField(max_length=36, default='')	# target
+    source	= models.CharField(max_length=64, default='')	# source
+    target	= models.CharField(max_length=64, default='')	# target
     
     def __str__(self):
         return self.source+':'+self.target
@@ -62,26 +63,26 @@ class workflow(models.Model):
 # -mxp-
 # These two models will be soon retired as they represent an extra layer
 # in the class hierarchy I would like to eliminate, sacrificing elegance for
-# practicality. Workflow shall include jobs and datasets directly,
-#without this abstract layer
+# practicality. Workflows now include jobs and datasets directly,
+# without this abstract layer
 
 # -------
-class wfVertex(models.Model):
-    name	= models.CharField(max_length=64, default='')	# human-readable description
-    wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
-    wfuuid	= models.CharField(max_length=36, default='')
+# class wfVertex(models.Model):
+#     name	= models.CharField(max_length=64, default='')	# human-readable description
+#     wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
+#     wfuuid	= models.CharField(max_length=36, default='')
     
-    def __str__(self):
-        return self.name
-# -------
-class wfEdge(models.Model):
-    name	= models.CharField(max_length=64, default='')	# human-readable description
-    wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
-    wfuuid	= models.CharField(max_length=36, default='')
+#     def __str__(self):
+#         return self.name
+# # -------
+# class wfEdge(models.Model):
+#     name	= models.CharField(max_length=64, default='')	# human-readable description
+#     wf		= models.CharField(max_length=64, default='')	# to which wf it belongs
+#     wfuuid	= models.CharField(max_length=36, default='')
 
-    source	= models.CharField(max_length=36, default='')	# source
-    target	= models.CharField(max_length=36, default='')	# target
+#     source	= models.CharField(max_length=36, default='')	# source
+#     target	= models.CharField(max_length=36, default='')	# target
     
-    def __str__(self):
-        return self.source+':'+self.target
+#     def __str__(self):
+#         return self.source+':'+self.target
 

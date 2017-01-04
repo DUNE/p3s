@@ -14,7 +14,7 @@ import networkx as nx
 from networkx.readwrite import json_graph
 
 from .models import dag, dagVertex, dagEdge
-from .models import workflow, wfVertex, wfEdge
+from .models import workflow # wfVertex, wfEdge
 
 from jobs.models			import job
 from data.models			import dataset, datatype
@@ -317,6 +317,7 @@ def addwf(request):
             dirpath	= dirpath,
             comment	= comment,
             datatype	= de.datatype,
+            datatag	= de.datatag,
             wf     	= name,
         )
 

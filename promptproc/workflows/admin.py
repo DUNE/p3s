@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import dag, dagEdge, dagVertex
-from .models import workflow, wfEdge, wfVertex
+from .models import workflow #  wfEdge, wfVertex
 
 ####################### DAG #############################    
 class dagAdmin(admin.ModelAdmin):
@@ -28,14 +28,14 @@ class workflowAdmin(admin.ModelAdmin):
     
 admin.site.register(workflow, workflowAdmin)
 #--------------------------------------------------------
-class wfVertexAdmin(admin.ModelAdmin):
-    list_display = ('name', 'wf', 'wfuuid',)
-    empty_value_display = '-empty-'
+# class wfVertexAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'wf', 'wfuuid',)
+#     empty_value_display = '-empty-'
     
-admin.site.register(wfVertex, wfVertexAdmin)
-#--------------------------------------------------------
-class wfEdgeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'source', 'target', 'wf', 'wfuuid',)
-    empty_value_display = '-empty-'
+# admin.site.register(wfVertex, wfVertexAdmin)
+# #--------------------------------------------------------
+# class wfEdgeAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'source', 'target', 'wf', 'wfuuid',)
+#     empty_value_display = '-empty-'
     
-admin.site.register(wfEdge, wfEdgeAdmin)
+# admin.site.register(wfEdge, wfEdgeAdmin)
