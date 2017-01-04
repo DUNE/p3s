@@ -27,7 +27,7 @@ top_jobs = job.objects.order_by('-priority')
 j = top_jobs[0]
 `
 #### Getting the distinct values:
-`
+<pre>
 jp = job.objects.values('priority').distinct()
 pl =  []
 for item in jp:
@@ -35,7 +35,7 @@ for item in jp:
      print(val)
      pl.append(val)
      pl.sort(reverse=True) # to get descending order
-`
+</pre>
 ## Using the Django settings file to configure app settings
 `
 settings.MY_EXAMPLE_SETTING
