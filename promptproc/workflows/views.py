@@ -198,6 +198,7 @@ def addwf(request):
 
     fileinfo	= None
     jobinfo	= None
+    sticky	= False
     
     post	= request.POST
     dagName	= post['dag']
@@ -208,7 +209,12 @@ def addwf(request):
     description	= post['description']
     wfuuid	= uuid.uuid1()
 
-    if(filejson!=''):	fileinfo = json.loads(filejson)
+    if(filejson!=''):
+        try:
+            fileinfo = json.loads(filejson)
+        except:
+            sticky = True
+            
     if(jobjson!=''):	jobinfo = json.loads(jobjson)
 
     # print(jobjson)
@@ -295,7 +301,12 @@ def addwf(request):
         ext	= dt.ext
         
         dirpath	= de.dirpath
-        name	= d_uuid+ext
+        
+        if(sticky):
+            name = de.name
+        else:
+            name = d_uuid+ext
+            
         comment	= de.comment # default comment in herited from DAG
 
         # Optional overrides: client sends JSON data with "updates"

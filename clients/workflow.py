@@ -34,8 +34,11 @@ def printGraph(g):
 # ---
 settings.configure(USE_TZ = True)
 
-Usage		= '''Usage:
+Usage		= '''
+
+* Options
 For command line options run the script with "--help" option.
+
 * Terminology *
 DAG is an abstraction of a workflow i.e. it describes its topology
 and general characteristics of edges and vertices but does not
@@ -56,13 +59,32 @@ DAG names are unique which is enforced in the database.
 Workflows are created based on templates (DAGs) which must be
 exist on the server by the time a request for a new workflow is sent.
 A name can be optionally set for a workflow but it's not expected
-to be unique. Worflows are idnetified in the system by their UUIDs which
+to be unique. Worflows are identified in the system by their UUIDs which
 are automatically generated.
 
-* Deletion *
+* Object Deletion *
 
-Until serious testing has been completed, please leave this
-operation to the experts, such as the author of this software.
+Until serious testing has been completed, please consult the experts
+about this, such as the author of this software - especially
+if the system is in production.
+
+* File Info *
+
+By default, p3s will create filenames for a workflow dynamically utilizing
+UUID and a predefined extension as per the declared data type. This can
+be changed by using The option "-f" which is is overloaded
+and can be:
+
+- a stirng not formatted in JSON, currently assumed to represent
+the keyword "sticky", in which case a workflow inherits the file names
+from its parent DAG
+
+- a JSON-formatted string which can specify the filenames for any of
+the DAG's edges if desired
+
+- a name of a JSON file containing same information
+
+
 
 '''
 #-------------------------
@@ -95,9 +117,9 @@ parser.add_argument("-a", "--add",	type=str,	default='',
 
 parser.add_argument("-f", "--fileinfo",	type=str,	default='',
                     help='''Provides file information for the workflow, overriding filenames
-                    and directory paths in the DAG template. Can be a name of a JSON file if the string
-                    contains ".json", otherwise the string itself provides the info, formatted as a JSON
-                    dictionary with the pattern {'source:target':{"name":"foo","dirpath":"bar"}}. Can
+                    and directory paths in the DAG template. Can be a special string (see usage notes),
+                    a name of a JSON file if the string contains ".json", otherwise the string will be assumed
+                    formatted as a JSON dictionary with the pattern {'source:target':{"name":"foo","dirpath":"bar"}}. Can
                     also include "comment":"my new comment" in the dictionary.''')
 
 parser.add_argument("-j", "--jobinfo",	type=str,	default='',
