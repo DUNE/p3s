@@ -64,11 +64,9 @@ def request(request):
     j = None # placeholder for the job
     
     priolist.sort(reverse=True) #  print(priolist)
-    for prio in priolist: # should skip is list is empty and so the job stays None
-        # print('Trying prio:'+str(prio))
+    for prio in priolist:
         try:
             tjs = job.objects.filter(priority=prio, state='defined').order_by(ordering)
-            # print(tjs)
             j = tjs[0]
             break
         except:
@@ -81,6 +79,7 @@ def request(request):
         p.save()
         return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
 
+    # FOUND A JOB
     j.state	= 'dispatched'
     j.p_uuid	= p_uuid
     j.ts_dis	= timezone.now()
@@ -91,11 +90,12 @@ def request(request):
     p.ts_lhb	= timezone.now()
     p.save()
 
-    # FIXME - the format of the job information going back to the pilot:
+    # the format of the job information going back to the pilot - can be improved
     to_pilot = {'status':	'OK',
                 'state':	'dispatched',
                 'job':		j.uuid,
-                'payload':	j.payload}
+                'payload':	j.payload,
+                'env':		j.env}
     
     return HttpResponse(json.dumps(to_pilot))
 

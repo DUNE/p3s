@@ -111,6 +111,9 @@ parser.add_argument("-d", "--delete",	action='store_true',
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the pilot to be modified")
 
+parser.add_argument("-s", "--shell",	action='store_true',
+                    help="run the payloads in shell")
+
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
@@ -124,6 +127,8 @@ verb	= args.verbosity
 delete	= args.delete
 p_uuid	= args.uuid
 usage	= args.usage
+
+shell	= args.shell
 
 # scheduling
 period	= args.period
@@ -262,15 +267,18 @@ while(cnt>0):
     
 ######################### GOT A JOB TO DO ###############################
     payload = ''
+    env = {}
     if(p['state']=='dispatched'): # means pilot was matched with a job
         try:
             p['job']	= msg['job'] # uuid of the job
             payload	= msg['payload']
+            env		= json.loads(msg['env'])
         except:
             logger.error('exiting, failed to parse the server message: %s' % data)
             exit(3)
 
         logger.info('JOB received: %s %s' % (p['job'], payload))
+        logger.info('ENV received: %s' % str(env))
     
 
     p['state']='running'
@@ -281,11 +289,18 @@ while(cnt>0):
     if(verb>0): logger.info('About to start job, server response was: %s' % resp)
 
     # EXECUTION
+    pilot_env	= os.environ.copy()
+    job_env	= {**pilot_env,**env}
     if True: # Switched to POPEN, keep the older code in place for a while
-        proc = subprocess.Popen(shlex.split(payload),
+        cmd=shlex.split(payload)
+        if(shell): cmd=payload
+        
+        logger.info('CMD: %s' % cmd)
+        proc = subprocess.Popen(cmd,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE,
-                                shell=False)
+                                env=job_env,
+                                shell=shell)
         errCode = None
         while True:
             errCode = proc.poll()

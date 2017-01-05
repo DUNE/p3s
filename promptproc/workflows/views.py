@@ -334,7 +334,7 @@ def addwf(request):
         d.save()
         g.add_edge(de.source, de.target)
         
-        # +++ SET JOB ENVIRONMENT
+        # +++ AUGMENT JOB ENVIRONMENT WITH DATASET INFO
         fullname=dirpath+name
         #print('source:',de.source,' target:', de.target,' datatag:', de.datatag, ' full name:',fullname)
 
