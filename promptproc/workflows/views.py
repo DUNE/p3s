@@ -152,8 +152,7 @@ def adddag(request):
     g = nx.read_graphml(f)
 
     ts_def   = timezone.now()
-    vertices = nx.topological_sort(g)
-    # print('*****',vertices)
+    vertices = nx.topological_sort(g) # print('*****',vertices)
     
     newDag		= dag()
     newDag.name		= name
@@ -165,7 +164,8 @@ def adddag(request):
 
     dvFields = []
     for f in dagVertex._meta.get_fields():dvFields.append(f.name)
-    for n in g.nodes(data=True):# print(n)
+    
+    for n in g.nodes(data=True):
         dv = dagVertex()
         dv.name  = n[0]
         dv.dag   = name
@@ -177,9 +177,8 @@ def adddag(request):
         
     deFields = []
     for f in dagEdge._meta.get_fields():deFields.append(f.name)
-    # print(deFields)
+
     for e in g.edges(data=True):
-        # print(e)
         de = dagEdge()
         de.source = e[0]
         de.target = e[1]
@@ -263,16 +262,14 @@ def addwf(request):
             name		= dv.name,
         )
 
-        if(dv.name == rootName): # print("Found root %s %s" %(j.name, j.uuid))
-            wf.rootuuid = j.uuid
-            
+        if(dv.name == rootName): wf.rootuuid = j.uuid
         j.save()
-    # ---
-    wf.save() # can only do it now since need rootuuid
+    # +++++++++ END JOBS
+    
+    wf.save() # can only do it now since needed rootuuid
 
     # +++++++++ DATA
     for de in dagEdge.objects.filter(dag=dagName):
-
         
         # even in a multigraph, an edge can only be associated with one
         # source and one target. A source and a target can be connected
@@ -299,7 +296,7 @@ def addwf(request):
         
         dirpath	= de.dirpath
         name	= d_uuid+ext
-        comment	= de.comment # default comment
+        comment	= de.comment # default comment in herited from DAG
 
         # Optional overrides: client sends JSON data with "updates"
         if(fileinfo):
@@ -336,9 +333,27 @@ def addwf(request):
 
         d.save()
         g.add_edge(de.source, de.target)
+        
+        # +++ SET JOB ENVIRONMENT
+        fullname=dirpath+name
+        #print('source:',de.source,' target:', de.target,' datatag:', de.datatag, ' full name:',fullname)
+
+        for jid in (sourceuuid, targetuuid):
+            j4env = job.objects.get(uuid=jid) # MUST work as per comments above, we checked
+            j4env.augmentEnv({de.datatag:fullname})
+            j4env.save()
+       
+        
+    # +++++++++ END DATA
 
 
-    if(state=='defined'):wf2defined(wf) # toggles both wf and the root job
+    
+    # Now that the WF is created, is can be set into defined state
+    # (hence ready for execution) if so desired. This method
+    # toggles both wf and its "root job"
+    if(state=='defined'):wf2defined(wf)
+
+    # Finish up and send  message to the client
     s = '\n'.join(nx.generate_graphml(g))
     return HttpResponse(s)
     

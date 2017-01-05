@@ -1,1 +1,4 @@
-{"NOOP1:filter":{"name":"foo","dirpath":"/home/maxim/p3sdata/", "comment":"Updated Comment"}}
+{
+    "NOOP1:filter":{"name":"input.txt","dirpath":"/home/maxim/p3sdata/", "comment":"Input to the *filter*"},
+    "filter:NOOP2":{"name":"output.txt","dirpath":"/home/maxim/p3sdata/", "comment":"Output from the *filter*"}
+}

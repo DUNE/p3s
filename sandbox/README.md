@@ -10,5 +10,8 @@ of new features in Python 3, and/or subtleties of the NetworkX
 interfaces and semantics.
 
 
-# None of the scripts or data samples in this folder are guaranteed or expected to work
+None of the scripts or data samples in this folder are guaranteed
+or expected to work, and are kept here for record and experimentation
+purposes.
+
 

@@ -67,10 +67,13 @@ altough it's human readable and can be easily edited by hand
 
 ### Pairing Jobs to Data
 Setting the environment variables to supply information about I/O
-is preferred due to flexibility of such method.
+is preferred due to flexibility of such method.Dependencies between
+interfaces of jobs in a workflow need to be minimized.
 
-Dependencies between interfaces of jobs in a workflow need to be
-minimized.
+Once a WF is defined (based on a DAG), so are dataset characteristics
+(i.e. file names) in each edge of the graph. At this point the environment
+of each node can be updated to include references to file, via
+environment variables.
 
 
 ## Phased development

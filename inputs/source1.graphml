@@ -24,7 +24,7 @@
     <!-- ++++++ JOBS ++++++ -->
     <node id="NOOP1">
       <data key="d101"></data>
-      <data key="d102"></data>
+      <data key="d102">{}</data>
       <data key="d103">noop</data>
       <data key="d104">0</data>
       <data key="d105">0</data>
@@ -40,7 +40,7 @@
 
     <node id="NOOP2">
       <data key="d101"></data>
-      <data key="d102"></data>
+      <data key="d102">{}</data>
       <data key="d103">noop</data>
       <data key="d104">0</data>
       <data key="d105">0</data>

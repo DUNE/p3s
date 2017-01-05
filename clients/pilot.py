@@ -228,8 +228,9 @@ if(p['status']=='FAIL'): logfail(msg, logger)
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
 cnt		= p.cycles # Number of cycles to go through before exit
 p['jobcount']	= 0 # will count how many jobs were eceuted in this pilot
-####################### MAIN LOOP #######################################
-while(cnt>0):     # "Poll the server" loop.
+#################### MAIN "POLL FOR JOBS" LOOP ##########################
+
+while(cnt>0):
 
     if(verb>1): print('Attempts left: %s' % str(cnt))
     if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
@@ -257,8 +258,9 @@ while(cnt>0):     # "Poll the server" loop.
         if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
             break
         time.sleep(period)
-        continue # NEXT ITERATION of "Poll the server" loop.
-    ###################### GOT A JOB TO DO ###############################
+        continue # NEXT ITERATION THE MAIN LOOP
+    
+######################### GOT A JOB TO DO ###############################
     payload = ''
     if(p['state']=='dispatched'): # means pilot was matched with a job
         try:
@@ -307,7 +309,7 @@ while(cnt>0):     # "Poll the server" loop.
         response = API.reportPilot(p)
         logger.info('JOB finished: %s' %  p['job'])
 
-    else: # Deprecated?
+    else: # Deprecated...
         try:
             x=subprocess.run([payload], stdout=subprocess.PIPE)
             if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))

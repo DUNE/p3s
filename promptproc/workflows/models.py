@@ -23,7 +23,7 @@ class dagVertex(models.Model):
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
     jobtype	= models.CharField(max_length=16, default='')		#
     payload	= models.CharField(max_length=256,default='')		# provisional, url/path
-    env		= models.TextField(default='')
+    env		= models.TextField(default='{}')
     timelimit	= models.PositiveIntegerField(default=1000)		# in seconds
     priority	= models.PositiveIntegerField(default=0)		# higher wins
 

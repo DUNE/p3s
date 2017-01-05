@@ -1,3 +1,4 @@
+import json
 from django.db		import models
 from data.models	import dataset, datatype
 
@@ -19,7 +20,7 @@ class job(models.Model):
     ts_dis	= models.DateTimeField('ts_dis', blank=True, null=True)	# dispatch
     ts_sta	= models.DateTimeField('ts_sta', blank=True, null=True)	# start
     ts_sto	= models.DateTimeField('ts_sto', blank=True, null=True)	# optional - env for the job
-    env		= models.TextField(default='')
+    env		= models.TextField(default='{}')
 
     def __str__(self):
         return self.uuid
@@ -35,6 +36,11 @@ class job(models.Model):
                 else:
                     child.state = state
                 child.save()
+
+
+    # add to the existing job environment from the dictionary provided
+    def augmentEnv(self, d):
+        self.env = json.dumps({**json.loads(self.env), **d})
 
     
 class jobtype(models.Model):
@@ -53,3 +59,8 @@ class prioritypolicy(models.Model):
     def __str__(self):
         return self.name
     
+#            e = json.loads(self.env)
+#            e.update(d)
+#            self.env = json.dumps(e)
+
+
