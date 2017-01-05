@@ -31,8 +31,8 @@
     </node>
 
     <node id="filter">
-      <data key="d101">/bin/date</data>
-      <data key="d102">{"P3SMODE":"TEST"}</data>
+      <data key="d101">/bin/grep -c TEST $INPTXT > $OUTTXT</data>
+      <data key="d102">{"P3S_EXECMODE":"SHELL"}</data>
       <data key="d103">filter</data>
       <data key="d104">7777</data>
       <data key="d105">4</data>
@@ -48,7 +48,7 @@
 
     <!-- ++++++ DATA ++++++ -->
     <edge source="NOOP1" target="filter">
-      <data key="d1">raw.txt</data>
+      <data key="d1">input.txt</data>
       <data key="d2">/home/maxim/p3sdata/</data>
       <data key="d3">TXT</data>
       <data key="d4">INPTXT</data>
@@ -56,7 +56,7 @@
     </edge>
     
     <edge source="filter" target="NOOP2">
-      <data key="d1">filtered.txt</data>
+      <data key="d1">output.txt</data>
       <data key="d2">/home/maxim/p3sdata/</data>
       <data key="d3">TXT</data>
       <data key="d4">OUTTXT</data>

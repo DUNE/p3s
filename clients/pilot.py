@@ -112,7 +112,7 @@ parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the pilot to be modified")
 
 parser.add_argument("-s", "--shell",	action='store_true',
-                    help="run the payloads in shell")
+                    help="force the payloads to run in shell (for experts)")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
@@ -291,6 +291,10 @@ while(cnt>0):
     # EXECUTION
     pilot_env	= os.environ.copy()
     job_env	= {**pilot_env,**env}
+
+    if 'P3S_EXECMODE' in job_env.keys(): # can be forced by -s
+        shell = True
+    
     if True: # Switched to POPEN, keep the older code in place for a while
         cmd=shlex.split(payload)
         if(shell): cmd=payload
