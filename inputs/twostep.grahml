@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+  <!-- DECLARE ATTRIBUTES -->
+  
+  <!-- ++++++ JOBS ++++++ -->
+  <key attr.name="payload" 	attr.type="string"	for="node" id="d101" />
+  <key attr.name="env" 		attr.type="string"	for="node" id="d102" />
+  <key attr.name="jobtype" 	attr.type="string"	for="node" id="d103" />
+  <key attr.name="timelimit" 	attr.type="int"		for="node" id="d104" />
+  <key attr.name="priority" 	attr.type="int"		for="node" id="d105" />
+  
+  <!-- ++++++ DATA ++++++ -->
+  <key attr.name="name"		attr.type="string"	for="edge" id="d1" />
+  <key attr.name="dirpath"	attr.type="string"	for="edge" id="d2" />
+  <key attr.name="datatype"	attr.type="string"	for="edge" id="d3" />
+  <key attr.name="datatag"	attr.type="string"	for="edge" id="d4" />
+  <key attr.name="comment"	attr.type="string"	for="edge" id="d5" />
+
+  <!-- ++++++++++++++++++ -->
+
+  
+  <graph edgedefault="directed">
+    <!-- ++++++ JOBS ++++++ -->
+    <node id="NOOP1"> <!-- Dummy node is a placeholder since in-data is external -->
+      <data key="d101"></data>
+      <data key="d102">{}</data>
+      <data key="d103">noop</data>
+      <data key="d104">0</data>
+      <data key="d105">0</data>
+    </node>
+
+    <node id="reduction">
+      <data key="d101">/bin/grep TEST $INPTXT > $OUTTXT</data>
+      <data key="d102">{"P3S_EXECMODE":"SHELL"}</data>
+      <data key="d103">reduction</data>
+      <data key="d104">100</data>
+      <data key="d105">1</data>
+    </node>
+
+    <node id="reco">
+      <data key="d101">/bin/grep -c TEST $OUTTXT > $FINTXT</data>
+      <data key="d102">{"P3S_EXECMODE":"SHELL"}</data>
+      <data key="d103">reco</data>
+      <data key="d104">100</data>
+      <data key="d105">1</data>
+    </node>
+
+    <node id="NOOP2"> <!-- Dummy node is a placeholder since out-data is final -->
+      <data key="d101"></data>
+      <data key="d102">{}</data>
+      <data key="d103">noop</data>
+      <data key="d104">0</data>
+      <data key="d105">0</data>
+    </node>
+
+    <!-- ++++++ DATA ++++++ -->
+    <edge source="NOOP1" target="reduction">
+      <data key="d1">input.txt</data>
+      <data key="d2">/home/maxim/p3sdata/</data>
+      <data key="d3">TXT</data>
+      <data key="d4">INPTXT</data>
+      <data key="d5">Simulated input</data>
+    </edge>
+    
+    <edge source="reduction" target="reco">
+      <data key="d1">output.txt</data>
+      <data key="d2">/home/maxim/p3sdata/</data>
+      <data key="d3">TXT</data>
+      <data key="d4">OUTTXT</data>
+      <data key="d5">Simulated reduction output</data>
+    </edge>
+
+
+    <edge source="reco" target="NOOP2">
+      <data key="d1">final.txt</data>
+      <data key="d2">/home/maxim/p3sdata/</data>
+      <data key="d3">TXT</data>
+      <data key="d4">FINTXT</data>
+      <data key="d5">Simulated reco output</data>
+    </edge>
+
+  </graph>
+
+</graphml>
