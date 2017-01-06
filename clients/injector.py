@@ -25,7 +25,6 @@ settings.configure(USE_TZ = True) # see the above note on TZ
 
 host		= socket.gethostname()
 logdefault	= '/tmp/p3s/'
-datadir		= '/home/maxim/p3sdata/'
 Usage		= '''Usage:
 
 For command line options run the injector with "--help" option.
@@ -69,7 +68,9 @@ parser.add_argument("-c", "--cycles",	type=int,	default=1,
 parser.add_argument("-p", "--period",	type=int,	default=5,
                     help="period of the pilot cycle, in seconds")
 
+# --
 parser.add_argument("-f", "--filename",	type=str,	default='', help="file to watch")
+parser.add_argument("-d", "--datadir",	type=str,	default='/tmp', help="directory to watch")
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
@@ -77,6 +78,8 @@ args = parser.parse_args()
 server	= args.server
 logdir	= args.logdir
 filename = args.filename
+datadir = args.datadir
+
 add	= args.add
 
 # misc
@@ -128,14 +131,16 @@ API.setVerbosity(verb)
 
 if(filename==''): exit(-1)
 
-jsonString =  '{"NOOP1:filter":{"dirpath":"'+datadir+'","name":"'+filename+'"}}'
+fileinfo =  '{"NOOP1:filter":{"dirpath":"'+datadir+'","name":"'+filename+'"}}'
+jobinfo  = ''
+
 name=add
 description='test'
 state='defined'
 
 while(cycles>0):
-    if(os.path.isfile(datadir+filename)):
-        resp = API.registerWorkflow(add, name, state, jsonString, description)
+    if(os.path.isfile(datadir+'/'+filename)):
+        resp = API.registerWorkflow(add, name, state, fileinfo, jobinfo, description)
         print(resp)
     cycles-=1
     if(cycles==0): # EXHAUSTED ATTEMPTS TO FIND A FILE
@@ -144,29 +149,3 @@ while(cycles>0):
 
 exit(0)
 
-
-#########################################################################
-######## LOGGER IS READY, REGISTER WITH THE SERVER ######################
-#########################################################################
-#d = Dataset()
-
-################ CONTACT SERVER TO REGISTER THE DATA ##################
-#resp = API.registerData(d)
-
-# logger.info("contact with server established!")
-
-# data = rdec(response)
-# if(verb>1): print('REGISTER: server response: %s'	% data)
-# if(verb>1): logger.info('REGISTER: server response: %s'	% data)
-
-# msg = {} # we expect a message from the server formatted in json
-# try:
-#     msg		= json.loads(data)
-#     p['status']	= msg['status']
-#     p['state']	= msg['state']
-# except:
-#     logger.error('exiting, failed to parse the server message: %s' % data)
-#     exit(3)
-
-# # By now the pilot MUST have some sort of status set by the server's message
-# if(p['status']=='FAIL'): logfail(msg, logger)
