@@ -1,6 +1,7 @@
 ###################################################
 ############ WORKFLOWS VIEWS ######################
 ###################################################
+import os
 import json
 
 from django.shortcuts			import render
@@ -141,8 +142,15 @@ def adddag(request):
     description	= post['description']
 
     x = deldag(name)
-    
-    fn = "/tmp/p3s/"+name+".graphml"
+
+    tmpdir = '/tmp/p3s/'
+    if(not os.path.exists(tmpdir)):
+        try:
+            os.makedirs(tmpdir)
+        except:
+            exit(-1) # we can't proceed
+
+    fn = tmpdir+name+".graphml"
     f = open(fn, "w") # FXIME: this has yet to work: f = io.StringIO()
     f.write(graphml)
     f.close()
