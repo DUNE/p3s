@@ -199,6 +199,7 @@ def addwf(request):
     fileinfo	= None
     jobinfo	= None
     sticky	= False
+    inherit	= None
     
     post	= request.POST
     dagName	= post['dag']
@@ -212,9 +213,15 @@ def addwf(request):
     if(filejson!=''):
         try:
             fileinfo = json.loads(filejson)
-        except:
-            sticky = True
-            
+        except: # non-JSON string... Identify:
+            if(filejson=='sticky'):
+                sticky = True
+            if('inherit' in filejson):
+                try:
+                    inherit = filejson.split(':')[1]
+                except:
+                    pass
+                    
     if(jobjson!=''):	jobinfo = json.loads(jobjson)
 
     # print(jobjson)
@@ -302,10 +309,14 @@ def addwf(request):
         
         dirpath	= de.dirpath
         
+        filename= ''
         if(sticky):
-            name = de.name
+            filename = de.name
+        elif(inherit):
+            filename = inherit+':'+dagName+':'+de.source+':'+de.datatag+ext
+            print(filename)
         else:
-            name = d_uuid+ext
+            filename = d_uuid+ext
             
         comment	= de.comment # default comment in herited from DAG
 
@@ -314,7 +325,7 @@ def addwf(request):
             for k in fileinfo.keys():
                 if((de.source+":"+de.target)==k):
                     try:
-                        name	=fileinfo[k]["name"]
+                        filename=fileinfo[k]["name"]
                     except:
                         pass
                     try:
@@ -333,7 +344,7 @@ def addwf(request):
             target	= de.target,
             sourceuuid	= sourceuuid,
             targetuuid	= targetuuid,
-            name	= name,
+            name	= filename,
             state	= 'template',
             dirpath	= dirpath,
             comment	= comment,
@@ -346,7 +357,8 @@ def addwf(request):
         g.add_edge(de.source, de.target)
         
         # +++ AUGMENT JOB ENVIRONMENT WITH DATASET INFO
-        fullname=dirpath+name
+        fullname=dirpath+filename
+        
         #print('source:',de.source,' target:', de.target,' datatag:', de.datatag, ' full name:',fullname)
 
         for jid in (sourceuuid, targetuuid):

@@ -75,9 +75,10 @@ UUID and a predefined extension as per the declared data type. This can
 be changed by using The option "-f" which is is overloaded
 and can be:
 
-- a stirng not formatted in JSON, currently assumed to represent
-the keyword "sticky", in which case a workflow inherits the file names
-from its parent DAG
+- a stirng not formatted in JSON and taking values like:
+  -- "sticky", in which case a workflow inherits the file names from its parent DAG
+  -- "inherit:name", in which case filenames will be generated based on the supplied
+      name and DAG topology
 
 - a JSON-formatted string which can specify the filenames for any of
 the DAG's edges if desired
@@ -100,12 +101,12 @@ parser.add_argument("-G", "--get",	help="get a DAG from server - needs the name 
 parser.add_argument("-U", "--usage",	help="print usage notes and exit",				action='store_true')
 parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs name/uuid+type (what)",	action='store_true')
 
-parser.add_argument("-m", "--modify",	help='''modifies the state of a workflow, needs uuid and the desired new state (except "template")''',
-                    action='store_true')
+parser.add_argument("-m", "--modify",	help="modifies the state of a workflow, needs uuid/new state",	action='store_true')
 
 parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
 parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/', help="the server, default: http://localhost:8000/")
-parser.add_argument("-w", "--what",	type=str,	default='', help="dag or workflow (for deletion).")
+parser.add_argument("-w", "--what",	type=str,	default='',choices=['workflow','dag'],
+                    help="type of object(s) for deletion")
 parser.add_argument("-v", "--verbosity",type=int,	default=0, choices=[0, 1, 2], help="set verbosity - also needed for data output.")
 parser.add_argument("-u", "--uuid",	type=str,	default='', help="uuid of the objet to be modified or deleted")
 parser.add_argument("-g", "--graphml",	type=str,	default='', help="Create a DAG on the server from a GraphML file.")
