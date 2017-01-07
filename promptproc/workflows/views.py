@@ -17,8 +17,10 @@ from networkx.readwrite import json_graph
 from .models import dag, dagVertex, dagEdge
 from .models import workflow # wfVertex, wfEdge
 
-from jobs.models			import job
-from data.models			import dataset, datatype
+from jobs.models	import job
+from data.models	import dataset, datatype
+from logic.models	import manager
+
 
 def init(request):
     d = dag(name='test')
@@ -396,7 +398,7 @@ def wf2defined(wf):
     if(j.jobtype=='noop'):
         # print('root job uuid, noop, toggle to finished',j.uuid)
         j.state = 'finished'
-        j.childrenStateToggle('defined')
+        manager.childrenStateToggle(j,'defined') # j.childrenStateToggle('defined')
     else:
         # print('root job uuid, toggle to defined',j.uuid)
         j.state = 'defined'

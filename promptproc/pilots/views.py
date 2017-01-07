@@ -19,9 +19,10 @@ from django.core			import serializers
 from django.conf			import settings
 
 # Local models
-from .models				import pilot
-from jobs.models			import job, prioritypolicy
-from workflows.models			import workflow
+from .models		import pilot
+from jobs.models	import job, prioritypolicy
+from workflows.models	import workflow
+from logic.models	import manager
 
 
 #########################################################
@@ -163,7 +164,7 @@ def report(request):
 
             if(event=='jobstop'): # timestamp and toggle children
                 j.ts_sto = timezone.now()
-                j.childrenStateToggle('defined')
+                manager.childrenStateToggle(j,'defined') # j.childrenStateToggle('defined')
                 j.save()
                 # Check the workflow (may it's completed)
                 if(j.wfuuid!=''):
