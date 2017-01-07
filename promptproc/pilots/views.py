@@ -142,31 +142,36 @@ def report(request):
     p.jobcount	= jobcount
 
     if(state in 'active','stopped'):
-        p.status	= 'OK'
+        p.status = 'OK'
         p.save()
     
     if(state in ('running','finished')):
-        p.status	= 'OK'
+        p.status = 'OK'
         p.save()
 
         # FIXME update WF status to running as necessary
         
         try:
-            j		= job.objects.get(uuid=p.j_uuid)
+            j = job.objects.get(uuid=p.j_uuid)
             # IMPORTANT - that's where the job has its state set
             # in normal running
             
-            j.state	= state
+            j.state = state
             
             if(event=='jobstart'):
                 j.ts_sta = timezone.now()
                 j.save()
+                if(j.wfuuid!=''):
+                    wf = workflow.objects.get(uuid=j.wfuuid)
+                    wf.state = "running"
+                    wf.save()
 
             if(event=='jobstop'): # timestamp and toggle children
                 j.ts_sto = timezone.now()
                 manager.childrenStateToggle(j,'defined') # j.childrenStateToggle('defined')
                 j.save()
-                # Check the workflow (may it's completed)
+                
+                # Check the workflow (maybe it is completed)
                 if(j.wfuuid!=''):
                     done	= True
                     jobsWF	= job.objects.filter(wfuuid=j.wfuuid)
@@ -174,7 +179,7 @@ def report(request):
                         if(q.state!='finished'): done = False
 
                     wf = workflow.objects.get(uuid=j.wfuuid)
-                    wf.state = "finished"
+                    if done: wf.state = "finished"
                     wf.save()
         except:
             return HttpResponse(json.dumps({'status':	'FAIL',
