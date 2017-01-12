@@ -331,7 +331,7 @@ def addwf(request):
                 delstat = 'FAIL'
             return HttpResponse('Failed to get datatype, deleting workflow. Clean up status: %s' % delstat)
 
-        ext	= dt.ext
+        ext	= dt.ext # expect that the dot is included
         
         dirpath	= de.dirpath
         

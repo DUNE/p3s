@@ -19,7 +19,7 @@ from django.core			import serializers
 from django.conf			import settings
 
 # Local models
-from .models				import dataset
+from .models import dataset, datatype
 
 #########################################################
 # Register data with the server:
@@ -47,10 +47,12 @@ def registerdata(request):
 def registertype(request):
     post	= request.POST
     name	= post['name']
+    ext		= post['ext']
     comment	= post['comment']
     
     d = datatype(
         name		= name,
+        ext		= ext,
         comment		= comment,
     )
 

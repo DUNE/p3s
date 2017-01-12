@@ -161,6 +161,15 @@ if(regData):
     exit(0)
         
 #########################################################################
+if(regType):
+    if(jtxt==''): exit(0)
+    
+    j = json.loads(jtxt)
+    resp = API.registerType(j)
+
+    exit(0)
+        
+#########################################################################
 if(adjust):
     if(jtxt!=''):
         resp = API.adjData(json.loads(jtxt))
