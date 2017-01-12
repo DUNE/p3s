@@ -36,9 +36,18 @@ By default, p3s will create filenames for a workflow dynamically utilizing
 UUID and a predefined extension as per the declared data type. This can
 be changed by using The option "-f" which is is overloaded and can be:
 
-* a stirng not formatted in JSON and taking values like:
-** "sticky", in which case a workflow inherits the file names from its parent DAG
-** "inherit:name", in which case filenames will be automatically generated based on the supplied name and DAG topology
+* a stirng not formatted in JSON and taking values such as:
+   * "sticky", in which case a workflow inherits the file names from its parent DAG
+   * "inherit:name", in which case filenames will be automatically generated based on the supplied name and DAG topology
       
 * a JSON-formatted string which can specify the filenames for any of the DAG's edges if desired
 * a name of a JSON file containing same information
+
+# Job Info
+
+It works similar to "file info" explained above. Information supplied in JSON format (either on the command line
+or in a file supplied with -j option and having json extension will be included in the job object on the server side.
+
+# Example
+`./workflow.py -v 2 -a source1 -n sourceTest -s defined -f ../inputs/fileinfo1.json -j '{"filter":{"payload":"env"}}'`
+
