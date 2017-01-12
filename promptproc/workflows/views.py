@@ -94,26 +94,32 @@ def delete(request):
 
     if(what=='workflow'):
         keyname	= post['uuid']
-        try:
-            w = workflow.objects.get(uuid=keyname)
-            w.delete()
-        except:
-            success = False
-        try:
-            # for v in wfVertex.objects.filter(wfuuid=keyname): v.delete()
-            for j in job.objects.filter(wfuuid=keyname): j.delete()
-        except:
-            success = False
-        try:
-            # for e in wfEdge.objects.filter(wfuuid=keyname): e.delete()
-            for ds in dataset.objects.filter(wfuuid=keyname): ds.delete()
-        except:
-            success = False
-
+        success	= delwf(keyname)
+        
     if(success):
         return HttpResponse("Deleted %s %s" % (what, keyname) )
     else:
         return HttpResponse("Problems deleting %s %s" % (what, keyname) )
+
+ 
+###################################################
+def delwf(wfuuid):
+    success = True
+    try:
+        w = workflow.objects.get(uuid=wfuuid)
+        w.delete()
+    except:
+        success = False
+    try:
+        for j in job.objects.filter(wfuuid=wfuuid): j.delete()
+    except:
+        success = False
+    try:
+        for ds in dataset.objects.filter(wfuuid=wfuuid): ds.delete()
+    except:
+        success = False
+
+    return success
 
 ###################################################
 def deldag(name):
@@ -314,7 +320,17 @@ def addwf(request):
 
         # defaults
         d_uuid	= str(uuid.uuid1())
-        dt	= datatype.objects.get(name=de.datatype)
+        dt = ''
+        try:
+            dt	= datatype.objects.get(name=de.datatype)
+        except:
+            delstat = ''
+            if delwf(wfuuid):
+                delstat ='OK'
+            else:
+                delstat = 'FAIL'
+            return HttpResponse('Failed to get datatype, deleting workflow. Clean up status: %s' % delstat)
+
         ext	= dt.ext
         
         dirpath	= de.dirpath

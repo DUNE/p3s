@@ -30,12 +30,12 @@ from logic.models	import manager
 # while it's state can be more complex. This helps      #
 # reflect different failure modes                       #
 #########################################################
-#
-# This is request for a job:
-def request(request):
+
+
+#########################################################
+def request(request): # Pilot's request for a job:
     p_uuid	= request.GET.get('uuid','')
-    # Fetch the pilot! FIXME - need to pritect the followling line:
-    p = pilot.objects.get(uuid=p_uuid)
+    p = pilot.objects.get(uuid=p_uuid) # FIXME - handle unlikely error
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS: (will bail here)
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
@@ -44,18 +44,25 @@ def request(request):
     priolist = []
 
     try:
-        # this contains (for example) the name of the column by which to sort within same tier of priority,
-        # for example "ts_def". So it has to be consistent with the models. Look for "ordering" in the code.
+        # WORK IN PROGRESS:
+        # this could contain the name of the column by
+        # which to sort within same tier of priority, for example "ts_def".
+        # So it has to be consistent with the models. Look for "ordering" in the code.
+        #
         # DB-based value, example:
         # ordering = prioritypolicy.objects.get(name='order-within-priority').value
         # For dev purposes, fixed value (to avoid missing values after fresh install):
-        ordering = 'ts_def'
-    except:
+        
+        ordering = 'ts_def' # FIXME - HARDCODED FOR TESTING
+        
+    except: # catches error in fetching policy from DB, irrelevant if hardcoded
         p.state		= 'failed brokerage'
         p.status	= 'FAIL'
         p.ts_lhb	= timezone.now()
         p.save()
         return HttpResponse(json.dumps({'status':'FAIL', 'state': p.state, 'error':'missing policy'}))
+
+    # look at existing jobs priorities: FIXME - prohibitively expensice, need to change to async list
     try:
         jp = job.objects.values('priority').distinct()
         for item in jp: priolist.append(item['priority'])
@@ -91,7 +98,7 @@ def request(request):
     p.ts_lhb	= timezone.now()
     p.save()
 
-    # the format of the job information going back to the pilot - can be improved
+    # job information going back to the pilot
     to_pilot = {'status':	'OK',
                 'state':	'dispatched',
                 'job':		j.uuid,
@@ -101,8 +108,6 @@ def request(request):
     return HttpResponse(json.dumps(to_pilot))
 
 #########################################################
-#
-# The pilot attempts to register with the server:
 @csrf_exempt
 def register(request):
     
@@ -149,14 +154,9 @@ def report(request):
         p.status = 'OK'
         p.save()
 
-        # FIXME update WF status to running as necessary
-        
         try:
             j = job.objects.get(uuid=p.j_uuid)
-            # IMPORTANT - that's where the job has its state set
-            # in normal running
-            
-            j.state = state
+            j.state = state # that's where the job has its state set in normal running
             
             if(event=='jobstart'):
                 j.ts_sta = timezone.now()
@@ -185,7 +185,10 @@ def report(request):
             return HttpResponse(json.dumps({'status':	'FAIL',
                                             'state':	state,
                                             'error':	'failed to update job state'}))
-    if(state=='exception'):
+
+    # FIXME bring to top to simplify logic for normal cases
+    # FIXME incorrect return message for failure reports
+    if(state=='exception'): # FIXME add WF state
         p.status	= 'FAIL'
         p.save()
         j = job.objects.get(uuid=p.j_uuid)
@@ -204,11 +207,9 @@ def report(request):
 ###################################################
 @csrf_exempt
 def delete(request):
-    # fixme - improve error handling such as for missing or screwy arguments
-
     post	= request.POST
     p_uuid	= post['uuid']
-    # print(p_uuid)
+
     try:
         p = pilot.objects.get(uuid=p_uuid)
     except:
@@ -218,8 +219,7 @@ def delete(request):
     return HttpResponse("%s deleted" % p_uuid )
 
 ###################################################
-# SHOULD ONLY BE USED BY EXPERTS, do not advertise
-def deleteall(request):
+def deleteall(request):# SHOULD ONLY BE USED BY EXPERTS, do not advertise
     try:
         p = pilot.objects.all().delete()
     except:
