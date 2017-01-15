@@ -21,22 +21,29 @@ properties and behaviors of jobs and data elements.
 
 In p3s a DAG describes the topology
 and general characteristics of edges and vertices of a class of workflows but does not
-correspond to a running process or processes nor does it have a complete information
+correspond to a running process or processes nor does it have enough information
 that would be necessary to create a functional workflow. In fact, workflows are created by
-adding enough information to DAGs such that that a proper execution context is created
+adding enough parameters to DAGs such that that a proper execution context can be defined
 (i.e. the environment, paths to executable, location and name of files etc). Workflows
 therefore are created based on DAGs serving as templates (abstractions) by adding
 necessary parameters.
 
 ## Describing DAGs
 DAGs and Workflows are stored on the central server of p3s
-and are persisted using the nbackend database.
+and are persisted using the backend database by maintaining
+tables which contain lists of vertices and edges of the
+respective graphs. The name of the graph is used as a key.
 
-There are many ways to describe a DAG in a way suitable for
-creating a record in p3s. One convenient method it to leverage
+There are many ways to describe a DAG in a way convenient for the user
+and suitable for creating a record in p3s. A reasonable requirements is
+using some sort of text format for describing a DAG so it can be
+readily edited by prectically any text editor. It is convenient to leverage
 an existing XML schema for desribing graphs, *GraphML* --- which is
 supported in a number of software packages and editing and visualization
-tools.
+tools. Internally, p3s is using the Python package *NetworkX* to parse
+the *GraphML* source and perform a few other basic operations on
+graphs if needed. The graph information is stored nevertheless in
+a database.
 
 Option "-g" of the workflow client allows to use a graphML file
 containing a DAG description and send it to the server. A name can
@@ -64,7 +71,13 @@ The "-d" option accompanied by the object key (e.g. UUID for workflows) will
 cause the client to delete the corresponding object from the database.
 For both DAGs and workflows, this will cause the deletion not only
 of the object itself as a record, but also of its vertices and edges.
+This is achieved by running the client in this manner:
 
+`workflow.py -d -w workflow -u 1234567890`
+
+where "-d" stands for delete, "-w" stands for "what" since both
+DAGs and workflows can be deleted via this interface, and "-u"
+stands for UUID of the object to be deleted.
 Until serious testing has been completed, please consult the experts
 about this, such as the author of this software - especially
 if the system is in production.
