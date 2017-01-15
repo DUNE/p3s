@@ -1,5 +1,5 @@
 # p3s clients
-## Relation to p3s objet model
+## Relation to p3s object model
 The p3s object model comtains the following major classes:
 * job
 * pilot
@@ -33,7 +33,9 @@ It translates calls to methods in scripts to HTTP messages sent to the server
 utilizing *urllib*.
 
 Please see individual documentation for the clients listed above which is
-contained in files named like WORKFLOW.md etc.
+contained in files named like WORKFLOW.md etc. Same information converted
+into PDF (so it's accessible locally and can be printed) can be found in
+**p3s/documentation**.
 
 
 There are additional clients which perform tests or a combination
@@ -42,10 +44,8 @@ of procedures on these objects, such as
 * urltest.py (deprecated) - generic HTTP interface to the server
 * verifyImport.py - verifies that dependecies are satisfied, i.e. certain packages can be imported
 
-
-
-
-# job.py
+## Brief summary of the clients' functionality
+### job.py
 
 This client is used to:
 * create a job (or a number of jobs) on the server. By default standalone jobs
@@ -67,7 +67,7 @@ how JSON is used:
 * adjust job attributes
 * delete a job from the server
 
-# pilot.py
+## pilot.py
 
 Generates a pilot and performs a small number of other functions.
 The lifecycle of a pilot is as follows:
@@ -82,3 +82,8 @@ exits normally.
 
 * Upon receiving a successful match from the server, the pilot initiates job execution using
 the Python "subprocess" machinery.
+
+## workflow.py
+
+Creates and manipulates DAGs and workflows. DAGs serve as templates for actual active workflows.
+
