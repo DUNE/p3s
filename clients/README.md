@@ -1,5 +1,6 @@
 # p3s clients
-There are the following major classes in p3s:
+## Relation to p3s objet model
+The p3s object model comtains the following major classes:
 * job
 * pilot
 * dataset
@@ -14,6 +15,35 @@ Example - the follwing file:
 `/mydir/p3s/promptproc/workflows/models.py`
 ...contains the class "workflow", which inherits from the Django Model class.
 Same pattern applies to other classes.
+
+## The clients
+This directory (p3s/clients) contains a number of clients implemented as
+Python scripts, which support operations on the objects belonging to classes
+described above. These are
+
+* job.py
+* pilot.py
+* dataset.py
+* workflow.py
+
+The server API which all of these scripts use is encapsulated in
+the module:
+* serverAPI.py
+It translates calls to methods in scripts to HTTP messages sent to the server
+utilizing *urllib*.
+
+Please see individual documentation for the clients listed above which is
+contained in files named like WORKFLOW.md etc.
+
+
+There are additional clients which perform tests or a combination
+of procedures on these objects, such as
+* injector.py - scans a directory for new files and created workflow with the new data as input
+* urltest.py (deprecated) - generic HTTP interface to the server
+* verifyImport.py - verifies that dependecies are satisfied, i.e. certain packages can be imported
+
+
+
 
 # job.py
 
