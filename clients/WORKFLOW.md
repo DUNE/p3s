@@ -94,26 +94,47 @@ the "defined" state this can be achieved by adding the "-s" option, i.e.
 
 `workflow.py -a myDAG -n myWorkflow -s defined`
 
-## Filename policy
+## Workflow filename policy
+
 The next important aspect of the workflow creation is the filename policy.
-By default, p3s will automatically generate names based on UUID and the
-extension registered in the "Datatype" table in the database. For example,
-a use may define type "TXT" (can be any name) which implies the file
+By default, p3s will automatically generate names for all edges in the workflow
+based on UUID and the extension registered in the "Datatype" table in the database.
+For example, a use may define type "TXT" (can be any name) which implies the file
 extension ".txt". The system will know to generate filenames with this extension
 wherever it enounters files tagged with "TXT".
 
 Extra information, overriding or filling placeholders in the DAG can be provided
 by utilizing the "-f" option in the client. This option accepts one of the three
-* filename ending in "json", in which case the program will attempt to read
-the information from that file
-* json string, which in this case is read from the command line instead of a file
-but otherwise equivalent to the use case above
-* one of the keywords (this part is in development)
+types of input:
 
-The example given above can therefor be extended to something like:
+* a stirng not formatted in JSON and taking values such as:
+   * "sticky", in which case a workflow inherits the file names from its parent DAG
+   * "inherit:name", in which case filenames will be automatically generated based on the supplied name and DAG topology
+      
+* a JSON-formatted string which can specify the filenames for any of the DAG's edges if desired
+* a name of a JSON file containing same information (must contain ".json" to be
+properly identified)
+
+
+The example given above can therefore be extended to something like:
 
 `workflow.py -a myDAG -n myWorkflow -s defined -f myFileInfo.json`
 
+
+## Job Information
+
+It works similar to adding file information to a workflow as  explained above.
+Information supplied in JSON format (either on the command line or in a file
+supplied with -j option and having json extension will be included in the job object on the server side.
+
+An extended example which includes both file and job information to round out a workflow based
+on a DAG named "source1":
+`./workflow.py -v 2 -a source1 -n sourceTest -s defined -f ../inputs/fileinfo1.json -j '{"filter":{"payload":"env"}}'`
+
+In this example, file names will be created according to the extra info contained in "fileinfo1.json" while
+the job information, in particular payload, is supplined in-line (it could have been fed to the script as a JSON
+file as well). Purely for demonstration purposes, the payload of the DAG node names "filter" has been defined
+as the standard shell command "env".
 
 
 ## Object Deletion
@@ -131,25 +152,4 @@ stands for UUID of the object to be deleted.
 Until serious testing has been completed, please consult the experts
 about this, such as the author of this software - especially
 if the system is in production.
-
-## Supplying File and Job Info during creation of a workflow
-### File Info
-By default, p3s will create filenames for a workflow dynamically utilizing
-UUID and a predefined extension as per the declared data type. This can
-be changed by using The option "-f" which is is overloaded and can be:
-
-* a stirng not formatted in JSON and taking values such as:
-   * "sticky", in which case a workflow inherits the file names from its parent DAG
-   * "inherit:name", in which case filenames will be automatically generated based on the supplied name and DAG topology
-      
-* a JSON-formatted string which can specify the filenames for any of the DAG's edges if desired
-* a name of a JSON file containing same information
-
-### Job Info
-
-It works similar to "file info" explained above. Information supplied in JSON format (either on the command line
-or in a file supplied with -j option and having json extension will be included in the job object on the server side.
-
-Example:
-`./workflow.py -v 2 -a source1 -n sourceTest -s defined -f ../inputs/fileinfo1.json -j '{"filter":{"payload":"env"}}'`
 
