@@ -157,7 +157,7 @@ the necessary command would look like this:
 
 `workflow.py -d -w dag -n myDAG`
 
-It is easy to see that DAGs are referre to by their names as opposed to UUIDs
+It is easy to see that DAGs are referred to by their names as opposed to UUIDs
 (which they don't have).
 
 Until serious testing has been completed, please consult the experts
