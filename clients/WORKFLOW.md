@@ -1,3 +1,5 @@
+Written by M.Potekhin
+
 January 2017
 
 # User guide to p3s Workflow Interface and Client
@@ -84,7 +86,7 @@ A name can be optionally set for a workflow but it's not expected
 to be unique. Wokrflows are identified in the system by their UUIDs which
 are automatically generated.
 
-Example of creating a workflow based on a DAG:
+Example of adding a workflow based on a DAG:
 
 `workflow.py -a myDAG -n myWorkflow`
 
@@ -129,6 +131,7 @@ supplied with -j option and having json extension will be included in the job ob
 
 An extended example which includes both file and job information to round out a workflow based
 on a DAG named "source1":
+
 `./workflow.py -v 2 -a source1 -n sourceTest -s defined -f ../inputs/fileinfo1.json -j '{"filter":{"payload":"env"}}'`
 
 In this example, file names will be created according to the extra info contained in "fileinfo1.json" while
@@ -148,8 +151,16 @@ This is achieved by running the client in this manner:
 
 where "-d" stands for delete, "-w" stands for "what" since both
 DAGs and workflows can be deleted via this interface, and "-u"
-stands for UUID of the object to be deleted.
+stands for UUID of the object to be deleted. If for example one
+wants to delete a DAG which is named "myDAG" from the system,
+the necessary command would look like this:
+
+`workflow.py -d -w dag -n myDAG`
+
+It is easy to see that DAGs are referre to by their names as opposed to UUIDs
+(which they don't have).
+
 Until serious testing has been completed, please consult the experts
-about this, such as the author of this software - especially
-if the system is in production.
+about using the delete function - especially if the system is in production.
+
 
