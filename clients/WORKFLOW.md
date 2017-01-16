@@ -42,8 +42,8 @@ an existing XML schema for desribing graphs, *GraphML* --- which is
 supported in a number of software packages and editing and visualization
 tools. Internally, p3s is using the Python package *NetworkX* to parse
 the *GraphML* source and perform a few other basic operations on
-graphs if needed. The graph information is stored nevertheless in
-a database.
+graphs if needed. The graph information is stored in
+a database nevertheless.
 
 Option "-g" of the workflow client allows to use a graphML file
 containing a DAG description and send it to the server. A name can
@@ -54,17 +54,67 @@ the primary key. Example of creating a DAG:
 
 `workflow.py -g myDAG.graphml`
 
+For a few examples of GraphML files written for p3s please see the directory
+p3s/inputs. In addition to text editors that can be used for editing
+these files, there are a number of tools for exploring, editing and visualizing
+graphs, such as *GePhi* and a few others. For example, it is possible
+to import and export graph info from/to a spreadsheet or a comma-separated
+file, and edit elements of a graph in a GUI. Using a simple test editor
+is still perhaps the most efficient way to do it, although the particular
+XML schema of GraphML is not very pretty and takes some getting used to.
+
+
+## Creating Workflows
+A workflow is created based on a pre-existing DAG, stored on the p3s
+server as a result of running the client with "-g" option as described
+above. Assuming that "myDAG" is one of such registered DAGs, a workflow
+is created by
+
+`workflow.py -a myDAG -n myWorkFlow`
+
+The "-n" option allows to specify the name of the workflow, which otherwise
+(i.e. if not specified) will default to the name of the DAG.
+
+
 
 ## Defining Workflows
 Workflows are created based on templates (DAGs) which must be
 exist on the server by the time a request for a new workflow is sent.
 A name can be optionally set for a workflow but it's not expected
-to be unique. Worflows are identified in the system by their UUIDs which
+to be unique. Wokrflows are identified in the system by their UUIDs which
 are automatically generated.
 
 Example of creating a workflow based on a DAG:
 
-`workflow.py -a myDAG -n my Workflow -f myFileInfo.json`
+`workflow.py -a myDAG -n myWorkflow`
+
+The above command will create a workflow which is in the "template" state i.e.
+not marked as ready for execution. If the user wants to create worflow in
+the "defined" state this can be achieved by adding the "-s" option, i.e.
+
+`workflow.py -a myDAG -n myWorkflow -s defined`
+
+## Filename policy
+The next important aspect of the workflow creation is the filename policy.
+By default, p3s will automatically generate names based on UUID and the
+extension registered in the "Datatype" table in the database. For example,
+a use may define type "TXT" (can be any name) which implies the file
+extension ".txt". The system will know to generate filenames with this extension
+wherever it enounters files tagged with "TXT".
+
+Extra information, overriding or filling placeholders in the DAG can be provided
+by utilizing the "-f" option in the client. This option accepts one of the three
+* filename ending in "json", in which case the program will attempt to read
+the information from that file
+* json string, which in this case is read from the command line instead of a file
+but otherwise equivalent to the use case above
+* one of the keywords (this part is in development)
+
+The example given above can therefor be extended to something like:
+
+`workflow.py -a myDAG -n myWorkflow -s defined -f myFileInfo.json`
+
+
 
 ## Object Deletion
 The "-d" option accompanied by the object key (e.g. UUID for workflows) will
