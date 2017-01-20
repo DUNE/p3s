@@ -1,3 +1,4 @@
+# DEPRECATED UNTIL FURTHER NOTICE
 #!/usr/bin/python
 
 import argparse
@@ -25,6 +26,8 @@ args = parser.parse_args()
 server	= args.server
 url	= args.url
 verb	= args.verbosity
+
+exit(-7) # just bail until I decide to return this to service -mxp-
 
 try:
     response = urllib.request.urlopen(server+url)

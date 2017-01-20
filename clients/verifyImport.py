@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.5
 import importlib
 packList = ['django','django_tables2','networkx']
 print('Will test import of',len(packList),'modules')
