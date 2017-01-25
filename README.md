@@ -10,6 +10,17 @@ to add the datatype to the server:
 
 ./dataset.py -R -j '{"name":"test", "ext":".tst", "comment":"testing"}'
 
+## Embedded documentation
+Many directories contain .md files that are easy to read in the browser
+on GitHub by just clicking on a file. Some of the more important instructions
+are converted to PDF format and kept in the "documentation" folder in this
+repo.
+
+If you want to convert any of the .md files to PDF at will, the following
+utility may be used which is easy to install on Linux - see this example:
+
+pandoc -s -o README.pdf README.md
+
 ## Design Paper and Motivation
 Supporting documents and an outline of the design can be found in
 the FNAL DocDB 1861 (authorization required for access).
