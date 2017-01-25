@@ -10,6 +10,12 @@ to add the datatype to the server:
 
 ./dataset.py -R -j '{"name":"test", "ext":".tst", "comment":"testing"}'
 
+If you no longer need the datatype you created (perhaps as the result
+of testing), it can be removed from the server as folllows:
+
+./dataset.py -D test
+
+
 ## Embedded documentation
 Many directories contain .md files that are easy to read in the browser
 on GitHub by just clicking on a file. Some of the more important instructions
@@ -94,7 +100,7 @@ altough it's human readable and can be easily edited by hand
 
 ### Pairing Jobs to Data
 Setting the environment variables to supply information about I/O
-is preferred due to flexibility of such method.Dependencies between
+is preferred due to flexibility of such method. Dependencies between
 interfaces of jobs in a workflow need to be minimized.
 
 Once a WF is defined (based on a DAG), so are dataset characteristics
@@ -105,7 +111,8 @@ environment variables.
 
 ## Phased development
 * Phase I: service supporting individual jobs, triggered by incoming data
-* Phase II: workflows
+* Phase II: simple workflows
+* Phase III: complex workflows
 
 ## Location of the input raw data
 The protoDUNE DAQ writes the data to its own "online buffer" from which it is
@@ -121,7 +128,9 @@ efficient and tried way to achieve this is the pilot-based job submission.
 
 ## Components
 * Web service:
-   * job queues and definitions
+   * workflows and their templates (dags)
+   * jobs
+   * data
    * handling of pilots' requests for registration and payload
 * Clients
    * The *pilot* - submission and management of pilot data on the server
@@ -133,14 +142,15 @@ efficient and tried way to achieve this is the pilot-based job submission.
 * django-tables2
 * RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
 * Apache
-* NetworkX and GraphML (latter optional)
+* NetworkX (some versions may present compatibility issues)
+* GraphML (optional but very helpful, doesn't need to be installed as it's a schema)
 
 
 
 ## TODO
 
 ### Models
-Pilot - add cycles, period and list of jobs done.
+No outstansing issues
 
 ### Time limits
 * loss of the pilot heartbeat
@@ -151,7 +161,7 @@ Pilot - add cycles, period and list of jobs done.
 
 ## Installation and Integration
 * PosgeSQL
-* Apache
+* Apache - issue: different configuration features on Ubuntu and CentOS
 * XRootD
 
 ## Storage management
