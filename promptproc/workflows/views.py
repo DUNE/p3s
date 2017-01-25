@@ -169,13 +169,17 @@ def adddag(request):
 
     ts_def   = timezone.now()
     vertices = nx.topological_sort(g) # print('*****',vertices)
+
+    v_list = []
+    for v in vertices:
+        v_list.append(v)
     
     newDag		= dag()
     newDag.name		= name
     newDag.description	= description
-    newDag.nvertices	= len(vertices)
+    newDag.nvertices	= len(v_list)
     newDag.ts_def	= ts_def
-    newDag.root		= vertices[0]
+    newDag.root		= v_list[0]
     newDag.save()
 
     dvFields = []
