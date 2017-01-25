@@ -21,6 +21,11 @@ utility may be used which is easy to install on Linux - see this example:
 
 pandoc -s -o README.pdf README.md
 
+## Learning about the clients
+All clients have the '-h' or the equivalent '--help' option which summarizes
+the command line syntax, in addition some have the 'usage' option which may
+provide more info.
+
 ## Design Paper and Motivation
 Supporting documents and an outline of the design can be found in
 the FNAL DocDB 1861 (authorization required for access).

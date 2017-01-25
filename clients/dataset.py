@@ -63,6 +63,9 @@ parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/'
 parser.add_argument("-j", "--json",	type=str,	default='',
                     help="json description of the data to be sent")
 
+parser.add_argument("-D", "--deltype",	type=str,	default='',
+                    help="the name of the data type to be deleted from the server")
+
 parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
 
@@ -95,6 +98,7 @@ args = parser.parse_args()
 server	= args.server
 logdir	= args.logdir
 jtxt	= args.json
+deltype	= args.deltype
 
 # misc
 verb	= args.verbosity
@@ -166,6 +170,15 @@ if(regType):
     
     j = json.loads(jtxt)
     resp = API.registerType(j)
+
+    exit(0)
+        
+#########################################################################
+if(deltype!=''):
+    
+    d = {}
+    d['name'] = deltype
+    resp = API.deleteType(d)
 
     exit(0)
         
