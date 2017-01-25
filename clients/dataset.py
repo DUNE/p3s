@@ -76,7 +76,7 @@ parser.add_argument("-a", "--adjust",	action='store_true',
                     help="adjust dataset")
 
 parser.add_argument("-R", "--registertype",	action='store_true',
-                    help="register data type")
+                    help="register data type: requires JSON (-j) option, needs to present name, ext, comment. Ext (extension) contains the dot.")
 
 parser.add_argument("-v", "--verbosity",	type=int,
                     default=0, choices=[0, 1, 2],

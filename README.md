@@ -1,4 +1,15 @@
 # ProtoDUNE Prompt Processing System (p3s)
+## When you start testing
+
+Meaningful testing requires that at least one datatype is defined
+in the system which should match whatever datatype(s) you use
+in your workflow template (DAG). If your files all have extension
+'.tst' you may define the datatype "test" (which again must
+be consistent with you DAG) and use the following command
+to add the datatype to the server:
+
+./dataset.py -R -j '{"name":"test", "ext":".tst", "comment":"testing"}'
+
 ## Design Paper and Motivation
 Supporting documents and an outline of the design can be found in
 the FNAL DocDB 1861 (authorization required for access).

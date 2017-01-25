@@ -59,7 +59,7 @@ def registertype(request):
     d.save()
 
     
-    return HttpResponse("DT %s" % ds_uuid)
+    return HttpResponse("Data Type %s" % name)
 
 #########################################################
 # Adjust data on the server:
