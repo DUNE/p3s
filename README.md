@@ -7,7 +7,7 @@ prospective users in installing and trying out p3s, which is currently
 under development. Pardon the dust.
 
 ## Software dependencies
-The following needs to be installed on the system(s) where you plan to
+The following packages/systems need to be installed on the system(s) where you plan to
 run p3s:
 
 * Python3.5
@@ -54,21 +54,62 @@ only to the developers and which won't be helpful for testers
 or users.
 
 
-## When you start testing
+## Initializing the Database
+
+Coming from the source code distirbution, the p3s server will utilize the sqlite database
+which comes with Django. Production application may need a more powerful RDBMS such as PostgreSQL
+but this is beyond the scope of this document.
+
+The sqlite DB is not initialized to work with the p3s server when you first get hold of the code.
+This needs to be done as follows:
+
+* change directory to p3s/promproc
+
+* run
+
+   * ./manage.py makemigrations
+   * ./manage.py migrate
+
+
+## Define at least one data type
 
 Meaningful testing requires that at least one datatype is defined
 in the system which should match whatever datatype(s) you use
-in your workflow template (DAG). If your files all have extension
-'.tst' you may define the datatype "test" (which again must
+in your workflow template (DAG).
+
+In the examples which come with the code the ".txt" extension is often used
+to demonstrate basic functionality. The system needs it to be able to autogenerate
+file names if necessary.
+
+If your files all have extension
+'.txt' you may define the datatype "TXT" (which again must
 be consistent with you DAG) and use the following command
 to add the datatype to the server:
 
-./dataset.py -R -j '{"name":"test", "ext":".tst", "comment":"testing"}'
+./dataset.py -R -j '{"name":"TXT", "ext":".txt", "comment":"testing text files"}'
 
 If you no longer need the datatype you created (perhaps as the result
 of testing), it can be removed from the server as folllows:
 
 ./dataset.py -D test
+
+
+## Running the development server
+
+Using the development server should only be done in testing/educational scenarios.
+It is recommende that you use the single-threaded mode of operation and use
+the following command to start the server:
+
+./manage.py runserver --nothreading
+
+which again is done from the directory p3s/promprproc
+
+This will default to the port 8000 and the server will be visible at the address
+localhost:8000 (plus maybe some bits of URLs depending on the version).
+
+If you use ssh to connect the machine which runs the server, you could use ssh
+tunneling to get access to this host and port combination.
+
 
 
 ## Embedded documentation
