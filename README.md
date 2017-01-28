@@ -1,4 +1,28 @@
 # ProtoDUNE Prompt Processing System (p3s)
+## About this document
+This document is available on the p3s page on GitHub as README.md,
+and it also exists as USERMANUAL.pdf in the *documents* directory
+to make its meaning clear. It's purpose it to guide beginning and
+prospective users in installing and trying out p3s, which is currently
+under development. Pardon the dust.
+
+## Software dependencies
+The following needs to be installed on the system(s) where you plan to
+run p3s:
+
+* Python3.5
+
+* Django 1.10+
+
+* django-tables2
+
+* RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
+
+* Apache 2.4
+
+* NetworkX (some versions may present compatibility issues)
+
+
 ## Installation
 ### Getting the software.
 At the time of writing, the simplest way to get the code
@@ -17,11 +41,15 @@ which are necessary for its function:
 
 * **clients** - an assortment of clients for creation and manipulation of the objects residing in the server, mostly tailored to support a specific class.
 
-The directory **inputs** contains files that can be used as examples
+Other directories not critical for the system functionality:
+
+* **inputs** contains files that can be used as examples
 and/or templates for initial testing of p3s but which are not meant to be
 a part of a useful application or production type of environment.
-There is also a **documents** directory whose purpose is obvious,
-and **sandbox** which stored arbitrary snippets of code of interest
+
+* **documents** (obviously)
+
+* **sandbox** - which stored arbitrary snippets of code of interest
 only to the developers and which won't be helpful for testers
 or users.
 
@@ -135,18 +163,3 @@ environment variables.
    
    * The *job* - submission of job definitions to the server and management of job data on the server
    
-## Software dependencies
-
-* Python3+
-
-* Django 1.10+
-
-* django-tables2
-
-* RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
-
-* Apache
-
-* NetworkX (some versions may present compatibility issues)
-
-* GraphML (optional but very helpful, doesn't need to be installed as it's a schema)
