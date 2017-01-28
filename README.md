@@ -1,7 +1,7 @@
 # ProtoDUNE Prompt Processing System (p3s)
 ## Installation
 ### Getting the software.
-At the time of writing, the simples way to get the code
+At the time of writing, the simplest way to get the code
 is by cloning the repo https://github.com/DUNE/p3s.git
 
 Please DO NOT COMMIT/PUSH ANYTHING TO THIS REPO unless
@@ -13,10 +13,17 @@ method.
 p3s installation tree contains the following directories
 which are necessary for its function:
 
-* ''promptproc'' - the workflow managment and monitoring server
+* **promptproc** - the workflow managment and monitoring server
 
-* ''clients'' - an assortment of clients for creation and manipulation
-of the objects residing in the server
+* **clients** - an assortment of clients for creation and manipulation of the objects residing in the server, mostly tailored to support a specific class.
+
+The directory **inputs** contains files that can be used as examples
+and/or templates for initial testing of p3s but which are not meant to be
+a part of a useful application or production type of environment.
+There is also a **documents** directory whose purpose is obvious,
+and **sandbox** which stored arbitrary snippets of code of interest
+only to the developers and which won't be helpful for testers
+or users.
 
 
 ## When you start testing
