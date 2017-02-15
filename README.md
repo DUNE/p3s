@@ -7,8 +7,11 @@ prospective users in installing and trying out p3s, which is currently
 under development. Pardon the dust.
 
 ## Software dependencies
-The following packages/systems need to be installed on the system(s) where you plan to
-run p3s:
+The system consists of the server and client components. Their
+software de[endencies (which overlap) are listed below. They
+obviously must be installed before the code can run.
+
+### p3s server dependencies
 
 * Python3.5
 
@@ -20,11 +23,25 @@ run p3s:
 
 * Apache 2.4
 
-* NetworkX (some versions may present compatibility issues)
+* NetworkX
+
+### p3s client dependencies
+
+* Python3.5
+
+* Django 1.10+ (to include full timezone functionality)
+
+* NetworkX
+
+### Known issues
+
+* NetworkX: some versions may present compatibility issues, resolving this is reponsibility of the developer
+
+* Apache 2.4 deployment may differ on different flavors of Linux, this needs to be addressed during deployment
 
 
 ## Installation
-### Getting the software.
+### Getting the software
 At the time of writing, the simplest way to get the code
 is by cloning the repo https://github.com/DUNE/p3s.git
 
