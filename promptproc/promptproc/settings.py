@@ -31,7 +31,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'y!m33zq-79&%-!r=e!&+jd2cq&ca85e(4q-9dsgsb4xx)g5p*+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+#DEBUG = True
 
 # -mxp- Please note this is for strictly development enviroment
 # and wiill be meaningless elsewhere
@@ -85,6 +86,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.static',
             ],
         },
     },
