@@ -31,8 +31,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'y!m33zq-79&%-!r=e!&+jd2cq&ca85e(4q-9dsgsb4xx)g5p*+'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
-#DEBUG = True
+#DEBUG = False
+DEBUG = True
 
 # -mxp- Please note this is for strictly development enviroment
 # and wiill be meaningless elsewhere
@@ -143,6 +143,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "promptproc/static"),
+# For illustration:
+#    '/home/maxim/projects/p3s/promptproc/promptproc/static',
+]
 
 ############################## LOGGING #########################################
 LOG_DIR = '/tmp/p3s/'
