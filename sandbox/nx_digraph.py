@@ -20,12 +20,16 @@ parser.add_argument("-o", "--out",	type=str,	default='',
 parser.add_argument("-p", "--print",	action='store_true',
                     help="output the graph to stdout as graphml")
 
+parser.add_argument("-P", "--plot",	action='store_true',
+                    help="plot the graph using tk and matplotlib")
+
 parser.add_argument("-j", "--json",	action='store_true',
                     help="output the graph to stdout as json link and adjacency data")
 ########################### Parse all arguments #########################
 args	= parser.parse_args()
 graphml	= args.graphml
 prGraph	= args.print
+plot	= args.plot
 multi	= args.multi
 json	= args.json
 out	= args.out
@@ -82,3 +86,16 @@ if(json):
 if(prGraph):
     s = '\n'.join(nx.generate_graphml(g))
     print(s)
+
+
+if(plot):
+    try:
+        import matplotlib.pyplot as plt
+    except:
+        print('matplotlib not found')
+        exit(-1)
+
+    
+    nx.draw_networkx(g)
+    plt.show()
+    
