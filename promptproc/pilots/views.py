@@ -183,7 +183,7 @@ def report(request):
         p.save()
     
     if(state in ('running','finished')):
-        p.status = 'OK'
+        p.status = 'OK' # reconfirm the status of the pilot
         p.save()
 
         try:

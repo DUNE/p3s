@@ -443,8 +443,14 @@ def addwf(request):
     return HttpResponse(s)
     
 ###################################################
-# set 'defined' state of the workflow, which
+# Set 'defined' state of the workflow, which
 # includes setting 'defined' state of the root job
+#
+# Note that this is normally set by a client and
+# not by some sort of event, which makes it
+# different from a similar line of code in
+# the pilot view
+#
 def wf2defined(wf):
     wf.state	= 'defined'
     wf.save()
