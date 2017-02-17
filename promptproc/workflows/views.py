@@ -31,7 +31,12 @@ def init(request):
     dag._init = True
     return HttpResponse("WF INIT %s %s" % (d, status))
 
+#########################################################
+####### PART 1: DELETION AND OTHER SIMPLE STUFF #########
+#########################################################
+
 ###################################################
+# DELETE ALL -
 # SHOULD ONLY BE USED BY EXPERTS, do not advertise
 def deleteall(request):
     what = request.GET.get('what','')
@@ -213,6 +218,32 @@ def adddag(request):
     return HttpResponse("RESPONSE %s" % graphml )
 
 ###################################################
+def getdag(request):
+    name = request.GET.get('name','')
+
+    if(name == ''): return HttpResponse("DAG not specified.")
+    g = fetchdag(name)
+    s = '\n'.join(nx.generate_graphml(g))
+    return HttpResponse(s)
+
+###################################################
+def fetchdag(dag): # inflate DAG from RDBMS
+    g = nx.DiGraph()
+    
+    for dv in dagVertex.objects.filter(dag=dag):
+        g.add_node(dv.name)
+        
+    for de in dagEdge.objects.filter(dag=dag):
+        g.add_edge(de.source, de.target)
+
+    return g
+
+
+#########################################################
+########## PART 2: GENERATE WORKFLOW      ###############
+#########################################################
+
+###################################################
 @csrf_exempt
 def addwf(request):
 
@@ -259,7 +290,7 @@ def addwf(request):
     wf.name	= name
     wf.state	= state
     wf.description= description
-    # ATTN: we'll save the WF a bit later.
+    # ATTN: we'll save the WF a bit later ( we would like to get the root job uuid).
 
     g = nx.DiGraph()
 
@@ -299,7 +330,7 @@ def addwf(request):
         j.save()
     # +++++++++ END JOBS
     
-    wf.save() # can only do it now since needed rootuuid
+    wf.save() # can do it now since needed rootuuid, now we have it
 
     # +++++++++ DATA
     for de in dagEdge.objects.filter(dag=dagName):
@@ -404,23 +435,26 @@ def addwf(request):
     # Now that the WF is created, is can be set into defined state
     # (hence ready for execution) if so desired. This method
     # toggles both wf and its "root job"
+    
     if(state=='defined'):wf2defined(wf)
 
     # Finish up and send  message to the client
-    s = '\n'.join(nx.generate_graphml(g))
+    s = '\n'.join(nx.generate_graphml(g)) # this can be in fact something else
     return HttpResponse(s)
     
 ###################################################
+# set 'defined' state of the workflow, which
+# includes setting 'defined' state of the root job
 def wf2defined(wf):
     wf.state	= 'defined'
     wf.save()
+    
     j = job.objects.get(uuid=wf.rootuuid)
+    
     if(j.jobtype=='noop'):
-        # print('root job uuid, noop, toggle to finished',j.uuid)
         j.state = 'finished'
-        manager.childrenStateToggle(j,'defined') # j.childrenStateToggle('defined')
+        manager.childrenStateToggle(j,'defined')
     else:
-        # print('root job uuid, toggle to defined',j.uuid)
         j.state = 'defined'
     j.save()
 ###################################################
@@ -436,33 +470,12 @@ def setwfstate(request):
     
     if(state=='defined'):
         wf2defined(wf)
-    else:        
+    else:
+        # FIXME: obviously needs more work, not general enough
         wf.state=state
         wf.save()
     
     return HttpResponse(state)
-###################################################
-def getdag(request):
-    name = request.GET.get('name','')
-
-    if(name == ''): return HttpResponse("DAG not specified.")
-    g = fetchdag(name)
-    s = '\n'.join(nx.generate_graphml(g))
-    return HttpResponse(s)
-
-###################################################
-def fetchdag(dag): # inflate DAG from RDBMS
-    g = nx.DiGraph()
-    
-    for dv in dagVertex.objects.filter(dag=dag):
-        g.add_node(dv.name)
-        
-    for de in dagEdge.objects.filter(dag=dag):
-        g.add_edge(de.source, de.target)
-
-    return g
-
-
 ################ DUSTY ATTIC ######################
 # d0 = json_graph.node_link_data(g)
 # d1= json_graph.adjacency_data(g)

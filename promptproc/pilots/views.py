@@ -32,7 +32,63 @@ from logic.models	import manager
 #########################################################
 
 
+
 #########################################################
+########## PART 1: REGISTRATION, DELETION ###############
+#########################################################
+@csrf_exempt
+def register(request):
+    
+    post	= request.POST
+    p_uuid	= post['uuid']
+    
+    p = pilot(
+        state		= post['state'],
+        site		= post['site'],
+        host		= post['host'],
+        uuid		= p_uuid,
+        ts_cre		= post['ts'],
+        ts_reg		= timezone.now(),
+        ts_lhb		= timezone.now()
+    )
+
+    p.save()
+
+    # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
+    # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
+    
+    return HttpResponse(json.dumps({'status':'OK', 'state':'active'}))
+
+###################################################
+@csrf_exempt
+def delete(request):
+    post	= request.POST
+    p_uuid	= post['uuid']
+
+    try:
+        p = pilot.objects.get(uuid=p_uuid)
+    except:
+        return HttpResponse("%s not found" % p_uuid )
+
+    p.delete()
+    return HttpResponse("%s deleted" % p_uuid )
+
+###################################################
+def deleteall(request):# SHOULD ONLY BE USED BY EXPERTS, do not advertise
+    try:
+        p = pilot.objects.all().delete()
+    except:
+        return HttpResponse("DELETE ALL: FAILED")
+
+    return HttpResponse("DELETE ALL: SUCCESS")
+
+
+
+
+#########################################################
+########## PART 2: JOB MANAGEMENT         ###############
+#########################################################
+
 def request(request): # Pilot's request for a job:
     p_uuid	= request.GET.get('uuid','')
     p = pilot.objects.get(uuid=p_uuid) # FIXME - handle unlikely error
@@ -87,7 +143,7 @@ def request(request): # Pilot's request for a job:
         p.save()
         return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
 
-    # FOUND A JOB
+    ########  FOUND A JOB #########
     j.state	= 'dispatched'
     j.p_uuid	= p_uuid
     j.ts_dis	= timezone.now()
@@ -98,7 +154,7 @@ def request(request): # Pilot's request for a job:
     p.ts_lhb	= timezone.now()
     p.save()
 
-    # job information going back to the pilot
+    # job information going back to the pilot in JSON format
     to_pilot = {'status':	'OK',
                 'state':	'dispatched',
                 'job':		j.uuid,
@@ -106,30 +162,6 @@ def request(request): # Pilot's request for a job:
                 'env':		j.env}
     
     return HttpResponse(json.dumps(to_pilot))
-
-#########################################################
-@csrf_exempt
-def register(request):
-    
-    post	= request.POST
-    p_uuid	= post['uuid']
-    
-    p = pilot(
-        state		= post['state'],
-        site		= post['site'],
-        host		= post['host'],
-        uuid		= p_uuid,
-        ts_cre		= post['ts'],
-        ts_reg		= timezone.now(),
-        ts_lhb		= timezone.now()
-    )
-
-    p.save()
-
-    # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
-    # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
-    
-    return HttpResponse(json.dumps({'status':'OK', 'state':'active'}))
 
 #########################################################
 @csrf_exempt
@@ -204,28 +236,6 @@ def report(request):
     #
     return HttpResponse(json.dumps({'status':'OK', 'state':state}))
 
-###################################################
-@csrf_exempt
-def delete(request):
-    post	= request.POST
-    p_uuid	= post['uuid']
-
-    try:
-        p = pilot.objects.get(uuid=p_uuid)
-    except:
-        return HttpResponse("%s not found" % p_uuid )
-
-    p.delete()
-    return HttpResponse("%s deleted" % p_uuid )
-
-###################################################
-def deleteall(request):# SHOULD ONLY BE USED BY EXPERTS, do not advertise
-    try:
-        p = pilot.objects.all().delete()
-    except:
-        return HttpResponse("DELETE ALL: FAILED")
-
-    return HttpResponse("DELETE ALL: SUCCESS")
 
 ################# DUSTY ATTIC ###########################
 #    data = serializers.serialize('json', [ j, ])
