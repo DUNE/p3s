@@ -3,7 +3,7 @@
 This is an example of a simple workflow, with a NOOP node to define
 an entry point, three "filter" nodes in the middle arranged as parallel
 branches of execution, and a NOOP node to terminate
-this simple DAG.
+this simple DAG. See the included graphic for illustration.
 
 ## Input/Output
 You will have to edit the XML (i.e. graphML) source for this to work, or
