@@ -58,6 +58,10 @@ class workflow(models.Model):
     dag		= models.CharField(max_length=64, default='')	# dag name (as a type of wf)
     ts_def	= models.DateTimeField('ts_def', blank=True, null=True)	# definition
     
+    @classmethod
+    def N(self):
+        return self.objects.count()
+
     def __str__(self):
         return self.name
 

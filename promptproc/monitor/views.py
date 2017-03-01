@@ -29,7 +29,7 @@ from jobs.models			import job
 from data.models			import dataset, datatype
 from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
-from workflows.models			import workflow # wfVertex, wfEdge
+from workflows.models			import workflow
 
 # tables2 machinery
 import	django_tables2 as tables
@@ -95,6 +95,7 @@ def data_handler(request, what):
     RequestConfig(request).configure(t)
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
     d['title']	= what
+    d['N']	= objects.count()
     
     return render(request, template, d)
 

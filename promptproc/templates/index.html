@@ -4,16 +4,22 @@
 <html>
   <head>
     <title>p&#2384;s</title>
-        <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
-    </head>
-    <body>
-      <h2>p&#2384;s</h2>
-      Server running on host "{{ hostname }}". Current time: {{ time }}<br/>
-      <hr/>
-      <a href="http://{{ domain }}/monitor/jobs">Jobs</a><br/>
-      <a href="http://{{ domain }}/monitor/data">Data</a>---<a href="http://{{ domain }}/monitor/datatypes">Data Types</a><br/>
-      <a href="http://{{ domain }}/monitor/pilots">Pilots</a><br/>
-      <a href="http://{{ domain }}/monitor/dags">DAGs</a><br/>
-      <a href="http://{{ domain }}/monitor/workflows">Workflows</a><br/>
-    </body>
+    <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+  </head>
+
+  
+  <body>
+    <h2>p&#2384;s</h2>
+    Server running on host "{{ hostname }}". Current time: {{ time }}<br/>
+    <hr/>
+    <a href="http://{{ domain }}/monitor/jobs">Jobs</a><br/>
+    <a href="http://{{ domain }}/monitor/data">Data</a>---<a href="http://{{ domain }}/monitor/datatypes">Data Types</a><br/>
+    <a href="http://{{ domain }}/monitor/pilots">Pilots</a><br/>
+    <a href="http://{{ domain }}/monitor/dags">DAGs</a><br/>
+    <a href="http://{{ domain }}/monitor/workflows">Workflows</a><br/>
+    <hr/>
+    Database summary<br/>
+    Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/>
+      
+  </body>
 </html>

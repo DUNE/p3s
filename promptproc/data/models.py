@@ -32,6 +32,9 @@ class dataset(models.Model):
     def __str__(self):
         return self.sourceuuid+':'+self.targetuuid
 
+    @classmethod
+    def N(self):
+        return self.objects.count()
 
 class datatype(models.Model):
     name	= models.CharField(max_length=64,	primary_key=True)

@@ -25,6 +25,9 @@ class job(models.Model):
     def augmentEnv(self, d):# add to the existing job environment from the dictionary provided
         self.env = json.dumps({**json.loads(self.env), **d})
 
+    @classmethod
+    def N(self):
+        return self.objects.count()
     
 class jobtype(models.Model):
     name	= models.CharField(max_length=32, default='')

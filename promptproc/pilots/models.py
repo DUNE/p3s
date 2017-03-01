@@ -19,5 +19,9 @@ class pilot(models.Model):
     # time autofill:
     #    auto_now=True
     
+    @classmethod
+    def N(self):
+        return self.objects.count()
+    
     def __str__(self):
         return self.uuid
