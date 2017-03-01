@@ -26,9 +26,6 @@ from serverAPI import serverAPI
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
-logdefault	= '/tmp/p3s/pilots'
-joblogdefault	= '/tmp/p3s/jobs'
-
 Usage		= '''Usage:
 
 For command line options run the pilot with "--help" option.
@@ -74,6 +71,10 @@ class Pilot(dict):
         self.job	= '' # job to be yet received
         
 #########################################################################
+user		= os.environ['USER']
+logdefault	= '/tmp/'+user+'/p3s/pilots'
+joblogdefault	= '/tmp/'+user+'/p3s/jobs'
+
 
 parser = argparse.ArgumentParser()
 
@@ -204,9 +205,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 logfile.setFormatter(formatter)
 
 logger.addHandler(logfile)
-logger.info('START %s on host %s, talking to server %s with period %s and %s cycles' %
-            (str(p['uuid']), p['host'], server, period, cycles))
-
+logger.info('START %s on host %s, user %s, p3s server %s, period %s, %s cycles' %
+            (str(p['uuid']), p['host'], user, server, period, cycles))
 
 API.setLogger(logger)
 API.setVerbosity(verb)

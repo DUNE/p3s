@@ -152,7 +152,8 @@ STATICFILES_DIRS = [
 ]
 
 ############################## LOGGING #########################################
-LOG_DIR = '/tmp/p3s/'
+user = os.environ['USER']
+LOG_DIR = '/tmp/'+user+'/p3s/'
 if(not os.path.exists(LOG_DIR)):
     os.makedirs(LOG_DIR)
     
