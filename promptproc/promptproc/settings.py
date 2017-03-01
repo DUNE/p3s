@@ -152,8 +152,36 @@ STATICFILES_DIRS = [
 ]
 
 ############################## LOGGING #########################################
-user = os.environ['USER']
-LOG_DIR = '/tmp/'+user+'/p3s/'
+
+user = ''
+
+# environment variable may not be set for the system-specific
+# userID of the Apache server, so add some boilerplate to handle this
+# Same as "getpass" but allows us to tweak the behavior of needed.
+
+
+try:
+    user = os.environ['LOGNAME']
+except:
+    pass
+try:
+    user = os.environ['USER']
+except:
+    pass
+try:
+    user = os.environ['LNAME']
+except:
+    pass
+try:
+    user = os.environ['USERNAME']
+except:
+    pass
+
+if(user==''):
+    LOG_DIR = '/tmp/p3s/'
+else:
+    LOG_DIR = '/tmp/'+user+'/p3s/'
+
 if(not os.path.exists(LOG_DIR)):
     os.makedirs(LOG_DIR)
     
