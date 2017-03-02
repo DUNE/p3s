@@ -11,12 +11,15 @@ import uuid
 import json
 
 # Django
-from django.shortcuts			import render
-from django.http			import HttpResponse
-from django.views.decorators.csrf	import csrf_exempt
-from django.utils			import timezone
-from django.core			import serializers
-from django.conf			import settings
+from django.views.decorators.csrf import csrf_exempt
+
+from django.shortcuts	import render
+from django.http	import HttpResponse
+from django.utils	import timezone
+from django.core	import serializers
+from django.conf	import settings
+from django.db		import transaction
+
 
 # Local models
 from .models		import pilot
@@ -52,7 +55,8 @@ def register(request):
         ts_lhb		= timezone.now()
     )
 
-    p.save()
+    with transaction.atomic():
+        p.save()
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
@@ -88,8 +92,8 @@ def deleteall(request):# SHOULD ONLY BE USED BY EXPERTS, do not advertise
 #########################################################
 ########## PART 2: JOB MANAGEMENT         ###############
 #########################################################
-
 def request(request): # Pilot's request for a job:
+
     p_uuid	= request.GET.get('uuid','')
     p = pilot.objects.get(uuid=p_uuid) # FIXME - handle unlikely error
 
@@ -100,22 +104,15 @@ def request(request): # Pilot's request for a job:
     priolist = []
 
     try:
-        # WORK IN PROGRESS:
-        # this could contain the name of the column by
-        # which to sort within same tier of priority, for example "ts_def".
-        # So it has to be consistent with the models. Look for "ordering" in the code.
-        #
-        # DB-based value, example:
-        # ordering = prioritypolicy.objects.get(name='order-within-priority').value
-        # For dev purposes, fixed value (to avoid missing values after fresh install):
-        
+        # Footnote (1)
         ordering = 'ts_def' # FIXME - HARDCODED FOR TESTING
         
     except: # catches error in fetching policy from DB, irrelevant if hardcoded
         p.state		= 'failed brokerage'
         p.status	= 'FAIL'
         p.ts_lhb	= timezone.now()
-        p.save()
+        with transaction.atomic():
+            p.save()
         return HttpResponse(json.dumps({'status':'FAIL', 'state': p.state, 'error':'missing policy'}))
 
     # look at existing jobs priorities: FIXME - prohibitively expensice, need to change to async list
@@ -140,19 +137,22 @@ def request(request): # Pilot's request for a job:
         p.state		= 'no jobs'
         p.status	= 'OK'
         p.ts_lhb	= timezone.now()
-        p.save()
+        with transaction.atomic():
+            p.save()
         return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
 
     ########  FOUND A JOB #########
     j.state	= 'dispatched'
     j.p_uuid	= p_uuid
     j.ts_dis	= timezone.now()
-    j.save()
+    with transaction.atomic():
+        j.save()
     
     p.j_uuid	= j.uuid
     p.state	= 'dispatched'
     p.ts_lhb	= timezone.now()
-    p.save()
+    with transaction.atomic():
+        p.save()
 
     # job information going back to the pilot in JSON format
     to_pilot = {'status':	'OK',
@@ -180,11 +180,13 @@ def report(request):
 
     if(state in 'active','stopped'):
         p.status = 'OK'
-        p.save()
+        with transaction.atomic():
+            p.save()
     
     if(state in ('running','finished')):
         p.status = 'OK' # reconfirm the status of the pilot
-        p.save()
+        with transaction.atomic():
+            p.save()
 
         try:
             j = job.objects.get(uuid=p.j_uuid)
@@ -192,16 +194,19 @@ def report(request):
             
             if(event=='jobstart'):
                 j.ts_sta = timezone.now()
-                j.save()
+                with transaction.atomic():
+                    j.save()
                 if(j.wfuuid!=''):
                     wf = workflow.objects.get(uuid=j.wfuuid)
                     wf.state = "running"
-                    wf.save()
+                    with transaction.atomic():
+                        wf.save()
 
             if(event=='jobstop'): # timestamp and toggle children
                 j.ts_sto = timezone.now()
                 manager.childrenStateToggle(j,'defined') # j.childrenStateToggle('defined')
-                j.save()
+                with transaction.atomic():
+                    j.save()
                 
                 # Check the workflow (maybe it is completed)
                 if(j.wfuuid!=''):
@@ -212,7 +217,8 @@ def report(request):
 
                     wf = workflow.objects.get(uuid=j.wfuuid)
                     if done: wf.state = "finished"
-                    wf.save()
+                    with transaction.atomic():
+                        wf.save()
         except:
             return HttpResponse(json.dumps({'status':	'FAIL',
                                             'state':	state,
@@ -222,11 +228,13 @@ def report(request):
     # FIXME incorrect return message for failure reports
     if(state=='exception'): # FIXME add WF state
         p.status	= 'FAIL'
-        p.save()
+        with transaction.atomic():
+            p.save()
         j = job.objects.get(uuid=p.j_uuid)
         j.state	= state
         if(event=='exception'):	j.ts_sto = timezone.now()
-        j.save()
+        with transaction.atomic():
+            j.save()
         
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
@@ -237,6 +245,16 @@ def report(request):
     return HttpResponse(json.dumps({'status':'OK', 'state':state}))
 
 
+########################  FOOTNOTES ##################################
+# 1
+# WORK IN PROGRESS:
+# this could contain the name of the column by
+# which to sort within same tier of priority, for example "ts_def".
+# So it has to be consistent with the models. Look for "ordering" in the code.
+#
+# DB-based value, example:
+# ordering = prioritypolicy.objects.get(name='order-within-priority').value
+# For dev purposes, fixed value (to avoid missing values after fresh install):
 ################# DUSTY ATTIC ###########################
 #    data = serializers.serialize('json', [ j, ])
 #    return HttpResponse(data, mimetype='application/json')
