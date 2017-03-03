@@ -10,6 +10,8 @@ import datetime
 import uuid
 import json
 
+import logging
+
 # Django
 from django.views.decorators.csrf import csrf_exempt
 
@@ -28,13 +30,12 @@ from workflows.models	import workflow
 from logic.models	import manager
 
 
-#########################################################
-# pilot status can only take two values, 'OK' or 'FAIL' #
-# while it's state can be more complex. This helps      #
-# reflect different failure modes                       #
-#########################################################
+
+# Get an instance of a logger
+logger = logging.getLogger('pilots')
 
 
+# See Footnote 0
 
 #########################################################
 ########## PART 1: REGISTRATION, DELETION ###############
@@ -57,6 +58,8 @@ def register(request):
 
     with transaction.atomic():
         p.save()
+
+    logger.info('register')
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
@@ -223,6 +226,12 @@ def report(request):
 
 
 ########################  FOOTNOTES ##################################
+# 0
+# pilot status can only take two values, 'OK' or 'FAIL' #
+# while it's state can be more complex. This helps      #
+# reflect different failure modes                       #
+
+
 #
 # 1
 #
