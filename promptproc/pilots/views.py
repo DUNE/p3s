@@ -45,21 +45,20 @@ def register(request):
     
     post	= request.POST
     p_uuid	= post['uuid']
-    
+    t0		= timezone.now()
     p = pilot(
         state		= post['state'],
         site		= post['site'],
         host		= post['host'],
         uuid		= p_uuid,
         ts_cre		= post['ts'],
-        ts_reg		= timezone.now(),
-        ts_lhb		= timezone.now()
+        ts_reg		= t0,
+        ts_lhb		= t0
     )
 
-    with transaction.atomic():
-        p.save()
+    p.save()
 
-    logger.info('register')
+    logger.info('pilot %s registered', p_uuid)
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
@@ -95,6 +94,7 @@ def deleteall(request):# SHOULD ONLY BE USED BY EXPERTS, do not advertise
 #########################################################
 ########## PART 2: JOB MANAGEMENT         ###############
 #########################################################
+@transaction.atomic
 def request(request): # Pilot's request for a job:
 
     p_uuid	= request.GET.get('uuid','')
@@ -112,29 +112,39 @@ def request(request): # Pilot's request for a job:
     
     j = None # placeholder for the job
 
+    logger.info('pilot %s request', p_uuid)
+    
     for prio in priolist:
-        with transaction.atomic():
-            tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
-            if(len(tjs)==0):
-                continue
-            else:
-                j = tjs[0]
-                ########  FOUND A JOB #########
-                j.state	= 'dispatched'
-                j.p_uuid	= p_uuid
-                j.ts_dis	= timezone.now()
-                j.save()
+        tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
+        if(len(tjs)==0):
+            continue
+        else: ########  FOUND A JOB #########
+            try:
+                with transaction.atomic():
+                    j_candidate = tjs[0] # print(j_candidate,' ',j_candidate.uuid)
+                    # j = job.objects.select_for_update(nowait=True).get(uuid=j_candidate.uuid)
+                    j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
+                    j.state	= 'dispatched'
+                    j.p_uuid	= p_uuid
+                    j.ts_dis	= timezone.now()
+                    j.save()
             
-                p.j_uuid	= j.uuid
-                p.state	= 'dispatched'
+                    p.j_uuid	= j.uuid
+                    p.state	= 'dispatched'
+                    p.ts_lhb	= timezone.now()
+                    p.save()
+            
+                    to_pilot = {'status':	'OK', # job information in JSON format
+                                'state':	'dispatched',	'job':	j.uuid,
+                                'payload':	j.payload,	'env':	j.env}
+                    return HttpResponse(json.dumps(to_pilot))
+            except:
+                p.state		= 'DB lock'
+                p.status	= 'OK'
                 p.ts_lhb	= timezone.now()
-                p.save()
-            
-                to_pilot = {'status':	'OK', # job information in JSON format
-                            'state':	'dispatched',	'job':	j.uuid,
-                            'payload':	j.payload,	'env':	j.env}
-                return HttpResponse(json.dumps(to_pilot))
-
+                with transaction.atomic():
+                    p.save()
+                return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
     if(j==None):
         p.state		= 'no jobs'
         p.status	= 'OK'

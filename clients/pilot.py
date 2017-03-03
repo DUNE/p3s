@@ -257,8 +257,8 @@ while(cnt>0):
     # Failure reported from brokerage on the server, will log and exit
     if(p['status']=='FAIL'): logfail(msg, logger)
 
-    if(p['state']=='no jobs'): # didn't get a job, skip the cycle.
-        logger.info("No jobs on the server")
+    if(p['state'] in ('no jobs', 'DB lock')): # didn't get a job, skip the cycle.
+        logger.info(p['state'])
         cnt-=1
         if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
             break
