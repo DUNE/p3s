@@ -100,38 +100,37 @@ def request(request): # Pilot's request for a job:
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS: (will bail here)
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
 
-    ordering = None
-    priolist = []
 
-    try:
-        # Footnote (1)
-        ordering = 'ts_def' # FIXME - HARDCODED FOR TESTING
-        
-    except: # catches error in fetching policy from DB, irrelevant if hardcoded
-        p.state		= 'failed brokerage'
-        p.status	= 'FAIL'
-        p.ts_lhb	= timezone.now()
-        with transaction.atomic():
-            p.save()
-        return HttpResponse(json.dumps({'status':'FAIL', 'state': p.state, 'error':'missing policy'}))
+    # Please see Footnote (1)
+    ordering = 'ts_def'
 
-    # look at existing jobs priorities: FIXME - prohibitively expensice, need to change to async list
-    try:
-        jp = job.objects.values('priority').distinct()
-        for item in jp: priolist.append(item['priority'])
-    except: 	# return HttpResponse(json.dumps({'status':'OK', 'state': 'no jobs'}))
-        pass	# let it bail below
+    # Please see Footnote (2)
+    priolist = (10,9,8,7,6,5,4,3,2,1,0)
     
     j = None # placeholder for the job
-    
-    priolist.sort(reverse=True) #  print(priolist)
+
     for prio in priolist:
-        try:
-            tjs = job.objects.filter(priority=prio, state='defined').order_by(ordering)
-            j = tjs[0]
-            break
-        except:
-            pass
+        with transaction.atomic():
+            tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
+            if(len(tjs)==0):
+                continue
+            else:
+                j = tjs[0]
+                ########  FOUND A JOB #########
+                j.state	= 'dispatched'
+                j.p_uuid	= p_uuid
+                j.ts_dis	= timezone.now()
+                j.save()
+            
+                p.j_uuid	= j.uuid
+                p.state	= 'dispatched'
+                p.ts_lhb	= timezone.now()
+                p.save()
+            
+                to_pilot = {'status':	'OK', # job information in JSON format
+                            'state':	'dispatched',	'job':	j.uuid,
+                            'payload':	j.payload,	'env':	j.env}
+                return HttpResponse(json.dumps(to_pilot))
 
     if(j==None):
         p.state		= 'no jobs'
@@ -140,28 +139,6 @@ def request(request): # Pilot's request for a job:
         with transaction.atomic():
             p.save()
         return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
-
-    ########  FOUND A JOB #########
-    j.state	= 'dispatched'
-    j.p_uuid	= p_uuid
-    j.ts_dis	= timezone.now()
-    with transaction.atomic():
-        j.save()
-    
-    p.j_uuid	= j.uuid
-    p.state	= 'dispatched'
-    p.ts_lhb	= timezone.now()
-    with transaction.atomic():
-        p.save()
-
-    # job information going back to the pilot in JSON format
-    to_pilot = {'status':	'OK',
-                'state':	'dispatched',
-                'job':		j.uuid,
-                'payload':	j.payload,
-                'env':		j.env}
-    
-    return HttpResponse(json.dumps(to_pilot))
 
 #########################################################
 @csrf_exempt
@@ -246,8 +223,9 @@ def report(request):
 
 
 ########################  FOOTNOTES ##################################
+#
 # 1
-# WORK IN PROGRESS:
+#
 # this could contain the name of the column by
 # which to sort within same tier of priority, for example "ts_def".
 # So it has to be consistent with the models. Look for "ordering" in the code.
@@ -255,6 +233,43 @@ def report(request):
 # DB-based value, example:
 # ordering = prioritypolicy.objects.get(name='order-within-priority').value
 # For dev purposes, fixed value (to avoid missing values after fresh install):
+
+
+    # try:
+    #     ordering = 'ts_def' # FIXME - HARDCODED FOR TESTING
+        
+    # except: # catches error in fetching policy from DB, irrelevant if hardcoded
+    #     p.state		= 'failed brokerage'
+    #     p.status	= 'FAIL'
+    #     p.ts_lhb	= timezone.now()
+    #     with transaction.atomic():
+    #         p.save()
+    #     return HttpResponse(json.dumps({'status':'FAIL', 'state': p.state, 'error':'missing policy'}))
+
+#
+# 2
+#
+    # # look at existing jobs priorities: FIXME - prohibitively expensive, need to change to async list
+    # try:
+    #     jp = job.objects.values('priority').distinct()
+    #     for item in jp: priolist.append(item['priority'])
+    # except: 	# return HttpResponse(json.dumps({'status':'OK', 'state': 'no jobs'}))
+    #     pass	# let it bail below
+    
+    # j = None # placeholder for the job
+    
+    # priolist.sort(reverse=True) #  print(priolist)
+
+
+    # for prio in priolist:
+    #     try:
+    #         tjs = job.objects.filter(priority=prio, state='defined').order_by(ordering)
+    #         j = tjs[0]
+    #         break
+    #     except:
+    #         pass
+
+    
 ################# DUSTY ATTIC ###########################
 #    data = serializers.serialize('json', [ j, ])
 #    return HttpResponse(data, mimetype='application/json')

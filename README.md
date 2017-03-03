@@ -20,7 +20,9 @@ obviously must be installed before the code can run.
 
 * django-tables2
 
-* RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
+* RDBMS (e.g. PostgreSQL; sqlite used for development puprposes only)
+
+* psycopg2 (if using PostgreSQL)
 
 * Apache 2.4 (for deployment, not necessary in development/testing mode)
 

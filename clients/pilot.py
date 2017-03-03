@@ -223,7 +223,7 @@ try:
     p['status']	= msg['status']
     p['state']	= msg['state']
 except:
-    logger.error('exiting, failed to parse the server message: %s' % resp)
+    logger.error('exiting, failed to parse the server message at registration: %s' % resp)
     exit(3)
 
 # By now the pilot MUST have some sort of status set by the server's message
@@ -251,7 +251,7 @@ while(cnt>0):
         msg = json.loads(data)
         p['status'], p['state']	= msg['status'], msg['state']
     except:
-        logger.error('exiting, failed to parse the server message: %s' % data)
+        logger.error('exiting, failed to parse the server message at brokerage: %s' % data)
         exit(3)
 
     # Failure reported from brokerage on the server, will log and exit
@@ -263,7 +263,7 @@ while(cnt>0):
         if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
             break
         time.sleep(period)
-        continue # NEXT ITERATION THE MAIN LOOP
+        continue # NEXT ITERATION THE MAIN LOOP IF DIDN'T GET A JOB, otherwise - below
     
 ######################### GOT A JOB TO DO ###############################
     payload = ''
@@ -272,9 +272,15 @@ while(cnt>0):
         try:
             p['job']	= msg['job'] # uuid of the job
             payload	= msg['payload']
-            env		= json.loads(msg['env'])
+            if(len(msg['env'])):
+                env		= ''
+            else:
+                try: # just in case it's incorrectly set
+                    env		= json.loads(msg['env'])
+                except:
+                    logger.error('failed to parse JSON description of the environment: %s' % msg['env'])
         except:
-            logger.error('exiting, failed to parse the server message: %s' % data)
+            logger.error('exiting, failed to parse the server message at dispatch: %s' % data)
             exit(3)
 
         logger.info('JOB received: %s %s' % (p['job'], payload))
