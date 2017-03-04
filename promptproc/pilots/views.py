@@ -122,8 +122,15 @@ def request(request): # Pilot's request for a job:
             try:
                 with transaction.atomic():
                     j_candidate = tjs[0] # print(j_candidate,' ',j_candidate.uuid)
+
+                    logger.info('pilot %s, candidate %s', (p_uuid, j_candidate.uuid))
+
                     # j = job.objects.select_for_update(nowait=True).get(uuid=j_candidate.uuid)
                     j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
+                    if(j.state!='defined'):
+                        j = None
+                        continue
+                    logger.info('%s selected', j.uuid)
                     j.state	= 'dispatched'
                     j.p_uuid	= p_uuid
                     j.ts_dis	= timezone.now()
