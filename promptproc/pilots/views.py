@@ -144,6 +144,7 @@ def request(request): # Pilot's request for a job:
                     to_pilot = {'status':	'OK', # job information in JSON format
                                 'state':	'dispatched',	'job':	j.uuid,
                                 'payload':	j.payload,	'env':	j.env}
+                    j = None # for next iteration
                     return HttpResponse(json.dumps(to_pilot))
             except:
                 p.state		= 'DB lock'
