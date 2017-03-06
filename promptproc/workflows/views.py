@@ -151,11 +151,13 @@ def adddag(request):
     post	= request.POST
 
     name	= post['name']
+    user	= post['user']
     graphml	= post['graphml']
     description	= post['description']
 
     x = deldag(name)
 
+    # FIXME - this path needs to be accessible
     tmpdir = '/tmp/p3s/'
     if(not os.path.exists(tmpdir)):
         try:
@@ -181,6 +183,7 @@ def adddag(request):
     
     newDag		= dag()
     newDag.name		= name
+    newDag.user		= user
     newDag.description	= description
     newDag.nvertices	= len(v_list)
     newDag.ts_def	= ts_def
@@ -255,6 +258,7 @@ def addwf(request):
     post	= request.POST
     dagName	= post['dag']
     name	= post['name']
+    user	= post['user']
     state	= post['state']
     filejson	= post['fileinfo']
     jobjson	= post['jobinfo']
@@ -288,6 +292,7 @@ def addwf(request):
     wf.uuid	= wfuuid
     wf.dag	= dagName
     wf.name	= name
+    wf.user	= user
     wf.state	= state
     wf.description= description
     # ATTN: we'll save the WF a bit later ( we would like to get the root job uuid).

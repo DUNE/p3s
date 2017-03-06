@@ -17,11 +17,14 @@ import socket
 import time
 import datetime
 import json
-from pprint		import pprint
+import os
 
 import networkx as nx
 
 from serverAPI		import serverAPI
+
+user		= os.environ['USER']
+
 #########################################################
 # simple printout for visual verification of a DAG
 def printGraph(g):        
@@ -38,8 +41,18 @@ settings.configure(USE_TZ = True)
 class Dag(dict):
     def __init__(self, name='default', description='', graphml=''):
         self['name']		= name
+        self['user']		= user
         self['description']	= description
         self['graphml']		= graphml
+
+    def __str__(self):
+        myStr=''
+        for k in self.keys():
+            if(k=='graphml'): continue
+            myStr+=k+':'+self[k]+'\n'
+        return myStr
+
+
 #-------------------------
 parser = argparse.ArgumentParser()
 
@@ -75,6 +88,8 @@ parser.add_argument("-j", "--jobinfo",	type=str,	default='',
 parser.add_argument("-s", "--state",	type=str,	default='template', help='''set/modify the state of a workflow.
 Needs uuid to modify or can be used at creation time.''')
 
+parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
+
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
@@ -93,6 +108,7 @@ fileinfo= args.fileinfo
 jobinfo	= args.jobinfo
 graphml	= args.graphml
 description = args.description
+tst	= args.test
 
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
@@ -166,6 +182,9 @@ if(graphml!=''):
     s = '\n'.join(nx.generate_graphml(g))
 
     d = Dag(name=name, description=description, graphml=s)
+    if(verb>1): print(d)
+    if(tst): exit(0)
+    
     resp = API.setDag(d)
 
     if(verb>1): print (resp)
@@ -201,8 +220,17 @@ if(add!=''):
 
     # note that "fileinfo" and "jobinfo" default to an empty string when we parse
     # arguments, and will be passed to the server even if they are indeed empty
-    
-    resp = API.registerWorkflow(add, name, state, fileinfo, jobinfo, description)
+    wf = {
+        'dag':		add,
+        'user':		user,
+        'name':		name,
+        'state':	state,
+        'fileinfo':	fileinfo,
+        'jobinfo':	jobinfo,
+        'description':	description
+    }
+
+    resp = API.registerWorkflow(wf)
     
     if(verb>1): print (resp)
     exit(0)

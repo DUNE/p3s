@@ -14,7 +14,7 @@ import socket
 import time
 import datetime
 import json
-from pprint import pprint
+import os
 
 from comms import logfail
 from serverAPI import serverAPI
@@ -22,6 +22,7 @@ from serverAPI import serverAPI
 #########################################################
 settings.configure(USE_TZ = True)
 
+user		= os.environ['USER']
 Usage		= '''Usage:
 
 For command line options run the pilot with "--help" option.
@@ -62,6 +63,7 @@ class Job(dict):
                  state='defined'):
         
         self['name']	= name
+        self['user']	= user
         self['uuid']	= uuid.uuid1()
         self['jobtype']	= jobtype
         self['payload']	= payload
@@ -213,6 +215,8 @@ if(json_in!=''):
 
     # Contact the server, try to register the job(s)
     for j in jobList:
+        if(verb>1): print(j)
+        if(tst): continue # just testing
         resp = API.addJob(j)
         if(verb>0): print(resp)
 

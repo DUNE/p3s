@@ -8,10 +8,11 @@ from django.db import models
 class dag(models.Model):
     _init = False
     name	= models.CharField(max_length=64, primary_key = True, default='')
+    user	= models.CharField(max_length=64, default='')		# who designed the dag
     description	= models.TextField(default='')
     nvertices	= models.IntegerField(default=0, null=False)
-    root	= models.CharField(max_length=64, default='')
-    ts_def	= models.DateTimeField('ts_def', blank=True, null=True)	# definition
+    root	= models.CharField(max_length=64, default='')		# id of the tree root
+    ts_def	= models.DateTimeField('ts_def', blank=True, null=True)	# time of definition
    
 
     def __str__(self):
@@ -21,11 +22,11 @@ class dag(models.Model):
 class dagVertex(models.Model):
     name	= models.CharField(max_length=64, default='')	# human-readable description
     dag		= models.CharField(max_length=64, default='')	# to which dag it belongs
-    jobtype	= models.CharField(max_length=16, default='')		#
-    payload	= models.CharField(max_length=256,default='')		# provisional, url/path
+    jobtype	= models.CharField(max_length=16, default='')
+    payload	= models.CharField(max_length=256,default='')	# provisional, url/path
     env		= models.TextField(default='{}')
-    timelimit	= models.PositiveIntegerField(default=1000)		# in seconds
-    priority	= models.PositiveIntegerField(default=0)		# higher wins
+    timelimit	= models.PositiveIntegerField(default=1000)	# in seconds
+    priority	= models.PositiveIntegerField(default=0)	# higher wins
 
     def __str__(self):
         return self.name
@@ -51,6 +52,7 @@ class dagEdge(models.Model):
 # As opposed to DAG (which is abstract) the workflow contains actual jobs and data elements
 class workflow(models.Model):
     uuid	= models.CharField(max_length=36, default='')
+    user	= models.CharField(max_length=64, default='')	# who submitted the workflow
     state	= models.CharField(max_length=64, default='')
     rootuuid	= models.CharField(max_length=36, default='')   # handle on the 1st job
     name	= models.CharField(max_length=64, default='')	# not expected to be unique

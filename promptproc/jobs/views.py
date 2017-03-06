@@ -27,10 +27,10 @@ def index(request):
 def addjob(request):
     
     post	= request.POST
-    j_uuid	= post['uuid']
     
     j = job(
-        uuid		= j_uuid,
+        uuid		= post['uuid'],
+        user		= post['user'],
         jobtype		= post['jobtype'],
         payload		= post['payload'],
         env		= post['env'],
@@ -43,7 +43,7 @@ def addjob(request):
 
     j.save()
     
-    return HttpResponse("%s" % j_uuid )
+    return HttpResponse("%s" % post['uuid'] )
 
 ###################################################
 @csrf_exempt

@@ -14,6 +14,7 @@ import datetime
 import logging
 import json
 import subprocess
+import os
 
 # Django
 from django.conf	import settings
@@ -25,7 +26,8 @@ from serverAPI import serverAPI
 settings.configure(USE_TZ = True) # see the above note on TZ
 
 host		= socket.gethostname()
-logdefault	= '/tmp/p3s/'
+user		= os.environ['USER']
+logdefault	= '/tmp/'+user+'/p3s/data/'
 datadir		= '/home/maxim/p3sdata'
 Usage		= '''Usage:
 
@@ -140,8 +142,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 logfile.setFormatter(formatter)
 
 logger.addHandler(logfile)
-logger.info('START on host %s, talking to server %s with period %s and %s cycles' %
-            (host, server, period, cycles))
+logger.info('DATASET on host %s, talking to server %s' %
+            (host, server))
 
 API.setLogger(logger)
 API.setVerbosity(verb)
