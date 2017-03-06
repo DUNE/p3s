@@ -189,7 +189,7 @@ def detail_handler(request, what):
         if(a!='j_uuid'):
             data.append({'attribute': a, 'value': dicto[a]})
         else:
-            x = mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
+            x = mark_safe('<a href="http://%s/monitor/%s?%s=%s">%s</a>'
                          % (domain, 'jobdetail', 'uuid',dicto[a], dicto[a]))
             data.append({'attribute': a, 'value': x})
 

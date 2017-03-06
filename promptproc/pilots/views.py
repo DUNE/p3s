@@ -71,6 +71,14 @@ def delete(request):
     post	= request.POST
     p_uuid	= post['uuid']
 
+    if(p_uuid=='ALL'):
+        try:
+            p = pilot.objects.all().delete()
+        except:
+            return HttpResponse("DELETE ALL: FAILED")
+
+        return HttpResponse("DELETE ALL: SUCCESS")
+
     try:
         p = pilot.objects.get(uuid=p_uuid)
     except:
@@ -79,25 +87,17 @@ def delete(request):
     p.delete()
     return HttpResponse("%s deleted" % p_uuid )
 
-###################################################
-def deleteall(request):# SHOULD ONLY BE USED BY EXPERTS, do not advertise
-    try:
-        p = pilot.objects.all().delete()
-    except:
-        return HttpResponse("DELETE ALL: FAILED")
-
-    return HttpResponse("DELETE ALL: SUCCESS")
-
-
-
-
 #########################################################
 ########## PART 2: JOB MANAGEMENT         ###############
 #########################################################
+@csrf_exempt
 @transaction.atomic
 def request(request): # Pilot's request for a job:
+    post	= request.POST
+    p_uuid	= post['uuid']
 
-    p_uuid	= request.GET.get('uuid','')
+#    p_uuid	= request.GET.get('uuid','')
+    
     p = pilot.objects.get(uuid=p_uuid) # FIXME - handle unlikely error
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS: (will bail here)

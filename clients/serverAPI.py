@@ -8,10 +8,9 @@ class serverAPI(dict):
 
         ### JOB
         self['job']	= {
-            'adjjobURL':	server+'jobs/adj',
-            'deleteallURL':	server+'jobs/deleteall',
-            'deleteURL':	server+'jobs/delete',
-            'addjobURL':	server+'jobs/addjob',
+            'adjust':	server+'jobs/adjust',
+            'delete':	server+'jobs/delete',
+            'add':	server+'jobs/add',
         }
 
         ### DATA
@@ -26,9 +25,8 @@ class serverAPI(dict):
         self['pilot']	= {
             'reportURL':	server+'pilots/report',
             'registerURL':	server+'pilots/register',
-            'deleteURL':	server+'pilots/delete',
-            'deleteallURL':	server+'pilots/deleteall',
-            'jobReqURL':	server+'pilots/request/?uuid=%s',
+            'delete':		server+'pilots/delete',
+            'jobRequestURL':	server+'pilots/request',
         }
 
         ### WORKFLOW
@@ -50,61 +48,28 @@ class serverAPI(dict):
         self.verb=verb
 
         
+    ############# GENERAL POST & GET
+    def post2server(self, view, url, stuff):
+        return rdec(communicate(self[view][url], data2post(stuff).utf8()))
+    
+    def get2server(self, view, url, stuff):
+        return rdec(communicate(self[view][url] % stuff))
+    
     ############# WORKFLOW
-    def registerWorkflow(self, wf):
-        return rdec(communicate(self['workflow']['addwfURL'], data2post(wf).utf8()))
-
-    def setWorkflowState(self, wfuuid, state):
-        d = {'uuid': wfuuid, 'state': state}
-        return rdec(communicate(self['workflow']['setwfstateURL'], data2post(d).utf8()))
-        
-    def getDag(self, name):
-        return rdec(communicate(self['workflow']['getdagURL'] % name))
-
-
-    def setDag(self, dag):
-        return rdec(communicate(self['workflow']['adddagURL'], data2post(dag).utf8()))
-
     def deleteAllDagWF(self, what):
         return rdec(communicate(self['workflow']['deleteallURL'] % what))
 
-
-    def deleteDagWF(self, d):
-        delData	= data2post(d).utf8()
-        return rdec(communicate(self['workflow']['deleteURL'], delData))
-
     ############# PILOT
-    def deleteAllPilots(self):
-        return rdec(communicate(self['pilot']['deleteallURL']))
-
-    def deletePilot(self, p_uuid):
-        return rdec(communicate(self['pilot']['deleteURL'], data2post(dict(uuid=p_uuid)).utf8()))
-
-    
     def registerPilot(self, p):
         pilotData = data2post(p).utf8()
         if(self.verb>1 and self.logger): self.logger.info('Pilot data in UTF-8: %s' % pilotData)
         return rdec(communicate(self['pilot']['registerURL'], pilotData, self.logger)) # will croak if unsuccessful
 
-
-    def jobRequest(self, p_uuid):
-        return rdec(communicate(self['pilot']['jobReqURL'] % p_uuid))
-
     def reportPilot(self, p):
-        return rdec(communicate(self['pilot']['reportURL'], data2post(p).utf8()))
-    
-    ############# JOB
-    def deleteAllJobs(self):
-        return rdec(communicate(self['job']['deleteallURL']))
+        return self.post2server('pilot', 'reportURL', p)
 
-    def deleteJob(self, d):
-        return rdec(communicate(self['job']['deleteURL'], data2post(d).utf8()))
-
-    def addJob(self, j):
-        return rdec(communicate(self['job']['addjobURL'], data2post(j).utf8()))
+    # return rdec(communicate(self['pilot']['reportURL'], data2post(p).utf8()))
     
-    def adjJob(self, j):
-        return rdec(communicate(self['job']['adjjobURL'], data2post(j).utf8()))
     ############# DATA
     def registerData(self, d):
         return rdec(communicate(self['data']['registerdataURL'], data2post(d).utf8(), self.logger))

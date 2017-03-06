@@ -56,7 +56,7 @@ class Dag(dict):
 #-------------------------
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-G", "--get",	help="get a DAG from server - needs the name of the DAG",	action='store_true')
+parser.add_argument("-G", "--get",	help="the name of a DAG to download from server", type=str, default='')
 parser.add_argument("-U", "--usage",	help="print usage notes and exit",				action='store_true')
 parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs name/uuid+type (what)",	action='store_true')
 
@@ -152,15 +152,14 @@ if(delete):
         dicto = None
         if(what=='dag'):	dicto = dict(what=what, name=o)
         if(what=='workflow'):	dicto = dict(what=what, uuid=o)
-        resp = API.deleteDagWF(dicto)
+        resp = API.post2server('workflow', 'deleteURL', dicto)
         if(verb>0): print(resp)
 
     exit(0)
 
 ###################### GET DAG (DIAGNOSTICS) ###########################
-if(get):
-    if(name==''): exit(-1) # check if we have the key
-    resp = API.getDag(name)
+if(get!=''):
+    resp = API.get2server('workflow','getdagURL', get)
     if(verb>0): print(resp)
     exit(0)
 
@@ -185,7 +184,7 @@ if(graphml!=''):
     if(verb>1): print(d)
     if(tst): exit(0)
     
-    resp = API.setDag(d)
+    resp = API.post2server('workflow', 'adddagURL', d)
 
     if(verb>1): print (resp)
 
@@ -230,7 +229,7 @@ if(add!=''):
         'description':	description
     }
 
-    resp = API.registerWorkflow(wf)
+    resp = API.post2server('workflow', 'addwfURL', wf)
     
     if(verb>1): print (resp)
     exit(0)
@@ -239,7 +238,10 @@ if(add!=''):
 if(modify):
     if(state=='template'): exit(0) # won't modify what's already a default
     if(o_uuid==''): exit(-1) # can't proceed without a key
-    resp = API.setWorkflowState(o_uuid, state)
+
+    d = {'uuid': o_uuid, 'state': state}
+
+    resp = API.post2server('workflow', 'setwfstateURL', d)
     
     if(verb>1): print (resp)
     exit(0)

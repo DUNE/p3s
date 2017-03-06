@@ -146,7 +146,7 @@ if(adj):
         a = dict(uuid=j) # create a dict to be serialized and sent to the server
         if(priority>0):	a['priority']	= str(priority)
         if(state!=''):	a['state']	= state
-        resp = API.adjJob(a)
+        resp = API.post2server('job', 'adjust', a)
         if(verb>0): print(resp)
 
     exit(0) # done with update/adjust
@@ -157,33 +157,27 @@ if(delete):
     response = None
     if(j_uuid=='' and j_id==''): exit(-1) # check if we have the key
 
-# DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
-    if(j_uuid=='ALL' or j_id=='ALL'):
-        resp = API.deleteAllJobs()
-        if(verb>0): print(resp)
-        exit(0)
-
-    # Normal delete, by UUIDs:
-    if(j_uuid!=''):
+    
+    if(j_uuid!=''): # delete by UUIDs
         if ',' in j_uuid: # assume we have a CSV list
             jobList = j_uuid.split(',')
         else:
             jobList.append(j_uuid)
 
         for j in jobList:
-            resp = API.deleteJob(dict(uuid=j))
+            resp = API.post2server('job', 'delete', dict(uuid=j))
             if(verb>0): print(resp)
         exit(0)
         
-    # Normal delete, by ID (PK):
-    if(j_id!=''):
+    
+    if(j_id!=''): # delete by ID (PK)
         if ',' in j_id: # assume we have a CSV list
             jobList = j_id.split(',')
         else:
             jobList.append(j_id)
 
         for j in jobList:
-            resp = API.deleteJob(dict(pk=j))
+            resp = API.post2server('job', 'delete', dict(pk=j))
             if(verb>0): print(resp)
         exit(0)
 
@@ -213,11 +207,11 @@ if(json_in!=''):
 
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
-    # Contact the server, try to register the job(s)
+    # Contact the server, register the job(s)
     for j in jobList:
         if(verb>1): print(j)
         if(tst): continue # just testing
-        resp = API.addJob(j)
+        resp = API.post2server('job', 'add', j)
         if(verb>0): print(resp)
 
 

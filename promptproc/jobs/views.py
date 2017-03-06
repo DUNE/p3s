@@ -24,7 +24,7 @@ def index(request):
 
 ###################################################
 @csrf_exempt
-def addjob(request):
+def add(request):
     
     post	= request.POST
     
@@ -47,7 +47,7 @@ def addjob(request):
 
 ###################################################
 @csrf_exempt
-def adj(request):
+def adjust(request):
     # fixme - improve error handling such as for missing or screwy arguments
 
     post	= request.POST
@@ -99,6 +99,13 @@ def delete(request):
     if(j_uuid is None and j_pk is None):
         return HttpResponse("Missing key for deletion")
 
+    if(j_pk=='ALL' or j_uuid=='ALL'):
+        try:
+            j = job.objects.all().delete()
+        except:
+            return HttpResponse("DELETE ALL: FAILED")
+        return HttpResponse("DELETE ALL: SUCCESS")
+
     if(j_uuid):
         try:
             j = job.objects.get(uuid=j_uuid)
@@ -119,25 +126,6 @@ def delete(request):
     
     return HttpResponse("Inconsistent state in job deletion view")
 
-###################################################
-# SHOULD ONLY BE USED BY EXPRERTS, do not advertise
-def deleteall(request):
-    try:
-        j = job.objects.all().delete()
-    except:
-        return HttpResponse("DELETE ALL: FAILED")
-
-    return HttpResponse("DELETE ALL: SUCCESS")
-
-###################################################
-def add():
-    ts_def	= timezone.now()
-    j_uuid	= uuid.uuid1()
-
-    j = job(state='defined', uuid=j_uuid, stage='testing!', ts_def=ts_def)
-    j.save()
-    return j_uuid
-    
 ###################################################
 def detail(request):
     j_uuid = request.GET.get('uuid','')

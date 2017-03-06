@@ -146,6 +146,7 @@ if(usage):
 
 ### p3s interface defined here
 API  = serverAPI(server=server)
+
 #################### PILOT DELETE AND EXIT #############################
 # Check if it was a deletion request. Note we don't have a logger yet,
 # since a log is always tied to a working pilot, so we don't log
@@ -154,12 +155,6 @@ if(delete):
     response = None
     if(p_uuid==''): exit(-2) # check if we have the key
 
-    # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD. Do not document "ALL"!
-    if(p_uuid=='ALL'):
-        resp = API.deleteAllPilots()
-        if(verb>0): print(resp)
-        exit(0)
-
     pilotList = []    # Normal delete, by key(s)
     if ',' in p_uuid: # assume we have a CSV list
         pilotList = p_uuid.split(',')
@@ -167,7 +162,8 @@ if(delete):
         pilotList.append(p_uuid)
 
     for pid in pilotList:
-        resp = API.deletePilot(pid)
+        resp = API.post2server('pilot', 'delete', dict(uuid=p_uuid))
+
         if(verb>0): print (resp)
 
     exit(0)
@@ -240,7 +236,7 @@ while(cnt>0):
     if(verb>1): print('Attempts left: %s' % str(cnt))
     if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
 
-    data = API.jobRequest(p['uuid'])
+    data = API.post2server('pilot', 'jobRequestURL',dict(uuid=p['uuid']))
 
     if(verb>1): logger.info('BROKER: server response: %s' % data)
     if(verb>1): print('BROKER: server response: %s' % data)
@@ -272,13 +268,14 @@ while(cnt>0):
         try:
             p['job']	= msg['job'] # uuid of the job
             payload	= msg['payload']
+            
             if(len(msg['env'])):
-                env		= ''
-            else:
-                try: # just in case it's incorrectly set
-                    env		= json.loads(msg['env'])
+                try:
+                    env = json.loads(msg['env'])
                 except:
                     logger.error('failed to parse JSON description of the environment: %s' % msg['env'])
+            else:
+                env = {}
         except:
             logger.error('exiting, failed to parse the server message at dispatch: %s' % data)
             exit(3)
