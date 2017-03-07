@@ -157,6 +157,10 @@ def request(request): # Pilot's request for a job:
         p.state		= 'no jobs'
         p.status	= 'OK'
         p.ts_lhb	= timezone.now()
+
+        tDiff = p.ts_lhb - p.ts_cre
+        logger.info('tDiff %s', str(tDiff.total_seconds()))
+
         with transaction.atomic():
             p.save()
         return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
@@ -183,9 +187,6 @@ def report(request):
     
     if(state in ('running','finished')):
         p.status = 'OK' # reconfirm the status of the pilot
-        with transaction.atomic():
-            p.save()
-
         try:
             j = job.objects.get(uuid=p.j_uuid)
             j.state = state # that's where the job has its state set in normal running
@@ -201,13 +202,20 @@ def report(request):
                         wf.save()
 
             if(event=='jobstop'): # timestamp and toggle children
+                doneJobs = p.jobs_done
+                if(doneJobs==''):
+                    doneJobs = j.uuid
+                else:
+                    doneJobs+=','+j.uuid
+
+                p.jobs_done = doneJobs
+                
                 j.ts_sto = timezone.now()
                 manager.childrenStateToggle(j,'defined') # j.childrenStateToggle('defined')
                 with transaction.atomic():
                     j.save()
                 
-                # Check the workflow (maybe it is completed)
-                if(j.wfuuid!=''):
+                if(j.wfuuid!=''): # Check the workflow - maybe it has completed
                     done	= True
                     jobsWF	= job.objects.filter(wfuuid=j.wfuuid)
                     for q in jobsWF:
@@ -221,6 +229,9 @@ def report(request):
             return HttpResponse(json.dumps({'status':	'FAIL',
                                             'state':	state,
                                             'error':	'failed to update job state'}))
+
+        with transaction.atomic():
+            p.save()
 
     # FIXME bring to top to simplify logic for normal cases
     # FIXME incorrect return message for failure reports
@@ -238,13 +249,13 @@ def report(request):
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
 
 
-    # this should work as a catch-all since all states are supposed to be picked up above
-    #
     return HttpResponse(json.dumps({'status':'OK', 'state':state}))
 
 
 ########################  FOOTNOTES ##################################
+#
 # 0
+#----
 # pilot status can only take two values, 'OK' or 'FAIL' #
 # while it's state can be more complex. This helps      #
 # reflect different failure modes                       #
@@ -252,7 +263,7 @@ def report(request):
 
 #
 # 1
-#
+#----
 # this could contain the name of the column by
 # which to sort within same tier of priority, for example "ts_def".
 # So it has to be consistent with the models. Look for "ordering" in the code.
@@ -275,7 +286,7 @@ def report(request):
 
 #
 # 2
-#
+#----
     # # look at existing jobs priorities: FIXME - prohibitively expensive, need to change to async list
     # try:
     #     jp = job.objects.values('priority').distinct()

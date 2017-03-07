@@ -20,13 +20,13 @@ obviously must be installed before the code can run.
 
 * django-tables2
 
-* RDBMS (e.g. PostgreSQL; sqlite used for development puprposes only)
+* RDBMS (e.g. PostgreSQL; sqlite is used for development puprposes only and won't be suitable for deployment)
 
-* psycopg2 (if using PostgreSQL)
+* psycopg2 (for PostgreSQL)
 
-* Apache 2.4 (for deployment, not necessary in development/testing mode)
+* Apache 2.4
 
-* NetworkX
+* NetworkX 1.11
 
 ### p3s client dependencies
 
@@ -34,7 +34,7 @@ obviously must be installed before the code can run.
 
 * Django 1.10+ (to include full timezone functionality)
 
-* NetworkX
+* NetworkX 1.11
 
 ### Known issues
 
