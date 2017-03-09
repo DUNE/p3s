@@ -12,8 +12,9 @@ then
     fi
 fi
 
-
+line=''
 for i in `seq 1 $N`;
 do
-eval $DIR/pilot.py $2
+#    line="$DIR/pilot.py $2 &" $line
+eval $DIR/pilot.py $2 &
 done
