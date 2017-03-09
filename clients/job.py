@@ -74,14 +74,20 @@ class Job(dict):
         self['ts']	= str(timezone.now()) # see TZ note on top
 
 #-------------------------
+try:
+    server	= os.environ['P3S_SERVER']
+except:
+    server	= 'http://localhost:8000/'
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-U", "--usage",	action='store_true',	help="print usage notes and exit")
 parser.add_argument("-a", "--adjust",	action='store_true',	help="enables state/priority adjustments. Needs uuid.")
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes a job. Needs uuid.")
 parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
-parser.add_argument("-S", "--server",	type=str,		help="the server URL (default http://localhost:8000/)",
-                    default='http://localhost:8000/')
+parser.add_argument("-S", "--server",	type=str,
+                    help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
+                    default=server)
 
 parser.add_argument("-s", "--state",	type=str,		help="sets the job state, needs *adjust* option",
                     default='')

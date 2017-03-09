@@ -54,6 +54,11 @@ class Dag(dict):
 
 
 #-------------------------
+try:
+    server	= os.environ['P3S_SERVER']
+except:
+    server	= 'http://localhost:8000/'
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-G", "--get",	help="the name of a DAG to download from server", type=str, default='')
@@ -63,7 +68,11 @@ parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs nam
 parser.add_argument("-m", "--modify",	help="modifies the state of a workflow, needs uuid/new state",	action='store_true')
 
 parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
-parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/', help="the server, default: http://localhost:8000/")
+
+parser.add_argument("-S", "--server",	type=str,
+                    help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
+                    default=server)
+
 parser.add_argument("-w", "--what",	type=str,	default='',choices=['workflow','dag'],
                     help="type of object(s) for deletion")
 parser.add_argument("-v", "--verbosity",type=int,	default=0, choices=[0, 1, 2], help="set verbosity - also needed for data output.")

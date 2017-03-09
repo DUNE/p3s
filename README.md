@@ -43,7 +43,7 @@ obviously must be installed before the code can run.
 * Apache 2.4 deployment may differ on different flavors of Linux, this needs to be addressed during deployment
 
 
-## Installation
+## Installation and setting up
 ### Getting the software
 At the time of writing, the simplest way to get the code
 is by cloning the repo https://github.com/DUNE/p3s.git
@@ -75,14 +75,16 @@ only to the developers and which won't be helpful for testers
 or users.
 
 
-## Initializing the Database
+### Initializing the Database
 
 Coming from the source code distirbution, the p3s server will utilize the sqlite database
-which comes with Django. Production application may need a more powerful RDBMS such as PostgreSQL
-but this is beyond the scope of this document.
+which comes with Django. Production application will need a more powerful RDBMS such as PostgreSQL,
+MySQL, ORACLE etc, and one specific reason is proper implementation of the table and/or row lock
+for updates, without which there will be concurrency and DB integrity problems in any realistic
+running scenario.
 
-The sqlite DB is not initialized to work with the p3s server when you first get hold of the code.
-This needs to be done as follows:
+If in development and utilizing the sqlite DB, it won't be initialized when you first get hold of the code, so
+this needs to be done as follows:
 
 * change directory to p3s/promproc
 
@@ -92,7 +94,7 @@ This needs to be done as follows:
    * ./manage.py migrate
 
 
-## Define at least one data type
+### Define at least one data type
 
 Meaningful testing requires that at least one datatype is defined
 in the system which should match whatever datatype(s) you use
@@ -114,6 +116,14 @@ of testing), it can be removed from the server as folllows:
 
 ./dataset.py -D test
 
+
+### The Environment
+
+p3s clients will parse and utilize a variety of command-line arguments.
+It's often more convenient to make use of the environment variables such
+as the URL of the server, for consistency and to save on typing/scripting.
+The environment may be initialized by using scripts in the "configuration"
+directory. One example is the environment variable "P3S_SERVER".
 
 ## Running the development server
 

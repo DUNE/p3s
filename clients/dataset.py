@@ -56,11 +56,16 @@ class Dataset(dict):
         self['wfuuid']	= wfuuid
         
 #########################################################################
+try:
+    server	= os.environ['P3S_SERVER']
+except:
+    server	= 'http://localhost:8000/'
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
-                    help="the server address, defaults to http://localhost:8000/")
+parser.add_argument("-S", "--server",	type=str,
+                    help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
+                    default=server)
 
 parser.add_argument("-j", "--json",	type=str,	default='',
                     help="json description of the data to be sent")
