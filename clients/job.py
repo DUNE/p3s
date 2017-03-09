@@ -18,6 +18,7 @@ import os
 
 from comms import logfail
 from serverAPI import serverAPI
+from clientenv import clientenv
 
 #########################################################
 settings.configure(USE_TZ = True)
@@ -74,10 +75,7 @@ class Job(dict):
         self['ts']	= str(timezone.now()) # see TZ note on top
 
 #-------------------------
-try:
-    server	= os.environ['P3S_SERVER']
-except:
-    server	= 'http://localhost:8000/'
+(user, server, verb) = clientenv()
 
 parser = argparse.ArgumentParser()
 

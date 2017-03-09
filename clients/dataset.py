@@ -22,6 +22,7 @@ from django.utils	import timezone
 
 # local import
 from serverAPI import serverAPI
+from clientenv import clientenv
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
@@ -56,10 +57,7 @@ class Dataset(dict):
         self['wfuuid']	= wfuuid
         
 #########################################################################
-try:
-    server	= os.environ['P3S_SERVER']
-except:
-    server	= 'http://localhost:8000/'
+(user, server, verb) = clientenv()
 
 parser = argparse.ArgumentParser()
 

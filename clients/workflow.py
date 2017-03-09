@@ -21,7 +21,8 @@ import os
 
 import networkx as nx
 
-from serverAPI		import serverAPI
+from serverAPI import serverAPI
+from clientenv import clientenv
 
 user		= os.environ['USER']
 
@@ -54,10 +55,7 @@ class Dag(dict):
 
 
 #-------------------------
-try:
-    server	= os.environ['P3S_SERVER']
-except:
-    server	= 'http://localhost:8000/'
+(user, server, verb) = clientenv()
 
 parser = argparse.ArgumentParser()
 

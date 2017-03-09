@@ -23,6 +23,7 @@ from django.utils	import timezone
 # local import (utils)
 from comms import logfail
 from serverAPI import serverAPI
+from clientenv import clientenv
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
@@ -71,16 +72,10 @@ class Pilot(dict):
         self.job	= '' # job to be yet received
         
 #########################################################################
-user		= os.environ['USER']
-try:
-    server	= os.environ['P3S_SERVER']
-except:
-    server	= 'http://localhost:8000/'
-    
+(user, server, verb) = clientenv()
+
 logdefault	= '/tmp/'+user+'/p3s/pilots'
 joblogdefault	= '/tmp/'+user+'/p3s/jobs'
-
-print('server', server)
 
 parser = argparse.ArgumentParser()
 
@@ -99,9 +94,8 @@ parser.add_argument("-L", "--joblogdir",type=str,	default=joblogdefault,
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
 
-parser.add_argument("-v", "--verbosity",	type=int,
-                    default=0, choices=[0, 1, 2],
-                    help="increase output verbosity")
+parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 2],
+                    help="output verbosity (0-2), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
                     help="how many cycles (with period in seconds) to stay alive")
@@ -207,8 +201,8 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 logfile.setFormatter(formatter)
 
 logger.addHandler(logfile)
-logger.info('START %s on host %s, user %s, p3s server %s, period %s, %s cycles' %
-            (str(p['uuid']), p['host'], user, server, period, cycles))
+logger.info('START %s on host %s, user %s, p3s server %s, period %s, %s cycles, verbosity %s' %
+            (str(p['uuid']), p['host'], user, server, period, cycles, verb))
 
 API.setLogger(logger)
 API.setVerbosity(verb)

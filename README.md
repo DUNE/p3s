@@ -57,7 +57,9 @@ method.
 p3s installation tree contains the following directories
 which are necessary for its function:
 
-* **promptproc** - the workflow managment and monitoring server
+* **promptproc** - the core of p3s - the workflow managment and monitoring server
+
+* **configuration** - to set a few environment variables for convenience
 
 * **clients** - an assortment of clients for creation and manipulation
 of the objects residing in the server, mostly tailored to support a specific class.
@@ -65,8 +67,8 @@ of the objects residing in the server, mostly tailored to support a specific cla
 Other directories not critical for the system functionality:
 
 * **inputs** contains files that can be used as examples
-and/or templates for initial testing of p3s but which are not meant to be
-a part of a useful application or production type of environment.
+and/or templates for testing of p3s but not necessarily
+suitable for production.
 
 * **documents** (obviously)
 
