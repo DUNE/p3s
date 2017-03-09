@@ -13,5 +13,5 @@ fi
 
 for i in `seq 1 $N`;
 do
-    eval $DIR/pilot.py $2
+$DIR/pilot.py $2
 done
