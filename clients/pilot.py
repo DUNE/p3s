@@ -72,14 +72,20 @@ class Pilot(dict):
         
 #########################################################################
 user		= os.environ['USER']
+try:
+    server	= os.environ['P3S_SERVER']
+except:
+    server	= 'http://localhost:8000/'
+    
 logdefault	= '/tmp/'+user+'/p3s/pilots'
 joblogdefault	= '/tmp/'+user+'/p3s/jobs'
 
+print('server', server)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-S", "--server",	type=str,	default='http://localhost:8000/',
-                    help="the server address, defaults to http://localhost:8000/")
+parser.add_argument("-S", "--server",	type=str,	default=server,
+                    help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
