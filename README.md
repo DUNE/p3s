@@ -59,10 +59,13 @@ which are necessary for its function:
 
 * **promptproc** - the core of p3s - the workflow managment and monitoring server
 
-* **configuration** - to set a few environment variables for convenience
-
 * **clients** - an assortment of clients for creation and manipulation
-of the objects residing in the server, mostly tailored to support a specific class.
+of the objects residing in the server, mostly tailored to support a specific class of
+objects (job, pilot etc).
+
+* **configuration** - to set a few environment variables for convenience, essentially
+a vocabulary of environment variables which both the client and the server
+attempt to read at run time (and will assume default values if these are not found).
 
 Other directories not critical for the system functionality:
 
@@ -72,28 +75,33 @@ suitable for production.
 
 * **documents** (obviously)
 
-* **sandbox** - which stored arbitrary snippets of code of interest
+* **sandbox** - arbitrary snippets of code of interest
 only to the developers and which won't be helpful for testers
 or users.
 
 
 ### Initializing the Database
 
-Coming from the source code distirbution, the p3s server will utilize the sqlite database
-which comes with Django. Production application will need a more powerful RDBMS such as PostgreSQL,
-MySQL, ORACLE etc, and one specific reason is proper implementation of the table and/or row lock
-for updates, without which there will be concurrency and DB integrity problems in any realistic
-running scenario.
+The p3s server will utilize the RDBMS specified in its "settings" file.
+For example, it can run with the sqlite database
+which comes packaged with Django. However, production-grade applications will need a more
+powerful RDBMS such as PostgreSQL, MySQL, ORACLE etc, and one specific reason for that
+is proper implementation of the table and/or row lock for updates. This is not
+provided by sqlite.
 
-If in development and utilizing the sqlite DB, it won't be initialized when you first get hold of the code, so
-this needs to be done as follows:
+If in development and utilizing the sqlite DB, it won't be initialized when you
+first get hold of the code, so this needs to be done as follows:
 
 * change directory to p3s/promproc
-
+* locate the file p3s/promptproc/promptproc/settings.py
+* make sure it refers to sqlite
 * run the following commands
 
    * ./manage.py makemigrations
    * ./manage.py migrate
+
+Procedures will be similar for PostgreSQL but typically not encountered
+by ordinary users.
 
 
 ### Define at least one data type
