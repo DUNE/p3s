@@ -1,25 +1,13 @@
 # p3s clients
-## Relation to p3s object model
-The p3s object model comtains the following major classes:
+## Support of the p3s object model
+The p3s object model contains the following major classes:
 * job
 * pilot
 * dataset
 * workflow
 
-There are also a few companion classes whose definition is typically
-contained in the same unit of code as the major class. By and large,
-the classes itemized above are described in the respective "model.py"
-files under their own Django app areas.
-
-Example - the follwing file:
-`/mydir/p3s/promptproc/workflows/models.py`
-...contains the class "workflow", which inherits from the Django Model class.
-Same pattern applies to other classes.
-
-## The clients
-This directory (p3s/clients) contains a number of clients implemented as
-Python scripts, which support operations on the objects belonging to classes
-described above. These are
+The clients carrying same name have the function of managing
+their respective classes residing on the server:
 
 * job.py
 * pilot.py
@@ -28,6 +16,7 @@ described above. These are
 
 The server API which all of these scripts use is encapsulated in
 the module:
+
 * serverAPI.py
 It translates calls to methods in scripts to HTTP messages sent to the server
 utilizing *urllib*.
@@ -71,19 +60,25 @@ how JSON is used:
 
 Generates a pilot and performs a small number of other functions.
 The lifecycle of a pilot is as follows:
-* The process starts and attempts to contact the server in order to register. At the time of writing
+* The process starts and then attempts to contact the server in order to register. At the time of writing
 handling timeouts is not imeplemented yet, i.e. the pilot will exit in fail condition if there is not
 response from the server. This behavior will be improved in future development.
 
 * Upon successful registration, the pilot enters a loop. In each iteration it send a job request
 to the server. If the request is not granted, the pilot sleeps for a configurable period of time
-and make another attempts. Having exhausted the maximal number of attempts (configurable), the pilot
+and make another attempts. Having exhausted the maximal number of attempts (also configurable), the pilot
 exits normally.
 
-* Upon receiving a successful match from the server, the pilot initiates job execution using
-the Python "subprocess" machinery.
+* If a matching job is identified by the server, the will receive a message containing the description
+of the payload (e.g. the path to the script/wrapper/executable that needs to be run). The pilot then
+initiates job execution using the Python "subprocess" machinery.
 
 ## workflow.py
 
 Creates and manipulates DAGs and workflows. DAGs serve as templates for actual active workflows.
+
+# Service Scripts
+## Pilots
+The script pgen.sh serves as a basic generator of pilots, in case multiple pilots need to run
+on same node. The number of concurrent pilots is configurable on the command line.
 
