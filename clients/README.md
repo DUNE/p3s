@@ -1,13 +1,13 @@
 # p3s clients
-## Support of the p3s object model
+## Overview of principal client apps in p3s
 The p3s object model contains the following major classes:
 * job
 * pilot
 * dataset
 * workflow
 
-The clients carrying same name have the function of managing
-their respective classes residing on the server:
+The clients carrying similar names have the function of managing
+objects which belong to their respective classes wnd which reside on the server:
 
 * job.py
 * pilot.py
@@ -15,23 +15,7 @@ their respective classes residing on the server:
 * workflow.py
 
 The server API which all of these scripts use is encapsulated in
-the module:
-
-* serverAPI.py
-It translates calls to methods in scripts to HTTP messages sent to the server
-utilizing *urllib*.
-
-Please see individual documentation for the clients listed above which is
-contained in files named like WORKFLOW.md etc. Same information converted
-into PDF (so it's accessible locally and can be printed) can be found in
-**p3s/documentation**.
-
-
-There are additional clients which perform tests or a combination
-of procedures on these objects, such as
-* injector.py - scans a directory for new files and created workflow with the new data as input
-* urltest.py (deprecated) - generic HTTP interface to the server
-* verifyImport.py - verifies that dependecies are satisfied, i.e. certain packages can be imported
+the module "serverAPI.py" described in one of the sections below.
 
 ## Brief summary of the clients' functionality
 ### job.py
@@ -76,6 +60,27 @@ initiates job execution using the Python "subprocess" machinery.
 ## workflow.py
 
 Creates and manipulates DAGs and workflows. DAGs serve as templates for actual active workflows.
+
+
+
+## Interfaces
+### Server interface
+
+* serverAPI.py: translates calls to methods in scripts to HTTP messages sent to the server
+utilizing *urllib*. It is used by most all clients.
+
+Please see individual documentation for the clients listed above which is
+contained in files named like WORKFLOW.md etc. Same information converted
+into PDF (so it's accessible locally and can be printed) can be found in
+**p3s/documentation**.
+
+
+There are additional clients which perform tests or a combination
+of procedures on these objects, such as
+* injector.py - scans a directory for new files and created workflow with the new data as input
+* urltest.py (deprecated) - generic HTTP interface to the server
+* verifyImport.py - verifies that dependecies are satisfied, i.e. certain packages can be imported
+
 
 # Service Scripts
 ## Pilots
