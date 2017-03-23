@@ -123,7 +123,7 @@ def request(request): # Pilot's request for a job:
                 with transaction.atomic():
                     j_candidate = tjs[0] # print(j_candidate,' ',j_candidate.uuid)
 
-                    logger.info('pilot %s, candidate %s', (p_uuid, j_candidate.uuid))
+                    logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
                     # j = job.objects.select_for_update(nowait=True).get(uuid=j_candidate.uuid)
                     j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
