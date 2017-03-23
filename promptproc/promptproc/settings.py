@@ -112,7 +112,7 @@ DATABASES = {
         'NAME': 'p3s',
         'USER': 'p3s',
         'PASSWORD': 'mxp',
-        'HOST': '',
+        'HOST': 'serenity.local',
         'PORT': '',
     }
 }
