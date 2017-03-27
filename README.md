@@ -83,6 +83,7 @@ or users.
 ### DB Connection info
 
 Add a file names "databases.py" to same directory as manage.py, the template is as follows:
+```
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -93,7 +94,7 @@ DATABASES = {
         'PORT': '',
     }
 }
-
+```
 
 ### Initializing the Database
 
