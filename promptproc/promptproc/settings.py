@@ -15,6 +15,8 @@ import os
 # -mxp-
 import socket
 
+import databases # from same dir as "manage"
+
 try:
     HOSTNAME = socket.gethostname()
 except:
@@ -30,9 +32,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'y!m33zq-79&%-!r=e!&+jd2cq&ca85e(4q-9dsgsb4xx)g5p*+'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = False
-DEBUG = True
+DEBUG = True # WARNING: don't run with debug turned on in production
 
 # -mxp- Please note this is for strictly development enviroment
 # and wiill be meaningless elsewhere
@@ -98,24 +99,11 @@ WSGI_APPLICATION = 'promptproc.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#        'OPTIONS': {'timeout': 1000,},
-#    }
-#}
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'p3s',
-        'USER': 'p3s',
-        'PASSWORD': 'mxp',
-        'HOST': '',
-        'PORT': '',
-    }
-}
+# Look at the bottom for (previously) working examples
+
+DATABASES = databases.DB
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -220,5 +208,22 @@ LOGGING = {
     },
 }
 ################################################################################
-#                      CUSTOMIZATION OF THE APP BEHAVIOR: TBD                  #
-################################################################################
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#        'OPTIONS': {'timeout': 1000,},
+#    }
+#}
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': '',
+#         'USER': '',
+#         'PASSWORD': '',
+#         'HOST': '',
+#         'PORT': '',
+#     }
+# }

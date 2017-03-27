@@ -24,7 +24,7 @@ obviously must be installed before the code can run.
 
 * psycopg2 (for PostgreSQL)
 
-* Apache 2.4
+* Apache 2.4 + mod_wsgi built for Python 3.5
 
 * NetworkX 1.11
 
@@ -78,6 +78,21 @@ suitable for production.
 * **sandbox** - arbitrary snippets of code of interest
 only to the developers and which won't be helpful for testers
 or users.
+
+
+### DB Connection info
+
+Add a file names "databases.py" to same directory as manage.py, the template is as follows:
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': '',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
 
 
 ### Initializing the Database
