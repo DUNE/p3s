@@ -112,7 +112,7 @@ DATABASES = {
         'NAME': 'p3s',
         'USER': 'p3s',
         'PASSWORD': 'mxp',
-        'HOST': 'serenity.local',
+        'HOST': '',
         'PORT': '',
     }
 }
@@ -158,6 +158,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "promptproc/static"),
+    '/var/www/static/',
 # For illustration:
 #    '/home/maxim/projects/p3s/promptproc/promptproc/static',
 ]
