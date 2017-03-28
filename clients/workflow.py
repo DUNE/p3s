@@ -24,10 +24,10 @@ import networkx as nx
 from serverAPI import serverAPI
 from clientenv import clientenv
 
-user		= os.environ['USER']
+# user		= os.environ['USER']
 
 #########################################################
-# simple printout for visual verification of a DAG
+# simple printout for visual verification of a DAG on the client side
 def printGraph(g):        
     print("NODES and EDGES representation of the DAG")
     print("---- NODES ----")
@@ -55,7 +55,9 @@ class Dag(dict):
 
 
 #-------------------------
-(user, server, verb) = clientenv()
+(user, envServer, envVerb) = clientenv()
+
+print(user, envServer, envVerb)
 
 parser = argparse.ArgumentParser()
 
@@ -69,11 +71,11 @@ parser.add_argument("-D", "--description",type=str,	default='', help="Descriptio
 
 parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
-                    default=server)
+                    default=envServer)
 
 parser.add_argument("-w", "--what",	type=str,	default='',choices=['workflow','dag'],
                     help="type of object(s) for deletion")
-parser.add_argument("-v", "--verbosity",type=int,	default=0, choices=[0, 1, 2], help="set verbosity - also needed for data output.")
+parser.add_argument("-v", "--verbosity",type=int,	default=envVerb, choices=[0, 1, 2], help="set verbosity - also needed for data output.")
 parser.add_argument("-u", "--uuid",	type=str,	default='', help="uuid of the objet to be modified or deleted")
 parser.add_argument("-g", "--graphml",	type=str,	default='', help="Create a DAG on the server from a GraphML file.")
 parser.add_argument("-n", "--name",	type=str,	default='', help="The name of the DAG or workflow to be manipulated.")
