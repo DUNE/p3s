@@ -50,14 +50,15 @@ class serverAPI(dict):
         
     ############# GENERAL POST & GET
     def post2server(self, view, url, stuff):
-        return rdec(communicate(self[view][url], data2post(stuff).utf8(), self.logger))
+        return rdec(communicate(self[view][url], data=data2post(stuff).utf8(), logger=self.logger))
     
     def get2server(self, view, url, stuff):
-        return rdec(communicate(self[view][url] % stuff))
+        resp = communicate(self[view][url] % stuff, logger=self.logger)
+        return rdec(resp)
     
     ############# WORKFLOW
     def deleteAllDagWF(self, what):
-        return rdec(communicate(self['workflow']['deleteallURL'] % what))
+        return rdec(communicate(self['workflow']['deleteallURL'] % what, logger=self.logger))
 
     ############# PILOT
     def registerPilot(self, p):

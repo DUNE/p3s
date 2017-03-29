@@ -27,10 +27,15 @@ def rdec(r):
         decoded=r.read().decode('utf-8')
     except:
         decoded=r
-    return r
+    return decoded
 
 ###################################################################
 def communicate(url, data=None, logger=None):
+    if(data):
+        if(logger): logger.info('POST URL: %s' % url)
+    else:
+        if(logger): logger.info('GET URL: %s' % url)
+        
     try:
         resp=''
         if(data):
