@@ -40,8 +40,10 @@ obviously must be installed before the code can run.
 
 * NetworkX: some versions may present compatibility issues, resolving this is reponsibility of the developer
 
-* Apache 2.4 deployment may differ on different flavors of Linux, this needs to be addressed during deployment
+* Apache 2.4 deployment is different on different flavors of Linux, this must be addressed during deployment
 
+* One must make sure that mod_wsgi is built for correct version of Python; this may be checked in
+a few ways, one method is to run "ldd" to look at the version shared libraries
 
 ## Installation and setting up
 ### Getting the software
@@ -148,8 +150,15 @@ of testing), it can be removed from the server as folllows:
 p3s clients will parse and utilize a variety of command-line arguments.
 It's often more convenient to make use of the environment variables such
 as the URL of the server, for consistency and to save on typing/scripting.
-The environment may be initialized by using scripts in the "configuration"
-directory. One example is the environment variable "P3S_SERVER".
+The environment may be initialized by using scripts like ones in the "configuration"
+directory. One example is the environment variable "P3S_SERVER": it should
+have format similar to "http://myP3Sserver.cern.ch:8008/"
+
+### Logs
+
+Logfiles are kept in the directories "/tmp/p3s" and "/tmp/username/p3s/*",
+in the latter case there are separate folders for pilots, workflows etc.
+
 
 ## Running the development server
 
