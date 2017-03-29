@@ -16,6 +16,7 @@ import uuid
 import socket
 import time
 import datetime
+import logging
 import json
 import os
 
@@ -23,8 +24,6 @@ import networkx as nx
 
 from serverAPI import serverAPI
 from clientenv import clientenv
-
-# user		= os.environ['USER']
 
 #########################################################
 # simple printout for visual verification of a DAG on the client side
@@ -55,14 +54,19 @@ class Dag(dict):
 
 
 #-------------------------
-(user, envServer, envVerb) = clientenv()
-
-print(user, envServer, envVerb)
+(user, envServer, envVerb) = clientenv() # print(user, envServer, envVerb)
+logdefault	= '/tmp/'+user+'/p3s/workflows'
+host		= socket.gethostname()
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
+                    help="(defaults to "+logdefault+") the path for the logs")
+
 parser.add_argument("-G", "--get",	help="the name of a DAG to download from server", type=str, default='')
+
 parser.add_argument("-U", "--usage",	help="print usage notes and exit",				action='store_true')
+
 parser.add_argument("-d", "--delete",	help="deletes a dag or workflow. Needs name/uuid+type (what)",	action='store_true')
 
 parser.add_argument("-m", "--modify",	help="modifies the state of a workflow, needs uuid/new state",	action='store_true')
@@ -76,9 +80,13 @@ parser.add_argument("-S", "--server",	type=str,
 parser.add_argument("-w", "--what",	type=str,	default='',choices=['workflow','dag'],
                     help="type of object(s) for deletion")
 parser.add_argument("-v", "--verbosity",type=int,	default=envVerb, choices=[0, 1, 2], help="set verbosity - also needed for data output.")
+
 parser.add_argument("-u", "--uuid",	type=str,	default='', help="uuid of the objet to be modified or deleted")
+
 parser.add_argument("-g", "--graphml",	type=str,	default='', help="Create a DAG on the server from a GraphML file.")
+
 parser.add_argument("-n", "--name",	type=str,	default='', help="The name of the DAG or workflow to be manipulated.")
+
 parser.add_argument("-a", "--add",	type=str,	default='',
                     help='''Add a workflow. Argument is the name of the prototype DAG (already stored on the server).
                     If no special name is provided for the workflow via the *name* argument,
@@ -104,6 +112,7 @@ args = parser.parse_args()
 
 usage	= args.usage
 server	= args.server
+logdir	= args.logdir
 verb	= args.verbosity
 add	= args.add
 delete	= args.delete
@@ -134,8 +143,33 @@ if(usage):
         exit(-1)
 
     exit(0)
+###################### PREPARE LOG DIRECTORY AND FILE ##################
+if(not os.path.exists(logdir)):
+    try:
+        os.makedirs(logdir)
+    except:
+        exit(-1) # we can't log it
+
+        
+logfilename = logdir+'/workflow.log'
+
+
+logger = logging.getLogger('p3sworkflow')
+logger.setLevel(logging.DEBUG)
+logfile = logging.FileHandler(logfilename)
+
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logfile.setFormatter(formatter)
+
+logger.addHandler(logfile)
+logger.info('START on host %s, user %s, p3s server %s, verbosity %s' %
+            (host, user, server, verb))
+
 ########################################################################
-API  = serverAPI(server=server)
+API  = serverAPI(server=server, logger=logger)
+
+
+########################################################################
 ######################### DAG DELETE ###################################
 # Check if it was a deletion request
 if(delete):

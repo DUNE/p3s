@@ -50,7 +50,7 @@ class serverAPI(dict):
         
     ############# GENERAL POST & GET
     def post2server(self, view, url, stuff):
-        return rdec(communicate(self[view][url], data2post(stuff).utf8()))
+        return rdec(communicate(self[view][url], data2post(stuff).utf8(), self.logger))
     
     def get2server(self, view, url, stuff):
         return rdec(communicate(self[view][url] % stuff))

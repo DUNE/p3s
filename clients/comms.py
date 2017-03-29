@@ -22,18 +22,25 @@ class data2post():
         return self.packaged
 ###################################################################
 def rdec(r):
-    return r.read().decode('utf-8')
+    decoded=''
+    try:
+        decoded=r.read().decode('utf-8')
+    except:
+        decoded=r
+    return r
 
 ###################################################################
 def communicate(url, data=None, logger=None):
     try:
+        resp=''
         if(data):
-            return urllib.request.urlopen(url, data)
+            resp=urllib.request.urlopen(url, data)
         else:
-            return urllib.request.urlopen(url)
+            resp=urllib.request.urlopen(url)
+        return resp
     except URLError:
         if(logger): logger.error('exiting, error at URL: %s' % url)
-        exit(1)
+        return 'ERROR'
 ###################################################################
 def logfail(msg, logger):
     error = ''
