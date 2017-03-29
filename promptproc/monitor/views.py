@@ -207,36 +207,3 @@ def detail_handler(request, what):
         d['aux2title'] = 'Data for "'+theName+'"'
 
     return render(request, template, d)
-
-
-#########################################################    
-# just something for later - advanced tables:
-# from django.views.generic.base import TemplateView
-#
-# for later:  data = serializers.serialize('json', [ p, ])
-#########################################################    
-# Code sample for later:
-#    uuid = tables.LinkColumn(viewname='dummy',
-#    args=[A('pk')], text='foo', orderable=False,
-#    empty_values=())
-#
-# def render_uuid(self,value): return mark_safe('<a
-# href="http://%s%s?uuid=%s">%s</a>' % (self.site, reverse('pilots'),
-# value, value))
-
-#     def render_j_uuid(self,value): return mark_safe('<a
-#     href="http://%s%s?uuid=%s">%s</a>' % (self.site, reverse('jobs'),
-#     value, value))
-    
-#     def render_id(self,value): return mark_safe('<a
-#     href="http://%s%s?pk=%s">%s</a>' % (self.site, reverse('pilots'),
-#     value, value))
-
-# handling time and time difference etc
-# yest = datetime.datetime.now() - timedelta(days=1)
-#        for o in objects.filter(ts_lhb__gte=yest):
-#            print(o.ts_lhb)
-#    print(timezone.get_current_timezone_name())
-#        aux1 = WfVertexTable(wfVertex.objects.filter(wfuuid=o_uuid))
-        #        aux2 = WfEdgeTable(wfEdge.objects.filter(wfuuid=o_uuid))
-#                         % (domain, reverse(jobdetail), 'uuid',dicto[a], dicto[a]))

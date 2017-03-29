@@ -48,7 +48,6 @@ def add(request):
 ###################################################
 @csrf_exempt
 def adjust(request):
-    # fixme - improve error handling such as for missing or screwy arguments
 
     post	= request.POST
     j_uuid	= post['uuid']
@@ -62,7 +61,6 @@ def adjust(request):
     except:
         state = ''
 
-    #    print(j_uuid) print(priority) print(state)
     try:
         j = job.objects.get(uuid=j_uuid)
     except:
@@ -81,8 +79,6 @@ def adjust(request):
 ###################################################
 @csrf_exempt
 def delete(request):
-    # fixme - improve error handling such as for missing or screwy arguments
-
     post		= request.POST
     j_uuid, j_pk	= None, None
 
@@ -130,11 +126,9 @@ def delete(request):
 def detail(request):
     j_uuid = request.GET.get('uuid','')
 
-    if(j_uuid == ''):
-        return HttpResponse("Job not specified.")
-    print(j_uuid)
+    if(j_uuid == ''): return HttpResponse("Job not specified.")
+
     j = job.objects.get(uuid=j_uuid)
 
     data = serializers.serialize('json', [ j, ])
     return HttpResponse(data)
-#    return HttpResponse("You're looking at job %s." % j_uuid)
