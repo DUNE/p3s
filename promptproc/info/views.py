@@ -14,6 +14,8 @@ from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow
 
 
+from utils.timeUtils import uptime
+
 def index(request):
     domain	= request.get_host()
     hostname	= settings.HOSTNAME
@@ -23,6 +25,7 @@ def index(request):
                   {
                       'domain':		domain,
                       'hostname':	hostname,
+                      'uptime':		uptime(),
                       'time':		timeString,
                       'njobs':		job.N(),
                       'nwf':		workflow.N(),

@@ -10,16 +10,23 @@
   
   <body>
     <h2>p&#2384;s</h2>
-    Server running on host "{{ hostname }}". Current time: {{ time }}<br/>
     <hr/>
-    <a href="http://{{ domain }}/monitor/jobs">Jobs</a><br/>
-    <a href="http://{{ domain }}/monitor/data">Data</a>---<a href="http://{{ domain }}/monitor/datatypes">Data Types</a><br/>
-    <a href="http://{{ domain }}/monitor/pilots">Pilots</a><br/>
-    <a href="http://{{ domain }}/monitor/dags">DAGs</a><br/>
-    <a href="http://{{ domain }}/monitor/workflows">Workflows</a><br/>
+    <center>
+    <p style="font-size:30px">
+    <a href="http://{{ domain }}/monitor/dags">DAGs</a>&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/workflows">Workflows</a>&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/jobs">Jobs</a>&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/pilots">Pilots</a>&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/data">Data</a>&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/datatypes">Data Types</a><br/>
+    </p>
+    </center>
     <hr/>
     Database summary<br/>
     Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/>
+    <hr/>
       
+    Current time: {{ time }}&ensp;&ensp;
+    Server:"{{ hostname }}", uptime:{{ uptime }}
   </body>
 </html>
