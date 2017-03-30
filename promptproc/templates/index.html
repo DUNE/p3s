@@ -11,22 +11,31 @@
   <body>
     <h2>p&#2384;s</h2>
     <hr/>
-    <center>
-    <p style="font-size:30px">
-    <a href="http://{{ domain }}/monitor/dags">DAGs</a>&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/workflows">Workflows</a>&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/jobs">Jobs</a>&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/pilots">Pilots</a>&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/data">Data</a>&ensp;&ensp;&ensp;
+    <p style="font-size:20px">
+    <a href="http://{{ domain }}/monitor/dags">DAGs</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/workflows">Workflows</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/jobs">Jobs</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/pilots">Pilots</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/data">Data</a>&ensp;&ensp;&ensp;&ensp;&ensp;
     <a href="http://{{ domain }}/monitor/datatypes">Data Types</a><br/>
     </p>
-    </center>
     <hr/>
-    Database summary<br/>
-    Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/>
-    <hr/>
-      
-    Current time: {{ time }}&ensp;&ensp;
-    Server:"{{ hostname }}", uptime:{{ uptime }}
+    <table border="1">
+      <tr>
+	<th>Summary</th>
+	<th>System</th>
+      </tr>
+      <tr>
+	<td>
+          {% block table1 %}{% render_table summary %}{% endblock %}
+	</td>
+	<td>
+          {% block table2 %}{% render_table system %}{% endblock %}
+	</td>
+      </tr>
+    </table>
+    
+    <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
+    <hr/>  
   </body>
 </html>

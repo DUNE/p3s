@@ -31,6 +31,16 @@ class DetailTable(tables.Table):
         attrs	= {'class': 'paleblue'}
 
 #--------------------------------------------------------
+class SummaryTable(tables.Table):
+    Object	= tables.Column()
+    Number	= tables.Column()
+    
+    def set_site(self, site=''):
+        self.site=site
+    class Meta:
+        attrs	= {'class': 'paleblue'}
+
+#--------------------------------------------------------
 class MonitorTable(tables.Table):
     def set_site(self, site=''):
         self.site=site
