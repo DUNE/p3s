@@ -13,9 +13,23 @@
       <h3>{% block headline %}{% endblock %}</h3>
       
       <div id="N" align="right">
-	Total {{ title }}: {{ N }}<br/>
+	Selected {{ title }}: {{ N }}<br/>
       </div>
 
+      <div>
+      {% block frm %}
+      <form action="" method="post">
+	{% csrf_token %}
+	{% if selector %}
+	{{ selector }}
+	<input type="submit" value="Submit" />
+	{% endif %}
+      </form>
+      {% endblock %}
+      </div>
+      <hr/>
+
+      
       <div id="table">
         {% block table %}{% endblock %}
       </div>
@@ -35,5 +49,6 @@
       <div id="time" align="right">
 	Current time: {{ time }}<br/>
       </div>
-    </body>
+
+</body>
 </html>

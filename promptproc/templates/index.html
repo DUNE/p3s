@@ -37,5 +37,10 @@
     
     <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
     <hr/>  
+    <form action="" method="post">
+      {% csrf_token %}
+      {{ form }}
+      <input type="submit" value="Submit" />
+</form>
   </body>
 </html>

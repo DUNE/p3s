@@ -17,7 +17,10 @@ from django.shortcuts			import render
 from django.utils			import timezone
 from django.utils.timezone		import utc
 from django.utils.timezone		import activate
+
 from django.http			import HttpResponse
+from django.http			import HttpResponseRedirect
+
 from django.views.decorators.csrf	import csrf_exempt
 from django.core			import serializers
 from django.utils.safestring		import mark_safe
@@ -41,6 +44,19 @@ from	django_tables2.utils		import A
 # The tables are defined separately
 from .monitorTables import *
 
+# TWEAK
+from django import forms
+
+class pilotSelector(forms.Form):
+    PILOT_STATES = (('no jobs', 'No Jobs'), ('stopped', 'Stopped'),)
+    
+    pilotStates = forms.MultipleChoiceField(label='Select Pilot States',
+        required=False,
+        widget=forms.CheckboxSelectMultiple, choices=PILOT_STATES,)
+    
+# END TWEAK
+
+
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
@@ -48,15 +64,16 @@ def data_handler(request, what):
     wfuuid	= request.GET.get('wfuuid','')
     pk		= request.GET.get('pk','')
     name	= request.GET.get('name','')
+    domain	= request.get_host()
 
     # FIXME -beautify the timestamp later -mxp-
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
-    domain	= request.get_host()
     d		= dict(domain=domain, time=str(now))
 
     objects, t, aux1	= None, None, None
     template = 'universo.html'
-    
+    selector = None
+   
     if(what=='jobs'):
         objects = job.objects
         if(uuid == '' and pk == '' and wfuuid == ''):	t = JobTable(objects.all())
@@ -74,6 +91,7 @@ def data_handler(request, what):
         t = DataTypeTable(objects.all())
 
     if(what=='pilots'):
+        selector = pilotSelector()
         objects = pilot.objects
         if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
         if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
@@ -96,6 +114,7 @@ def data_handler(request, what):
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
     d['title']	= what
     d['N']	= objects.count()
+    d['selector'] = selector
     
     return render(request, template, d)
 
