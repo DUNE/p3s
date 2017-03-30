@@ -16,8 +16,8 @@ class job(models.Model):
     ts_def	= models.DateTimeField('ts_def', blank=True, null=True)	# definition
     ts_dis	= models.DateTimeField('ts_dis', blank=True, null=True)	# dispatch
     ts_sta	= models.DateTimeField('ts_sta', blank=True, null=True)	# start
-    ts_sto	= models.DateTimeField('ts_sto', blank=True, null=True)	# optional - env for the job
-    env		= models.TextField(default='{}')
+    ts_sto	= models.DateTimeField('ts_sto', blank=True, null=True) # stop
+    env		= models.TextField(default='{}')			# optional - env for the job
 
     def __str__(self):
         return self.uuid

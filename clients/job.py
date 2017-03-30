@@ -89,7 +89,11 @@ parser.add_argument("-S", "--server",	type=str,
 
 parser.add_argument("-s", "--state",	type=str,		help="sets the job state, needs *adjust* option",
                     default='')
+
 parser.add_argument("-p", "--priority",	type=int,		help="sets the job priority, needs *adjust* option",
+	            default=0)
+
+parser.add_argument("-P", "--purge",	type=int,		help="purge jobs older than (argument) seconds",
 	            default=0)
 
 parser.add_argument("-u", "--uuid",	type=str,		help="uuid of the job to be adjusted",
@@ -112,6 +116,7 @@ usage	= args.usage
 server	= args.server
 state	= args.state
 priority= args.priority
+purge	= args.purge
 j_uuid	= args.uuid
 j_id	= args.id
 verb	= args.verbosity
@@ -132,7 +137,7 @@ if(usage):
 ### p3s interface defined here
 API  = serverAPI(server=server)
 
-########################## UPDATE/ADJUSTMENT #############################
+########################## UPDATE/ADJUSTMENT ###########################
 # Check if an adjustment of an existing job is requested, and send a
 # request to the server to do so. Can adjust priority, state.
 
@@ -155,7 +160,14 @@ if(adj):
 
     exit(0) # done with update/adjust
 
-###################### JOB DELETE ######################################
+########################### JOB PURGE  #################################
+# 
+if(purge>0):
+    resp = API.post2server('job', 'purge', dict(t=purge))
+    if(verb>0): print(resp)
+    exit(0)
+
+########################### JOB DELETE #################################
 # Check if it was a deletion request
 if(delete):
     response = None

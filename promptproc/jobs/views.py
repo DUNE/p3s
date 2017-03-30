@@ -7,6 +7,11 @@
 #########################################################
 
 import uuid
+import datetime
+from datetime import datetime
+from datetime import time
+from datetime import timedelta
+
 
 from django.core			import serializers
 
@@ -132,3 +137,18 @@ def detail(request):
 
     data = serializers.serialize('json', [ j, ])
     return HttpResponse(data)
+###################################################
+@csrf_exempt
+def purge(request):
+    post	= request.POST
+    t		= post['t']
+
+    cutoff = timezone.now() - timedelta(days=int(t))
+    # print(cutoff)
+    selection = job.objects.filter(ts_def__lte=cutoff)
+    #print('objects:',len(selection))
+    #for o in selection:
+    #    print(o.uuid)
+
+
+    return HttpResponse('test %s' % t)

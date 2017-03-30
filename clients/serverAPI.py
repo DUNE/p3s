@@ -10,6 +10,7 @@ class serverAPI(dict):
         self['job']	= {
             'adjust':	server+'jobs/adjust',
             'delete':	server+'jobs/delete',
+            'purge':	server+'jobs/purge',
             'add':	server+'jobs/add',
         }
 
