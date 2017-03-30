@@ -93,8 +93,8 @@ parser.add_argument("-s", "--state",	type=str,		help="sets the job state, needs 
 parser.add_argument("-p", "--priority",	type=int,		help="sets the job priority, needs *adjust* option",
 	            default=0)
 
-parser.add_argument("-P", "--purge",	type=int,		help="purge jobs older than (argument) seconds",
-	            default=0)
+parser.add_argument("-P", "--purge",	type=str,		help="purge jobs older than YYYY:DDD:HH:MM:SS",
+	            default='')
 
 parser.add_argument("-u", "--uuid",	type=str,		help="uuid of the job to be adjusted",
                     default='')
@@ -162,7 +162,7 @@ if(adj):
 
 ########################### JOB PURGE  #################################
 # 
-if(purge>0):
+if(purge!=''):
     resp = API.post2server('job', 'purge', dict(t=purge))
     if(verb>0): print(resp)
     exit(0)

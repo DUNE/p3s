@@ -22,6 +22,7 @@ from django.utils			import timezone
 
 from .models import job
 
+from utils.timeUtils import dt
 
 def index(request):
     return HttpResponse("Placeholder")
@@ -142,13 +143,18 @@ def detail(request):
 def purge(request):
     post	= request.POST
     t		= post['t']
-
-    cutoff = timezone.now() - timedelta(days=int(t))
+    
+    x = dt(t)
+    print(x)
+    #cutoff = timezone.now() - timedelta(days=int(t))
+    
     # print(cutoff)
-    selection = job.objects.filter(ts_def__lte=cutoff)
+    #selection = job.objects.filter(ts_def__lte=cutoff)
     #print('objects:',len(selection))
     #for o in selection:
     #    print(o.uuid)
 
 
-    return HttpResponse('test %s' % t)
+    # return HttpResponse('test %s %s %s %s %s' % (interval.year, interval.day, interval.hour, interval.minute, interval.second))
+    
+    return HttpResponse('test %s %s' % (x.days, x.seconds))
