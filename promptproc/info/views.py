@@ -2,7 +2,7 @@ import datetime
 
 from django.shortcuts	import render
 from django.http	import HttpResponse
-from django.http	import HttpResponseRedirect
+from django.http	import HttpResponseRedirect # for future dev
 from django.utils	import timezone
 from django.conf	import settings
 
@@ -18,39 +18,8 @@ from monitor.monitorTables		import *
 
 
 from utils.timeUtils import uptime
-# TWEAK
-from django import forms
-
-class NameForm(forms.Form):
-    FAVORITE_COLORS_CHOICES = (
-    ('blue', 'Blue+'),
-    ('green', 'Green+'),
-    ('black', 'Black+'),
-)
-    
-    favorite_colors = forms.MultipleChoiceField(
-        required=False,
-        widget=forms.CheckboxSelectMultiple,
-        choices=FAVORITE_COLORS_CHOICES,
-    )
-    
-# END TWEAK
 
 def index(request):
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            print(form.cleaned_data)
-            return HttpResponseRedirect('/')
-
-    # if a GET (or any other method) we'll create a blank form
-    else:
-        form = NameForm()
     
     domain	= request.get_host()
     hostname	= settings.HOSTNAME
@@ -83,7 +52,6 @@ def index(request):
                       'time':		timeString,
                       'summary':	tSummary,
                       'system':		tSystem,
-                      'form':		form,
                   }
     )
 #

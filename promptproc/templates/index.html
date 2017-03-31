@@ -12,12 +12,12 @@
     <h2>p&#2384;s</h2>
     <hr/>
     <p style="font-size:20px">
-    <a href="http://{{ domain }}/monitor/dags">DAGs</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/workflows">Workflows</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/jobs">Jobs</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/pilots">Pilots</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/data">Data</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/datatypes">Data Types</a><br/>
+    <a href="http://{{ domain }}/monitor/dags">		DAGs		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/workflows">	Workflows	</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/jobs">		Jobs		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/pilots">	Pilots		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/data">		Data		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
+    <a href="http://{{ domain }}/monitor/datatypes">	Data Types	</a><br/>
     </p>
     <hr/>
     <table border="1">
@@ -37,10 +37,5 @@
     
     <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
     <hr/>  
-    <form action="" method="post">
-      {% csrf_token %}
-      {{ form }}
-      <input type="submit" value="Submit" />
-</form>
   </body>
 </html>

@@ -48,22 +48,26 @@ from .monitorTables import *
 from django import forms
 
 class pilotSelector(forms.Form):
-    PILOT_STATES = (('no jobs', 'No Jobs'), ('stopped', 'Stopped'),)
-    
-    pilotStates = forms.MultipleChoiceField(label='Select Pilot States',
-        required=False,
-        widget=forms.CheckboxSelectMultiple, choices=PILOT_STATES,)
-    
+    PILOT_STATES = [('all', 'All'), ('stopped', 'Stopped'), ('no jobs', 'No Jobs'),]
+    pilotStates = forms.MultipleChoiceField(label='Pilot States (select one)',
+                                            required=False,
+#                                            widget=forms.RadioSelect(),
+                                            widget=forms.CheckboxSelectMultiple,
+                                            choices=PILOT_STATES,)
 # END TWEAK
 
 
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
+
     uuid	= request.GET.get('uuid','')
     wfuuid	= request.GET.get('wfuuid','')
     pk		= request.GET.get('pk','')
     name	= request.GET.get('name','')
+    state	= request.GET.get('state','')
+    host	= request.GET.get('host','')
+    
     domain	= request.get_host()
 
     # FIXME -beautify the timestamp later -mxp-
@@ -91,12 +95,38 @@ def data_handler(request, what):
         t = DataTypeTable(objects.all())
 
     if(what=='pilots'):
-        selector = pilotSelector()
+
+        if request.method == 'POST':
+            selector = pilotSelector(request.POST)
+#            print(selector['pilotStates'])
+
+            if selector.is_valid():
+                # process the data in form.cleaned_data as required
+                # ...
+                # redirect to a new URL:
+                selectedStates = selector.cleaned_data['pilotStates']
+                print(selector.cleaned_data['pilotStates'])
+                if len(selectedStates):
+                    state = selectedStates[0]
+                    if(state=='all'): return HttpResponseRedirect('/monitor/pilots')
+                    return HttpResponseRedirect('/monitor/pilots?state=%s' % state)
+                else:
+                    return HttpResponseRedirect('/monitor/pilots')
+
+        if(state!=''):
+            selector = pilotSelector(initial={'pilotStates':[state,]})
+        else:
+            selector = pilotSelector(initial={'pilotStates':['all',]})
+            
         objects = pilot.objects
         if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
         if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
 
+        # FIXME - multiple filters needed
+        if(state != ''):		t = PilotTable(objects.filter(state=state))
+        if(host  != ''):		t = PilotTable(objects.filter(host=host))
+        
     if(what=='dags'):
         objects = dag.objects
         if(pk != ''):			t = DagTable(objects.filter(pk=pk))
