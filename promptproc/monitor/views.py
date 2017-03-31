@@ -44,18 +44,49 @@ from	django_tables2.utils		import A
 # The tables are defined separately
 from .monitorTables import *
 
-# TWEAK
 from django import forms
 
-class pilotSelector(forms.Form):
-    PILOT_STATES = [('all', 'All'), ('stopped', 'Stopped'), ('no jobs', 'No Jobs'),]
-    pilotStates = forms.MultipleChoiceField(label='Pilot States (select one)',
-                                            required=False,
-#                                            widget=forms.RadioSelect(),
-                                            widget=forms.CheckboxSelectMultiple,
-                                            choices=PILOT_STATES,)
-# END TWEAK
+PILOT_LABEL	= 'Pilot States (select one)'
+PILOT_STATES	= [
+    ('all',	'All'),
+    ('stopped', 'Stopped'),
+    ('no jobs', 'No Jobs'),
+]
 
+JOB_LABEL	= 'Job States (select one)'
+JOB_STATES = [
+    ('all',	'All'),
+    ('template','Template'),
+    ('defined',	'Defined'),
+    ('running',	'Running'),
+    ('finished','Finished'),
+]
+
+#########################################################    
+class stateSelector(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+       self.states = kwargs.pop('states')
+       self.label  = kwargs.pop('label')
+
+       super(stateSelector, self).__init__(*args, **kwargs)
+       self.fields['stateChoice'].choices = self.states
+       self.fields['stateChoice'].label   = self.label
+
+    def handleSelector(self, gUrl, qUrl):
+        selectedStates = self.cleaned_data['stateChoice']
+        if len(selectedStates):
+            state = selectedStates[0]
+            if(state=='all'):
+                return HttpResponseRedirect(gUrl)
+            return HttpResponseRedirect(qUrl % state)
+        else:
+            return HttpResponseRedirect(gUrl)
+           
+    stateChoice = forms.MultipleChoiceField(label='DUMMY',
+                                            required=False,
+                                            widget=forms.CheckboxSelectMultiple,
+                                            choices=[('place', 'holder'),])
 
 #########################################################    
 # general request handler for summary type of a table
@@ -67,7 +98,7 @@ def data_handler(request, what):
     name	= request.GET.get('name','')
     state	= request.GET.get('state','')
     host	= request.GET.get('host','')
-    
+
     domain	= request.get_host()
 
     # FIXME -beautify the timestamp later -mxp-
@@ -79,12 +110,25 @@ def data_handler(request, what):
     selector = None
    
     if(what=='jobs'):
+        if request.method == 'POST':
+            selector = stateSelector(request.POST, states=JOB_STATES, label=JOB_LABEL)
+            if selector.is_valid():
+                return selector.handleSelector('/monitor/jobs', '/monitor/jobs?state=%s')
+
+        if(state!=''): # from the HTTP request with exception of 'all'
+            selector = stateSelector(initial={'stateChoice':[state,]}, states=JOB_STATES, label=JOB_LABEL)
+        else:
+            selector = stateSelector(initial={'stateChoice':['all',]}, states=JOB_STATES, label=JOB_LABEL)
+            
         objects = job.objects
         if(uuid == '' and pk == '' and wfuuid == ''):	t = JobTable(objects.all())
         
         if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
         if(wfuuid != ''):		t = JobTable(objects.filter(wfuuid=wfuuid))
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
+        
+        # FIXME - multiple filters needed
+        if(state != ''):		t = JobTable(objects.filter(state=state))
 
     if(what=='data'):
         objects = dataset.objects
@@ -95,28 +139,15 @@ def data_handler(request, what):
         t = DataTypeTable(objects.all())
 
     if(what=='pilots'):
-
         if request.method == 'POST':
-            selector = pilotSelector(request.POST)
-#            print(selector['pilotStates'])
-
+            selector = stateSelector(request.POST, states=PILOT_STATES, label=PILOT_LABEL)
             if selector.is_valid():
-                # process the data in form.cleaned_data as required
-                # ...
-                # redirect to a new URL:
-                selectedStates = selector.cleaned_data['pilotStates']
-                print(selector.cleaned_data['pilotStates'])
-                if len(selectedStates):
-                    state = selectedStates[0]
-                    if(state=='all'): return HttpResponseRedirect('/monitor/pilots')
-                    return HttpResponseRedirect('/monitor/pilots?state=%s' % state)
-                else:
-                    return HttpResponseRedirect('/monitor/pilots')
+                return selector.handleSelector('/monitor/pilots', '/monitor/pilots?state=%s')
 
-        if(state!=''):
-            selector = pilotSelector(initial={'pilotStates':[state,]})
+        if(state!=''): # from the HTTP request with exception of 'all'
+            selector = stateSelector(initial={'stateChoice':[state,]}, states=PILOT_STATES, label=PILOT_LABEL)
         else:
-            selector = pilotSelector(initial={'pilotStates':['all',]})
+            selector = stateSelector(initial={'stateChoice':['all',]}, states=PILOT_STATES, label=PILOT_LABEL)
             
         objects = pilot.objects
         if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
@@ -256,3 +287,12 @@ def detail_handler(request, what):
         d['aux2title'] = 'Data for "'+theName+'"'
 
     return render(request, template, d)
+###################################################################################
+# if selector.is_valid():
+#     selectedStates = selector.cleaned_data['stateChoice']
+#     if len(selectedStates):
+#         state = selectedStates[0]
+#         if(state=='all'): return HttpResponseRedirect('/monitor/pilots')
+#         return HttpResponseRedirect('/monitor/pilots?state=%s' % state)
+#     else:
+#         return HttpResponseRedirect('/monitor/pilots')
