@@ -87,14 +87,17 @@ parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
                     default=server)
 
-parser.add_argument("-s", "--state",	type=str,		help="sets the job state, needs *adjust* option",
+parser.add_argument("-s", "--state",	type=str,	help="sets the job state, needs *adjust* option",
                     default='')
 
-parser.add_argument("-p", "--priority",	type=int,		help="sets the job priority, needs *adjust* option",
+parser.add_argument("-p", "--priority",	type=int,	help="sets the job priority, needs *adjust* option",
 	            default=0)
 
-parser.add_argument("-P", "--purge",	type=str,		help="purge jobs older than YYYY:DDD:HH:MM:SS",
+parser.add_argument("-P", "--purge",	type=str,	help="purge jobs older than YY:DD:HH:MM:SS, based on ts in the T argument",
 	            default='')
+
+parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion", default='defined',
+                    choices=['defined','start','stop'])
 
 parser.add_argument("-u", "--uuid",	type=str,		help="uuid of the job to be adjusted",
                     default='')
@@ -117,6 +120,7 @@ server	= args.server
 state	= args.state
 priority= args.priority
 purge	= args.purge
+timestamp= args.timestamp
 j_uuid	= args.uuid
 j_id	= args.id
 verb	= args.verbosity
@@ -163,7 +167,7 @@ if(adj):
 ########################### JOB PURGE  #################################
 # 
 if(purge!=''):
-    resp = API.post2server('job', 'purge', dict(t=purge))
+    resp = API.post2server('job', 'purge', dict(interval=purge, timestamp=timestamp))
     if(verb>0): print(resp)
     exit(0)
 

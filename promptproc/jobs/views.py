@@ -142,19 +142,25 @@ def detail(request):
 @csrf_exempt
 def purge(request):
     post	= request.POST
-    t		= post['t']
     
-    x = dt(t)
-    print(x)
-    #cutoff = timezone.now() - timedelta(days=int(t))
-    
-    # print(cutoff)
-    #selection = job.objects.filter(ts_def__lte=cutoff)
-    #print('objects:',len(selection))
-    #for o in selection:
-    #    print(o.uuid)
+    interval	= post['interval']
+    timestamp	= post['timestamp']
+    # print(interval, timestamp)
+    cutoff = timezone.now() - dt(interval) # print(cutoff)
 
-
-    # return HttpResponse('test %s %s %s %s %s' % (interval.year, interval.day, interval.hour, interval.minute, interval.second))
+    selection = None
+    nDeleted  = 0
     
-    return HttpResponse('test %s %s' % (x.days, x.seconds))
+    if(timestamp=='defined'):
+        selection = job.objects.filter(ts_def__lte=cutoff)
+    else:
+        pass
+
+    if selection:
+        print('objects:',len(selection))
+        nDeleted = len(selection)
+        for o in selection:
+            print(o.uuid)
+        selection.delete()
+    
+    return HttpResponse(str(nDeleted))
