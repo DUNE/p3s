@@ -18,6 +18,7 @@ class job(models.Model):
     ts_sta	= models.DateTimeField('ts_sta', blank=True, null=True)	# start
     ts_sto	= models.DateTimeField('ts_sto', blank=True, null=True) # stop
     env		= models.TextField(default='{}')			# optional - env for the job
+    pid		= models.CharField(max_length=16, default='')
 
     def __str__(self):
         return self.uuid

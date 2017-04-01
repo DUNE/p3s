@@ -70,7 +70,7 @@ class Pilot(dict):
         self.cycles	= cycles
         self.period	= period
         self.job	= '' # job to be yet received
-        
+        self['pid']	= os.getpid()
 #########################################################################
 (user, server, verb) = clientenv()
 
@@ -171,7 +171,7 @@ if(delete):
 ########################################################################
 ##################### CREATE A PILOT ###################################
 # NB. Need uuid for the logfile etc, so do it now
-p = Pilot(cycles=cycles, period=period)
+p = Pilot(cycles=cycles, period=period) # print(p.pid)
 
 ################### BEGIN: PREPARE LOGGER ##############################
 # Check if we have a log directory, example: /tmp/p3s/pilots.
@@ -214,6 +214,7 @@ if(verb>1): print('REGISTER: server response: %s'	% resp)
 if(verb>1): logger.info('REGISTER: server response: %s'	% resp)
 
 msg = {} # we expect a message from the server formatted in json
+# print(resp)
 try:
     msg		= json.loads(resp)
     p['status']	= msg['status']

@@ -46,6 +46,8 @@ def register(request):
     post	= request.POST
     p_uuid	= post['uuid']
     t0		= timezone.now()
+
+    print('here')
     p = pilot(
         state		= post['state'],
         site		= post['site'],
@@ -53,7 +55,8 @@ def register(request):
         uuid		= p_uuid,
         ts_cre		= post['ts'],
         ts_reg		= t0,
-        ts_lhb		= t0
+        ts_lhb		= t0,
+        pid		= post['pid']
     )
 
     p.save()
