@@ -11,7 +11,7 @@ urlpatterns = [
     url(r'^workflows',	views.data_handler,	{'what':'workflows'},	name='workflows'),
     # -----
     url(r'^jobdetail',	views.detail_handler,	{'what':'job'},		name='jobdetail'),
-    url(r'^datadetail',	views.detail_handler,	{'what':'data'},	name='datadetail'),
+    url(r'^datadetail',	views.detail_handler,	{'what':'dataset'},	name='datadetail'),
     url(r'^pilotdetail',views.detail_handler,	{'what':'pilot'},	name='pilotdetail'),
     url(r'^dagdetail',	views.detail_handler,	{'what':'dag'},		name='dagdetail'),
     url(r'^wfdetail',	views.detail_handler,	{'what':'workflow'},	name='wfdetail'),

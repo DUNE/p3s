@@ -167,7 +167,8 @@ if(adj):
 ########################### JOB PURGE  #################################
 # 
 if(purge!=''):
-    resp = API.post2server('job', 'purge', dict(interval=purge, timestamp=timestamp, state=state))
+#    resp = API.post2server('job', 'purge', dict(interval=purge, timestamp=timestamp, state=state))
+    resp = API.post2server('logic', 'purge', dict(interval=purge, timestamp=timestamp, state=state))
     if(verb>0): print(resp)
     exit(0)
 

@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^workflows/',	include('workflows.urls')),
     url(r'^monitor/',	include('monitor.urls')),
     url(r'^data/',	include('data.urls')),
+    url(r'^logic/',	include('logic.urls')),
 
     # The ADMIN
     url(r'^admin/',	admin.site.urls),

@@ -99,19 +99,15 @@ def request(request): # Pilot's request for a job:
     post	= request.POST
     p_uuid	= post['uuid']
 
-#    p_uuid	= request.GET.get('uuid','')
-    
     p = pilot.objects.get(uuid=p_uuid) # FIXME - handle unlikely error
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS: (will bail here)
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
 
 
-    # Please see Footnote (1)
-    ordering = 'ts_def'
 
-    # Please see Footnote (2)
-    priolist = (10,9,8,7,6,5,4,3,2,1,0)
+    ordering = 'ts_def'			# Please see Footnote (1)
+    priolist = (10,9,8,7,6,5,4,3,2,1,0)	# Please see Footnote (2)
     
     j = None # placeholder for the job
 
@@ -128,7 +124,6 @@ def request(request): # Pilot's request for a job:
 
                     logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
-                    # j = job.objects.select_for_update(nowait=True).get(uuid=j_candidate.uuid)
                     j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
                     if(j.state!='defined'):
                         j = None

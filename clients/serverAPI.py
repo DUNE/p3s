@@ -41,6 +41,11 @@ class serverAPI(dict):
             'addwfURL':		server+'workflows/addwf',
         }
 
+        ### LOGIC
+        self['logic']	= {
+            'purge':	server+'jobs/purge',
+        }
+
 
     def setLogger(self, logger):
         self.logger=logger

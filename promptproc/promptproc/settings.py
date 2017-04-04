@@ -46,6 +46,7 @@ ALLOWED_HOSTS = ['localhost',
 # -mxp- common time format
 TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
+# -------------------------------------
 # Application definition
 
 INSTALLED_APPS = [
@@ -53,6 +54,8 @@ INSTALLED_APPS = [
     'jobs.apps.JobsConfig',
     'pilots.apps.PilotsConfig',
     'data.apps.DataConfig',
+    'logic.apps.LogicConfig',
+#
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

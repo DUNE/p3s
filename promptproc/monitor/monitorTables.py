@@ -83,9 +83,9 @@ class JobTable(MonitorTable):
         exclude = ('p_uuid', 'env', 'ts_dis',)
 #--------------------------------------------------------
 class DataTable(MonitorTable):
-    def render_uuid(self,value):	return self.makelink('datadetail','uuid', value)
-    def render_wfuuid(self,value):	return self.makelink('wfdetail','uuid', value)
-    def render_datatype(self,value):	return self.makelink('datatypes','', value)
+    def render_uuid(self,value):	return self.makelink('datadetail',	'uuid',	value)
+    def render_wfuuid(self,value):	return self.makelink('wfdetail',	'uuid',	value)
+    def render_datatype(self,value):	return self.makelink('datatypes',	'',	value)
 
     class Meta:
         model = dataset
@@ -103,9 +103,9 @@ class PilotTable(MonitorTable):
     ts_lhb	= tables.Column(verbose_name='last heartbeat')
     jobcount	= tables.Column(verbose_name='jobs')
     
-    def render_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
-    def render_j_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('pilotdetail','pk', value)
+    def render_uuid(self,value):	return self.makelink('pilots',		'uuid',	value)
+    def render_j_uuid(self,value):	return self.makelink('jobs',		'uuid',	value)
+    def render_id(self,value):		return self.makelink('pilotdetail',	'pk', value)
 
     def render_ts_cre(self, value):	return self.renderDateTime(value)
     def render_ts_reg(self, value):	return self.renderDateTime(value)
