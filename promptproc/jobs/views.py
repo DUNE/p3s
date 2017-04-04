@@ -145,18 +145,25 @@ def purge(request):
     
     interval	= post['interval']
     timestamp	= post['timestamp']
+    state	= post['state']
+
     # print(interval, timestamp)
+
     cutoff = timezone.now() - dt(interval) # print(cutoff)
 
     selection = None
     nDeleted  = 0
     
-    if(timestamp=='defined'):
+    if(timestamp=='ts_def'):
         selection = job.objects.filter(ts_def__lte=cutoff)
+    if(timestamp=='ts_sto'):
+        selection = job.objects.filter(ts_sto__lte=cutoff)
     else:
         pass
 
     if selection:
+        if(state and state!=''):
+            selection = selection.filter(state=state)
         print('objects:',len(selection))
         nDeleted = len(selection)
         for o in selection:
