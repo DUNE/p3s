@@ -43,7 +43,7 @@ class serverAPI(dict):
 
         ### LOGIC
         self['logic']	= {
-            'purge':	server+'jobs/purge',
+            'purge':	server+'logic/purge',
         }
 
 

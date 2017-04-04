@@ -31,37 +31,31 @@ import	django_tables2 as tables
 from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
+from utils.timeUtils import dt
+
 ###################################################
 @csrf_exempt
 def purge(request):
     post	= request.POST
     
     interval	= post['interval']
-    timestamp	= post['timestamp']
+    timestamp	= post['timestamp'] # print(interval, timestamp)
     state	= post['state']
+    what	= post['what']
 
-    # print(interval, timestamp)
-
-    cutoff = timezone.now() - dt(interval) # print(cutoff)
+    cutoff = timezone.now() - dt(interval) #  print(str(timezone.now()), cutoff)
 
     selection = None
     nDeleted  = 0
-    
-    if(timestamp=='ts_def'):
-        jj = eval("job")
-        selection = jj.filter(ts_def__lte=cutoff)
-    if(timestamp=='ts_sto'):
-        selection = job.objects.filter(ts_sto__lte=cutoff)
-    else:
-        pass
+
+    kwargs = {'{0}__{1}'.format(timestamp, 'lte'): str(cutoff),}
+
+    obj = eval(what)
+    selection = obj.objects.filter(**kwargs)
 
     if selection:
-        if(state and state!=''):
-            selection = selection.filter(state=state)
-        print('objects:',len(selection))
-        nDeleted = len(selection)
-        for o in selection:
-            print(o.uuid)
+        if(state and state!=''): selection = selection.filter(state=state)
+        nDeleted = len(selection) # for o in selection: print(o.uuid)
         selection.delete()
     
     return HttpResponse(str(nDeleted))

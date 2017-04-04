@@ -140,6 +140,8 @@ def detail(request):
     return HttpResponse(data)
 ###################################################
 @csrf_exempt
+
+### TO BE RETIRED, MOVED TO LOGIC  ###
 def purge(request):
     post	= request.POST
     
