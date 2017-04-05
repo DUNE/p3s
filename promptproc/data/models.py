@@ -1,4 +1,5 @@
-from django.db import models
+from django.db		import models
+from django.core	import serializers
 
 # Dataset is a general class for a unit of data ingested or
 # produced by a job. When using directed multigraph as the model fo
@@ -16,7 +17,7 @@ class dataset(models.Model):
     #
     state	= models.CharField(max_length=64, default='')
     #
-    comment	= models.CharField(max_length=256, default='')
+    comment	= models.CharField(max_length=256,default='')
     datatype	= models.CharField(max_length=64, default='')
     datatag	= models.CharField(max_length=64, default='')
 
@@ -30,7 +31,9 @@ class dataset(models.Model):
     targetuuid	= models.CharField(max_length=36, default='')
 
     def __str__(self):
-        return self.sourceuuid+':'+self.targetuuid
+        return serializers.serialize("json", [self, ])
+
+        #        return self.sourceuuid+':'+self.targetuuid
 
     @classmethod
     def N(self):

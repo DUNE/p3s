@@ -1,5 +1,6 @@
 import json
 from django.db		import models
+from django.core	import serializers
 
 class job(models.Model):
     uuid	= models.CharField(max_length=36, default='')
@@ -21,7 +22,8 @@ class job(models.Model):
     pid		= models.CharField(max_length=16, default='')
 
     def __str__(self):
-        return self.uuid
+        return serializers.serialize("json", [self, ])
+    #        return self.uuid
 
     
     def augmentEnv(self, d):# add to the existing job environment from the dictionary provided
