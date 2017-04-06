@@ -262,15 +262,18 @@ def detail_handler(request, what):
     data	= []
 
 
-    # FIXME -- all this chaff to get special treatment for job uuid.
-    # Need to rethink.
+    # FIXME -- perhaps I can make more OO
     for a in dicto.keys():
-        if(a!='j_uuid'):
-            data.append({'attribute': a, 'value': dicto[a]})
-        else:
+        if(a=='j_uuid'):
             x = mark_safe('<a href="http://%s/monitor/%s?%s=%s">%s</a>'
                          % (domain, 'jobdetail', 'uuid',dicto[a], dicto[a]))
             data.append({'attribute': a, 'value': x})
+        elif(a=='p_uuid'):
+            x = mark_safe('<a href="http://%s/monitor/%s?%s=%s">%s</a>'
+                         % (domain, 'pilotdetail', 'uuid',dicto[a], dicto[a]))
+            data.append({'attribute': a, 'value': x})
+        else:
+            data.append({'attribute': a, 'value': dicto[a]})
 
     t = DetailTable(data)
     t.set_site(domain)
