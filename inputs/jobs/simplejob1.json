@@ -3,8 +3,8 @@
 	"name":		"simple p3s job, type 1",
 	"timeout":	"100",
         "jobtype":	"type1",
-        "payload":	"sleep 30 & date > /tmp/d.txt & sleep 10 & ",
-	"env":		{"P3S":"TRUE","POSTGRES":"FALSE"},
+        "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplepayload1.sh",
+	"env":		{"P3S_TEST":"TRUE"},
         "priority":	"1",
 	"state":	"defined"
     }

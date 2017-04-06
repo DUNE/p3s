@@ -47,7 +47,6 @@ def register(request):
     p_uuid	= post['uuid']
     t0		= timezone.now()
 
-    print('here')
     p = pilot(
         state		= post['state'],
         site		= post['site'],
@@ -172,11 +171,13 @@ def report(request):
     state	= post['state']
     event	= post['event']
     jobcount	= post['jobcount']
+    jpid	= post['jpid']
     
     p		= pilot.objects.get(uuid=p_uuid)
     p.state	= state
     p.ts_lhb	= timezone.now()
     p.jobcount	= jobcount
+    p.jpid	= jpid
 
     if(state in 'active','stopped'):
         p.status = 'OK'
@@ -188,9 +189,10 @@ def report(request):
         try:
             j = job.objects.get(uuid=p.j_uuid)
             j.state = state # that's where the job has its state set in normal running
+            j.pid	= jpid
             
             if(event=='jobstart'):
-                j.ts_sta = timezone.now()
+                j.ts_sta= timezone.now()
                 with transaction.atomic():
                     j.save()
                 if(j.wfuuid!=''):

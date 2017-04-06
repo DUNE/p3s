@@ -16,6 +16,9 @@ import json
 import subprocess
 import shlex
 
+# --- process management... deferred 4.6.2017
+# import psutil
+
 # Django
 from django.conf	import settings
 from django.utils	import timezone
@@ -69,7 +72,8 @@ class Pilot(dict):
         self['jobcount']= jobcount
         self.cycles	= cycles
         self.period	= period
-        self.job	= '' # job to be yet received
+        self.job	= '' # job uuid (to be yet received)
+        self['jpid']	= '' # ditto
         self['pid']	= os.getpid()
 #########################################################################
 (user, server, verb) = clientenv()
@@ -201,11 +205,13 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 logfile.setFormatter(formatter)
 
 logger.addHandler(logfile)
-logger.info('START %s on host %s, user %s, p3s server %s, period %s, %s cycles, verbosity %s' %
-            (str(p['uuid']), p['host'], user, server, period, cycles, verb))
 
 API.setLogger(logger)
 API.setVerbosity(verb)
+
+logger.info('START %s as pid %s on host %s, user %s, p3s server %s, period %s, %s cycles, verbosity %s' %
+            (str(p['uuid']), p['pid'], p['host'], user, server, period, cycles, verb))
+
 #########################################################################
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
 resp = API.registerPilot(p)
@@ -309,12 +315,17 @@ while(cnt>0):
                                 stderr=subprocess.PIPE,
                                 env=job_env,
                                 shell=shell)
+
+        jobPID = proc.pid
         errCode = None
+
         while True:
             errCode = proc.poll()
+            if(verb>1): print('heartbeat... Job PID:',jobPID, 'errCode:', errCode)
             if errCode is None:
                 p['state']='running'
                 p['event']='heartbeat'
+                p['jpid'] = jobPID
                 response = API.reportPilot(p)
                 logger.info('HEARTBEAT')
             else:
@@ -329,6 +340,8 @@ while(cnt>0):
         p['state']	='finished'
         p['event']	='jobstop'
         p['jobcount']  += 1
+        p['jpid']	= jobPID
+        print(p)
         response = API.reportPilot(p)
         logger.info('JOB finished: %s' %  p['job'])
 
@@ -373,3 +386,7 @@ exit(0)
 # response_date	= headers['date']
 
 
+#            errCode = proc.poll()
+#            psProc = psutil.Process(pid=jobPID)
+#            psKids=psProc.children(recursive=True)
+#            if(verb>1): print(psKids)
