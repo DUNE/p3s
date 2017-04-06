@@ -1,4 +1,5 @@
-from django.db import models
+from django.db		import models
+from django.utils	import timezone
 
 from data.models	import dataset, datatype
 from jobs.models	import job
@@ -15,7 +16,11 @@ class manager(object):
             # for each such edge find verices where it terminates
             for child in job.objects.filter(uuid=edge.targetuuid):
                 if(child.jobtype=='noop'): # dummy job, automatically tagged complete
-                    child.state='finished'
+                    t = timezone.now()
+                    child.ts_dis	= t
+                    child.ts_sta	= t
+                    child.ts_sto	= t
+                    child.state		='finished'
                     ndone+=1
                 else:
                     child.state = state

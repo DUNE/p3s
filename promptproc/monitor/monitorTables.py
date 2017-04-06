@@ -84,12 +84,13 @@ class JobTable(MonitorTable):
 #--------------------------------------------------------
 class DataTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('datadetail',	'uuid',	value)
-    def render_wfuuid(self,value):	return self.makelink('wfdetail',	'uuid',	value)
+    #    def render_wfuuid(self,value):	return self.makelink('wfdetail',	'uuid',	value)
     def render_datatype(self,value):	return self.makelink('datatypes',	'',	value)
 
     class Meta:
         model = dataset
         attrs = {'class': 'paleblue'}
+        exclude = ('wfuuid',)
 #--------------------------------------------------------
 class DataTypeTable(MonitorTable):
 

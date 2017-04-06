@@ -195,12 +195,11 @@ def report(request):
                     j.save()
                 if(j.wfuuid!=''):
                     wf = workflow.objects.get(uuid=j.wfuuid)
-                    if(wf.rootuuid==j.uuid):
-                        wf.ts_sta = timezone.now()
-                        
-                    wf.state = "running"
-                    with transaction.atomic():
-                        wf.save()
+                    if(wf.state!='running'):
+                        wf.ts_sta = timezone.now() #since noop does not really execute: if(wf.rootuuid==j.uuid):
+                        wf.state = "running"
+                        with transaction.atomic():
+                            wf.save()
 
             if(event=='jobstop'): # timestamp and toggle children
                 doneJobs = p.jobs_done

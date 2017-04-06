@@ -460,7 +460,11 @@ def wf2defined(wf):
 
     nd = 1
     if(j.jobtype=='noop'):
-        j.state = 'finished'
+        j.state	= 'finished'
+        t	= timezone.now()
+        j.ts_dis= t
+        j.ts_sta= t
+        j.ts_sto= t
         nd+=manager.childrenStateToggle(j,'defined')
     else:
         j.state = 'defined'
