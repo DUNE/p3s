@@ -195,6 +195,9 @@ def report(request):
                     j.save()
                 if(j.wfuuid!=''):
                     wf = workflow.objects.get(uuid=j.wfuuid)
+                    if(wf.rootuuid==j.uuid):
+                        wf.ts_sta = timezone.now()
+                        
                     wf.state = "running"
                     with transaction.atomic():
                         wf.save()
@@ -209,7 +212,7 @@ def report(request):
                 p.jobs_done = doneJobs
                 
                 j.ts_sto = timezone.now()
-                manager.childrenStateToggle(j,'defined') # j.childrenStateToggle('defined')
+                nd = manager.childrenStateToggle(j,'defined')
                 with transaction.atomic():
                     j.save()
                 
@@ -220,7 +223,11 @@ def report(request):
                         if(q.state!='finished'): done = False
 
                     wf = workflow.objects.get(uuid=j.wfuuid)
-                    if done: wf.state = "finished"
+                    wf.ndone = wf.ndone + nd + 1
+                    if done:
+                        wf.ts_sto = timezone.now()
+                        wf.state = "finished"
+                        
                     with transaction.atomic():
                         wf.save()
         except:

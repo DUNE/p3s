@@ -202,6 +202,7 @@ if(delete):
 
 ###################### GET DAG (DIAGNOSTICS) ###########################
 if(get!=''):
+    if(verb>0): print('Attempting to fetch DAG "'+get+'" from the server')
     resp = API.get2server('workflow','getdagURL', get)
     if(verb>0): print(resp)
     exit(0)

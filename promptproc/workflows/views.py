@@ -41,7 +41,7 @@ def init(request):
 def deleteall(request):
     what = request.GET.get('what','')
     if(what==''):
-        return HttpResponse("DELETE ALL: SPECIFICATION OF OBJECTS TO BE DELETED MISSING")
+        return HttpResponse("TYPE OF OBJECT TO BE DELETED MISSING (e.g. dag vs workflow)")
 
 
     ### ALL OF THIS WILL NEED TO BE IMPROVED WITH FOREIGN KEYS AND ALL -
@@ -63,12 +63,10 @@ def deleteall(request):
 
     if(what=='workflow'): 
         try:
-            # wfVertex.objects.all().delete()
             job.objects.all().delete()
         except:
             success = False
         try:
-            # wfEdge.objects.all().delete()
             dataset.objects.all().delete()
         except:
             success = False
@@ -277,15 +275,14 @@ def addwf(request):
                 except:
                     pass
                     
-    if(jobjson!=''):	jobinfo = json.loads(jobjson)
-
-    # print(jobjson)
-    # print(jobinfo)
+    if(jobjson!=''): jobinfo = json.loads(jobjson) # print(jobjson) # print(jobinfo)
     
     ts_def   = timezone.now()
 
-    rootName = dag.objects.get(name=dagName).root
-
+    myDAG	= dag.objects.get(name=dagName)
+    rootName	= myDAG.root
+    nvert	= myDAG.nvertices
+    
     # Create a Workflow object and populate it:
     wf		= workflow()
     wf.ts_def	= ts_def
@@ -294,6 +291,7 @@ def addwf(request):
     wf.name	= name
     wf.user	= user
     wf.state	= state
+    wf.nvertices= nvert
     wf.description= description
     # ATTN: we'll save the WF a bit later ( we would like to get the root job uuid).
 
@@ -458,15 +456,17 @@ def addwf(request):
 #
 def wf2defined(wf):
     wf.state	= 'defined'
-    wf.save()
-    
     j = job.objects.get(uuid=wf.rootuuid)
-    
+
+    nd = 1
     if(j.jobtype=='noop'):
         j.state = 'finished'
-        manager.childrenStateToggle(j,'defined')
+        nd+=manager.childrenStateToggle(j,'defined')
     else:
         j.state = 'defined'
+        
+    wf.ndone = nd
+    wf.save()
     j.save()
 ###################################################
 @csrf_exempt
