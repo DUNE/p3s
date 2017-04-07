@@ -1,0 +1,11 @@
+[
+    {
+	"name":		"sleep1000",
+	"timeout":	"100",
+        "jobtype":	"sleep",
+        "payload":	"/home/maxim/projects/p3s/inputs/jobs/sleep1000.sh",
+	"env":		{"P3S_TEST":"TRUE"},
+        "priority":	"1",
+	"state":	"defined"
+    }
+]
