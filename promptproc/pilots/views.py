@@ -172,6 +172,7 @@ def report(request):
     event	= post['event']
     jobcount	= post['jobcount']
     jpid	= post['jpid']
+    errcode	= post['errcode']
     
     p		= pilot.objects.get(uuid=p_uuid)
     p.state	= state
@@ -190,9 +191,13 @@ def report(request):
             j = job.objects.get(uuid=p.j_uuid)
             j.state = state # that's where the job has its state set in normal running
             j.pid	= jpid
+            print('--------------', j.pid)
+            with transaction.atomic():
+                j.save()
             
             if(event=='jobstart'):
                 j.ts_sta= timezone.now()
+                j.state = state
                 with transaction.atomic():
                     j.save()
                 if(j.wfuuid!=''):
@@ -213,6 +218,7 @@ def report(request):
                 p.jobs_done = doneJobs
                 
                 j.ts_sto = timezone.now()
+                j.errcode= errcode
                 nd = manager.childrenStateToggle(j,'defined')
                 with transaction.atomic():
                     j.save()

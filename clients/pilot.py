@@ -337,11 +337,13 @@ while(cnt>0):
             time.sleep(beat)
 
         # Ended loop, assume job done (FIXME error handling)
-        p['state']	='finished'
-        p['event']	='jobstop'
+        p['state']	= 'finished'
+        p['event']	= 'jobstop'
+        p['errcode']	= errCode
         p['jobcount']  += 1
         p['jpid']	= jobPID
         print(p)
+        
         response = API.reportPilot(p)
         logger.info('JOB finished: %s' %  p['job'])
 
