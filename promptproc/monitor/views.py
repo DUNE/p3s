@@ -51,8 +51,8 @@ SELECTORS	= {
     {'label':'Pilot States (select one)',
      'states':[
          ('all',	'All'),
-         ('stopped', 'Stopped'),
-         ('no jobs', 'No Jobs'),
+         ('stopped',	'Stopped'),
+         ('no jobs',	'No Jobs'),
      ],
      'gUrl':'/monitor/pilots',
      'qUrl':'/monitor/pilots?state=%s',
@@ -61,7 +61,7 @@ SELECTORS	= {
     {'label':'Job States (select one)',
      'states':[
          ('all',	'All'),
-         ('template','Template'),
+         ('template',	'Template'),
          ('defined',	'Defined'),
          ('running',	'Running'),
          ('finished','Finished'),
@@ -262,18 +262,18 @@ def detail_handler(request, what):
     data	= []
 
 
-    # FIXME -- perhaps I can make more OO
+    # FIXME -- perhaps I can make it more OO
     for a in dicto.keys():
         if(a=='j_uuid'):
             x = mark_safe('<a href="http://%s/monitor/%s?%s=%s">%s</a>'
-                         % (domain, 'jobdetail', 'uuid',dicto[a], dicto[a]))
-            data.append({'attribute': a, 'value': x})
+                         % (domain, 'jobdetail',	'uuid',	dicto[a], dicto[a]))
         elif(a=='p_uuid'):
             x = mark_safe('<a href="http://%s/monitor/%s?%s=%s">%s</a>'
-                         % (domain, 'pilotdetail', 'uuid',dicto[a], dicto[a]))
-            data.append({'attribute': a, 'value': x})
+                         % (domain, 'pilotdetail',	'uuid',	dicto[a], dicto[a]))
         else:
-            data.append({'attribute': a, 'value': dicto[a]})
+            x = dicto[a]
+            
+        data.append({'attribute': a, 'value': x})
 
     t = DetailTable(data)
     t.set_site(domain)
