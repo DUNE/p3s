@@ -74,6 +74,7 @@ class Pilot(dict):
         self.period	= period
         self.job	= '' # job uuid (to be yet received)
         self['jpid']	= '' # ditto
+        self['errcode']	= '' # ditto
         self['pid']	= os.getpid()
 #########################################################################
 (user, server, verb) = clientenv()
@@ -296,7 +297,7 @@ while(cnt>0):
 
     logger.info('JOB to be started: %s' %  p['job'])
     resp = API.reportPilot(p)
-    if(verb>0): logger.info('About to start job, server response was: %s' % resp)
+    if(verb>0): logger.info('Starting job, server response: %s' % resp)
 
     # EXECUTION
     pilot_env	= os.environ.copy()
@@ -321,13 +322,13 @@ while(cnt>0):
 
         while True:
             errCode = proc.poll()
-            if(verb>1): print('heartbeat... Job PID:',jobPID, 'errCode:', errCode)
+            if(verb>1): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
             if errCode is None:
                 p['state']='running'
                 p['event']='heartbeat'
                 p['jpid'] = jobPID
                 response = API.reportPilot(p)
-                logger.info('HEARTBEAT')
+                logger.info('HEARTBEAT, server response: %s' % response)
             else:
                 jobout = open(joblogdir+'/'+ p['job']+'.out','w')
                 joberr = open(joblogdir+'/'+ p['job']+'.err','w')

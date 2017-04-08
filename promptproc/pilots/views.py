@@ -191,7 +191,7 @@ def report(request):
             j = job.objects.get(uuid=p.j_uuid)
             j.state = state # that's where the job has its state set in normal running
             j.pid	= jpid
-            print('--------------', j.pid)
+            print('--------------', j.pid, j.state)
             with transaction.atomic():
                 j.save()
             
