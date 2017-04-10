@@ -20,7 +20,6 @@ else
 fi
 
 echo setting $p3s_server on port $port
-exit
 
 export P3S_SERVER="http://$p3s_server:$port/"
 export P3S_VERBOSITY=2
