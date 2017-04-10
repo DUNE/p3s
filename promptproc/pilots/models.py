@@ -26,6 +26,19 @@ class pilot(models.Model):
     @classmethod
     def N(self):
         return self.objects.count()
+
+    @classmethod
+    def Nrun(self):
+        return self.objects.filter(state='running').count()
+    
+    @classmethod
+    def Nidle(self):
+        return self.objects.filter(state='no jobs').count()
+
+    @classmethod
+    def Nstop(self):
+        return self.objects.filter(state='stopped').count()
+
     
     def __str__(self):
         return self.uuid

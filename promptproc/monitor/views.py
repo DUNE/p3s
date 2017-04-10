@@ -51,6 +51,8 @@ SELECTORS	= {
     {'label':'Pilot States (select one)',
      'states':[
          ('all',	'All'),
+         ('active',	'Active'),
+         ('running',	'Running'),
          ('stopped',	'Stopped'),
          ('no jobs',	'No Jobs'),
      ],

@@ -35,6 +35,19 @@ class job(models.Model):
     def N(self):
         return self.objects.count()
     
+    @classmethod
+    def Nrun(self):
+        return self.objects.filter(state='running').count()
+    
+    @classmethod
+    def Nfin(self):
+        return self.objects.filter(state='finished').count()
+    
+    @classmethod
+    def Ndef(self):
+        return self.objects.filter(state='defined').count()
+
+#######################    
 class jobtype(models.Model):
     name	= models.CharField(max_length=32, default='')
     priority	= models.PositiveIntegerField(default=0)

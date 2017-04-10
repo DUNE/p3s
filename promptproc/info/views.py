@@ -25,8 +25,16 @@ def index(request):
     hostname	= settings.HOSTNAME
 
     summaryData = []
-    summaryData.append({'Object': 'Pilots',	'Number': 	pilot.N()})
-    summaryData.append({'Object': 'Jobs',	'Number': 	job.N()})
+#    pilotTot	= pilot.N()
+#    pilotRun	= pilot.objects.filter(state='running').count()
+#    pilotIdle	= pilot.objects.filter(state='no jobs').count()
+    
+    summaryData.append({'Object': 'Pilots: total/idle/running/stopped',
+                        'Number': "%s/%s/%s/%s" % ( pilot.N(), pilot.Nidle(), pilot.Nrun(), pilot.Nstop())})
+    
+    summaryData.append({'Object': 'Jobs: total/defined/running/finished',
+	                'Number':  "%s/%s/%s/%s" % ( job.N(), job.Ndef(), job.Nrun(), job.Nfin())})
+    
     summaryData.append({'Object': 'Workflows',	'Number':	workflow.N()})
     summaryData.append({'Object': 'Datasets',	'Number':	dataset.N()})
     
