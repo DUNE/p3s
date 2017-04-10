@@ -89,10 +89,10 @@ parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 
                     help="output verbosity (0-2), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
-                    help="how many cycles (with period in seconds) to stay alive")
+                    help="number of job resuest cycles, while 0 means infinite loop")
 
 parser.add_argument("-p", "--period",	type=int,	default=5,
-                    help="period of the wait-for-job cycle, in seconds")
+                    help="period of the job request cycle, in seconds")
 
 parser.add_argument("-b", "--beat",	type=int,	default=2,
                     help="the heartbeat, in seconds")
@@ -109,21 +109,14 @@ parser.add_argument("-s", "--shell",	action='store_true',
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
-(server,logdir, joblogdir, verb, dlt, p_uuid , usage) =
-(args.server, args.logdir, args.joblogdir, args.verbosity, args.delete, args.uuid, args.usage)
-
-
-shell	= args.shell
-
-# scheduling
-period	= args.period
-cycles	= args.cycles
-beat	= args.beat
-
-# testing (pre-emptive exit with print)
-tst	= args.test
-
-# USAGE
+(
+    server, logdir, joblogdir, verb, dlt, p_uuid ,
+    usage, shell, period, cycles, beat, tst
+) = (
+    args.server, args.logdir, args.joblogdir, args.verbosity, args.delete, args.uuid,
+    args.usage, args.shell, args.period, args.cycles, args.beat, args.test
+)
+############################## START ###################################
 if(usage):
     print(Usage)
     exit(0)
@@ -152,7 +145,6 @@ if(dlt):
 
     exit(0)
 
-########################################################################
 ##################### CREATE A PILOT ###################################
 # NB. Need uuid for the logfile etc, so do it now
 p = Pilot(cycles=cycles, period=period) # print(p.pid)
@@ -218,7 +210,7 @@ cnt		= p.cycles # Number of cycles to go through before exit
 p['jobcount']	= 0 # will count how many jobs were eceuted in this pilot
 #################### MAIN "POLL FOR JOBS" LOOP ##########################
 
-while(cnt>0):
+while(cnt>0 or p.cycles==0):
 
     if(verb>1): print('Attempts left: %s' % str(cnt))
     if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
@@ -242,7 +234,7 @@ while(cnt>0):
 
     if(p['state'] in ('no jobs', 'DB lock')): # didn't get a job, skip the cycle.
         logger.info(p['state'])
-        cnt-=1
+        cnt-=1 # won't matter if cycles were set to zero for infinite loop
         if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
             break
         time.sleep(period)
@@ -355,19 +347,13 @@ while(cnt>0):
 
 p['state']	= 'stopped'
 response = API.reportPilot(p)
-logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' % (str(p['uuid']), p['host'], cycles, period, str(p['jobcount'])))
+logger.info('STOP %s, host %s, cycles*period: %s*%s, jobs done %s' %
+            (str(p['uuid']), p['host'], cycles, period, str(p['jobcount'])))
 if(verb>0): print("Stopped. Processed jobs: %s" % str(p['jobcount']))
 
 exit(0)
 
-######################## DUSTY ATTIC ###################################
-# headers	= response.info()
-# data		= response.read()
-
-# response_url	= response.geturl()
-# response_date	= headers['date']
-
-
+######################## FOR LATER   ###################################
 #            errCode = proc.poll()
 #            psProc = psutil.Process(pid=jobPID)
 #            psKids=psProc.children(recursive=True)
