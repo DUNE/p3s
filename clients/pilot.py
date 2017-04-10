@@ -58,25 +58,11 @@ stopped		stopped after exhausting all brokerage attempts.
 
 
 '''
+from Pilot import Pilot
 
-########################### THE PILOT CLASS #############################
-class Pilot(dict):
-    def __init__(self, jobcount=0, cycles=1, period=5):
-        self['state']	= 'active' # start as active
-        self['status']	= '' # status of server comms
-        self['host']	= socket.gethostname()
-        self['site']	= 'default' # FIXME - will need to get from env
-        self['ts']	= str(timezone.now())
-        self['uuid']	= uuid.uuid1()
-        self['event']	= '' # what just happned in the pilot
-        self['jobcount']= jobcount
-        self.cycles	= cycles
-        self.period	= period
-        self.job	= '' # job uuid (to be yet received)
-        self['jpid']	= '' # ditto
-        self['errcode']	= '' # ditto
-        self['pid']	= os.getpid()
-#########################################################################
+#########################################################################        
+#############################  BEGIN  ###################################
+
 (user, server, verb) = clientenv()
 
 logdefault	= '/tmp/'+user+'/p3s/pilots'
@@ -123,16 +109,9 @@ parser.add_argument("-s", "--shell",	action='store_true',
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
-# strings
-server	= args.server
-logdir	= args.logdir
-joblogdir= args.joblogdir
+(server,logdir, joblogdir, verb, dlt, p_uuid , usage) =
+(args.server, args.logdir, args.joblogdir, args.verbosity, args.delete, args.uuid, args.usage)
 
-# misc
-verb	= args.verbosity
-delete	= args.delete
-p_uuid	= args.uuid
-usage	= args.usage
 
 shell	= args.shell
 
@@ -144,7 +123,7 @@ beat	= args.beat
 # testing (pre-emptive exit with print)
 tst	= args.test
 
-###################### USAGE REQUESTED? ################################
+# USAGE
 if(usage):
     print(Usage)
     exit(0)
@@ -156,7 +135,7 @@ API  = serverAPI(server=server)
 # Check if it was a deletion request. Note we don't have a logger yet,
 # since a log is always tied to a working pilot, so we don't log
 # deletion errors to a file in this function.
-if(delete):
+if(dlt):
     response = None
     if(p_uuid==''): exit(-2) # check if we have the key
 
@@ -393,3 +372,24 @@ exit(0)
 #            psProc = psutil.Process(pid=jobPID)
 #            psKids=psProc.children(recursive=True)
 #            if(verb>1): print(psKids)
+
+# The pilot has been factored out into a separate file
+########################### THE PILOT CLASS #############################
+# class Pilot(dict):
+#     def __init__(self, jobcount=0, cycles=1, period=5):
+#         self['state']	= 'active' # start as active
+#         self['status']	= '' # status of server comms
+#         self['host']	= socket.gethostname()
+#         self['site']	= 'default' # FIXME - will need to get from env
+#         self['ts']	= str(timezone.now())
+#         self['uuid']	= uuid.uuid1()
+#         self['event']	= '' # what just happned in the pilot
+#         self['jobcount']= jobcount
+#         self.cycles	= cycles
+#         self.period	= period
+#         self.job	= '' # job uuid (to be yet received)
+#         self['jpid']	= '' # ditto
+#         self['errcode']	= '' # ditto
+#         self['pid']	= os.getpid()
+
+
