@@ -37,12 +37,13 @@ DEBUG = True # WARNING: don't run with debug turned on in production
 
 # -mxp- Please note this is for strictly development enviroment
 # and wiill be meaningless elsewhere
-ALLOWED_HOSTS = ['localhost',
-                 'tranquility.local',
-                 'serenity.local',
-                 'felicity.local',
-                 'ferocity.local',
-                 'sagacity.local',]
+# ALLOWED_HOSTS = ['localhost',
+#                  'tranquility.local',
+#                  'serenity.local',
+#                  'felicity.local',
+#                  'ferocity.local',
+#                  'sagacity.local',]
+ALLOWED_HOSTS = [*]
 # -mxp- common time format
 TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
