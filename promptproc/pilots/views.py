@@ -168,13 +168,21 @@ def report(request):
     
     post	= request.POST
     p_uuid	= post['uuid']
+    p		= pilot.objects.get(uuid=p_uuid)
+    
+    # Check if this pilot timed out (based on heartbeat)
+    if(p.state=='timeout'):
+        return HttpResponse(json.dumps({'status':	'FAIL',
+                                        'state':	p.state,
+                                        'error':	'timeout'}))
+
+    
     state	= post['state']
     event	= post['event']
     jobcount	= post['jobcount']
     jpid	= post['jpid']
     errcode	= post['errcode']
     
-    p		= pilot.objects.get(uuid=p_uuid)
     p.state	= state
     p.ts_lhb	= timezone.now()
     p.jobcount	= jobcount

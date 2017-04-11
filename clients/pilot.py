@@ -14,6 +14,7 @@ import datetime
 import logging
 import json
 import subprocess
+import signal
 import shlex
 
 # --- process management... deferred 4.6.2017
@@ -292,14 +293,25 @@ while(cnt>0 or p.cycles==0):
         errCode = None
 
         while True:
+            msg = {}
             errCode = proc.poll()
             if(verb>1): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
             if errCode is None:
                 p['state']='running'
                 p['event']='heartbeat'
                 p['jpid'] = jobPID
-                response = API.reportPilot(p)
-                logger.info('HEARTBEAT, server response: %s' % response)
+                data = API.reportPilot(p)
+                try:
+                    msg = json.loads(data)
+                    p['status'], p['state']	= msg['status'], msg['state']
+                except:
+                    logger.error('exiting, failed to parse the server message at report: %s' % data)
+                    exit(3)
+
+                # Failure reported from brokerage on the server, will log and exit
+                if(p['status']=='FAIL'): logfail(msg, logger)
+
+                logger.info('HEARTBEAT, server response: %s' % data)
             else:
                 jobout = open(joblogdir+'/'+ p['job']+'.out','w')
                 joberr = open(joblogdir+'/'+ p['job']+'.err','w')

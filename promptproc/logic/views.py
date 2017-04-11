@@ -59,3 +59,13 @@ def purge(request):
         selection.delete()
     
     return HttpResponse(str(nDeleted))
+
+###################################################
+def pilotTO(request):
+    cutoff = timezone.now() - timedelta(minutes=2) #  improve later
+    selection = pilot.objects.filter(ts_lhb__lte=cutoff).exclude(state='stopped')
+    selection.update(state='timeout', status='FAIL')
+    nTO = len(selection)
+    return HttpResponse(str(nTO))
+#### FIXME - state of wf and job needs to be updated
+####    cutoff = timezone.now() - timedelta(seconds=5) #  for testing
