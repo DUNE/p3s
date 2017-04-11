@@ -43,7 +43,7 @@ DEBUG = True # WARNING: don't run with debug turned on in production
 #                  'felicity.local',
 #                  'ferocity.local',
 #                  'sagacity.local',]
-ALLOWED_HOSTS = [*]
+ALLOWED_HOSTS = ['*']
 # -mxp- common time format
 TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
