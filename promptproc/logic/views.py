@@ -62,8 +62,8 @@ def purge(request):
 
 ###################################################
 def pilotTO(request):
-    cutoff = timezone.now() - timedelta(seconds=5) #  for testing
-#    cutoff = timezone.now() - timedelta(minutes=2) #  improve later
+
+    cutoff = timezone.now() - timedelta(minutes=2) #  improve later
     selection = pilot.objects.filter(ts_lhb__lte=cutoff).exclude(state='stopped').exclude(state='timeout')
     nTO = len(selection)
     for p in selection:

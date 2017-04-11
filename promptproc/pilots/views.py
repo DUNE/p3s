@@ -255,7 +255,7 @@ def report(request):
 
     # FIXME bring to top to simplify logic for normal cases
     # FIXME incorrect return message for failure reports
-    if(state=='exception'): # FIXME add WF state
+    if(state in ('exception','nonstarter')): # FIXME add WF state
         p.status	= 'FAIL'
         with transaction.atomic():
             p.save()
@@ -264,6 +264,8 @@ def report(request):
         if(event=='exception'):	j.ts_sto = timezone.now()
         with transaction.atomic():
             j.save()
+            
+        return HttpResponse(json.dumps({'status':'FAIL', 'state':state}))
         
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))

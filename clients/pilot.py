@@ -283,11 +283,20 @@ while(cnt>0 or p.cycles==0):
         if(shell): cmd=payload
         
         logger.info('CMD: %s' % cmd)
-        proc = subprocess.Popen(cmd,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
-                                env=job_env,
-                                shell=shell)
+        proc = None
+
+        try:
+            proc = subprocess.Popen(cmd,
+                                    stdout=subprocess.PIPE,
+                                    stderr=subprocess.PIPE,
+                                    env=job_env,
+                                    shell=shell)
+        except:
+            p['state']='nonstarter'
+            data = API.reportPilot(p)
+            logger.error("could not start the job, exiting")
+            exit(1)
+            
 
         jobPID = proc.pid
         errCode = None
