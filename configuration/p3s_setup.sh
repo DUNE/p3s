@@ -1,18 +1,22 @@
-#!/bin/sh
+#!/bin/bash
 
 # setting up the p3s environment
 
 # Default server/site:
 p3s_server="serenity.local"
 p3s_site="sagebrush"
-
+p3s_dirpath="/home/maxim/p3sdata/"
 # override for neutdqm:
 
 h=`hostname`
 
 echo Setting up environment on host $h
-
-[[ $h == neutdq* ]] && (p3s_server="neutdqm"; p3s_site="neutdqm")
+if [[ $h == neutdq* ]];
+then
+    p3s_server="neutdqm"
+    p3s_site="neutdqm"
+    p3s_dirpath="/mnt/nas01/users/mxp/p3sdata/"
+fi 
 
 port=8000
 
@@ -36,6 +40,6 @@ export P3S_SERVER="http://$p3s_server:$port/"
 export P3S_SITE=$p3s_site
 
 export P3S_VERBOSITY=2
-export P3S_DIRPATH=/home/maxim/p3sdata/ # example: for cases where I/O is in one directory
+export P3S_DIRPATH=$p3s_dirpath
 
 env | grep P3S
