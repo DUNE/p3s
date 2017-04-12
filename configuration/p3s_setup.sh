@@ -8,11 +8,11 @@ p3s_site="sagebrush"
 
 # override for neutdqm:
 
-h = `hostname`
+h=`hostname`
 
 echo Setting up environment on host $h
 
-[[ $h == neutdq* ]] && p3s_server="neutdqm"; p3s_site="neutdqm"
+[[ $h == neutdq* ]] && (p3s_server="neutdqm"; p3s_site="neutdqm")
 
 port=8000
 
