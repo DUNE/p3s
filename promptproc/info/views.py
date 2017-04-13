@@ -1,4 +1,6 @@
 import datetime
+import collections
+import json
 
 from django.shortcuts	import render
 from django.http	import HttpResponse
@@ -20,27 +22,25 @@ from monitor.monitorTables		import *
 from utils.timeUtils import uptime
 
 def index(request):
-    
+    out		= request.GET.get('out','')
+
     domain	= request.get_host()
     hostname	= settings.HOSTNAME
 
     summaryData = []
-#    pilotTot	= pilot.N()
-#    pilotRun	= pilot.objects.filter(state='running').count()
-#    pilotIdle	= pilot.objects.filter(state='no jobs').count()
+
+    dataDict = collections.OrderedDict()
+
+    dataDict['pilots']	=	{'entry':	'Pilots: total/idle/running/stopped',	'data':(pilot.N(),	pilot.Nidle(),	pilot.Nrun(),	pilot.Nstop())}
+    dataDict['jobs']	=	{'entry':	'Jobs: total/defined/running/finished',	'data':(job.N(),	job.Ndef(),	job.Nrun(),	job.Nfin())}
+    dataDict['workflows']=	{'entry':	'Workflows: total/-/-/-',		'data':(workflow.N(),	'-',		'-',		'-')}
+    dataDict['datasets']=	{'entry':	'Datasets: total/-/-/-',		'data':(dataset.N(),	'-',		'-',		'-')}
+
+    if(out=='json'): return HttpResponse(json.dumps(dataDict))
     
-    summaryData.append({'Object': 'Pilots: total/idle/running/stopped',
-                        'Number': "%s/%s/%s/%s" % ( pilot.N(), pilot.Nidle(), pilot.Nrun(), pilot.Nstop())})
-    
-    summaryData.append({'Object': 'Jobs: total/defined/running/finished',
-	                'Number':  "%s/%s/%s/%s" % ( job.N(), job.Ndef(), job.Nrun(), job.Nfin())})
-    
-    summaryData.append({'Object': 'Workflows',	'Number':	workflow.N()})
-    summaryData.append({'Object': 'Datasets',	'Number':	dataset.N()})
-    
+    for k in dataDict.keys(): summaryData.append({'Object': dataDict[k]['entry'],'Number': "%s/%s/%s/%s" % dataDict[k]['data']})
 
     tSummary = SummaryTable(summaryData)
-
     timeString = datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
     
     systemData = []
