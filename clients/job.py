@@ -75,7 +75,7 @@ class Job(dict):
         self['ts']	= str(timezone.now()) # see TZ note on top
 
 #-------------------------
-(user, server, verb) = clientenv()
+(user, server, verb, site) = clientenv()
 
 parser = argparse.ArgumentParser()
 

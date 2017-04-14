@@ -3,11 +3,11 @@ import uuid
 import socket
 import os
 class Pilot(dict):
-    def __init__(self, jobcount=0, cycles=1, period=5):
+    def __init__(self, jobcount=0, cycles=1, period=5, site='default'):
         self['state']	= 'active' # start as active
         self['status']	= '' # status of server comms
         self['host']	= socket.gethostname()
-        self['site']	= 'default' # FIXME - will need to get from env
+        self['site']	= site
         self['ts']	= str(timezone.now())
         self['uuid']	= uuid.uuid1()
         self['event']	= '' # what just happned in the pilot

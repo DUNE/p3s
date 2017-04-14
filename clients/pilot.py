@@ -64,7 +64,7 @@ from Pilot import Pilot
 #########################################################################        
 #############################  BEGIN  ###################################
 
-(user, server, verb) = clientenv()
+(user, server, verb, site) = clientenv()
 
 logdefault	= '/tmp/'+user+'/p3s/pilots'
 joblogdefault	= '/tmp/'+user+'/p3s/jobs'
@@ -148,7 +148,7 @@ if(dlt):
 
 ##################### CREATE A PILOT ###################################
 # NB. Need uuid for the logfile etc, so do it now
-p = Pilot(cycles=cycles, period=period) # print(p.pid)
+p = Pilot(cycles=cycles, period=period, site=site)
 
 ################### BEGIN: PREPARE LOGGER ##############################
 # Check if we have a log directory, example: /tmp/p3s/pilots.
