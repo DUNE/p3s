@@ -6,6 +6,11 @@ class serverAPI(dict):
         self.logger	= logger
         self.verb	= verb
 
+        ### INFO
+        self['info']	= {
+            'dash':	server+'%s',
+        }
+
         ### JOB
         self['job']	= {
             'adjust':	server+'jobs/adjust',
@@ -58,7 +63,7 @@ class serverAPI(dict):
     def post2server(self, view, url, stuff):
         return rdec(communicate(self[view][url], data=data2post(stuff).utf8(), logger=self.logger))
     
-    def get2server(self, view, url, stuff):
+    def get2server(self, view, url, stuff): #        print(self[view][url] % stuff)
         resp = communicate(self[view][url] % stuff, logger=self.logger)
         return rdec(resp)
     
