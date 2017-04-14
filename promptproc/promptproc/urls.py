@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^jobs/',	include('jobs.urls')),
     url(r'^pilots/',	include('pilots.urls')),
     url(r'^workflows/',	include('workflows.urls')),
+    url(r'^sites/',	include('sites.urls')),
     url(r'^monitor/',	include('monitor.urls')),
     url(r'^data/',	include('data.urls')),
     url(r'^logic/',	include('logic.urls')),
