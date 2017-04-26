@@ -25,9 +25,10 @@ from django.conf	import settings
 from django.utils	import timezone
 
 # local import (utils)
-from comms import logfail
-from serverAPI import serverAPI
-from clientenv import clientenv
+from comms	import logfail
+from serverAPI	import serverAPI
+from clientenv	import clientenv
+
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
@@ -74,6 +75,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-S", "--server",	type=str,	default=server,
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
+parser.add_argument("-s", "--site",	type=str,	default=site,
+                    help="site name")
+
 parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
 
@@ -104,18 +108,18 @@ parser.add_argument("-d", "--delete",	action='store_true',
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the pilot to be modified")
 
-parser.add_argument("-s", "--shell",	action='store_true',
+parser.add_argument("-x", "--execute",	action='store_true',
                     help="force the payloads to run in shell (for experts)")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
 (
-    server, logdir, joblogdir, verb, dlt, p_uuid ,
+    server, site, logdir, joblogdir, verb, dlt, p_uuid ,
     usage, shell, period, cycles, beat, tst
 ) = (
-    args.server, args.logdir, args.joblogdir, args.verbosity, args.delete, args.uuid,
-    args.usage, args.shell, args.period, args.cycles, args.beat, args.test
+    args.server, args.site,   args.logdir, args.joblogdir, args.verbosity, args.delete, args.uuid,
+    args.usage, args.execute, args.period, args.cycles, args.beat, args.test
 )
 ############################## START ###################################
 if(usage):
@@ -379,24 +383,5 @@ exit(0)
 #            psProc = psutil.Process(pid=jobPID)
 #            psKids=psProc.children(recursive=True)
 #            if(verb>1): print(psKids)
-
-# The pilot has been factored out into a separate file
-########################### THE PILOT CLASS #############################
-# class Pilot(dict):
-#     def __init__(self, jobcount=0, cycles=1, period=5):
-#         self['state']	= 'active' # start as active
-#         self['status']	= '' # status of server comms
-#         self['host']	= socket.gethostname()
-#         self['site']	= 'default' # FIXME - will need to get from env
-#         self['ts']	= str(timezone.now())
-#         self['uuid']	= uuid.uuid1()
-#         self['event']	= '' # what just happned in the pilot
-#         self['jobcount']= jobcount
-#         self.cycles	= cycles
-#         self.period	= period
-#         self.job	= '' # job uuid (to be yet received)
-#         self['jpid']	= '' # ditto
-#         self['errcode']	= '' # ditto
-#         self['pid']	= os.getpid()
 
 
