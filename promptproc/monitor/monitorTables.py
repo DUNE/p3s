@@ -6,6 +6,7 @@ from django.conf			import settings
 
 import	django_tables2 as tables
 
+from sites.models			import site
 from jobs.models			import job
 from data.models			import dataset, datatype
 from pilots.models			import pilot
@@ -96,6 +97,12 @@ class DataTypeTable(MonitorTable):
 
     class Meta:
         model = datatype
+        attrs = {'class': 'paleblue'}
+#--------------------------------------------------------
+class SiteTable(MonitorTable):
+
+    class Meta:
+        model = site
         attrs = {'class': 'paleblue'}
 #--------------------------------------------------------
 class PilotTable(MonitorTable):

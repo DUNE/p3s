@@ -3,6 +3,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+    url(r'^sites',	views.data_handler,	{'what':'sites'},	name='sites'),
     url(r'^jobs',	views.data_handler,	{'what':'jobs'},	name='jobs'),
     url(r'^data$',	views.data_handler,	{'what':'data'},	name='data'),
     url(r'^datatypes',	views.data_handler,	{'what':'datatypes'},	name='datatypes'),

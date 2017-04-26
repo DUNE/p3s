@@ -28,6 +28,7 @@ from django.forms.models		import model_to_dict
 from django.conf			import settings
 
 # Models used in the application:
+from sites.models			import site
 from jobs.models			import job
 from data.models			import dataset, datatype
 from pilots.models			import pilot
@@ -146,6 +147,10 @@ def data_handler(request, what):
     if(what=='data'):
         objects = dataset.objects
         t = DataTable(objects.all())
+
+    if(what=='sites'):
+        objects = site.objects
+        t = SiteTable(objects.all())
 
     if(what=='datatypes'):
         objects = datatype.objects
