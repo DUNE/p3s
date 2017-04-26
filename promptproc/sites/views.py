@@ -77,9 +77,9 @@ def sites(request):
     name	= request.GET.get('name','')
 
     if(name==''):
-        objects	= site.objects.all()
+        objects	= S.objects.all()
     else:
-        objects	= [site.objects.get(name=name),]
+        objects	= [S.objects.get(name=name),]
 
     return HttpResponse(serializers.serialize("json", objects))
 
