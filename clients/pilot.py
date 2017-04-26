@@ -121,6 +121,8 @@ args = parser.parse_args()
     args.server, args.site,   args.logdir, args.joblogdir, args.verbosity, args.delete, args.uuid,
     args.usage, args.execute, args.period, args.cycles, args.beat, args.test
 )
+
+
 ############################## START ###################################
 if(usage):
     print(Usage)
@@ -128,6 +130,17 @@ if(usage):
 
 ### p3s interface defined here
 API  = serverAPI(server=server)
+
+
+if(site!='default' and site!=''):
+    if(verb>0):
+        print('Will use site', site)
+        resp = API.get2server('site','getsiteURL', site)
+        print(resp)
+
+        exit(0)
+
+
 
 #################### PILOT DELETE AND EXIT #############################
 # Check if it was a deletion request. Note we don't have a logger yet,

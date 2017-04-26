@@ -19,6 +19,11 @@ class serverAPI(dict):
             'add':	server+'jobs/add',
         }
 
+        ### SITE
+        self['site']	= {
+            'getsiteURL':server+'sites?name=%s',
+        }
+
         ### DATA
         self['data']	= {
             'registerdataURL':	server+'data/registerdata',

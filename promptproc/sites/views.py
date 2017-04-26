@@ -8,6 +8,8 @@
 
 import uuid
 import datetime
+import json
+
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -19,6 +21,11 @@ from django.shortcuts			import render
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
 from django.utils			import timezone
+from django.core			import serializers
+
+from .models import site
+
+
 
 from utils.timeUtils import dt
 
@@ -35,7 +42,13 @@ def wns(request):
 ###################################################
 @csrf_exempt
 def sites(request):
-    
-    return HttpResponse("sites")
+    name	= request.GET.get('name','')
+
+    if(name==''):
+        objects	= site.objects.all()
+    else:
+        objects	= [site.objects.get(name=name),]
+
+    return HttpResponse(serializers.serialize("json", objects))
 
 ###################################################
