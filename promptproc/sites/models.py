@@ -1,3 +1,13 @@
-from django.db import models
+import json
+from django.db		import models
+from django.core	import serializers
 
-# Create your models here.
+class site(models.Model):
+    name	= models.CharField(max_length=64, default='')		# human-readable site name
+    env		= models.TextField(default='{}')			# the default site environment
+    server	= models.CharField(max_length=64, default='')		# who the pilot talks to
+    pilotcycles	= models.PositiveIntegerField(default=1)		#
+    pilotperiod	= models.PositiveIntegerField(default=5)		# in seconds
+
+    def __str__(self):
+        return serializers.serialize("json", [self, ])

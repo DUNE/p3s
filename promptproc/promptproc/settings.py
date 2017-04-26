@@ -51,6 +51,7 @@ TIMEFORMAT = '%Y%m%d %H:%M:%S'
 # Application definition
 
 INSTALLED_APPS = [
+    'sites.apps.SitesConfig',
     'workflows.apps.WorkflowsConfig',
     'jobs.apps.JobsConfig',
     'pilots.apps.PilotsConfig',

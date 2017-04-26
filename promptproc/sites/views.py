@@ -33,3 +33,9 @@ def wns(request):
     return HttpResponse("wns")
 
 ###################################################
+@csrf_exempt
+def sites(request):
+    
+    return HttpResponse("sites")
+
+###################################################
