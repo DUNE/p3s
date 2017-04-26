@@ -76,7 +76,7 @@ parser.add_argument("-S", "--server",	type=str,	default=server,
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-s", "--site",	type=str,	default=site,
-                    help="site name")
+                    help="site name - pilot parameters will be pulled from the server based on that")
 
 parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
@@ -133,13 +133,20 @@ API  = serverAPI(server=server)
 
 
 if(site!='default' and site!=''):
+    # the pilot will bootstrap with information from the server -
+    # of course it will need to know the server address for that
     if(verb>0):
-        print('Will use site', site)
         resp = API.get2server('site','getsiteURL', site)
-        print(resp)
-
-        exit(0)
-
+        siteData = json.loads(resp)
+        
+        if(len(siteData)!=1):
+            if(verb>0):
+                print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
+                exit(-5)
+        s = siteData[0]['fields']
+        (server, env, period, cycles) = (s['server'], json.loads(s['env']), s['pilotperiod'], s['pilotcycles'])
+        for k in env.keys():
+            os.environ[k]=env[k]
 
 
 #################### PILOT DELETE AND EXIT #############################
