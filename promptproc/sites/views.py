@@ -66,7 +66,7 @@ def define(request):
         except:
             return HttpResponse("Error parsing JSON")
 
-    s = site()
+    s = S()
     for k in siteInfo.keys():
         setattr(s, k, siteInfo[k])
     s.save()
