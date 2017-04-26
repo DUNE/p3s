@@ -1,0 +1,1 @@
+{"name":"test", "server":"yourServer", "pilotcycles":1, "pilotperiod": 5, "env":{"P3S_SITE":"test", "P3S_SERVER":"server:port","P3S_DIRPATH":"/yourDataDir","P3S_LARSOFT":"None"}}
