@@ -37,18 +37,24 @@ parser.add_argument("-S", "--server",	type=str,
                     help='server URL: defaults to $P3S_SERVER or if unset to '+server,
                     default=server)
 
-parser.add_argument("-v", "--verbosity",type=int,	default=verb, choices=[0, 1, 2], help="set verbosity - also needed for data output.")
+parser.add_argument("-v", "--verbosity",type=int,	default=verb, choices=[0, 1, 2], help="verbosity")
 
 parser.add_argument("-s", "--site",	type=str,	default='', help='''site info in JSON format,
 will be intrepreted as a JSON file name if contains .json''')
+
+parser.add_argument("-d", "--delete",	type=str,	default='', help='delete site info')
 
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
 server	= args.server
+delete	= args.delete
 verb	= args.verbosity
 site	= args.site
+
+### p3s interface defined here
+API  = serverAPI(server=server)
 
 if(site!=''):
 
@@ -66,10 +72,15 @@ if(site!=''):
 
 
     print('Site:', site)
-    #resp = API.post2server('workflow', 'addwfURL', {'site':site})
+    resp = API.post2server('site', 'defineURL', {'site':site})
     
-    #if(verb>1): print (resp)
+    if(verb>1): print (resp)
     exit(0)
+
+
+if(delete!=''):
+    resp = API.post2server('site', 'deleteURL', {'site': delete})
+    if(verb>0): print(resp)
 
 ###################### GRAND FINALE ####################################
 exit(0)

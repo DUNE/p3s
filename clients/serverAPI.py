@@ -22,6 +22,8 @@ class serverAPI(dict):
         ### SITE
         self['site']	= {
             'getsiteURL':server+'sites?name=%s',
+            'defineURL': server+'sites/define',
+            'deleteURL': server+'sites/delete',
         }
 
         ### DATA

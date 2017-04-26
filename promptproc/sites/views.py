@@ -23,7 +23,7 @@ from django.views.decorators.csrf	import csrf_exempt
 from django.utils			import timezone
 from django.core			import serializers
 
-from .models import site
+from .models import site as S
 
 
 
@@ -41,6 +41,38 @@ def wns(request):
 
 ###################################################
 @csrf_exempt
+def delete(request):
+    post	= request.POST
+    name	= post['site']
+    
+    if(name!=''):
+        try:
+            S.objects.get(name=name).delete()
+            return HttpResponse("Successfully deleted "+name)
+        except:
+            return HttpResponse("Error deleting "+name)
+###################################################
+@csrf_exempt
+def define(request):
+    
+    siteInfo	= None
+    
+    post	= request.POST
+    siteJson	= post['site']
+
+    if(siteJson!=''):
+        try:
+            siteInfo = json.loads(siteJson)
+        except:
+            return HttpResponse("Error parsing JSON")
+
+    s = site()
+    for k in siteInfo.keys():
+        setattr(s, k, siteInfo[k])
+    s.save()
+
+    return HttpResponse(serializers.serialize("json", [s,]))
+###################################################
 def sites(request):
     name	= request.GET.get('name','')
 
