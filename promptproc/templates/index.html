@@ -11,17 +11,7 @@
   
   <body>
     <h2>p&#2384;s</h2>
-    <hr/>
-    <p style="font-size:20px">
-    <a href="http://{{ domain }}/monitor/sites">	Sites		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/dags">		DAGs		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/workflows">	Workflows	</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/jobs">		Jobs		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/pilots">	Pilots		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/data">		Data		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/datatypes">	Data Types	</a><br/>
-    </p>
-    <hr/>
+    {% include "topnavbar.html" %}
     <table border="1">
       <tr>
 	<th>Summary</th>

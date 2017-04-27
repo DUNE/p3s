@@ -9,17 +9,7 @@
     </head>
     <body>
       <a href="http://{{ domain }}"><h2>p&#2384;s home</h2></a><br/>
-    <hr/>
-    <p style="font-size:20px">
-    <a href="http://{{ domain }}/monitor/dags">		DAGs		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/workflows">	Workflows	</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/jobs">		Jobs		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/pilots">	Pilots		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/data">		Data		</a>&ensp;&ensp;&ensp;&ensp;&ensp;
-    <a href="http://{{ domain }}/monitor/datatypes">	Data Types	</a><br/>
-    </p>
-    <hr/>
-
+    {% include "topnavbar.html" %}
       <h3>{% block headline %}{% endblock %}&ensp;(total in DB: {{ N }})</h3>
 
       
