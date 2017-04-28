@@ -213,7 +213,7 @@ def detail_handler(request, what):
     
     theName = ''
 
-    if(what in ('job', 'dataset', 'pilot')):
+    if(what in ('job', 'dataset', 'pilot', 'site')):
         template = 'detail.html'
         d['title']	= what
         objects		= eval(what).objects
