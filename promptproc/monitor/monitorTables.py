@@ -101,14 +101,24 @@ class DataTypeTable(MonitorTable):
 #--------------------------------------------------------
 class SiteTable(MonitorTable):
     pilotcycles	= tables.Column(verbose_name='Pilot Cycles/Period')
-    pilotstats	= tables.Column(accessor='name', verbose_name='Total/Running/Idle') # 
-    
+    pilotstats	= tables.Column(accessor='name', verbose_name='Pilots Total/Running/Idle') # 
+    jobstats	= tables.Column(accessor='name', verbose_name='Jobs Total/Running/Finished') # 
+
+    def render_name(self,value):	return self.makelink('sitedetail', 'name', value)
+
     def render_pilotstats(self,record):
         nTotal	= pilot.N(site=record.name)
         nRun	= pilot.N(site=record.name, state='running')
         nIdle	= pilot.N(site=record.name, state='no jobs')
         
         return str(nTotal)+'/'+str(nRun)+'/'+str(nIdle)
+    
+    def render_jobstats(self,record):
+        nTotal	= job.N(site=record.name)
+        nRun	= job.N(site=record.name, state='running')
+        nFin	= job.N(site=record.name, state='finished')
+        
+        return str(nTotal)+'/'+str(nRun)+'/'+str(nFin)
     
     def render_pilotcycles(self,value, record):
         return str(value)+'/'+str(record.pilotperiod)
