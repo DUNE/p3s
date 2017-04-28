@@ -11,8 +11,8 @@ from jobs.models			import job
 from data.models			import dataset, datatype
 from pilots.models			import pilot
 
-from workflows.models import dag,dagVertex,dagEdge
-from workflows.models import workflow # wfVertex,wfEdge
+from workflows.models import dag,dagVertex,dagEdge,workflow
+
 
 # We need this to make links to this service itself.
 try:
@@ -100,10 +100,24 @@ class DataTypeTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #--------------------------------------------------------
 class SiteTable(MonitorTable):
-
+    pilotcycles	= tables.Column(verbose_name='Pilot Cycles/Period')
+    pilotstats	= tables.Column(accessor='name', verbose_name='Total/Running/Idle') # 
+    
+    def render_pilotstats(self,record):
+        print('!!!')
+        nTotal	= pilot.N(site=record.name)
+        nRun	= pilot.N(site=record.name, state='running')
+        nIdle	= pilot.N(site=record.name, state='no jobs')
+        
+        return str(nTotal)+'/'+str(nRun)+'/'+str(nIdle)
+    
+    def render_pilotcycles(self,value, record):
+        return str(value)+'/'+str(record.pilotperiod)
+    
     class Meta:
         model = site
         attrs = {'class': 'paleblue'}
+        exclude	= ('env', 'pilotperiod',)
 #--------------------------------------------------------
 class PilotTable(MonitorTable):
     ts_cre	= tables.Column(verbose_name='created')
@@ -182,23 +196,4 @@ class WfTable(MonitorTable):
         attrs = {'class': 'paleblue'}
         # we actually want that: exclude	= ('uuid', )
 
-#--------------------------------------------------------
-# class WfVertexTable(tables.Table):
-# #    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
-# #    def render_name(self,value):return self.makelink('dags', 'name', value)
-        
-#     class Meta:
-#         model = wfVertex
-#         exclude = ('wf','wfuuid',)
-#         attrs = {'class': 'paleblue'}
-
-# #--------------------------------------------------------
-# class WfEdgeTable(tables.Table):
-# #    def render_id(self,value):	return self.makelink('dagdetail', 'pk', value)
-# #    def render_name(self,value):return self.makelink('dags', 'name', value)
-        
-#     class Meta:
-#         model = wfEdge
-#         exclude = ('wf','wfuuid',)
-#         attrs = {'class': 'paleblue'}
 

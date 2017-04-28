@@ -24,20 +24,32 @@ class pilot(models.Model):
     #    auto_now=True
     
     @classmethod
-    def N(self):
-        return self.objects.count()
+    def N(self, state=None, site=None):
+        if(site):
+            if(state):
+                return self.objects.filter(site=site).filter(state=state).count()
+            else:
+                return self.objects.filter(site=site).count()
+        else:
+            if(state):
+                return self.objects.filter(state=state).count()
+            else:
+                return self.objects.count()
 
-    @classmethod
-    def Nrun(self):
-        return self.objects.filter(state='running').count()
+    # @classmethod
+    # def Nrun(self, site=None):
+    #     if(site):
+    #         return self.objects.filter(state='running').filter(site=site).count()
+    #     else:
+    #         return self.objects.filter(state='running').count()
     
-    @classmethod
-    def Nidle(self):
-        return self.objects.filter(state='no jobs').count()
+    # @classmethod
+    # def Nidle(self):
+    #     return self.objects.filter(state='no jobs').count()
 
-    @classmethod
-    def Nstop(self):
-        return self.objects.filter(state='stopped').count()
+    # @classmethod
+    # def Nstop(self):
+    #     return self.objects.filter(state='stopped').count()
 
     
     def __str__(self):
