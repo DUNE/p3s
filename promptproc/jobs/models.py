@@ -5,6 +5,7 @@ from django.core	import serializers
 class job(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     user	= models.CharField(max_length=64, default='')		# who submitted the job
+    site	= models.CharField(max_length=32, default='')
     name	= models.CharField(max_length=64, default='')		# human-readable
     p_uuid	= models.CharField(max_length=36, default='')		# pilot uuid
     wfuuid	= models.CharField(max_length=36, default='')		# workflow uuid
@@ -32,20 +33,34 @@ class job(models.Model):
         self.env = json.dumps({**json.loads(self.env), **d})
 
     @classmethod
-    def N(self):
-        return self.objects.count()
+    def N(self, state=None, site=None):
+        if(site):
+            if(state):
+                return self.objects.filter(site=site).filter(state=state).count()
+            else:
+                return self.objects.filter(site=site).count()
+        else:
+            if(state):
+                return self.objects.filter(state=state).count()
+            else:
+                return self.objects.count()
+
+#    def N(self):
+#        return self.objects.count()
+
+
     
-    @classmethod
-    def Nrun(self):
-        return self.objects.filter(state='running').count()
+    # @classmethod
+    # def Nrun(self):
+    #     return self.objects.filter(state='running').count()
     
-    @classmethod
-    def Nfin(self):
-        return self.objects.filter(state='finished').count()
+    # @classmethod
+    # def Nfin(self):
+    #     return self.objects.filter(state='finished').count()
     
-    @classmethod
-    def Ndef(self):
-        return self.objects.filter(state='defined').count()
+    # @classmethod
+    # def Ndef(self):
+    #     return self.objects.filter(state='defined').count()
 
 #######################    
 class jobtype(models.Model):

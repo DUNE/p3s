@@ -104,7 +104,6 @@ class SiteTable(MonitorTable):
     pilotstats	= tables.Column(accessor='name', verbose_name='Total/Running/Idle') # 
     
     def render_pilotstats(self,record):
-        print('!!!')
         nTotal	= pilot.N(site=record.name)
         nRun	= pilot.N(site=record.name, state='running')
         nIdle	= pilot.N(site=record.name, state='no jobs')

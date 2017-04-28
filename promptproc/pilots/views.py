@@ -129,6 +129,7 @@ def request(request): # Pilot's request for a job:
                         continue
                     logger.info('%s selected', j.uuid)
                     j.state	= 'dispatched'
+                    j.site	= p.site
                     j.p_uuid	= p_uuid
                     j.ts_dis	= timezone.now()
                     j.save()
@@ -199,7 +200,7 @@ def report(request):
             j = job.objects.get(uuid=p.j_uuid)
             j.state = state # that's where the job has its state set in normal running
             j.pid	= jpid
-            print('--------------', j.pid, j.state)
+            # print('--------------', j.pid, j.state)
             with transaction.atomic():
                 j.save()
             

@@ -31,10 +31,9 @@ def index(request):
 
     dataDict = collections.OrderedDict()
 
-    dataDict['pilots']	=	{'entry':'Pilots: total/idle/running/stopped', 'data':(pilot.N(), pilot.N(state='no jobs'), pilot.N(state='running'), pilot.N(state='stopped'))}
-
-    
-    dataDict['jobs']	=	{'entry':	'Jobs: total/defined/running/finished',	'data':(job.N(),	job.Ndef(),	job.Nrun(),	job.Nfin())}
+    dataDict['pilots']	=	{'entry':'Pilots: total/idle/running/stopped',
+                                 'data':(pilot.N(), pilot.N(state='no jobs'), pilot.N(state='running'), pilot.N(state='stopped'))}
+    dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished', 'data':(job.N(), job.N(state='defined'), job.N(state='running'), job.N(state='finished'))}
     dataDict['workflows']=	{'entry':	'Workflows: total/-/-/-',		'data':(workflow.N(),	'-',		'-',		'-')}
     dataDict['datasets']=	{'entry':	'Datasets: total/-/-/-',		'data':(dataset.N(),	'-',		'-',		'-')}
 
