@@ -135,19 +135,20 @@ API  = serverAPI(server=server)
 if(site!='default' and site!=''):
     # the pilot will bootstrap with information from the server -
     # of course it will need to know the server address for that
-    if(verb>0):
-        resp = API.get2server('site','getsiteURL', site)
-        siteData = json.loads(resp)
+    resp = API.get2server('site','getsiteURL', site)
+    siteData = json.loads(resp)
         
-        if(len(siteData)!=1):
-            if(verb>0):
-                print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
-                exit(-5)
-        s = siteData[0]['fields']
-        doubleQ = s['env'].replace("'", "\"")
-        (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
-        for k in env.keys():
-            os.environ[k]=env[k]
+    if(len(siteData)!=1):
+        if(verb>0):
+            print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
+        exit(-5)
+
+    s = siteData[0]['fields']
+    doubleQ = s['env'].replace("'", "\"")
+    (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
+
+    for k in env.keys():
+        os.environ[k]=env[k]
 
 
 #################### PILOT DELETE AND EXIT #############################
