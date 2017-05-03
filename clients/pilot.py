@@ -144,7 +144,8 @@ if(site!='default' and site!=''):
                 print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
                 exit(-5)
         s = siteData[0]['fields']
-        (server, env, period, cycles) = (s['server'], json.loads(s['env']), s['pilotperiod'], s['pilotcycles'])
+        doubleQ = s['env'].replace("'", "\"")
+        (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
         for k in env.keys():
             os.environ[k]=env[k]
 
