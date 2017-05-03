@@ -1,6 +1,7 @@
 #!/bin/sh
 
 export P3S_SERVER="http://neutdqm:80/"
+export P3S_SITE="neutdqm"
 
 
 # We keep this as a commment since the infomation will actually be provided
@@ -9,7 +10,6 @@ export P3S_SERVER="http://neutdqm:80/"
 # Simple pilot generator to start multiple pilots on a single WN.
 # To preserve the command line, use something like \'-S http://serenity.local:80/\'
 
-#export P3S_SITE="neutdqm"
 
 #export P3S_VERBOSITY=2
 #export P3S_DIRPATH="/mnt/nas01/users/mxp/p3sdata/"
@@ -27,5 +27,6 @@ fi
 line=''
 for i in `seq 1 $N`;
 do
+echo i
 eval $DIR/pilot.py -s $P3S_SITE &
 done
