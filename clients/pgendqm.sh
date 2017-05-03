@@ -27,7 +27,6 @@ fi
 line=''
 for i in `seq 1 $N`;
 do
-echo $i
-ls -l $DIR/pilot.py
-nohup $DIR/pilot.py -s $P3S_SITE &
+# echo $i
+eval $DIR/pilot.py -s $P3S_SITE &
 done
