@@ -1,1 +1,1 @@
-{"name":"neutdqm", "server":"neutdqm:80", "pilotcycles":1, "pilotperiod": 5, "env":{"P3S_SITE":"neutdqm", "P3S_SERVER":"neutdqm:80","P3S_DIRPATH":"/mnt/nas01/users/mxp/p3sdata","P3S_LARSOFT":"/mnt/nas01/software/dqm/larsoft/v06"}}
+{"name":"neutdqm", "server":"neutdqm:80", "pilotcycles":0, "pilotperiod": 10, "env":{"P3S_SITE":"neutdqm", "P3S_SERVER":"neutdqm:80","P3S_DIRPATH":"/mnt/nas01/users/mxp/p3sdata/","P3S_LARSOFT":"/mnt/nas01/software/dqm/larsoft/v06"}}
