@@ -20,6 +20,8 @@ from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
 from django.utils			import timezone
 
+from django.db		import transaction
+
 from .models import job
 
 from utils.timeUtils import dt
@@ -30,26 +32,31 @@ def index(request):
 
 ###################################################
 @csrf_exempt
+@transaction.atomic
 def add(request):
     
     post	= request.POST
     
-    j = job(
-        uuid		= post['uuid'],
-        user		= post['user'],
-        jobtype		= post['jobtype'],
-        payload		= post['payload'],
-        env		= post['env'],
-        priority	= post['priority'],
-        state		= post['state'],
-        ts_def		= post['ts'],
-        timelimit	= post['timeout'],
-        name		= post['name'],
-    )
+    try:
+        with transaction.atomic():
+            j = job(
+                uuid		= post['uuid'],
+                user		= post['user'],
+                jobtype		= post['jobtype'],
+                payload		= post['payload'],
+                env		= post['env'],
+                priority	= post['priority'],
+                state		= post['state'],
+                ts_def		= post['ts'],
+                timelimit	= post['timeout'],
+                name		= post['name'],
+            )
 
-    j.save()
+            j.save()
     
-    return HttpResponse("%s" % post['uuid'] )
+            return HttpResponse("%s" % post['uuid'] )
+    except:
+            return HttpResponse("%s ERROR" % post['uuid'] )
 
 ###################################################
 @csrf_exempt
