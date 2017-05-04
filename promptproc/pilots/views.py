@@ -113,12 +113,12 @@ def request(request): # Pilot's request for a job:
     logger.info('pilot %s request', p_uuid)
     
     for prio in priolist:
-        tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
-        if(len(tjs)==0):
-            continue
-        else: ########  FOUND A JOB #########
-            try:
-                with transaction.atomic():
+        try:
+            with transaction.atomic():
+                tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
+                if(len(tjs)==0):
+                    continue
+                else: ########  FOUND A JOB #########
                     j_candidate = tjs[0] # print(j_candidate,' ',j_candidate.uuid)
 
                     logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
@@ -134,23 +134,24 @@ def request(request): # Pilot's request for a job:
                     j.ts_dis	= timezone.now()
                     j.save()
             
-                    p.j_uuid	= j.uuid
-                    p.state	= 'dispatched'
-                    p.ts_lhb	= timezone.now()
-                    p.save()
+        except:
+            p.state		= 'DB lock'
+            p.status	= 'OK'
+            p.ts_lhb	= timezone.now()
+            p.save()
+            return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
+
+        p.j_uuid	= j.uuid
+        p.state	= 'dispatched'
+        p.ts_lhb	= timezone.now()
+        p.save()
             
-                    to_pilot = {'status':	'OK', # job information in JSON format
-                                'state':	'dispatched',	'job':	j.uuid,
-                                'payload':	j.payload,	'env':	j.env}
-                    j = None # for next iteration
-                    return HttpResponse(json.dumps(to_pilot))
-            except:
-                p.state		= 'DB lock'
-                p.status	= 'OK'
-                p.ts_lhb	= timezone.now()
-                with transaction.atomic():
-                    p.save()
-                return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
+        to_pilot = {'status':	'OK', # job information in JSON format
+                    'state':	'dispatched',	'job':	j.uuid,
+                    'payload':	j.payload,	'env':	j.env}
+        j = None # reset for next iteration
+        return HttpResponse(json.dumps(to_pilot))
+
     if(j==None):
         p.state		= 'no jobs'
         p.status	= 'OK'
