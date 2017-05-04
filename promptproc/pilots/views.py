@@ -113,8 +113,8 @@ def request(request): # Pilot's request for a job:
     logger.info('pilot %s request', p_uuid)
     
     for prio in priolist:
-        try:
-            with transaction.atomic():
+        with transaction.atomic():
+            try:
                 tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
                 if(len(tjs)==0):
                     continue
@@ -134,12 +134,12 @@ def request(request): # Pilot's request for a job:
                     j.ts_dis	= timezone.now()
                     j.save()
             
-        except:
-            p.state		= 'DB lock'
-            p.status	= 'OK'
-            p.ts_lhb	= timezone.now()
-            p.save()
-            return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
+            except:
+                p.state		= 'DB lock'
+                p.status	= 'OK'
+                p.ts_lhb	= timezone.now()
+                p.save()
+                return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
 
         p.j_uuid	= j.uuid
         p.state	= 'dispatched'
