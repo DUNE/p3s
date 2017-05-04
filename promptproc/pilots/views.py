@@ -128,11 +128,11 @@ def request(request): # Pilot's request for a job:
                 #    j = None
                 #    continue
                 logger.info('%s selected', j.uuid)
-                    j.state	= 'dispatched'
-                    j.site	= p.site
-                    j.p_uuid	= p_uuid
-                    j.ts_dis	= timezone.now()
-                    j.save()
+                j.state	= 'dispatched'
+                j.site	= p.site
+                j.p_uuid	= p_uuid
+                j.ts_dis	= timezone.now()
+                j.save()
             
         except:
             p.state		= 'DB lock'
