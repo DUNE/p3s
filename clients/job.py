@@ -93,6 +93,10 @@ parser.add_argument("-s", "--state",	type=str,	help="job state, used with *adjus
 parser.add_argument("-p", "--priority",	type=int,	help="sets the job priority, needs *adjust* option",
 	            default=0)
 
+parser.add_argument("-N", "--number",	type=int,	help="creates N replicas of same job",
+	            default=1)
+
+
 parser.add_argument("-P", "--purge",	type=str,	help="purge jobs older than YY:DD:HH:MM:SS, based on ts in the T argument",
 	            default='')
 
@@ -128,6 +132,7 @@ tst	= args.test
 adj	= args.adjust
 delete	= args.delete
 json_in	= args.json_in
+Njobs	= args.number
 
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
@@ -223,7 +228,8 @@ if(json_in!=''):
                 j[k] = json.dumps(jj[k])
             else:
                 j[k] = jj[k]
-        jobList.append(j)
+        for jN in range(Njobs):
+            jobList.append(j)
 
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
