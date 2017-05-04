@@ -113,33 +113,33 @@ def request(request): # Pilot's request for a job:
     logger.info('pilot %s request', p_uuid)
     
     for prio in priolist:
-        with transaction.atomic():
-            try:
+        try:
+            with transaction.atomic():
                 tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
-                if(len(tjs)==0):
-                    continue
-                else: ########  FOUND A JOB #########
-                    j_candidate = tjs[0] # print(j_candidate,' ',j_candidate.uuid)
+                if(len(tjs)==0): continue
+                ########  FOUND A JOB #########
+                j_candidate = tjs[0] # print(j_candidate,' ',j_candidate.uuid)
 
-                    logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
+                logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
-                    j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
-                    if(j.state!='defined'):
-                        j = None
-                        continue
-                    logger.info('%s selected', j.uuid)
+                j = job.objects.get(uuid=j_candidate.uuid) # print('~',j)
+                # j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
+                #if(j.state!='defined'):
+                #    j = None
+                #    continue
+                logger.info('%s selected', j.uuid)
                     j.state	= 'dispatched'
                     j.site	= p.site
                     j.p_uuid	= p_uuid
                     j.ts_dis	= timezone.now()
                     j.save()
             
-            except:
-                p.state		= 'DB lock'
-                p.status	= 'OK'
-                p.ts_lhb	= timezone.now()
-                p.save()
-                return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
+        except:
+            p.state		= 'DB lock'
+            p.status	= 'OK'
+            p.ts_lhb	= timezone.now()
+            p.save()
+            return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
 
         p.j_uuid	= j.uuid
         p.state	= 'dispatched'
