@@ -1,0 +1,11 @@
+[
+    {
+	"name":		"simple larsoft test",
+	"timeout":	"1000",
+        "jobtype":	"type1",
+        "payload":	"/mnt/nas01/users/mxp/projects/p3s/inputs/larsoft/neutdqm_lar_2.sh",
+	"env":		{"P3S":"TRUE","POSTGRES":"FALSE"},
+        "priority":	"1",
+	"state":	"defined"
+    }
+]
