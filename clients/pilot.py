@@ -265,7 +265,7 @@ while(cnt>0 or p.cycles==0):
         if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
             break
         time.sleep(period)
-        continue # NEXT ITERATION THE MAIN LOOP IF DIDN'T GET A JOB, otherwise - below
+        continue # NEXT ITERATION OF THE MAIN LOOP IF DIDN'T GET A JOB, otherwise - below
     
 ######################### GOT A JOB TO DO ###############################
     payload = ''
@@ -304,82 +304,67 @@ while(cnt>0 or p.cycles==0):
     if 'P3S_EXECMODE' in job_env.keys(): # can be forced by -s
         shell = True
     
-    if True: # Switched to POPEN, keep the older code in place for a while
-        cmd=shlex.split(payload)
-        if(shell): cmd=payload
+    cmd=shlex.split(payload)
+    if(shell): cmd=payload
         
-        logger.info('CMD: %s' % cmd)
-        proc = None
+    logger.info('CMD: %s' % cmd)
+    proc = None
 
-        try:
-            proc = subprocess.Popen(cmd,
-                                    stdout=subprocess.PIPE,
-                                    stderr=subprocess.PIPE,
-                                    env=job_env,
-                                    shell=shell)
-        except:
-            p['state']='nonstarter'
-            data = API.reportPilot(p)
-            logger.error("could not start the job, exiting")
-            exit(1)
+    try:
+        proc = subprocess.Popen(cmd,
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                env=job_env,
+                                shell=shell)
+    except:
+        p['state']='nonstarter'
+        data = API.reportPilot(p)
+        logger.error("could not start the job, skip")
+        continue # exit(1)
             
 
-        jobPID = proc.pid
-        errCode = None
+    jobPID = proc.pid
+    errCode = None
 
-        while True:
-            msg = {}
-            errCode = proc.poll()
-            if(verb>1): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
-            if errCode is None:
-                p['state']='running'
-                p['event']='heartbeat'
-                p['jpid'] = jobPID
-                data = API.reportPilot(p)
-                try:
-                    msg = json.loads(data)
-                    p['status'], p['state']	= msg['status'], msg['state']
-                except:
-                    logger.error('exiting, failed to parse the server message at report: %s' % data)
-                    exit(3)
+    while True:
+        msg = {}
+        errCode = proc.poll()
+        if(verb>1): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
+        if errCode is None:
+            p['state']='running'
+            p['event']='heartbeat'
+            p['jpid'] = jobPID
+            data = API.reportPilot(p)
+            try:
+                msg = json.loads(data)
+                p['status'], p['state']	= msg['status'], msg['state']
+            except:
+                logger.error('exiting, failed to parse the server message at report: %s' % data)
+                exit(3)
 
-                # Failure reported from brokerage on the server, will log and exit
-                if(p['status']=='FAIL'): logfail(msg, logger)
+            # Failure reported from brokerage on the server, will log and exit
+            if(p['status']=='FAIL'): logfail(msg, logger)
 
-                logger.info('HEARTBEAT, server response: %s' % data)
-            else:
-                jobout = open(joblogdir+'/'+ p['job']+'.out','w')
-                joberr = open(joblogdir+'/'+ p['job']+'.err','w')
-                jobout.write((proc.stdout.read().decode('utf-8')))
-                joberr.write((proc.stderr.read().decode('utf-8')))
-                break
-            time.sleep(beat)
+            logger.info('HEARTBEAT, server response: %s' % data)
+        else:
+            jobout = open(joblogdir+'/'+ p['job']+'.out','w')
+            joberr = open(joblogdir+'/'+ p['job']+'.err','w')
+            jobout.write((proc.stdout.read().decode('utf-8')))
+            joberr.write((proc.stderr.read().decode('utf-8')))
+            break
+        time.sleep(beat)
 
-        # Ended loop, assume job done (FIXME error handling)
-        p['state']	= 'finished'
-        p['event']	= 'jobstop'
-        p['errcode']	= errCode
-        p['jobcount']  += 1
-        p['jpid']	= jobPID
-        print(p)
+    # Ended loop, assume job done (FIXME error handling)
+    p['state']	= 'finished'
+    p['event']	= 'jobstop'
+    p['errcode']	= errCode
+    p['jobcount']  += 1
+    p['jpid']	= jobPID
+    print(p)
         
-        response = API.reportPilot(p)
-        logger.info('JOB finished: %s' %  p['job'])
+    response = API.reportPilot(p)
+    logger.info('JOB finished: %s' %  p['job'])
 
-    else: # Deprecated...
-        try:
-            x=subprocess.run([payload], stdout=subprocess.PIPE)
-            if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
-            p['state']	='finished'
-            p['event']	='jobstop'
-            p['jobcount']  += 1
-            response = API.reportPilot(p)
-            logger.info('JOB finished: %s' %  p['job'])
-        except:
-            p['state']	='exception'
-            p['event']	='exception'
-            response = API.reportPilot(p)
-            logger.info('JOB exception: %s' %  p['job'])
 
     # declare the 'active' state again
     p['state']	='active'    #    p['event']	='jobstop'
@@ -405,5 +390,20 @@ exit(0)
 #            psProc = psutil.Process(pid=jobPID)
 #            psKids=psProc.children(recursive=True)
 #            if(verb>1): print(psKids)
-
+#
+# Decomissioned way of starting jobs
+# else: # Deprecated...
+#     try:
+#         x=subprocess.run([payload], stdout=subprocess.PIPE)
+#         if(verb>1): logger.info('job output: %s' % x.stdout.decode("utf-8"))
+#         p['state']	='finished'
+#         p['event']	='jobstop'
+#         p['jobcount']  += 1
+#         response = API.reportPilot(p)
+#         logger.info('JOB finished: %s' %  p['job'])
+#     except:
+#         p['state']	='exception'
+#         p['event']	='exception'
+#         response = API.reportPilot(p)
+#         logger.info('JOB exception: %s' %  p['job'])
 

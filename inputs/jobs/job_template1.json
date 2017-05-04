@@ -3,7 +3,7 @@
 	"name":		"simple p3s job, type 1",
 	"timeout":	"100",
         "jobtype":	"type1",
-        "payload":	"sleep 30 & date > /tmp/d.txt & sleep 10 & ",
+        "payload":	"sleep 30",
 	"env":		{"P3S":"TRUE","POSTGRES":"FALSE"},
         "priority":	"1",
 	"state":	"defined"
