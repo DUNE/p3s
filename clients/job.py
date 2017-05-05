@@ -230,6 +230,7 @@ if(json_in!=''):
                 j[k] = jj[k]
         for jN in range(Njobs):
             jobList.append(j)
+            if(Njobs>1): j['uuid'] = uuid.uuid1()
 
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
