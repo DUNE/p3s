@@ -222,16 +222,14 @@ if(json_in!=''):
         data = json.load(data_file)
 
     for jj in data:
-        j = Job()
-        for k in jj.keys():
-            if isinstance(jj[k],dict):
-                j[k] = json.dumps(jj[k])
-            else:
-                j[k] = jj[k]
         for jN in range(Njobs):
+            j = Job()
+            for k in jj.keys():
+                if isinstance(jj[k],dict):
+                    j[k] = json.dumps(jj[k])
+                else:
+                    j[k] = jj[k]
             jobList.append(j)
-            if(Njobs>1): j['uuid'] = uuid.uuid1()
-
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
     # Contact the server, register the job(s)
