@@ -3,6 +3,7 @@
 ###################################################
 import os
 import json
+import logging
 
 from django.shortcuts			import render
 from django.http			import HttpResponse
@@ -20,6 +21,9 @@ from .models import workflow # wfVertex, wfEdge
 from jobs.models	import job
 from data.models	import dataset, datatype
 from logic.models	import manager
+
+# Get an instance of a logger
+logger = logging.getLogger('workflows')
 
 
 def init(request):
@@ -223,6 +227,8 @@ def getdag(request):
     name = request.GET.get('name','')
 
     if(name == ''): return HttpResponse("DAG not specified.")
+    logger.info('WORKFLOW: Received request for DAG %s', name)
+
     g = fetchdag(name)
     s = '\n'.join(nx.generate_graphml(g))
     return HttpResponse(s)
@@ -266,12 +272,15 @@ def addwf(request):
     if(filejson!=''):
         try:
             fileinfo = json.loads(filejson)
+            logger.info('WORKFLOW: fileinfo %s', fileinfo)
         except: # non-JSON string... Identify:
             if(filejson=='sticky'):
                 sticky = True
+                logger.info('WORKFLOW: sticky filename set')
             if('inherit' in filejson):
                 try:
                     inherit = filejson.split(':')[1]
+                    logger.info('WORKFLOW: filename inheritance %s', inherit)
                 except:
                     pass
                     
@@ -354,9 +363,10 @@ def addwf(request):
 
         # a "dataset" - a file in this case - is created by default with a name formed
         # from its UUID and predefined extension (as per type object)
-        # BUT! can be overridden by "fileinfo"
+        # It can, however, be overridden by supplemental information foubd in "fileinfo"
 
-        # defaults
+        # Defaults:
+        
         d_uuid	= str(uuid.uuid1())
         dt = ''
         try:
@@ -378,13 +388,12 @@ def addwf(request):
             filename = de.name
         elif(inherit):
             filename = inherit+':'+dagName+':'+de.source+':'+de.datatag+ext
-            print(filename)
         else:
             filename = d_uuid+ext
             
-        comment	= de.comment # default comment in herited from DAG
+        comment	= de.comment # default comment inherited from DAG
 
-        # Optional overrides: client sends JSON data with "updates"
+        # Optional overrides: client may send JSON data with overriding data
         if(fileinfo):
             for k in fileinfo.keys():
                 if((de.source+":"+de.target)==k):
@@ -401,6 +410,8 @@ def addwf(request):
                     except:
                         pass
                         
+        logger.info('WORKFLOW: filename %s', filename)
+        
         d = dataset(
             uuid	= d_uuid,
             wfuuid	= wfuuid,
@@ -426,8 +437,8 @@ def addwf(request):
         #print('source:',de.source,' target:', de.target,' datatag:', de.datatag, ' full name:',fullname)
 
         for jid in (sourceuuid, targetuuid):
-            j4env = job.objects.get(uuid=jid) # MUST work as per comments above, we checked
-            j4env.augmentEnv({de.datatag:fullname})
+            j4env = job.objects.get(uuid=jid)		# MUST work as per comments above, we checked
+            j4env.augmentEnv({de.datatag:fullname})	# Note that the filename is set in the env..
             j4env.save()
        
         
