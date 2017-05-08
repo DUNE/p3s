@@ -173,6 +173,9 @@ API  = serverAPI(server=server, logger=logger)
 ######################### DAG DELETE ###################################
 # Check if it was a deletion request
 if(delete):
+    if(what==''):
+        print('Type of object for deletion not specified, exiting...')
+        exit(-2)
     if(name=='' and o_uuid==''): exit(-1) # check if we have the key
 
     # DELETE ALL!!!DANGEROUS!!!TO BE REMOVED IN PROD, do not document "ALL"
@@ -194,7 +197,8 @@ if(delete):
     for o in objList:
         dicto = None
         if(what=='dag'):	dicto = dict(what=what, name=o)
-        if(what=='workflow'):	dicto = dict(what=what, uuid=o)
+        if(what=='workflow' and o_uuid!=''):	dicto = dict(what=what, uuid=o)
+        if(what=='workflow' and name!=''):	dicto = dict(what=what, name=o)
         resp = API.post2server('workflow', 'deleteURL', dicto)
         if(verb>0): print(resp)
 

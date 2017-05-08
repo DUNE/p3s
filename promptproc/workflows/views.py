@@ -100,8 +100,18 @@ def delete(request):
         success	= deldag(keyname)
 
     if(what=='workflow'):
-        keyname	= post['uuid']
-        success	= delwf(keyname)
+        try:
+            keyname	= post['uuid']
+            success	= delwf(keyname)
+        except:
+            pass
+        try:
+            keyname	= post['name']
+            success	= delwf(keyname, isName=True)
+        except:
+            pass
+        
+#        success	= delwf(keyname)
         
     if(success):
         return HttpResponse("Deleted %s %s" % (what, keyname) )
@@ -110,19 +120,19 @@ def delete(request):
 
  
 ###################################################
-def delwf(wfuuid):
+def delwf(wfkey, isName=False):
     success = True
+
+    kwargs = {'uuid': wfkey,}
+    if(isName):
+        kwargs = {'name': wfkey,}
+
     try:
-        w = workflow.objects.get(uuid=wfuuid)
-        w.delete()
-    except:
-        success = False
-    try:
-        for j in job.objects.filter(wfuuid=wfuuid): j.delete()
-    except:
-        success = False
-    try:
-        for ds in dataset.objects.filter(wfuuid=wfuuid): ds.delete()
+        wfs = workflow.objects.filter(**kwargs)
+        for w in wfs:
+            w.delete()
+            for j in job.objects.filter(wfuuid=w.uuid): j.delete()
+            for ds in dataset.objects.filter(wfuuid=w.uuid): ds.delete()
     except:
         success = False
 
