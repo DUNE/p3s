@@ -6,6 +6,7 @@ class job(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     user	= models.CharField(max_length=64, default='')		# who submitted the job
     site	= models.CharField(max_length=32, default='')
+    host	= models.CharField(max_length=32, default='')
     name	= models.CharField(max_length=64, default='')		# human-readable
     p_uuid	= models.CharField(max_length=36, default='')		# pilot uuid
     wfuuid	= models.CharField(max_length=36, default='')		# workflow uuid
