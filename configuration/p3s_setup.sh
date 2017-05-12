@@ -9,6 +9,7 @@ p3s_dirpath="/home/maxim/p3sdata/"
 # override for neutdqm:
 
 h=`hostname`
+port=8000
 
 echo Setting up environment on host $h
 if [[ $h == neutdq* ]];
@@ -16,9 +17,9 @@ then
     p3s_server="neutdqm"
     p3s_site="neutdqm"
     p3s_dirpath="/mnt/nas01/users/mxp/p3sdata/"
+    port=80
 fi 
 
-port=8000
 
 if [ -z "$1" ]
   then
