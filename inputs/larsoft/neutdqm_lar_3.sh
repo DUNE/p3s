@@ -11,6 +11,6 @@ p=$$
 mkdir $p
 cd $p
 pwd
-
-lar -c /mnt/nas01/users/mxp/projects/p3s/inputs/larsoft/neutdqm_lar_2.fcl /mnt/nas01/users/radescu/Feb2017_v22/inputs/detsim_single_DistONSuppOFF_100.root -T output.root -n50
+env | grep P3S
+lar -c $P3S_FCL $P3S_INPUT -T output1.root -n$P3S_NEVENTS
 exit
