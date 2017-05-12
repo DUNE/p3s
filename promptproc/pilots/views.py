@@ -104,6 +104,7 @@ def request(request): # Pilot's request for a job:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
 
 
+    if(p.status=='KILL'): return HttpResponse(json.dumps({'status':'KILL', 'state':'killed'}))
 
     ordering = 'ts_def'			# Please see Footnote (1)
     priolist = (10,9,8,7,6,5,4,3,2,1,0)	# Please see Footnote (2)

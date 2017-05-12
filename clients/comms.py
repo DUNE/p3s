@@ -55,4 +55,8 @@ def logfail(msg, logger):
     except:
         logger.error('exiting, received FAIL status from server, no error returned')
     exit(2)
+###################################################################
+def logkill(logger):
+    logger.info('exiting, received KILL status from server')
+    exit(0)
 

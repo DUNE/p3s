@@ -25,7 +25,7 @@ from django.conf	import settings
 from django.utils	import timezone
 
 # local import (utils)
-from comms	import logfail
+from comms	import logfail, logkill
 from serverAPI	import serverAPI
 from clientenv	import clientenv
 
@@ -90,7 +90,7 @@ parser.add_argument("-L", "--joblogdir",type=str,	default=joblogdefault,
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
 
-parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 2],
+parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 2, 3],
                     help="output verbosity (0-2), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
@@ -247,6 +247,7 @@ while(cnt>0 or p.cycles==0):
     if(verb>1): logger.info('BROKER: server response: %s' % data)
     if(verb>1): print('BROKER: server response: %s' % data)
 
+    #--------------------- important
     msg = {} # Message from the server
     
     try:
@@ -258,6 +259,9 @@ while(cnt>0 or p.cycles==0):
 
     # Failure reported from brokerage on the server, will log and exit
     if(p['status']=='FAIL'): logfail(msg, logger)
+    
+    # KILL requested by the server, will log and exit
+    if(p['status']=='KILL'): logkill(logger)
 
     if(p['state'] in ('no jobs', 'DB lock')): # didn't get a job, skip the cycle.
         logger.info(p['state'])
@@ -329,7 +333,7 @@ while(cnt>0 or p.cycles==0):
     while True:
         msg = {}
         errCode = proc.poll()
-        if(verb>1): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
+        if(verb>2): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
         if errCode is None:
             p['state']='running'
             p['event']='heartbeat'
@@ -345,7 +349,7 @@ while(cnt>0 or p.cycles==0):
             # Failure reported from brokerage on the server, will log and exit
             if(p['status']=='FAIL'): logfail(msg, logger)
 
-            logger.info('HEARTBEAT, server response: %s' % data)
+            if(verb>2): logger.info('HEARTBEAT, server response: %s' % data)
         else:
             jobout = open(joblogdir+'/'+ p['job']+'.out','w')
             joberr = open(joblogdir+'/'+ p['job']+'.err','w')
