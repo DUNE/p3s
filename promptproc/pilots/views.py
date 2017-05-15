@@ -96,19 +96,36 @@ def delete(request):
 @transaction.atomic
 def kill(request): # Pilot's request for a job:
     post	= request.POST
-    p_uuid	= post['uuid']
 
-    p = None
+    kwargs = None
+
     try:
-        p = pilot.objects.get(uuid=p_uuid)
+        kwargs	= {'uuid':post['uuid'],}
+    except:
+        pass
+
+    try:
+        kwargs	= {'site':post['site'],}
+    except:
+        pass
+
+
+    pilots = None
+    plist = []
+
+    try:
+        pilots = pilot.objects.filter(**kwargs)
     except:
         return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'pilot not found'}))
 
     try:
         with transaction.atomic():
-            p.status='KILL'
-            p.save()
-            return HttpResponse(json.dumps({'uuid':p_uuid, 'state':'KILL'}))
+            for p in pilots:
+                p.status='KILL'
+                p.save()
+                plist.append(p.uuid)
+            pids = ",".join(plist)
+            return HttpResponse(json.dumps({'uuid':pids, 'state':'KILL'}))
     except:
         return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'DB error'}))
 

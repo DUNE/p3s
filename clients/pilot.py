@@ -78,6 +78,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-S", "--server",	type=str,	default=server,
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
+parser.add_argument("-H", "--host",	type=str,	default='',
+                    help="the worker node where a pilot may nee adjustments")
+
 parser.add_argument("-s", "--site",	type=str,	default=site,
                     help="site name - pilot parameters will be pulled from the server based on that")
 
@@ -124,12 +127,12 @@ parser.add_argument("-x", "--execute",	action='store_true',
 args = parser.parse_args()
 
 (
-    server, site, logdir, joblogdir, verb,
-    dlt, kill,    p_uuid,
+    server,		host,		site,		logdir,		joblogdir,
+    verb,		dlt,		kill,		p_uuid,
     usage, shell, period, cycles, beat, tst
 ) = (
-    args.server, args.site,   args.logdir, args.joblogdir, args.verbosity,
-    args.delete, args.kill,   args.uuid,
+    args.server,	args.host,	args.site,	args.logdir,	args.joblogdir,
+    args.verbosity,	args.delete,	args.kill,	args.uuid,
     args.usage, args.execute, args.period, args.cycles, args.beat, args.test
 )
 
@@ -162,7 +165,11 @@ if(site!='default' and site!='' and not kill):
         os.environ[k]=env[k]
 
 if(kill):
-    resp = API.post2server('pilot', 'kill', dict(uuid=p_uuid))
+    d = None
+    if(p_uuid!=''):			d = dict(uuid=p_uuid)
+    if(p_uuid=='' and site!=''):	d = dict(site=site)
+
+    resp = API.post2server('pilot', 'kill', d)
     print(resp)
     exit(0)
 
