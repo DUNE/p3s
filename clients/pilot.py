@@ -30,6 +30,8 @@ from serverAPI	import serverAPI
 from clientenv	import clientenv
 
 #########################################################
+#########################################################
+
 settings.configure(USE_TZ = True) # see the above note on TZ
 
 Usage		= '''Usage:
@@ -43,7 +45,8 @@ with the server, negative codes correspond to errors
 which are local to the pilot, such as problematic
 input and local file system problem.
 
- 3	error parsing the server message
+ 4	inconsistent server state
+ 3	error parsing message from the server
  2	FAIL status received from server
  1	URL Error
  0	normal completion
@@ -103,7 +106,10 @@ parser.add_argument("-b", "--beat",	type=int,	default=2,
                     help="the heartbeat, in seconds")
 
 parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a pilot (for dev purposes). Needs uuid.")
+                    help="deletes a pilot record from the DB. Needs uuid.")
+
+parser.add_argument("-k", "--kill",	action='store_true',
+                    help="sets KILL state for a pilot, which is then expected to exit. Needs uuid, or site, or host.")
 
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the pilot to be modified")
@@ -111,14 +117,19 @@ parser.add_argument("-u", "--uuid",	type=str,	default='',
 parser.add_argument("-x", "--execute",	action='store_true',
                     help="force the payloads to run in shell (for experts)")
 
+
+
+#########################################################################
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
 (
-    server, site, logdir, joblogdir, verb, dlt, p_uuid ,
+    server, site, logdir, joblogdir, verb, dlt, kill,
+    p_uuid,
     usage, shell, period, cycles, beat, tst
 ) = (
-    args.server, args.site,   args.logdir, args.joblogdir, args.verbosity, args.delete, args.uuid,
+    args.server, args.site,   args.logdir, args.joblogdir, args.verbosity, args.delete, args.kill,
+    args.uuid,
     args.usage, args.execute, args.period, args.cycles, args.beat, args.test
 )
 
@@ -132,7 +143,7 @@ if(usage):
 API  = serverAPI(server=server)
 
 
-if(site!='default' and site!=''):
+if(site!='default' and site!='' and not kill):
     # the pilot will bootstrap with information from the server -
     # of course it will need to know the server address for that
     resp = API.get2server('site','getsiteURL', site)
@@ -141,7 +152,7 @@ if(site!='default' and site!=''):
     if(len(siteData)!=1):
         if(verb>0):
             print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
-        exit(-5)
+        exit(4)
 
     s = siteData[0]['fields']
     doubleQ = s['env'].replace("'", "\"")

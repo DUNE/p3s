@@ -83,7 +83,12 @@ of procedures on these objects, such as
 
 
 # Service Scripts
-## Pilots
-The script pgen.sh serves as a basic generator of pilots, in case multiple pilots need to run
+For the most part these scripts are meant to be used on multiple machines e.g. by
+utilizing pdsh
+*  pgen.sh serves as a basic generator of pilots, in case multiple pilots need to run
 on same node. The number of concurrent pilots is configurable on the command line.
+
+* preport.sh reports on the number of pilots running on WNs
+
+* pkill.sh remotely kills pilots
 
