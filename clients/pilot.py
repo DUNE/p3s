@@ -124,12 +124,12 @@ parser.add_argument("-x", "--execute",	action='store_true',
 args = parser.parse_args()
 
 (
-    server, site, logdir, joblogdir, verb, dlt, kill,
-    p_uuid,
+    server, site, logdir, joblogdir, verb,
+    dlt, kill,    p_uuid,
     usage, shell, period, cycles, beat, tst
 ) = (
-    args.server, args.site,   args.logdir, args.joblogdir, args.verbosity, args.delete, args.kill,
-    args.uuid,
+    args.server, args.site,   args.logdir, args.joblogdir, args.verbosity,
+    args.delete, args.kill,   args.uuid,
     args.usage, args.execute, args.period, args.cycles, args.beat, args.test
 )
 
@@ -161,6 +161,10 @@ if(site!='default' and site!='' and not kill):
     for k in env.keys():
         os.environ[k]=env[k]
 
+if(kill):
+    resp = API.post2server('pilot', 'kill', dict(uuid=p_uuid))
+    print(resp)
+    exit(0)
 
 #################### PILOT DELETE AND EXIT #############################
 # Check if it was a deletion request. Note we don't have a logger yet,

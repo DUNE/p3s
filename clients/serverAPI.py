@@ -39,6 +39,7 @@ class serverAPI(dict):
             'reportURL':	server+'pilots/report',
             'registerURL':	server+'pilots/register',
             'delete':		server+'pilots/delete',
+            'kill':		server+'pilots/kill',
             'jobRequestURL':	server+'pilots/request',
         }
 

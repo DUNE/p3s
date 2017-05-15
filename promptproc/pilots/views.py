@@ -94,11 +94,36 @@ def delete(request):
 #########################################################
 @csrf_exempt
 @transaction.atomic
+def kill(request): # Pilot's request for a job:
+    post	= request.POST
+    p_uuid	= post['uuid']
+
+    p = None
+    try:
+        p = pilot.objects.get(uuid=p_uuid)
+    except:
+        return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'pilot not found'}))
+
+    try:
+        with transaction.atomic():
+            p.status='KILL'
+            p.save()
+            return HttpResponse(json.dumps({'uuid':p_uuid, 'state':'KILL'}))
+    except:
+        return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'DB error'}))
+
+#-----
+@csrf_exempt
+@transaction.atomic
 def request(request): # Pilot's request for a job:
     post	= request.POST
     p_uuid	= post['uuid']
 
-    p = pilot.objects.get(uuid=p_uuid) # FIXME - handle unlikely error
+    p = None
+    try:
+        p = pilot.objects.get(uuid=p_uuid)
+    except:
+        return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'pilot not found'}))
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS: (will bail here)
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failbro', 'error':'failed brokerage'}))
