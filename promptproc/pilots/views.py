@@ -105,6 +105,11 @@ def kill(request): # Pilot's request for a job:
         pass
 
     try:
+        kwargs	= {'host':post['host'],}
+    except:
+        pass
+
+    try:
         kwargs	= {'site':post['site'],}
     except:
         pass

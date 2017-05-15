@@ -167,6 +167,7 @@ if(site!='default' and site!='' and not kill):
 if(kill):
     d = None
     if(p_uuid!=''):			d = dict(uuid=p_uuid)
+    if(p_uuid=='' and host!=''):	d = dict(host=host)
     if(p_uuid=='' and site!=''):	d = dict(site=site)
 
     resp = API.post2server('pilot', 'kill', d)
