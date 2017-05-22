@@ -49,7 +49,7 @@ from django import forms
 
 SELECTORS	= {
     'pilot':
-    {'label':'Pilot States (select one)',
+    {'label':'Pilot States',
      'states':[
          ('all',	'All'),
          ('active',	'Active'),
@@ -62,7 +62,7 @@ SELECTORS	= {
      'qUrl':'/monitor/pilots?state=%s',
     },
     'job':
-    {'label':'Job States (select one)',
+    {'label':'Job States',
      'states':[
          ('all',	'All'),
          ('template',	'Template'),
@@ -73,7 +73,19 @@ SELECTORS	= {
      ],
      'gUrl':'/monitor/jobs',
      'qUrl':'/monitor/jobs?state=%s',
-    }
+    },
+    'workflow':
+    {'label':'Workflow States',
+     'states':[
+         ('all',	'All'),
+         ('template',	'Template'),
+         ('defined',	'Defined'),
+         ('running',	'Running'),
+         ('finished','Finished'),
+     ],
+     'gUrl':'/monitor/workflows',
+     'qUrl':'/monitor/workflows?state=%s',
+    },
 }
 
 # 
@@ -92,9 +104,10 @@ class stateSelector(forms.Form):
     def handleSelector(self):
         selectedStates = self.cleaned_data['stateChoice']
         if len(selectedStates):
-            state = selectedStates[0]
-            if(state=='all'): return HttpResponseRedirect(self.gUrl)
-            return HttpResponseRedirect(self.qUrl % state)
+            if('all' in selectedStates):
+                return HttpResponseRedirect(self.gUrl)
+            
+            return HttpResponseRedirect(self.qUrl % ",".join(selectedStates))
 
         return HttpResponseRedirect(self.gUrl)
            
@@ -123,6 +136,8 @@ def data_handler(request, what):
     objects, t, aux1	= None, None, None
     template = 'universo.html'
     selector = None
+
+    # FIXME - now that multiple selectors work, need to init the checkboxes correctly
    
     if(what=='jobs'):
         if request.method == 'POST':
@@ -141,8 +156,8 @@ def data_handler(request, what):
         if(wfuuid != ''):		t = JobTable(objects.filter(wfuuid=wfuuid))
         if(pk != ''):			t = JobTable(objects.filter(pk=pk))
         
-        # FIXME - multiple filters needed
-        if(state != ''):		t = JobTable(objects.filter(state=state))
+        if(state != ''):
+            t = JobTable(objects.filter(state__in=state.split(',')))
 
     if(what=='data'):
         objects = dataset.objects
@@ -172,9 +187,10 @@ def data_handler(request, what):
         if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
         if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
 
-        # FIXME - multiple filters needed
-        if(state != ''):		t = PilotTable(objects.filter(state=state))
         if(host  != ''):		t = PilotTable(objects.filter(host=host))
+
+        if(state != ''):
+            t = PilotTable(objects.filter(state__in=state.split(',')))
         
     if(what=='dags'):
         objects = dag.objects
@@ -183,10 +199,24 @@ def data_handler(request, what):
         if(pk == '' and name == ''):	t = DagTable(objects.all())
         
     if(what=='workflows'):
+        if request.method == 'POST':
+            selector = stateSelector(request.POST, what='workflow')
+            if selector.is_valid(): return selector.handleSelector()
+            
+        if(state!=''): # from the HTTP request with exception of 'all'
+            selector = stateSelector(initial={'stateChoice':[state,]}, what='workflow')
+        else:
+            selector = stateSelector(initial={'stateChoice':['all',]}, what='workflow')
+            
         objects = workflow.objects
+        t = None
+        if(state != ''):
+            t = WfTable(objects.filter(state__in=state.split(',')))
+            
         if(pk != ''):			t = WfTable(objects.filter(pk=pk))
         if(name != ''):			t = WfTable(objects.filter(name=name))
-        if(pk == '' and name == ''):	t = WfTable(objects.all())
+        
+        if(t is None): t=WfTable(objects.all())
         
     t.set_site(domain)
     RequestConfig(request).configure(t)
