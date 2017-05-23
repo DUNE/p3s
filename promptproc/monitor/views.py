@@ -60,6 +60,7 @@ SELECTORS	= {
      ],
      'gUrl':'/monitor/pilots',
      'qUrl':'/monitor/pilots?state=%s',
+     'table':'PilotTable',
     },
     'job':
     {'label':'Job States',
@@ -73,6 +74,7 @@ SELECTORS	= {
      ],
      'gUrl':'/monitor/jobs',
      'qUrl':'/monitor/jobs?state=%s',
+     'table':'JobTable',
     },
     'workflow':
     {'label':'Workflow States',
@@ -139,66 +141,48 @@ def data_handler(request, what):
 
     # FIXME - now that multiple selectors work, need to init the checkboxes correctly
    
-    if(what=='jobs'):
+    if(what in ['job', 'pilot']):
+        x=eval(SELECTORS[what]['table'])
+        
         if request.method == 'POST':
-            selector = stateSelector(request.POST, what='job')
+            selector = stateSelector(request.POST, what=what)
             if selector.is_valid(): return selector.handleSelector()
 
         if(state!=''): # from the HTTP request with exception of 'all'
-            selector = stateSelector(initial={'stateChoice':[state,]}, what='job')
+            selector = stateSelector(initial={'stateChoice':[state,]}, what=what)
         else:
-            selector = stateSelector(initial={'stateChoice':['all',]}, what='job')
+            selector = stateSelector(initial={'stateChoice':['all',]}, what=what)
             
-        objects = job.objects
-        if(uuid == '' and pk == '' and wfuuid == ''):	t = JobTable(objects.all())
+        objects = eval(what).objects
+        if(uuid == '' and pk == '' and wfuuid == ''):
+            t = x(objects.all())
         
-        if(uuid != ''):			t = JobTable(objects.filter(uuid=uuid))
-        if(wfuuid != ''):		t = JobTable(objects.filter(wfuuid=wfuuid))
-        if(pk != ''):			t = JobTable(objects.filter(pk=pk))
+        if(uuid		!= ''):		t = x(objects.filter(uuid=uuid))
+        if(wfuuid	!= ''):		t = x(objects.filter(wfuuid=wfuuid))
+        if(pk		!= ''):		t = x(objects.filter(pk=pk))
         
         if(state != ''):
-            t = JobTable(objects.filter(state__in=state.split(',')))
-
-    if(what=='data'):
+            t = x(objects.filter(state__in=state.split(',')))
+        
+    if(what=='dataset'):
         objects = dataset.objects
         t = DataTable(objects.all())
 
-    if(what=='sites'):
+    if(what=='site'):
         objects = site.objects
         t = SiteTable(objects.all())
 
-    if(what=='datatypes'):
+    if(what=='datatype'):
         objects = datatype.objects
         t = DataTypeTable(objects.all())
 
-    if(what=='pilots'):
-        if request.method == 'POST':
-            selector = stateSelector(request.POST, what='pilot')
-            if selector.is_valid():
-                return selector.handleSelector()
-
-        if(state!=''): # from the HTTP request with exception of 'all'
-            selector = stateSelector(initial={'stateChoice':[state,]}, what='pilot')
-        else:
-            selector = stateSelector(initial={'stateChoice':['all',]}, what='pilot')
-            
-        objects = pilot.objects
-        if(uuid == '' and pk == ''):	t = PilotTable(objects.all())
-        if(uuid != ''):			t = PilotTable(objects.filter(uuid=uuid))
-        if(pk != ''):			t = PilotTable(objects.filter(pk=pk))
-
-        if(host  != ''):		t = PilotTable(objects.filter(host=host))
-
-        if(state != ''):
-            t = PilotTable(objects.filter(state__in=state.split(',')))
-        
-    if(what=='dags'):
+    if(what=='dag'):
         objects = dag.objects
         if(pk != ''):			t = DagTable(objects.filter(pk=pk))
         if(name != ''):			t = DagTable(objects.filter(name=name))
         if(pk == '' and name == ''):	t = DagTable(objects.all())
         
-    if(what=='workflows'):
+    if(what=='workflow'):
         if request.method == 'POST':
             selector = stateSelector(request.POST, what='workflow')
             if selector.is_valid(): return selector.handleSelector()
