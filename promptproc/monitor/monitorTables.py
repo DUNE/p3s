@@ -70,9 +70,11 @@ class JobTable(MonitorTable):
     priority	= tables.Column(verbose_name='Pri.')
     timelimit	= tables.Column(verbose_name='t.limit')
 
-    def render_uuid(self,value):	return self.makelink('jobs',	'uuid',	value)
-    def render_p_uuid(self,value):	return self.makelink('pilots',	'uuid',	value)
-    def render_id(self,value):		return self.makelink('jobdetail','pk',	value)
+    def render_id(self,value):		return self.makelink('jobdetail',	'pk',	value)
+    def render_uuid(self,value):	return self.makelink('jobdetail',	'uuid',	value)
+    def render_p_uuid(self,value):	return self.makelink('pilots',		'uuid',	value)
+    def render_wfuuid(self,value):	return self.makelink('wfdetail',	'uuid',	value)
+    
     def render_ts_def(self, value):	return self.renderDateTime(value)
     def render_ts_dis(self, value):	return self.renderDateTime(value)
     def render_ts_sta(self, value):	return self.renderDateTime(value)

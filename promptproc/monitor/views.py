@@ -87,6 +87,7 @@ SELECTORS	= {
      ],
      'gUrl':'/monitor/workflows',
      'qUrl':'/monitor/workflows?state=%s',
+     'table':'WfTable',
     },
 }
 
@@ -141,7 +142,9 @@ def data_handler(request, what):
 
     # FIXME - now that multiple selectors work, need to init the checkboxes correctly
    
-    if(what in ['job', 'pilot']):
+    if(what in ['job', 'pilot', 'workflow']):
+        t = None # placeholder for the table object
+        
         x=eval(SELECTORS[what]['table'])
         
         if request.method == 'POST':
@@ -160,10 +163,11 @@ def data_handler(request, what):
         if(uuid		!= ''):		t = x(objects.filter(uuid=uuid))
         if(wfuuid	!= ''):		t = x(objects.filter(wfuuid=wfuuid))
         if(pk		!= ''):		t = x(objects.filter(pk=pk))
+        if(name		!= ''):		t = x(objects.filter(name=name))
+        if(state	!= ''):		t = x(objects.filter(state__in=state.split(',')))
         
-        if(state != ''):
-            t = x(objects.filter(state__in=state.split(',')))
-        
+        if(t is None):			t = x(objects.all())
+            
     if(what=='dataset'):
         objects = dataset.objects
         t = DataTable(objects.all())
@@ -181,27 +185,7 @@ def data_handler(request, what):
         if(pk != ''):			t = DagTable(objects.filter(pk=pk))
         if(name != ''):			t = DagTable(objects.filter(name=name))
         if(pk == '' and name == ''):	t = DagTable(objects.all())
-        
-    if(what=='workflow'):
-        if request.method == 'POST':
-            selector = stateSelector(request.POST, what='workflow')
-            if selector.is_valid(): return selector.handleSelector()
-            
-        if(state!=''): # from the HTTP request with exception of 'all'
-            selector = stateSelector(initial={'stateChoice':[state,]}, what='workflow')
-        else:
-            selector = stateSelector(initial={'stateChoice':['all',]}, what='workflow')
-            
-        objects = workflow.objects
-        t = None
-        if(state != ''):
-            t = WfTable(objects.filter(state__in=state.split(',')))
-            
-        if(pk != ''):			t = WfTable(objects.filter(pk=pk))
-        if(name != ''):			t = WfTable(objects.filter(name=name))
-        
-        if(t is None): t=WfTable(objects.all())
-        
+       
     t.set_site(domain)
     RequestConfig(request).configure(t)
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
@@ -225,17 +209,15 @@ def detail_handler(request, what):
 
     template, objects, aux1, aux2 = None, None, None, None
     
-    theName = ''
+    theName = 'Not Found'
+    objects = eval(what).objects
 
     if(what in ('job', 'dataset', 'pilot', 'site')):
         template = 'detail.html'
         d['title']	= what
-        objects		= eval(what).objects
         
     if(what=='dag'):
-        theName = 'Not found'
         template = 'detail2.html'
-        objects = dag.objects
         try:
             theDag = objects.get(name=name)
             theName = theDag.name
@@ -247,14 +229,13 @@ def detail_handler(request, what):
         d['title']	= what+' name: '+theName
                              
     if(what=='workflow'):
-        theName = 'Not found'
         template = 'detail2.html'
-        objects = workflow.objects
         try:
-            theWF = objects.get(uuid=o_uuid)
-            theName = theWF.name
+            kwargs = {'uuid':o_uuid}
+            found = objects.get(**kwargs)
+            theName = found.name
         except:
-            return HttpResponse("Workflow '%s' not found" % o_uuid)
+            return HttpResponse("%s '%s' not found" % (what, o_uuid))
         
         aux1 = JobTable(job.objects.filter(wfuuid=o_uuid))
         aux1.set_site(domain)
