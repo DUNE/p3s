@@ -47,6 +47,9 @@ from .monitorTables import *
 
 from django import forms
 
+# Users - first element is value, second is the label in the dropdown list
+CHOICES = (('All', 'All'), ('maxim','maxim'), ('brett','brett'),)
+
 SELECTORS	= {
     'pilot':
     {'label':'Pilot States',
@@ -73,7 +76,7 @@ SELECTORS	= {
          ('pilotTO','Pilot Timed Out'),
      ],
      'gUrl':'/monitor/jobs',
-     'qUrl':'/monitor/jobs?state=%s',
+     'qUrl':'/monitor/jobs?state=%s&user=%s',
      'table':'JobTable',
     },
     'workflow':
@@ -104,13 +107,13 @@ class stateSelector(forms.Form):
        self.gUrl				= SELECTORS[self.what]['gUrl']
        self.qUrl				= SELECTORS[self.what]['qUrl']
 
-    def handleSelector(self):
+    def handleStateSelector(self, user=''):
         selectedStates = self.cleaned_data['stateChoice']
         if len(selectedStates):
             if('all' in selectedStates):
                 return HttpResponseRedirect(self.gUrl)
             
-            return HttpResponseRedirect(self.qUrl % ",".join(selectedStates))
+            return HttpResponseRedirect(self.qUrl % (",".join(selectedStates), user))
 
         return HttpResponseRedirect(self.gUrl)
            
@@ -118,6 +121,24 @@ class stateSelector(forms.Form):
                                             required=False,
                                             widget=forms.CheckboxSelectMultiple,
                                             choices=[('place', 'holder'),])
+
+######################
+class userSelector(forms.Form):
+    userChoice = forms.ChoiceField(choices = CHOICES, label = "User")
+
+    def handleUserSelector(self):
+        selectedUser = self.cleaned_data['userChoice']
+        if(selectedUser=='All'): selectedUser=''
+        return selectedUser
+
+
+        
+#    def __init__(self, *args, **kwargs):
+
+#        super(userSelector, self).__init__(*args, **kwargs)
+#        self.fields['users'].choices = ['maxim','brett']
+#        self.fields['users'].lable = "User"
+    
 
 #########################################################    
 # general request handler for summary type of a table
@@ -128,6 +149,7 @@ def data_handler(request, what):
     pk		= request.GET.get('pk','')
     name	= request.GET.get('name','')
     state	= request.GET.get('state','')
+    user	= request.GET.get('user','')
     host	= request.GET.get('host','')
 
     domain	= request.get_host()
@@ -149,22 +171,34 @@ def data_handler(request, what):
         
         if request.method == 'POST':
             selector = stateSelector(request.POST, what=what)
-            if selector.is_valid(): return selector.handleSelector()
+            if selector.is_valid():
+                users = userSelector(request.POST)
+                selectedUser = ''
+                if users.is_valid(): selectedUser = users.handleUserSelector()
+                return selector.handleStateSelector(selectedUser)
 
         if(state!=''): # from the HTTP request with exception of 'all'
             selector = stateSelector(initial={'stateChoice':[state,]}, what=what)
         else:
             selector = stateSelector(initial={'stateChoice':['all',]}, what=what)
-            
+
+        if(user!=''):
+            userselector = userSelector()
+        else:
+            userselector = userSelector()
+
+
         objects = eval(what).objects
-        if(uuid == '' and pk == '' and wfuuid == ''):
+        if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''):
             t = x(objects.all())
         
         if(uuid		!= ''):		t = x(objects.filter(uuid=uuid))
         if(wfuuid	!= ''):		t = x(objects.filter(wfuuid=wfuuid))
         if(pk		!= ''):		t = x(objects.filter(pk=pk))
         if(name		!= ''):		t = x(objects.filter(name=name))
-        if(state	!= ''):		t = x(objects.filter(state__in=state.split(',')))
+        if(state != '' and user == ''):	t = x(objects.filter(state__in=state.split(',')))
+        if(state != '' and user != ''):	t = x(objects.filter(state__in=state.split(','), user=user))
+        if(user  != ''):		t = x(objects.filter(user=user))
         
         if(t is None):			t = x(objects.all())
             
@@ -192,6 +226,7 @@ def data_handler(request, what):
     d['title']	= what
     d['N']	= objects.count()
     d['selector'] = selector
+    d['userselector'] = userselector
     
     return render(request, template, d)
 

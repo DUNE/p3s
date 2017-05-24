@@ -9,27 +9,45 @@
     </head>
     <body>
       <a href="http://{{ domain }}"><h2>p&#2384;s home</h2></a><br/>
-    {% include "topnavbar.html" %}
-      <h3>{% block headline %}{% endblock %}&ensp;(total in DB: {{ N }})</h3>
+      {% include "topnavbar.html" %}
+      <center>
+	<h3>{% block headline %}{% endblock %}&ensp;(total in DB: {{ N }})</h3>
+      </center>
 
-      
-      <div>
-      {% block frm %}
-      <form action="" method="post">
-	{% csrf_token %}
-	{% if selector %}
-	{{ selector }}
-	<input type="submit" value="Submit" />
-	{% endif %}
-      </form>
-      {% endblock %}
-      </div>
+
+	    <!-- div -->
+	      {% block frm %}
+	      <form action="" method="post">
+		{% csrf_token %}
+		{% if selector %}
+		<table>
+		  <tr>
+		    <td width="50%">
+		      <table>
+			{{ selector }}
+		      </table>
+		    </td>
+		    <td>
+		      <table>
+			{{ userselector }}
+		      </table>
+		    </td>
+		  </tr>
+		</table>
+		
+		<input type="submit" value="Submit" />
+		
+		{% endif %}
+	      </form>
+	      {% endblock %}
+	      <!-- /div -->
+	      
       <hr/>
-
       
       <div id="table">
         {% block table %}{% endblock %}
       </div>
+      
 <hr/>
       <h3>{% block aux1title %}{% endblock %}</h3>
       <div id="aux1">
