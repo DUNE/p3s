@@ -50,9 +50,10 @@ from django import forms
 # Users - first element is value, second is the label in the dropdown list
 CHOICES = (('All', 'All'), ('maxim','maxim'), ('brett','brett'),)
 
+
 SELECTORS	= {
     'pilot':
-    {'label':'Pilot States',
+    {'stateLabel':'Pilot States',
      'states':[
          ('all',	'All'),
          ('active',	'Active'),
@@ -61,12 +62,13 @@ SELECTORS	= {
          ('timeout',	'Timed out'),
          ('no jobs',	'No Jobs'),
      ],
+     'userselector': None,
      'gUrl':'/monitor/pilots',
-     'qUrl':'/monitor/pilots?state=%s',
+     'qUrl':'/monitor/pilots?',
      'table':'PilotTable',
     },
     'job':
-    {'label':'Job States',
+    {'stateLabel':'Job States',
      'states':[
          ('all',	'All'),
          ('template',	'Template'),
@@ -75,12 +77,13 @@ SELECTORS	= {
          ('finished','Finished'),
          ('pilotTO','Pilot Timed Out'),
      ],
+     'userselector': 'userselector',
      'gUrl':'/monitor/jobs',
-     'qUrl':'/monitor/jobs?state=%s&user=%s',
+     'qUrl':'/monitor/jobs?',
      'table':'JobTable',
     },
     'workflow':
-    {'label':'Workflow States',
+    {'stateLabel':'Workflow States',
      'states':[
          ('all',	'All'),
          ('template',	'Template'),
@@ -88,13 +91,22 @@ SELECTORS	= {
          ('running',	'Running'),
          ('finished','Finished'),
      ],
+     'userselector': 'userselector',
      'gUrl':'/monitor/workflows',
      'qUrl':'/monitor/workflows?state=%s',
      'table':'WfTable',
     },
 }
 
-# 
+#
+def makeQuery(what, q=''):
+    gUrl= SELECTORS[what]['gUrl']
+    qUrl= SELECTORS[what]['qUrl']
+
+    if(q==''):
+        return HttpResponseRedirect(gUrl)
+    
+    return HttpResponseRedirect(qUrl+q)
 #########################################################    
 class stateSelector(forms.Form):
 
@@ -103,23 +115,17 @@ class stateSelector(forms.Form):
 
        super(stateSelector, self).__init__(*args, **kwargs)
        self.fields['stateChoice'].choices	= SELECTORS[self.what]['states']
-       self.fields['stateChoice'].label		= SELECTORS[self.what]['label']
-       self.gUrl				= SELECTORS[self.what]['gUrl']
-       self.qUrl				= SELECTORS[self.what]['qUrl']
+       self.fields['stateChoice'].label		= SELECTORS[self.what]['stateLabel']
 
-    def handleStateSelector(self, user=''):
+    def handleStateSelector(self):
         selectedStates = self.cleaned_data['stateChoice']
         if len(selectedStates):
             if('all' in selectedStates):
-                if(user==''):
-                    return HttpResponseRedirect(self.gUrl)
-                else:
-                    return HttpResponseRedirect(self.qUrl % ('', user))
+                return ''
+            else:
+                return 'state='+",".join(selectedStates)+'&'
+        return ''
 
-            return HttpResponseRedirect(self.qUrl % (",".join(selectedStates), user))
-
-        return HttpResponseRedirect(self.gUrl)
-           
     stateChoice = forms.MultipleChoiceField(label='DUMMY',
                                             required=False,
                                             widget=forms.CheckboxSelectMultiple,
@@ -131,8 +137,10 @@ class userSelector(forms.Form):
 
     def handleUserSelector(self):
         selectedUser = self.cleaned_data['userChoice']
-        if(selectedUser=='All'): selectedUser=''
-        return selectedUser
+        if(selectedUser=='All'):
+            return ''
+        else:
+            return 'user='+selectedUser+'&'
 
 #########################################################    
 # general request handler for summary type of a table
@@ -160,16 +168,20 @@ def data_handler(request, what):
    
     if(what in ['job', 'pilot', 'workflow']):
         t = None # placeholder for the table object
-        
+        q = ''
         x=eval(SELECTORS[what]['table'])
         
         if request.method == 'POST':
             selector = stateSelector(request.POST, what=what)
             if selector.is_valid():
-                users = userSelector(request.POST)
-                selectedUser = ''
-                if users.is_valid(): selectedUser = users.handleUserSelector()
-                return selector.handleStateSelector(selectedUser)
+                q += selector.handleStateSelector()
+                
+            users = userSelector(request.POST)
+            if users.is_valid():
+                q += users.handleUserSelector()
+            
+            return makeQuery(what, q)
+#                return selector.handleStateSelector(selectedUser)
 
         if(state!=''): # from the HTTP request with exception of 'all'
             selector = stateSelector(initial={'stateChoice':[state,]}, what=what)
@@ -222,7 +234,8 @@ def data_handler(request, what):
     d['title']	= what
     d['N']	= objects.count()
     d['selector'] = selector
-    d['userselector'] = userselector
+    if(SELECTORS[what]['userselector'] is not None):
+        d['userselector'] = eval(SELECTORS[what]['userselector'])
     
     return render(request, template, d)
 
