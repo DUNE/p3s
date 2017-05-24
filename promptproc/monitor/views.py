@@ -186,13 +186,15 @@ def data_handler(request, what):
         if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''):
             t = x(objects.all())
         
-        if(uuid		!= ''):		t = x(objects.filter(uuid=uuid))
-        if(wfuuid	!= ''):		t = x(objects.filter(wfuuid=wfuuid))
-        if(pk		!= ''):		t = x(objects.filter(pk=pk))
-        if(name		!= ''):		t = x(objects.filter(name=name))
-        if(state != '' and user == ''):	t = x(objects.filter(state__in=state.split(',')))
-        if(state != '' and user != ''):	t = x(objects.filter(state__in=state.split(','), user=user))
-        if(state == '' and user != ''):	t = x(objects.filter(user=user))
+        kwargs = {}
+        if(uuid		!= ''): kwargs['uuid']	= uuid
+        if(wfuuid	!= ''):	kwargs['wfuuid']= wfuuid
+        if(pk		!= ''): kwargs['pk']	= pk
+        if(name		!= ''): kwargs['name']	= name
+        if(user		!= ''): kwargs['user']	= user
+        if(state	!= ''): kwargs['state__in']=state.split(',')
+        
+        t = x(objects.filter(**kwargs))
         
         if(t is None):			t = x(objects.all())
             
