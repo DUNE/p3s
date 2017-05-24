@@ -111,8 +111,11 @@ class stateSelector(forms.Form):
         selectedStates = self.cleaned_data['stateChoice']
         if len(selectedStates):
             if('all' in selectedStates):
-                return HttpResponseRedirect(self.gUrl)
-            
+                if(user==''):
+                    return HttpResponseRedirect(self.gUrl)
+                else:
+                    return HttpResponseRedirect(self.qUrl % ('', user))
+
             return HttpResponseRedirect(self.qUrl % (",".join(selectedStates), user))
 
         return HttpResponseRedirect(self.gUrl)
@@ -130,15 +133,6 @@ class userSelector(forms.Form):
         selectedUser = self.cleaned_data['userChoice']
         if(selectedUser=='All'): selectedUser=''
         return selectedUser
-
-
-        
-#    def __init__(self, *args, **kwargs):
-
-#        super(userSelector, self).__init__(*args, **kwargs)
-#        self.fields['users'].choices = ['maxim','brett']
-#        self.fields['users'].lable = "User"
-    
 
 #########################################################    
 # general request handler for summary type of a table
@@ -183,7 +177,7 @@ def data_handler(request, what):
             selector = stateSelector(initial={'stateChoice':['all',]}, what=what)
 
         if(user!=''):
-            userselector = userSelector()
+            userselector = userSelector(initial={'userChoice':[user,]})
         else:
             userselector = userSelector()
 
@@ -198,7 +192,7 @@ def data_handler(request, what):
         if(name		!= ''):		t = x(objects.filter(name=name))
         if(state != '' and user == ''):	t = x(objects.filter(state__in=state.split(',')))
         if(state != '' and user != ''):	t = x(objects.filter(state__in=state.split(','), user=user))
-        if(user  != ''):		t = x(objects.filter(user=user))
+        if(state == '' and user != ''):	t = x(objects.filter(user=user))
         
         if(t is None):			t = x(objects.all())
             
