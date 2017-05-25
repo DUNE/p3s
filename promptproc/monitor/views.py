@@ -108,16 +108,16 @@ def makeQuery(what, q=''):
     
     return HttpResponseRedirect(qUrl+q)
 #########################################################    
-class stateSelector(forms.Form):
+class boxSelector(forms.Form):
 
     def __init__(self, *args, **kwargs):
        self.what = kwargs.pop('what')
 
-       super(stateSelector, self).__init__(*args, **kwargs)
+       super(boxSelector, self).__init__(*args, **kwargs)
        self.fields['stateChoice'].choices	= SELECTORS[self.what]['states']
        self.fields['stateChoice'].label		= SELECTORS[self.what]['stateLabel']
 
-    def handleStateSelector(self):
+    def handleBoxSelector(self):
         selectedStates = self.cleaned_data['stateChoice']
         if len(selectedStates):
             if('all' in selectedStates):
@@ -132,11 +132,15 @@ class stateSelector(forms.Form):
                                             choices=[('place', 'holder'),])
 
 ######################
-class userSelector(forms.Form):
-    userChoice = forms.ChoiceField(choices = CHOICES, label = "User")
+class dropDown(forms.Form):
+    def __init__(self, *args, **kwargs):
+       self.label = kwargs.pop('label')
+       super(dropDown, self).__init__(*args, **kwargs)
+       
+       self.fields['dropChoice'] = forms.ChoiceField(choices = CHOICES, label = self.label)
 
-    def handleUserSelector(self):
-        selectedUser = self.cleaned_data['userChoice']
+    def handleDropSelector(self):
+        selectedUser = self.cleaned_data['dropChoice']
         if(selectedUser=='All'):
             return ''
         else:
@@ -160,9 +164,8 @@ def data_handler(request, what):
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
     d		= dict(domain=domain, time=str(now))
 
-    objects, t, aux1	= None, None, None
+    objects, t, aux1, selector1, selector2 = None, None, None, None, None
     template = 'universo.html'
-    selector = None
 
     # FIXME - now that multiple selectors work, need to init the checkboxes correctly
    
@@ -171,27 +174,30 @@ def data_handler(request, what):
         q = ''
         x=eval(SELECTORS[what]['table'])
         
+#----------
         if request.method == 'POST':
-            selector = stateSelector(request.POST, what=what)
-            if selector.is_valid():
-                q += selector.handleStateSelector()
+            stateselector = boxSelector(request.POST, what=what)
+            if stateselector.is_valid():
+                q += stateselector.handleBoxSelector()
                 
-            users = userSelector(request.POST)
-            if users.is_valid():
-                q += users.handleUserSelector()
+            if(SELECTORS[what]['userselector'] is not None):
+                userselector = dropDown(request.POST,label='User')
+                if userselector.is_valid():
+                    q += userselector.handleDropSelector()
             
             return makeQuery(what, q)
-#                return selector.handleStateSelector(selectedUser)
+#----------
+
 
         if(state!=''): # from the HTTP request with exception of 'all'
-            selector = stateSelector(initial={'stateChoice':[state,]}, what=what)
+            stateselector = boxSelector(initial={'stateChoice':[state,]}, what=what)
         else:
-            selector = stateSelector(initial={'stateChoice':['all',]}, what=what)
+            stateselector = boxSelector(initial={'stateChoice':['all',]}, what=what)
 
         if(user!=''):
-            userselector = userSelector(initial={'userChoice':[user,]})
+            userselector = dropDown(initial={'dropChoice':[user,]}, label='User')
         else:
-            userselector = userSelector()
+            userselector = dropDown(label='User')
 
 
         objects = eval(what).objects
@@ -233,9 +239,9 @@ def data_handler(request, what):
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
     d['title']	= what
     d['N']	= objects.count()
-    d['selector'] = selector
+    d['selector'] = stateselector
     if(SELECTORS[what]['userselector'] is not None):
-        d['userselector'] = eval(SELECTORS[what]['userselector'])
+        d['selector2'] = eval(SELECTORS[what]['userselector'])
     
     return render(request, template, d)
 
