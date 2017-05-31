@@ -328,6 +328,8 @@ while(cnt>0 or p.cycles==0):
     pilot_env	= os.environ.copy()
     job_env	= {**pilot_env,**env}
 
+    logger.info('JOB_ENV: %s' % str(job_env))
+    
     if 'P3S_EXECMODE' in job_env.keys(): # can be forced by -s
         shell = True
     
