@@ -1,0 +1,56 @@
+#include "services_dune.fcl"
+process_name: OnlineMonitor
+
+services:
+{
+  TimeTracker:       {}
+  RandomNumberGenerator: {} 
+  message:              @local::dune_message_services_prod_debug
+  FileCatalogMetadata:  @local::art_file_catalog_mc
+#                        @table::protodune_services
+ ExptGeoHelperInterface:       @local::dune_geometry_helper
+ Geometry:                     @local::protodune_geo
+ DetectorClocksService:        @local::dunefd_detectorclocks
+ DetectorPropertiesService:    @local::protodune_detproperties
+ LArPropertiesService:         @local::dunefd_properties
+# LArFFT:                       @local::dunefd_larfft
+ DatabaseUtil:                 @local::dunefd_database
+# BackTracker:                  @local::dunefd_backtracker
+# SpaceCharge:                  @local::protodune_spacecharge
+# NuRandomService:              @local::dune_seedservice
+# SignalShapingServiceDUNE:     @local::dunefd_signalshapingservice
+ ChannelStatusService:         @local::dunefd_channel_status
+ ChannelGroupService:          @local::changroup_apa
+
+  TFileService: { fileName: "onlinemonit.root" }
+
+}
+
+
+#source is now a root file
+source:
+{
+  module_type: RootInput
+  maxEvents: -1
+  fileNames: ["input_file.root"]
+}
+
+
+
+outputs:{}
+
+physics:
+{
+  analyzers:
+  {
+    rawdraw: 
+    {
+      module_type:     "OnlineMonitor"
+      TPCInputModule:  "daq"
+      TPCInstanceName: ""
+    }
+  }
+  analysis: [ rawdraw ] //Directory for histograms
+  end_paths: [ analysis ]
+}
+
