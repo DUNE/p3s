@@ -20,6 +20,14 @@ then
     port=80
 fi 
 
+if [[ $h == lx* ]];
+then
+    p3s_server="neutdqm.cern.ch"
+    p3s_site="lxbatch"
+    p3s_dirpath=""
+    port=80
+fi 
+
 
 if [ -z "$1" ]
   then
