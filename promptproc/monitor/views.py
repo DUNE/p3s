@@ -96,6 +96,9 @@ SELECTORS	= {
      'qUrl':'/monitor/workflows?state=%s',
      'table':'WfTable',
     },
+    'site':
+    {'userselector': None,
+     },
 }
 
 #
@@ -168,7 +171,8 @@ def data_handler(request, what):
     template = 'universo.html'
 
     # FIXME - now that multiple selectors work, need to init the checkboxes correctly
-   
+
+    stateselector = None
     if(what in ['job', 'pilot', 'workflow']):
         t = None # placeholder for the table object
         q = ''
@@ -212,9 +216,12 @@ def data_handler(request, what):
         if(user		!= ''): kwargs['user']	= user
         if(state	!= ''): kwargs['state__in']=state.split(',')
         
-        t = x(objects.filter(**kwargs))
-        
-        if(t is None):			t = x(objects.all())
+        try:
+            t = x(objects.filter(**kwargs))
+        except:
+            pass
+            
+        if(t is None):t = x(objects.all()) # FIXME - check kwargs instead
             
     if(what=='dataset'):
         objects = dataset.objects
@@ -239,7 +246,8 @@ def data_handler(request, what):
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
     d['title']	= what
     d['N']	= objects.count()
-    d['selector'] = stateselector
+    if(stateselector is not None):
+        d['selector1'] = stateselector
     if(SELECTORS[what]['userselector'] is not None):
         d['selector2'] = eval(SELECTORS[what]['userselector'])
     
