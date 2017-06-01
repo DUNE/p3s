@@ -1,0 +1,1 @@
+{"name":"lxbatch", "server":"neutdqm.cern.ch:80", "pilotcycles":0, "pilotperiod": 10, "env":{"P3S_SITE":"lxbatch", "P3S_SERVER":"neutdqm.cern.ch:80","P3S_DIRPATH":"/afs/cern.ch/user/m/mxp","P3S_LARSOFT":""}}
