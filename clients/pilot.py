@@ -339,17 +339,31 @@ while(cnt>0 or p.cycles==0):
     logger.info('CMD: %s' % cmd)
     proc = None
 
+    joboutFilename = joblogdir+'/'+ p['job']+'.out'
+    joberrFilename = joblogdir+'/'+ p['job']+'.err'
+    
+    jobout = open(joboutFilename,'w')
+    joberr = open(joberrFilename,'w')
+
+    logger.info('JOB STDOUT: %s' % joboutFilename)
+    logger.info('JOB STDERR: %s' % joberrFilename)
+
+    
     try:
         proc = subprocess.Popen(cmd,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE,
+                                stdout=jobout, # stdout=subprocess.PIPE,
+                                stderr=joberr, # stderr=subprocess.PIPE,
                                 env=job_env,
                                 shell=shell)
     except:
+        joberr.write('nonstarter')
+        jobout.close()
+        joberr.close()
+        
         p['state']='nonstarter'
         data = API.reportPilot(p)
         logger.error("could not start the job, skip")
-        continue # exit(1)
+        continue
             
 
     jobPID = proc.pid
@@ -375,12 +389,12 @@ while(cnt>0 or p.cycles==0):
             if(p['status']=='FAIL'): logfail(msg, logger)
 
             if(verb>2): logger.info('HEARTBEAT, server response: %s' % data)
-        else:
-            jobout = open(joblogdir+'/'+ p['job']+'.out','w')
-            joberr = open(joblogdir+'/'+ p['job']+'.err','w')
-            jobout.write((proc.stdout.read().decode('utf-8')))
-            joberr.write((proc.stderr.read().decode('utf-8')))
+        else: # see the "pipe" note on the bottom"
+            jobout.close()
+            joberr.close()
             break
+
+        # conrinue the process polling loop, sleep a little
         time.sleep(beat)
 
     # Ended loop, assume job done (FIXME error handling)
@@ -436,3 +450,9 @@ exit(0)
 #         response = API.reportPilot(p)
 #         logger.info('JOB exception: %s' %  p['job'])
 
+
+# Handling pipes from the process, now deprecated
+# jobout = open(joblogdir+'/'+ p['job']+'.out','w')
+# joberr = open(joblogdir+'/'+ p['job']+'.err','w')
+# jobout.write((proc.stdout.read().decode('utf-8')))
+# joberr.write((proc.stderr.read().decode('utf-8')))
