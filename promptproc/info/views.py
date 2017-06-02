@@ -84,6 +84,7 @@ def index(request):
                       'time':		timeString,
                       'summary':	tSummary,
                       'system':		tSystem,
+                      'sites':		",".join(site.list()),
                   }
     )
 #
