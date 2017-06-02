@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 hostname
 date
 env | grep P3S
