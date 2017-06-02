@@ -3,8 +3,8 @@
 	"name":		"EOS access test",
 	"timeout":	"1000",
         "jobtype":	"testJob",
-        "payload":	"/mnt/nas01/users/mxp/projects/p3s/inputs/larsoft/dirtest_1.sh",
-	"env":		{"P3S":"TRUE","POSTGRES":"FALSE","P3S_NEVENTS":"1","P3S_FCL":"/mnt/nas01/users/mxp/projects/p3s/inputs/larsoft/neutdqm_lar_4.fcl","P3S_INPUT":"/afs/cern.ch/user/m/mxp/nashome1/eos/experiment/neutplatform/protodune/np04tier0/p3s/testInput/","P3S_OUTPUT":"/afs/cern.ch/user/m/mxp/nashome1/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOuput/"},
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/dirtest_1.sh",
+	"env":		{"P3S":"TRUE","POSTGRES":"FALSE","P3S_NEVENTS":"1","P3S_FCL":"/mnt/nas01/users/mxp/projects/p3s/inputs/larsoft/neutdqm_lar_4.fcl","P3S_INPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testInput/","P3S_OUTPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOutput/"},
         "priority":	"1",
 	"state":	"defined"
     }
