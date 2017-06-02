@@ -27,10 +27,16 @@ API  = serverAPI(server=server)
 resp = API.get2server('info','dash', '?out=json')
 info = json.loads(resp)
 
+
+print("Domain: %s, hostname %s, uptime %s" % (info['domain'], info['hostname'], info['uptime']))
+
 print("Pilots: total %s, idle %s, running %s, stopped %s" %
       (info['pilots']['data'][0], info['pilots']['data'][1], info['pilots']['data'][2], info['pilots']['data'][3]))
+
 print("Jobs: total %s, defined %s, running %s, finished %s" %
       (info['jobs']['data'][0],   info['jobs']['data'][1],   info['jobs']['data'][2],   info['jobs']['data'][3]))
 
+
 print("Workflows %s" % info['workflows']['data'][0])
+
 print("Datasets %s" % info['datasets']['data'][0])

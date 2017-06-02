@@ -1,6 +1,8 @@
 #!/bin/sh
 
-# Simple pilot eliminator, meant to be used with pdsh
+# A simple script to list pilots on a node,
+# meant to be used with pdsh so you get a summary
+# of pilots running on a cluster covered by pdsh
 
 plist=`ps aux | grep pilot | grep -v grep | awk '{print $2}'`
 echo $plist

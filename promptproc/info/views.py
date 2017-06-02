@@ -22,24 +22,47 @@ from monitor.monitorTables		import *
 from utils.timeUtils import uptime
 
 def index(request):
-    out		= request.GET.get('out','')
+    summaryData = []
+    
+    out		= request.GET.get('out','') # format
 
     domain	= request.get_host()
     hostname	= settings.HOSTNAME
-
-    summaryData = []
+    upt		= uptime()
 
     dataDict = collections.OrderedDict()
 
+    dataDict['domain']	= domain
+    dataDict['hostname']= hostname
+    dataDict['uptime']	= upt
+
     dataDict['pilots']	=	{'entry':'Pilots: total/idle/running/stopped',
-                                 'data':(pilot.N(), pilot.N(state='no jobs'), pilot.N(state='running'), pilot.N(state='stopped'))}
-    dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished', 'data':(job.N(), job.N(state='defined'), job.N(state='running'), job.N(state='finished'))}
-    dataDict['workflows']=	{'entry':	'Workflows: total/-/-/-',		'data':(workflow.N(),	'-',		'-',		'-')}
-    dataDict['datasets']=	{'entry':	'Datasets: total/-/-/-',		'data':(dataset.N(),	'-',		'-',		'-')}
+                                 'data':(
+                                     pilot.N(),
+                                     pilot.N(state='no jobs'),
+                                     pilot.N(state='running'),
+                                     pilot.N(state='stopped')
+                                 )}
+    
+    dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished',
+                                 'data':(
+                                     job.N(),
+                                     job.N(state='defined'),
+                                     job.N(state='running'),job.N(state='finished')
+                                 )}
+    
+    dataDict['workflows']=	{'entry':'Workflows: total/-/-/-', 'data':(workflow.N(),'-','-','-')}
+    
+    dataDict['datasets']=	{'entry':'Datasets:  total/-/-/-', 'data':(dataset.N(),	'-','-','-')}
+    
 
     if(out=='json'): return HttpResponse(json.dumps(dataDict))
     
-    for k in dataDict.keys(): summaryData.append({'Object': dataDict[k]['entry'],'Number': "%s/%s/%s/%s" % dataDict[k]['data']})
+    for k in dataDict.keys():
+        try:
+            summaryData.append({'Object': dataDict[k]['entry'],'Number': "%s/%s/%s/%s" % dataDict[k]['data']})
+        except:
+            pass
 
     tSummary = SummaryTable(summaryData)
     timeString = datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
@@ -47,7 +70,7 @@ def index(request):
     systemData = []
     systemData.append({'attribute': 'Current time',	'value': timeString})
     systemData.append({'attribute': 'Server',	'value': hostname})
-    systemData.append({'attribute': 'Uptime',	'value': uptime()})
+    systemData.append({'attribute': 'Uptime',	'value': upt})
     systemData.append({'attribute': '>',	'value': '>'})
 
     

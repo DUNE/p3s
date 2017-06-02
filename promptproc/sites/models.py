@@ -11,3 +11,13 @@ class site(models.Model):
 
     def __str__(self):
         return serializers.serialize("json", [self, ])
+
+    @classmethod
+    def N(self):
+        return self.objects.count()
+    
+    @classmethod
+    def list(self):
+        l = []
+        for s in self.objects.all(): l.append(s.name)
+        return l
