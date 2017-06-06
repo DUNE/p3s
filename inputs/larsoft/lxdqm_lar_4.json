@@ -1,10 +1,10 @@
 [
     {
-	"name":		"larsoft+EOS test",
+	"name":		"larsoft+EOS LX test",
 	"timeout":	"1000",
         "jobtype":	"purityMonitor",
-        "payload":	"/mnt/nas01/users/mxp/projects/p3s/inputs/larsoft/neutdqm_lar_4.sh",
-	"env":		{"P3S":"TRUE","POSTGRES":"FALSE","P3S_NEVENTS":"1","P3S_FCL":"/mnt/nas01/users/mxp/projects/p3s/inputs/larsoft/neutdqm_lar_4.fcl","P3S_INPUT":"/afs/cern.ch/user/m/mxp/nashome1/eos/experiment/neutplatform/protodune/np04tier0/p3s/testInput/detsim_single_DistONSuppOFF_100.root","P3S_OUTPUT":"/mnt/nas01/users/mxp/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOutput/"},
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_lar_4.sh",
+	"env":		{"P3S_NEVENTS":"1","P3S_FCL":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_lar_4.fcl","P3S_INPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testInput/detsim_single_DistONSuppOFF_100.root","P3S_OUTPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOutput/"},
         "priority":	"1",
 	"state":	"defined"
     }

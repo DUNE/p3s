@@ -20,6 +20,8 @@ then
     port=80
 fi 
 
+# FIXME - below will work for testing on lxplus
+# but hostname will be different on lxbatch, caveat emptor
 if [[ $h == lx* ]];
 then
     p3s_server="neutdqm.cern.ch"
