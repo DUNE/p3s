@@ -9,8 +9,8 @@ source localProducts_larsoft_v06_38_00_e14_prof/setup
 mrbslp
 
 # set up p3s
-source/afs/cern.ch/user/m/mxp/vp3s/bin/activate
-source/afs/cern.ch/user/m/mxp/projects/p3s/configuration/p3s_setup.sh
+source /afs/cern.ch/user/m/mxp/vp3s/bin/activate
+source /afs/cern.ch/user/m/mxp/projects/p3s/configuration/p3s_setup.sh
 
 cd $P3S_OUTPUT
 p=$$
