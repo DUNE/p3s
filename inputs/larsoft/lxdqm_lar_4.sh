@@ -4,13 +4,12 @@
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
 source /cvmfs/fermilab.opensciencegrid.org/products/larsoft/setups
 
-cd /eos/experiment/neutplatform/protodune/groupdisk/software/ds/
-source localProducts_larsoft_v06_38_00_e14_prof/setup
+cd ${P3S_LARSOFT_HOME}
+source ${P3S_LARSOFT_RELEASE}/setup
 mrbslp
 
-# set up p3s
-source /afs/cern.ch/user/m/mxp/vp3s/bin/activate
-source /afs/cern.ch/user/m/mxp/projects/p3s/configuration/p3s_setup.sh
+# set up the virtual environment
+source ${P3S_VENV}/bin/activate
 
 cd $P3S_OUTPUT
 p=$$
