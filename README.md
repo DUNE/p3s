@@ -3,8 +3,8 @@
 This document is available on the p3s page on GitHub as README.md,
 and it also exists as USERMANUAL.pdf in the *documents* directory
 (renamed there to differ from the local README).
-It's purpose it to guide beginning and
-prospective users in installing and trying out p3s, which is currently
+It's purpose it to provide general information and guide
+developers and users of p3s, which is currently
 under development. Pardon the dust.
 
 ## Software dependencies
@@ -44,6 +44,13 @@ obviously must be installed before the code can run.
 
 * One must make sure that mod_wsgi is built for correct version of Python; this may be checked in
 a few ways, one method is to run "ldd" to look at the version shared libraries
+
+### Runtime environment
+
+On distributed systems where the dependencies as listed above cannot be satisfied
+at the site level (e.g. installed by the administrators of the cluster on all worker
+nodes, servers etc) one can use Python virtualenv facility.
+
 
 ## Installation and setting up
 ### Getting the software
