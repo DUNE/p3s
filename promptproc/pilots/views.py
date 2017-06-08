@@ -165,25 +165,24 @@ def request(request): # Pilot's request for a job:
             with transaction.atomic():
                 tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
                 if(len(tjs)==0): continue
-                ########  FOUND A JOB #########
-                j_candidate = tjs[0] # print(j_candidate,' ',j_candidate.uuid)
+                
+                ###  FOUND A JOB
+                j_candidate = tjs[0]
 
                 logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
-                j = job.objects.get(uuid=j_candidate.uuid) # print('~',j)
-                # j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
-                #if(j.state!='defined'):
-                #    j = None
-                #    continue
+                j = job.objects.get(uuid=j_candidate.uuid)
+                
                 logger.info('%s selected', j.uuid)
-                j.state	= 'dispatched'
-                j.site	= p.site
+                j.state		= 'dispatched'
+                j.site		= p.site
+                j.host		= p.host
                 j.p_uuid	= p_uuid
                 j.ts_dis	= timezone.now()
                 j.save()
             
         except:
-            p.state		= 'DB lock'
+            p.state	= 'DB lock'
             p.status	= 'OK'
             p.ts_lhb	= timezone.now()
             p.save()
@@ -378,6 +377,17 @@ def report(request):
     #         break
     #     except:
     #         pass
+
+
+#
+# 3
+#----
+# This has to do with locking the job object for update, unused for now:
+    # j = job.objects.select_for_update().get(uuid=j_candidate.uuid) # print('~',j)
+    #if(j.state!='defined'):
+    #    j = None
+    #    continue
+
 
     
 ################# DUSTY ATTIC ###########################

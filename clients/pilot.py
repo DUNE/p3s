@@ -136,6 +136,7 @@ args = parser.parse_args()
     args.usage, args.execute, args.period, args.cycles, args.beat, args.test
 )
 
+keepCycles = cycles # will override the site cycles if negative
 
 ############################## START ###################################
 if(usage):
@@ -161,6 +162,8 @@ if(site!='default' and site!='' and not kill):
     doubleQ = s['env'].replace("'", "\"")
     (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
 
+    if(keepCycles<0): cylces=-keepCycles
+    
     for k in env.keys():
         os.environ[k]=env[k]
 
