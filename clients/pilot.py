@@ -147,15 +147,13 @@ if(usage):
 API  = serverAPI(server=server)
 
 
-if(site!='default' and site!='' and not kill):
-    # the pilot will bootstrap with information from the server -
-    # of course it will need to know the server address for that
+if(site!='default' and site!='' and not kill): # bootstrap from the server - need server address
+
     resp = API.get2server('site','getsiteURL', site)
     siteData = json.loads(resp)
         
     if(len(siteData)!=1):
-        if(verb>0):
-            print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
+        if(verb>0): print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
         exit(4)
 
     s = siteData[0]['fields']
@@ -298,12 +296,13 @@ while(cnt>0 or p.cycles==0):
         continue # NEXT ITERATION OF THE MAIN LOOP IF DIDN'T GET A JOB, otherwise - below
     
 ######################### GOT A JOB TO DO ###############################
-    payload = ''
-    env = {}
+    payload	= ''
+    env		= {}
+    
     if(p['state']=='dispatched'): # means pilot was matched with a job
         try:
-            p['job']	= msg['job'] # uuid of the job
-            payload	= msg['payload']
+            p['job']	= msg['job']	# uuid of the job
+            payload	= msg['payload']# executable (e.g. a script)
             
             if(len(msg['env'])):
                 try:

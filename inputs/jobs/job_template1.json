@@ -4,7 +4,7 @@
 	"timeout":	"100",
         "jobtype":	"type1",
         "payload":	"sleep 30",
-	"env":		{"P3S":"TRUE","POSTGRES":"FALSE"},
+	"env":		{"P3S":"TRUE","P3S_TEST":"FALSE"},
         "priority":	"1",
 	"state":	"defined"
     }
