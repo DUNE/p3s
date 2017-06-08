@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # set up larsoft/duneTPC
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
