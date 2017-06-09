@@ -105,7 +105,7 @@ def kill(request): # Pilot's request for a job:
         pass
 
     try:
-        kwargs	= {'host':post['host'],}
+        kwargs	= {'host':post['host']}
     except:
         pass
 
@@ -119,14 +119,15 @@ def kill(request): # Pilot's request for a job:
     plist = []
 
     try:
-        pilots = pilot.objects.filter(**kwargs)
+        pilots = pilot.objects.filter(**kwargs).exclude(state='stopped')
     except:
         return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'pilot not found'}))
 
     try:
         with transaction.atomic():
             for p in pilots:
-                p.status='KILL'
+                p.state		= 'stopped'
+                p.status	= 'KILL'
                 p.save()
                 plist.append(p.uuid)
             pids = ",".join(plist)
