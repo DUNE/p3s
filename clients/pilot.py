@@ -100,7 +100,7 @@ parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 
                     help="output verbosity (0-2), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
-                    help="number of job resuest cycles, while 0 means infinite loop")
+                    help="number of job request cycles: 0 means infinite, negative overrides the per-site setting")
 
 parser.add_argument("-p", "--period",	type=int,	default=5,
                     help="period of the job request cycle, in seconds")
@@ -323,12 +323,13 @@ while(cnt>0 or p.cycles==0):
     p['event']='jobstart'
 
     logger.info('JOB to be started: %s' %  p['job'])
+    
     resp = API.reportPilot(p)
     if(verb>0): logger.info('Starting job, server response: %s' % resp)
 
-    # EXECUTION
+    # ENVIRONMENT
     pilot_env	= os.environ.copy()
-    job_env	= {**pilot_env,**env}
+    job_env	= {**pilot_env,**env} # merge the original environment and one set in the job description
 
     logger.info('JOB_ENV: %s' % str(job_env))
     
@@ -351,6 +352,7 @@ while(cnt>0 or p.cycles==0):
     logger.info('JOB STDERR: %s' % joberrFilename)
 
     
+    # EXECUTION
     try:
         proc = subprocess.Popen(cmd,
                                 stdout=jobout, # stdout=subprocess.PIPE,
