@@ -30,14 +30,16 @@ def rdec(r):
     return decoded
 
 ###################################################################
-def communicate(url, data=None, logger=None):
+def communicate(url, data=None, logger=None, verb=0):
     if(data):
         if(logger): logger.info('POST URL: %s' % url)
     else:
         if(logger): logger.info('GET URL: %s' % url)
 
-    print(url)
-    print(data)
+    if(verb>0):
+        print(url)
+        if(data): print(data)
+        
     try:
         resp=''
         if(data):

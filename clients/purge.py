@@ -9,7 +9,7 @@ from clientenv import clientenv
 (user, server, verb, site) = clientenv()
 
 ### p3s interface defined here
-API  = serverAPI(server=server)
+API  = serverAPI(server=server, verb=0)
 
 parser = argparse.ArgumentParser()
 
@@ -36,7 +36,7 @@ if('.json' in json_in):
         exit(-3)
 else:
     try:
-        data = json.load(json_in)
+        data = json.loads(json_in)
     except:
         exit(-4)
 
