@@ -8,6 +8,9 @@ from clientenv import clientenv
 
 (user, server, verb, site) = clientenv()
 
+### p3s interface defined here
+API  = serverAPI(server=server)
+
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-j", "--json_in",	type=str,	default='',
@@ -38,6 +41,32 @@ else:
         exit(-4)
 
 
-print(data)
+for d in data:
+    what = list(d.keys())[0]
+    (state, status, timestamp, interval) = ('','','','')
+    try:
+        state = d[what]['state']
+    except:
+        pass
+    
+    try:
+        status = d[what]['status']
+    except:
+        pass
+    
+    try:
+        timestamp = d[what]['timestamp']
+    except:
+        pass
+    
+    try:
+        interval = d[what]['interval']
+    except:
+        pass
+    
+    # print(state,status,'*',timestamp,'*',interval)
+    resp = API.post2server('logic', 'purge', dict(interval=interval, timestamp=timestamp, state=state, what=what))
+    print(resp)
+    
 
 

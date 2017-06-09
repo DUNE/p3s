@@ -35,7 +35,9 @@ def communicate(url, data=None, logger=None):
         if(logger): logger.info('POST URL: %s' % url)
     else:
         if(logger): logger.info('GET URL: %s' % url)
-        
+
+    print(url)
+    print(data)
     try:
         resp=''
         if(data):

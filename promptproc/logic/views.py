@@ -43,6 +43,8 @@ def purge(request):
     state	= post['state']
     what	= post['what']
 
+    # print(what,state,timestamp,interval)
+    
     cutoff = timezone.now() - dt(interval) #  print(str(timezone.now()), cutoff)
 
     selection = None
