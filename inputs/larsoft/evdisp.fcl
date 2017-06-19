@@ -1,0 +1,17 @@
+tools: {
+  adcdisp_text_prep: {
+    tool_type: AdcDataDumper
+    FileName: "evtext_%PAT%_chans%CHAN1%-%CHAN2%.dat"
+    Prefix: "ADC dump for "
+    NewFile: true
+    ShowChannelCount: true
+    ShowTickCounts: true
+    ShowRaw: false
+    ShowPrepared: false
+    ShowFirst: 3500
+    ShowRebin: 50
+    ShowMax: 30
+    ShowThreshold: 20
+    ShowOpt: 12
+  }
+}

@@ -1,0 +1,5 @@
+#include "protoDUNE_reco.fcl"
+
+physics.reco: [caldata]
+
+services.RawDigitPrepService.DisplayTools: [ adcdisp_text_prep ]
