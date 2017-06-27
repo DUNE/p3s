@@ -16,6 +16,7 @@ p=$$
 mkdir $p
 cd $p
 pwd
+cp $P3S_FCL_AUX .
 env | grep P3S
 lar -c $P3S_FCL $P3S_INPUT -T output1.root -n$P3S_NEVENTS
 exit
