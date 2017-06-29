@@ -99,6 +99,9 @@ SELECTORS	= {
     'site':
     {'userselector': None,
      },
+    'dataset':
+    {'userselector': None,
+     },
 }
 
 #
