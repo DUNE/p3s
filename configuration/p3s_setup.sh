@@ -24,10 +24,10 @@ fi
 # but hostname will be different on lxbatch, caveat emptor
 if [[ $h == lx* ]];
 then
-    p3s_server="neutdqm.cern.ch"
-    p3s_site="lxbatch"
+    p3s_server="p3s-web"
+    p3s_site="lxvm"
     p3s_dirpath=""
-    port=80
+    port=8000
 fi 
 
 
