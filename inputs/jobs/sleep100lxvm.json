@@ -1,0 +1,11 @@
+[
+    {
+	"name":		"sleep1000",
+	"timeout":	"100",
+        "jobtype":	"sleep",
+        "payload":	"/home/mxp/projects/p3s/inputs/jobs/sleep100.sh",
+	"env":		{"P3S_TEST":"TRUE"},
+        "priority":	"1",
+	"state":	"defined"
+    }
+]
