@@ -102,6 +102,12 @@ SELECTORS	= {
     'dataset':
     {'userselector': None,
      },
+    'datatype':
+    {'userselector': None,
+     },
+    'dag':
+    {'userselector': None,
+     },
 }
 
 #
