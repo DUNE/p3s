@@ -129,7 +129,7 @@ def kill(request): # the client signals that the pulot be killed
                 p.save()
                 plist.append(p.uuid)
             pids = ",".join(plist)
-            return HttpResponse(json.dumps({'uuid':pids, 'state':'KILL'})) # notify the client
+            return HttpResponse(json.dumps({'uuid':pids, 'status':'KILL', 'state': 'stopped'})) # notify the client
     except:
         return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'DB error'}))
 
@@ -231,7 +231,7 @@ def report(request):
         except:
             return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'DB error'}))
         
-        return HttpResponse(json.dumps({'uuid':p_uuid, 'state':'KILL'})) # notify the client
+        return HttpResponse(json.dumps({'uuid':p_uuid, 'status':'KILL', 'state': 'stopped'})) # notify the client
     
     # Check if this pilot timed out (based on heartbeat)
     if(p.state=='timeout'):
