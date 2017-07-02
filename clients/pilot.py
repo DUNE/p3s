@@ -96,8 +96,8 @@ parser.add_argument("-L", "--joblogdir",type=str,	default=joblogdefault,
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
 
-parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 2, 3],
-                    help="output verbosity (0-2), will default to $P3S_VERBOSITY if set")
+parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 2, 3, 4],
+                    help="output verbosity (0-4), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
                     help="number of job request cycles: 0 means infinite, negative overrides the per-site setting")
@@ -160,6 +160,8 @@ if(site!='default' and site!='' and not kill): # bootstrap from the server - nee
     doubleQ = s['env'].replace("'", "\"")
     (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
 
+    print(keepCycles, cycles)
+
     if(keepCycles<0): cylces=-keepCycles
     
     for k in env.keys():
@@ -171,14 +173,14 @@ if(kill):
     if(p_uuid=='' and host!=''):	d = dict(host=host)
     if(p_uuid=='' and site!=''):	d = dict(site=site)
 
+    print(d)
     resp = API.post2server('pilot', 'kill', d)
     print(resp)
     exit(0)
 
 #################### PILOT DELETE AND EXIT #############################
-# Check if it was a deletion request. Note we don't have a logger yet,
-# since a log is always tied to a working pilot, so we don't log
-# deletion errors to a file in this function.
+# Check if a pilot needs to be deleted from the DB. This is a drastic
+# operation and should be reserved for experts.
 if(dlt):
     response = None
     if(p_uuid==''): exit(-2) # check if we have the key
@@ -376,7 +378,7 @@ while(cnt>0 or p.cycles==0):
     while True:
         msg = {}
         errCode = proc.poll()
-        if(verb>2): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
+        if(verb>3): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
         if errCode is None:
             p['state']='running'
             p['event']='heartbeat'
@@ -398,16 +400,15 @@ while(cnt>0 or p.cycles==0):
             joberr.close()
             break
 
-        # conrinue the process polling loop, sleep a little
+        # continue the process polling loop, sleep a little
         time.sleep(beat)
 
     # Ended loop, assume job done (FIXME error handling)
     p['state']	= 'finished'
     p['event']	= 'jobstop'
-    p['errcode']	= errCode
+    p['errcode']= errCode
     p['jobcount']  += 1
     p['jpid']	= jobPID
-    print(p)
         
     response = API.reportPilot(p)
     logger.info('JOB finished: %s' %  p['job'])
