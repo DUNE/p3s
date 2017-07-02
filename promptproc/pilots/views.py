@@ -94,9 +94,8 @@ def delete(request):
 #########################################################
 @csrf_exempt
 @transaction.atomic
-def kill(request): # Pilot's request for a job:
+def kill(request): # the client signals that the pulot be killed
     post	= request.POST
-
     kwargs = None
 
     try:
@@ -114,7 +113,6 @@ def kill(request): # Pilot's request for a job:
     except:
         pass
 
-
     pilots = None
     plist = []
 
@@ -131,7 +129,7 @@ def kill(request): # Pilot's request for a job:
                 p.save()
                 plist.append(p.uuid)
             pids = ",".join(plist)
-            return HttpResponse(json.dumps({'uuid':pids, 'state':'KILL'}))
+            return HttpResponse(json.dumps({'uuid':pids, 'state':'KILL'})) # notify the client
     except:
         return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'DB error'}))
 
@@ -215,10 +213,25 @@ def request(request): # Pilot's request for a job:
 #########################################################
 @csrf_exempt
 def report(request):
-    
+
+    p		= None
     post	= request.POST
     p_uuid	= post['uuid']
-    p		= pilot.objects.get(uuid=p_uuid)
+    try:
+        p = pilot.objects.get(uuid=p_uuid)
+    except:
+        return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failrep', 'error':'pilot not found'}))
+    
+    # Check if this pilot was marked to be killed
+    if(p.status=='KILL'):
+        try:
+            with transaction.atomic():
+                p.state		= 'stopped'
+                p.save()
+        except:
+            return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failkill', 'error':'DB error'}))
+        
+        return HttpResponse(json.dumps({'uuid':p_uuid, 'state':'KILL'})) # notify the client
     
     # Check if this pilot timed out (based on heartbeat)
     if(p.state=='timeout'):
