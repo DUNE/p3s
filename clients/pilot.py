@@ -393,6 +393,12 @@ while(cnt>0 or p.cycles==0):
 
             # Failure reported from brokerage on the server, will log and exit
             if(p['status']=='FAIL'): logfail(msg, logger)
+            
+            # The server wants to kill the pilot
+            if(p['status']=='KILL'):
+                os.kill(jobPID, signal.SIGTERM)
+                logger.info('received kill request from server')
+                exit(0) # FIXME - will make all this more fancy later
 
             if(verb>2): logger.info('HEARTBEAT, server response: %s' % data)
         else: # see the "pipe" note on the bottom"
