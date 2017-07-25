@@ -171,7 +171,7 @@ def request(request): # Pilot's request for a job:
                 logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
                 j = job.objects.get(uuid=j_candidate.uuid)
-                if(j.p_uuid!=''):
+                if(j.p_uuid==''):
                     j.p_uuid	= p_uuid
                     j.save()
                                         
