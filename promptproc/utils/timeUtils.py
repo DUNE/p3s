@@ -43,8 +43,11 @@ def dt(stringTime):
 
 def uptime():
     with open('/proc/uptime', 'r') as f:
-        return f.readline()
-#        uptime_seconds = float(f.readline().split()[0])
-#        uptime_string = str(timedelta(seconds = uptime_seconds))
-#        return uptime_string
+        uptime_seconds = float(f.readline().split()[0])
+        uptime_string = str(timedelta(seconds = uptime_seconds))
 
+        return uptime_string
+
+def loadavg():
+    with open('/proc/loadavg', 'r') as f:
+        return f.readline())
