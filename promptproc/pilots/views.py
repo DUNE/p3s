@@ -193,6 +193,7 @@ def request(request): # Pilot's request for a job:
                     j = None # reset for next iteration
                     return HttpResponse(json.dumps(to_pilot))
                 else:
+                    j = None
                     continue
             
         except:
