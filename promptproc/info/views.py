@@ -41,7 +41,8 @@ def index(request):
                                      pilot.N(),
                                      pilot.N(state='no jobs'),
                                      pilot.N(state='running'),
-                                     pilot.N(state='stopped')
+                                     pilot.jobsDone()
+#                                     pilot.N(state='stopped')
                                  )}
     
     dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished',

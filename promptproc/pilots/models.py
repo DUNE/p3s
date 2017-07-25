@@ -36,6 +36,13 @@ class pilot(models.Model):
             else:
                 return self.objects.count()
 
+    @classmethod
+    def jobsDone(self):
+        cnt=0
+        for p in self.objects.all():
+            cnt+=p.jobcount
+        return cnt
+            
     # @classmethod
     # def Nrun(self, site=None):
     #     if(site):
