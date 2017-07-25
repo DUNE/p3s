@@ -50,4 +50,4 @@ def uptime():
 
 def loadavg():
     with open('/proc/loadavg', 'r') as f:
-        return f.readline())
+        return f.readline()
