@@ -41,8 +41,7 @@ def index(request):
                                      pilot.N(),
                                      pilot.N(state='no jobs'),
                                      pilot.N(state='running'),
-                                     pilot.jobsDone()
-#                                     pilot.N(state='stopped')
+                                     pilot.N(state='stopped')
                                  )}
     
     dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished',
@@ -65,7 +64,7 @@ def index(request):
         except:
             pass
 
-    summaryData.append({'Object': 'Finished as reported by pilots' , 'Number': "%s" % pilot.jobsDone() })
+    summaryData.append({'Object': 'Jobs finished as reported by pilots' , 'Number': "%s" % pilot.jobsDone() })
 
     tSummary = SummaryTable(summaryData)
     timeString = datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
@@ -74,6 +73,7 @@ def index(request):
     systemData.append({'attribute': 'Current time',	'value': timeString})
     systemData.append({'attribute': 'Server',	'value': hostname})
     systemData.append({'attribute': 'Uptime',	'value': upt})
+    systemData.append({'attribute': '>',	'value': '>'})
     systemData.append({'attribute': '>',	'value': '>'})
 
     
