@@ -162,18 +162,18 @@ def request(request): # Pilot's request for a job:
     for prio in priolist:
         try:
             with transaction.atomic():
-                tjs = job.objects.filter(priority=prio, state='defined') # save for later - .order_by(ordering)
+                tjs = job.objects.filter(priority=prio, state='defined', p_uuid='') # save for later - .order_by(ordering)
                 if(len(tjs)==0): continue
                 
                 ###  FOUND A JOB
                 j_candidate = tjs[0]
-
+                j_candidate.p_uuid = p_uuid
+                j_candidate.save()
+                
                 logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
                 j = job.objects.get(uuid=j_candidate.uuid)
-                if(j.p_uuid==''):
-                    j.p_uuid	= p_uuid
-                    j.save()
+                if(j.p_uuid==p_uuid):
                                         
                     logger.info('%s selected', j.uuid)
                     j.state		= 'dispatched'
