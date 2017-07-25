@@ -171,25 +171,29 @@ def request(request): # Pilot's request for a job:
                 logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
                 j = job.objects.get(uuid=j_candidate.uuid)
+                if(j.p_uuid!=''):
+                    j.p_uuid	= p_uuid
+                    j.save()
+                                        
+                    logger.info('%s selected', j.uuid)
+                    j.state		= 'dispatched'
+                    j.site		= p.site
+                    j.host		= p.host
+                    j.ts_dis	= timezone.now()
+                    j.save()
                 
-                logger.info('%s selected', j.uuid)
-                j.state		= 'dispatched'
-                j.site		= p.site
-                j.host		= p.host
-                j.p_uuid	= p_uuid
-                j.ts_dis	= timezone.now()
-                j.save()
+                    p.j_uuid	= j.uuid
+                    p.state	= 'dispatched'
+                    p.ts_lhb	= timezone.now()
+                    p.save()
                 
-                p.j_uuid	= j.uuid
-                p.state	= 'dispatched'
-                p.ts_lhb	= timezone.now()
-                p.save()
-                
-                to_pilot = {'status':	'OK', # job information in JSON format
-                            'state':	'dispatched',	'job':	j.uuid,
-                            'payload':	j.payload,	'env':	j.env}
-                j = None # reset for next iteration
-                return HttpResponse(json.dumps(to_pilot))
+                    to_pilot = {'status':	'OK', # job information in JSON format
+                                'state':	'dispatched',	'job':	j.uuid,
+                                'payload':	j.payload,	'env':	j.env}
+                    j = None # reset for next iteration
+                    return HttpResponse(json.dumps(to_pilot))
+                else:
+                    continue
             
         except:
             p.state	= 'DB lock'
