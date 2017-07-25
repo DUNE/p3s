@@ -19,7 +19,8 @@ from monitor.monitorTables		import *
 
 
 
-from utils.timeUtils import uptime, loadavg
+from utils.timeUtils import uptime
+from utils.timeUtils import loadavg
 
 def index(request):
     summaryData = []
@@ -29,7 +30,7 @@ def index(request):
     domain	= request.get_host()
     hostname	= settings.HOSTNAME
     upt		= uptime()
-    loadavg	= loadavg()
+    ldavg	= loadavg()
 
     dataDict = collections.OrderedDict()
 
@@ -74,7 +75,7 @@ def index(request):
     systemData.append({'attribute': 'Current time',	'value': timeString})
     systemData.append({'attribute': 'Server',	'value': hostname})
     systemData.append({'attribute': 'Uptime',	'value': upt})
-    systemData.append({'attribute': 'Load',	'value': loadavg})
+    systemData.append({'attribute': 'Load',	'value': ldavg})
     systemData.append({'attribute': '>',	'value': '>'})
 
     
