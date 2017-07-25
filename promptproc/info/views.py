@@ -65,6 +65,8 @@ def index(request):
         except:
             pass
 
+    summaryData.append({'Object': 'Finished as reported by pilots' , 'Number': "%s" % pilot.jobsDone() })
+
     tSummary = SummaryTable(summaryData)
     timeString = datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
     
