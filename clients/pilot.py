@@ -68,10 +68,7 @@ from Pilot import Pilot
 #########################################################################        
 #############################  BEGIN  ###################################
 
-(user, server, verb, site) = clientenv()
-
-logdefault	= '/tmp/'+user+'/p3s/pilots'
-joblogdefault	= '/tmp/'+user+'/p3s/jobs'
+(user, server, verb, site, logdefault, joblogdefault) = clientenv()
 
 parser = argparse.ArgumentParser()
 
