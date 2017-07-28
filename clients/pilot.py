@@ -157,7 +157,7 @@ if(site!='default' and site!='' and not kill): # bootstrap from the server - nee
     doubleQ = s['env'].replace("'", "\"")
     (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
 
-    print(keepCycles, cycles)
+    if(verb>0): print('keepCucles ', keepCycles, '  Cycles ', cycles)
 
     if(keepCycles<0): cylces=-keepCycles
     

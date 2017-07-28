@@ -14,7 +14,7 @@ def clientenv():
         exit(7)
 
     pilotlog	= '/tmp/'+user+'/p3s/pilots'
-    joblogd	= '/tmp/'+user+'/p3s/jobs'
+    joblog	= '/tmp/'+user+'/p3s/jobs'
 
         
     if 'P3S_SERVER' in e:	server	= os.environ['P3S_SERVER']
