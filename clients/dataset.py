@@ -57,7 +57,7 @@ class Dataset(dict):
         self['wfuuid']	= wfuuid
         
 #########################################################################
-(user, server, verb, site) = clientenv()
+(user, server, verb, site, pl, jl) = clientenv()
 
 parser = argparse.ArgumentParser()
 
