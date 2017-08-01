@@ -27,11 +27,10 @@ from clientenv import clientenv
 
 settings.configure(USE_TZ = True)
 
-(user, server, verb, site) = clientenv()
+(user, server, verb, site, pl, jl) = clientenv()
 
-host		= socket.gethostname()
-
-parser = argparse.ArgumentParser()
+host	= socket.gethostname()
+parser	= argparse.ArgumentParser()
 
 parser.add_argument("-S", "--server",	type=str,
                     help='server URL: defaults to $P3S_SERVER or if unset to '+server,
