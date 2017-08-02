@@ -1,1 +1,1 @@
-{"name":"lxvm", "server":"p3s-web:80", "pilotcycles":0, "pilotperiod": 10, "env":{"P3S_SITE":"lxvm", "P3S_SERVER":"p3s-web:80","P3S_DIRPATH":"/afs/cern.ch/user/m/mxp","P3S_LARSOFT":""}}
+{"name":"lxvm", "server":"p3s-web:80", "pilotcycles":0, "pilotperiod": 1, "env":{"P3S_SITE":"lxvm", "P3S_SERVER":"p3s-web:80","P3S_DIRPATH":"/afs/cern.ch/user/m/mxp","P3S_LARSOFT":""}}

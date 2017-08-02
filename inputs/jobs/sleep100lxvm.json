@@ -1,7 +1,7 @@
 [
     {
-	"name":		"sleep1000",
-	"timeout":	"100",
+	"name":		"test100",
+	"timeout":	"200",
         "jobtype":	"sleep",
         "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/jobs/sleep100.sh",
 	"env":		{"P3S_TEST":"TRUE"},
