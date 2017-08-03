@@ -279,9 +279,18 @@ def detail_handler(request, what):
     theName = 'Not Found'
     objects = eval(what).objects
 
-    if(what in ('job', 'dataset', 'pilot', 'site')):
+    if(what in ('job', 'dataset', 'site')):
         template = 'detail.html'
         d['title']	= what
+        
+    if(what=='pilot'):
+        template = 'detail3.html'
+        my_pilot = objects.get(pk=pk)
+        aux1 = JobTable(job.objects.filter(p_uuid=my_pilot.uuid))
+        aux1.set_site(domain)
+        theName = 'pilot '+my_pilot.uuid
+        d['title']	= what
+
         
     if(what=='dag'):
         template = 'detail2.html'
@@ -341,6 +350,8 @@ def detail_handler(request, what):
         elif(a=='p_uuid'):
             x = mark_safe('<a href="http://%s/monitor/%s?%s=%s">%s</a>'
                          % (domain, 'pilotdetail',	'uuid',	dicto[a], dicto[a]))
+        elif(a=='jobs_done'): # we have created a separate table for the job list
+            continue
         else:
             x = dicto[a]
             

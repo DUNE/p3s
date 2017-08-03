@@ -1,0 +1,9 @@
+{% extends "monitor_base.html" %}
+{% load render_table from django_tables2 %}
+{% load static %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block headline %}{{ title }}{% endblock %}
+{% block table %}{% render_table detail %}{% endblock %}
+{% block aux1title %}{{aux1title}}{% endblock %}
+{% block aux1 %}{% render_table aux1 %}{% endblock %}
