@@ -366,9 +366,11 @@ def detail_handler(request, what):
     if(aux1):
         d['aux1'] = aux1
         d['aux1title'] = 'Jobs for "'+theName+'"'
+        RequestConfig(request).configure(aux1)
     if(aux2):
         d['aux2'] = aux2
         d['aux2title'] = 'Data for "'+theName+'"'
+        RequestConfig(request).configure(aux2)
 
     return render(request, template, d)
 ###################################################################################
