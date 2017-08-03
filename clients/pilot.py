@@ -147,19 +147,25 @@ API  = serverAPI(server=server)
 if(site!='default' and site!='' and not kill): # bootstrap from the server - need server address
 
     resp = API.get2server('site','getsiteURL', site)
-    siteData = json.loads(resp)
+    try:
+        siteData = json.loads(resp)
+    except:
+        if(verb>0): print('Could not load site data')
+        exit(4)
         
     if(len(siteData)!=1):
         if(verb>0): print('Multiple sites reported for site name '+ site +'... Inconsitency - Exiting.')
-        exit(4)
+        exit(5)
 
     s = siteData[0]['fields']
     doubleQ = s['env'].replace("'", "\"")
     (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
 
-    if(verb>0): print('keepCucles ', keepCycles, '  Cycles ', cycles)
+    if(verb>0): print('keepCycles ', keepCycles, '  Cycles ', cycles)
 
-    if(keepCycles<0): cylces=-keepCycles
+    if(keepCycles<0):
+        cycles=-keepCycles
+        if(verb>0): print('Overriding site cycles with:', cycles)
     
     for k in env.keys():
         os.environ[k]=env[k]
