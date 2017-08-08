@@ -8,11 +8,13 @@ developers and users of p3s, which is currently
 under development. Pardon the dust.
 
 ## Software dependencies
-p3s consists of the server and client components. There is an additional
-(and optional) service which displays the results of the p3s workflows
-if so desired.
+p3s consists of the server and client components. The code
+is organized in the folders **promptproc** and **client** respectively.
+There is an additional (and optional) service which displays the results
+of the p3s workflows if so desired. Folder **display** is a placeholder
+for this code which is in development.
 
-The software dependencies of the server (folder **promptproc**) and the client (folder **client**)
+The software dependencies of the server and the client
 are listed below. They obviously must be installed before the code can run.
 
 ### p3s server dependencies
@@ -25,11 +27,13 @@ are listed below. They obviously must be installed before the code can run.
 
 * RDBMS (e.g. PostgreSQL; sqlite is used for development puprposes only and won't be suitable for deployment)
 
-* psycopg2 (for PostgreSQL)
+* psycopg2 (for PostgreSQL). A few minor dependendices will have to be resolved here.
 
-* Apache 2.4 + mod_wsgi built for Python 3.5
+* Apache 2.4 + mod_wsgi built for Python 3.5. This will likely require building Python from source with
+"enable_shared" option so that Python runtime is available for synamic link to mod_wsgi.
 
 * NetworkX 1.11
+
 
 ### p3s client dependencies
 
@@ -41,7 +45,7 @@ are listed below. They obviously must be installed before the code can run.
 
 ### Known issues
 
-* NetworkX: some versions may present compatibility issues, resolving this is reponsibility of the developer
+* NetworkX: some versions other than 1.11 **may** present compatibility issues, resolving this is reponsibility of the developer
 
 * Apache 2.4 deployment is different on different flavors of Linux, this must be addressed during deployment
 
@@ -107,6 +111,8 @@ DATABASES = {
     }
 }
 ```
+
+This file is not stored in the repo for obvious reasons.
 
 ### Initializing the Database
 
