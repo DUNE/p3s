@@ -1,4 +1,13 @@
 # ProtoDUNE Prompt Processing System (p3s)
+## About the system
+p3s has been developed as a light-weight and easy to deploy system
+for managing prompt processing workflows in the protoDUNE experiment
+at CERN, although it contains not specifics of that particular application,
+is payload job agnostic and can be utilized for many other purposes.
+It design is inspired by the pilot-based frameworks such as PanDA and
+Dirac, but p3s is a clean sheet development and prioritizes simplicity
+and component reuse over most other factors.
+
 ## About this document
 This document is available on the p3s page on GitHub as README.md,
 and it also exists as USERMANUAL.pdf in the *documents* directory
@@ -30,9 +39,9 @@ are listed below. They obviously must be installed before the code can run.
 * psycopg2 (for PostgreSQL). A few minor dependendices will have to be resolved here.
 
 * Apache 2.4 + mod_wsgi built for Python 3.5. This will likely require building Python from source with
-"enable_shared" option so that Python runtime is available for synamic link to mod_wsgi.
+"enable_shared" option so that Python runtime is available for dynamic link to mod_wsgi.
 
-* NetworkX 1.11
+* NetworkX 1.11 (1.10+ will probably do).
 
 
 ### p3s client dependencies
