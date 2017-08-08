@@ -8,9 +8,12 @@ developers and users of p3s, which is currently
 under development. Pardon the dust.
 
 ## Software dependencies
-The system consists of the server and client components. Their
-software dependencies (which overlap) are listed below. They
-obviously must be installed before the code can run.
+p3s consists of the server and client components. There is an additional
+(and optional) service which displays the results of the p3s workflows
+if so desired.
+
+The software dependencies of the server (folder **promptproc**) and the client (folder **client**)
+are listed below. They obviously must be installed before the code can run.
 
 ### p3s server dependencies
 
