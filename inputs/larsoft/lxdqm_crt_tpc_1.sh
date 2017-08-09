@@ -17,8 +17,9 @@ p=$$
 mkdir $p
 cd $p
 pwd
+cp $P3S_CRT_TXT .
 
 env | grep P3S
-lar -c $P3S_FCL $P3S_INPUT -T $P3S_OUTPUT/lxdqm_crt_tpc_1.root
+lar -c $P3S_FCL $P3S_INPUT -T $P3S_OUTPUT/$p/lxdqm_crt_tpc_1.root
 # -n$P3S_NEVENTS
 exit
