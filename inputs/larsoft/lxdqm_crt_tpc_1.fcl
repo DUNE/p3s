@@ -1,0 +1,38 @@
+#include "services_dune.fcl"
+
+process_name: MatchingWithTwoCRTsSlope
+
+services:
+{
+  TFileService: { fileName: "MatchingWithTwoCRTsSlope_hist_3GeV_cosmics_sce.root" }
+  TimeTracker:       {}
+  RandomNumberGenerator: {} 
+  message:      @local::standard_info
+                @table::protodune_services
+}
+
+source:
+{
+  module_type: RootInput
+  maxEvents: -1
+  fileNames: ["/pnfs/dune/persistent/dunepro/v06_33_00_01/reco/ProtoDUNE_beam_3GeV_cosmics_3ms_sce/16708043_0/ProtoDUNE_beam_3GeV_cosmics_3ms_sce_180_20170502T203908_detsim2_2fe73bd5-bab4-4e13-bda6-68cbeb0cee9f_reco.root"] //with SCE
+  #fileNames: ["/pnfs/dune/persistent/dunepro/v06_33_00_01/reco/ProtoDUNE_beam_3GeV_cosmics_3ms/19467396_0/ProtoDUNE_beam_3GeV_cosmics_3ms_149_20170430T024154_detsim2_dbc89cf7-15b4-4892-bf29-fd165922127b_reco.root"] //without SCE
+}
+
+
+physics:
+{
+  analyzers:
+  {
+    MatchingWithTwoCRTsSlope: 
+    {
+      module_type:          "MatchingWithTwoCRTsSlope"
+      TrackModuleLabel:     "pmtrack" 
+      PDGcode:              -13
+    }
+  }
+  analysis: [ MatchingWithTwoCRTsSlope ] //Directory for histograms
+  end_paths: [ analysis ]
+}
+
+outputs:{}
