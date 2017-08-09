@@ -1,0 +1,23 @@
+# protodune_dataprep.fcl
+
+# David Adams
+# July 2017
+#
+# Run protodune reco only through data prep.
+
+#include "protoDUNE_reco_noise.fcl"
+
+physics.reco: ["caldata"]
+
+services.RawDigitPrepService.DisplayTools: ["rawAdcPlotter", "preparedAdcPlotter"]
+#services.RawDigitPrepService.DoDeconvolution: false
+
+tools.rawAdcPlotter.LogLevel:  2
+tools.rawAdcPlotter.FirstTick: 3000
+tools.rawAdcPlotter.LastTick:  4200
+tools.rawAdcPlotter.MaxSignal: 50
+
+tools.preparedAdcPlotter.LogLevel:  @local::tools.rawAdcPlotter.LogLevel
+tools.preparedAdcPlotter.FirstTick: @local::tools.rawAdcPlotter.FirstTick
+tools.preparedAdcPlotter.LastTick:  @local::tools.rawAdcPlotter.LastTick
+tools.preparedAdcPlotter.MaxSignal: @local::tools.rawAdcPlotter.MaxSignal

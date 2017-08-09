@@ -1,0 +1,11 @@
+[
+    {
+	"name":		"David's Event Display",
+	"timeout":	"1000",
+        "jobtype":	"evdisp",
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_evdisp_1.sh",
+	"env":		{"P3S_VENV":"/afs/cern.ch/user/m/mxp/vp3s","P3S_LARSOFT_HOME":"/eos/experiment/neutplatform/protodune/groupdisk/software/v06/","P3S_LARSOFT_RELEASE":"localProducts_larsoft_v06_45_01_e14_prof","P3S_NEVENTS":"1","P3S_FCL":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_evdisp+1.fcl","P3S_FCL_AUX":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/evdisp.fcl","P3S_INPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testInput/ProtoDUNE_beam_2GeVc_cosmics_1ms_noise_high_3_20170101T205639_detsim2_fe3f89e2-e582-4731-9f6b-ff55587c69d5.root","P3S_OUTPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOutput/"},
+        "priority":	"1",
+	"state":	"defined"
+    }
+]
