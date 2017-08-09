@@ -1,0 +1,34 @@
+{% load render_table from django_tables2 %}
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <title>p&#2384;s</title>
+    <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
+    <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
+  </head>
+
+  
+  <body>
+    <h2>p&#2384;s</h2>
+    {% include "topnavbar.html" %}
+    <table border="1">
+      <tr>
+	<th>Summary</th>
+	<th>System</th>
+      </tr>
+      <tr>
+	<td>
+          {% block table1 %}{% render_table summary %}{% endblock %}
+	</td>
+	<td>
+          {% block table2 %}{% render_table system %}{% endblock %}
+	</td>
+      </tr>
+    </table>
+
+    p3s sites: {{ sites }}
+    <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
+    <hr/>  
+  </body>
+</html>

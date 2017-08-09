@@ -1,4 +1,13 @@
 # ProtoDUNE Prompt Processing System (p3s)
+## About the system
+p3s has been developed as a light-weight and easy to deploy system
+for managing prompt processing workflows in the protoDUNE experiment
+at CERN, although it contains not specifics of that particular application,
+is payload job agnostic and can be utilized for many other purposes.
+It design is inspired by the pilot-based frameworks such as PanDA and
+Dirac, but p3s is a clean sheet development and prioritizes simplicity
+and component reuse over most other factors.
+
 ## About this document
 This document is available on the p3s page on GitHub as README.md,
 and it also exists as USERMANUAL.pdf in the *documents* directory
@@ -8,9 +17,14 @@ developers and users of p3s, which is currently
 under development. Pardon the dust.
 
 ## Software dependencies
-The system consists of the server and client components. Their
-software dependencies (which overlap) are listed below. They
-obviously must be installed before the code can run.
+p3s consists of the server and client components. The code
+is organized in the folders **promptproc** and **client** respectively.
+There is an additional (and optional) service which displays the results
+of the p3s workflows if so desired. Folder **display** is a placeholder
+for this code which is in development.
+
+The software dependencies of the server and the client
+are listed below. They obviously must be installed before the code can run.
 
 ### p3s server dependencies
 
@@ -22,11 +36,13 @@ obviously must be installed before the code can run.
 
 * RDBMS (e.g. PostgreSQL; sqlite is used for development puprposes only and won't be suitable for deployment)
 
-* psycopg2 (for PostgreSQL)
+* psycopg2 (for PostgreSQL). A few minor dependendices will have to be resolved here.
 
-* Apache 2.4 + mod_wsgi built for Python 3.5
+* Apache 2.4 + mod_wsgi built for Python 3.5. This will likely require building Python from source with
+"enable_shared" option so that Python runtime is available for dynamic link to mod_wsgi.
 
-* NetworkX 1.11
+* NetworkX 1.11 (1.10+ will probably do).
+
 
 ### p3s client dependencies
 
@@ -38,7 +54,7 @@ obviously must be installed before the code can run.
 
 ### Known issues
 
-* NetworkX: some versions may present compatibility issues, resolving this is reponsibility of the developer
+* NetworkX: some versions other than 1.11 **may** present compatibility issues, resolving this is reponsibility of the developer
 
 * Apache 2.4 deployment is different on different flavors of Linux, this must be addressed during deployment
 
@@ -104,6 +120,8 @@ DATABASES = {
     }
 }
 ```
+
+This file is not stored in the repo for obvious reasons.
 
 ### Initializing the Database
 
