@@ -19,6 +19,6 @@ cd $p
 pwd
 
 env | grep P3S
-lar -c $P3S_FCL $P3S_INPUT -T $P3S_OUTPUT
+lar -c $P3S_FCL $P3S_INPUT -T $P3S_OUTPUT/lxdqm_crt_tpc_1.root
 # -n$P3S_NEVENTS
 exit
