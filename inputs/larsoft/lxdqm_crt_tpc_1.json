@@ -1,6 +1,6 @@
 [
     {
-	"name":		"CRT+TOC",
+	"name":		"Joe's CRT",
 	"timeout":	"1000",
         "jobtype":	"crt2tpc",
         "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_1.sh",
