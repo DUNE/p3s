@@ -13,7 +13,7 @@ mrbsetenv
 source ${P3S_VENV}/bin/activate
 
 cd $P3S_OUTPUT
-p=$$
+p='tst' # $$
 mkdir $p
 cd $p
 pwd
