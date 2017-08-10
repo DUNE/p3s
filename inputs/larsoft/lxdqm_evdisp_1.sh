@@ -13,11 +13,11 @@ mrbsetenv
 source ${P3S_VENV}/bin/activate
 
 cd $P3S_OUTPUT
-p='tst' # $$
-mkdir $p
-cd $p
+tmpdir=$P3S_JOB_UUID
+mkdir $tmpdir
+cd $tmpdir
 pwd
-cp $P3S_FCL .
+cp $P3S_FCL_DIR/$P3S_FCL .
 env | grep P3S
-lar -c lxdqm_evdisp_1.fcl $P3S_INPUT -T output1.root -n$P3S_NEVENTS
+lar -c $P3S_FCL $P3S_INPUT -T output1.root -n$P3S_NEVENTS
 exit
