@@ -1,6 +1,6 @@
 [
     {
-	"name":		"sleep1000",
+	"name":		"sleep100",
 	"timeout":	"100",
         "jobtype":	"sleep",
         "payload":	"/mnt/nas01/users/mxp/projects/p3s/inputs/jobs/sleep100.sh",
