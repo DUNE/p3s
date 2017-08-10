@@ -17,7 +17,7 @@ p='tst' # $$
 mkdir $p
 cd $p
 pwd
-#cp $P3S_FCL_AUX .
+cp $P3S_FCL .
 env | grep P3S
-lar -c $P3S_FCL $P3S_INPUT -T output1.root -n$P3S_NEVENTS
+lar -c lxdqm_evdisp_1.fcl $P3S_INPUT -T output1.root -n$P3S_NEVENTS
 exit
