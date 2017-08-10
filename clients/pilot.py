@@ -338,7 +338,7 @@ while(cnt>0 or p.cycles==0):
 
     # Add the UUIDs of the job and the pilot to the environment (mey be needed for logging etc)
     job_env['P3S_JOB_UUID']	= p['job']
-    job_env['P3S_PILOT_UUID']	= p['uuid']
+    job_env['P3S_PILOT_UUID']	= str(p['uuid'])
 
     logger.info('JOB_ENV: %s' % str(job_env))
     
