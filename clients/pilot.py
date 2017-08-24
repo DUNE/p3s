@@ -332,9 +332,9 @@ while(cnt>0 or p.cycles==0):
     resp = API.reportPilot(p)
     if(verb>0): logger.info('Starting job, server response: %s' % resp)
 
-    # ENVIRONMENT
+    # ENVIRONMENT -- merge the original environment and one set in the job description
     pilot_env	= os.environ.copy()
-    job_env	= {**pilot_env,**env} # merge the original environment and one set in the job description
+    job_env	= {**pilot_env,**env}
 
     # Add the UUIDs of the job and the pilot to the environment (mey be needed for logging etc)
     job_env['P3S_JOB_UUID']	= p['job']
@@ -351,21 +351,21 @@ while(cnt>0 or p.cycles==0):
     logger.info('CMD: %s' % cmd)
     proc = None
 
-    joboutFilename = joblogdir+'/'+ p['job']+'.out'
-    joberrFilename = joblogdir+'/'+ p['job']+'.err'
+    jobOutFilename = joblogdir+'/'+ p['job']+'.out'
+    jobErrFilename = joblogdir+'/'+ p['job']+'.err'
     
-    jobout = open(joboutFilename,'w')
-    joberr = open(joberrFilename,'w')
+    jobout = open(jobOutFilename,'w')
+    joberr = open(jobErrFilename,'w')
 
-    logger.info('JOB STDOUT: %s' % joboutFilename)
-    logger.info('JOB STDERR: %s' % joberrFilename)
+    logger.info('JOB STDOUT: %s' % jobOutFilename)
+    logger.info('JOB STDERR: %s' % jobErrFilename)
 
     
     # EXECUTION
     try:
         proc = subprocess.Popen(cmd,
-                                stdout=jobout, # stdout=subprocess.PIPE,
-                                stderr=joberr, # stderr=subprocess.PIPE,
+                                stdout=jobout,
+                                stderr=joberr,
                                 env=job_env,
                                 shell=shell)
     except:
@@ -385,7 +385,7 @@ while(cnt>0 or p.cycles==0):
     while True:
         msg = {}
         errCode = proc.poll()
-        if(verb>3): print('Heartbeat: Job PID:',jobPID, 'errCode:', errCode)
+        if(verb>3): print('Heartbeat: Job PID:', jobPID, 'errCode:', errCode)
         if errCode is None:
             p['state']='running'
             p['event']='heartbeat'
@@ -446,7 +446,7 @@ if(verb>0): print("Stopped. Processed jobs: %s" % str(p['jobcount']))
 
 exit(0)
 
-######################## FOR LATER   ###################################
+######################## DUSTY ATTIC ###################################
 #            errCode = proc.poll()
 #            psProc = psutil.Process(pid=jobPID)
 #            psKids=psProc.children(recursive=True)

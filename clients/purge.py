@@ -1,4 +1,5 @@
 #!/usr/bin/env python3.5
+
 import argparse
 import json
 import os
@@ -6,7 +7,7 @@ import os
 from serverAPI import serverAPI
 from clientenv import clientenv
 
-(user, server, verb, site) = clientenv()
+(user, server, verb, site, pl, jl) = clientenv()
 
 ### p3s interface defined here
 API  = serverAPI(server=server, verb=0)
