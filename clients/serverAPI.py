@@ -57,6 +57,7 @@ class serverAPI(dict):
         ### LOGIC
         self['logic']	= {
             'purge':	server+'logic/purge',
+            'pilotTO':	server+'logic/pilotTO',
         }
 
 
