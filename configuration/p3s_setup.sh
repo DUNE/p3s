@@ -9,7 +9,7 @@ p3s_dirpath="/home/maxim/p3sdata/"
 # override for neutdqm:
 
 h=`hostname`
-port=8000
+port=80
 
 echo Setting up environment on host $h
 if [[ $h == neutdq* ]];

@@ -63,18 +63,23 @@ def purge(request):
     return HttpResponse(str(nDeleted))
 
 ###################################################
+@csrf_exempt
 def pilotTO(request):
 
-    cutoff = timezone.now() - timedelta(minutes=2) #  improve later
+    post	= request.POST
+    TO		= int(post['to']) # time out, meausured in seconds
+    
+    cutoff = timezone.now() - timedelta(seconds=TO)
+    
     selection = pilot.objects.filter(ts_lhb__lte=cutoff).exclude(state='stopped').exclude(state='timeout')
     nTO = len(selection)
-    for p in selection:
-        print(p.uuid, p.j_uuid)
-        j = job.objects.filter(uuid=p.j_uuid)
-        j.update(state='pilotTO', ts_sto=timezone.now())
+    #for p in selection:
+    #    print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
+    #    j = job.objects.filter(uuid=p.j_uuid)
+    #    j.update(state='pilotTO', ts_sto=timezone.now())
     
-    selection.update(state='timeout', status='FAIL')
+    #selection.update(state='timeout', status='FAIL')
 
     return HttpResponse(str(nTO))
 #### FIXME - state of wf and job needs to be updated
-####    cutoff = timezone.now() - timedelta(seconds=5) #  for testing
+
