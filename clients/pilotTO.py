@@ -15,11 +15,14 @@
 import argparse
 import json
 import os
+import socket
 
 from serverAPI import serverAPI
 from clientenv import clientenv
 
 (user, server, verb, site, pl, jl) = clientenv()
+
+myhost = socket.gethostname()
 
 ### p3s interface defined here
 API  = serverAPI(server=server, verb=0)
@@ -42,7 +45,7 @@ tst	= args.test
 if(tst):
     pass
 else:
-    resp = API.post2server('logic', 'pilotTO', dict(to=to))
+    resp = API.post2server('logic', 'pilotTO', dict(to=to, host=myhost))
     print(resp)
     
 

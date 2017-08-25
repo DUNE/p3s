@@ -1,3 +1,10 @@
+#########################################################
+#                 LOGIC VIEW                            #
+# UTILITY FUNCTIONS FOR SERVER MAINTENANCE, E.G.        #
+# KEEPING TRACKS OF TIME-OUTS ETC                       #
+#########################################################
+
+import logging
 
 # python utiility classes
 import uuid
@@ -32,6 +39,12 @@ from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
 from utils.timeUtils import dt
+
+
+# Get an instance of a logger
+logger = logging.getLogger('logic')
+
+
 
 ###################################################
 @csrf_exempt
@@ -68,8 +81,11 @@ def pilotTO(request):
 
     post	= request.POST
     TO		= int(post['to']) # time out, meausured in seconds
+    host	= post['host']
     
     cutoff = timezone.now() - timedelta(seconds=TO)
+
+    logger.info('pilotTO request received from %s', host)
     
     selection = pilot.objects.filter(ts_lhb__lte=cutoff).exclude(state='stopped').exclude(state='timeout')
     nTO = len(selection)
@@ -78,8 +94,8 @@ def pilotTO(request):
     #    j = job.objects.filter(uuid=p.j_uuid)
     #    j.update(state='pilotTO', ts_sto=timezone.now())
     
-    #selection.update(state='timeout', status='FAIL')
+    selection.update(state='timeout', status='FAIL')
 
-    return HttpResponse(str(nTO))
+    return HttpResponse(str(nTO)+' '+host)
 #### FIXME - state of wf and job needs to be updated
 
