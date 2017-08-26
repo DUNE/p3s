@@ -1,8 +1,10 @@
 # ProtoDUNE Prompt Processing System (p3s)
 ## About the system
-p3s has been developed as a light-weight and easy to deploy system
+p3s was priginally developed as a light-weight and easy to deploy system
 for managing prompt processing workflows in the protoDUNE experiment
-at CERN, although it contains not specifics of that particular application,
+at CERN.
+
+However, p3s does not contain any specific logic or dependency on protoDUNE,
 is payload job agnostic and can be utilized for many other purposes.
 It design is inspired by the pilot-based frameworks such as PanDA and
 Dirac, but p3s is a clean sheet development and prioritizes simplicity

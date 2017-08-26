@@ -173,9 +173,9 @@ if(kill):
     if(p_uuid=='' and host!=''):	d = dict(host=host)
     if(p_uuid=='' and site!=''):	d = dict(site=site)
 
-    print(d)
+    if(verb>0): print(d)
     resp = API.post2server('pilot', 'kill', d)
-    print(resp)
+    if(verb>0): print(resp)
     exit(0)
 
 #################### PILOT DELETE AND EXIT #############################
@@ -267,13 +267,16 @@ p['jobcount']	= 0		# will count how many jobs were done by this pilot
 
 while(cnt>0 or p.cycles==0):
 
-    if(verb>1): print('Attempts left: %s' % str(cnt))
-    if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
+
+    pltMsg = 'PILOT: brokering attempts left: %s' % str(cnt)
+    if(verb>1): logger.info(pltMsg)
+    if(verb>2): print(pltMsg)
 
     data = API.post2server('pilot', 'jobRequestURL', dict(uuid=p['uuid']))
 
-    if(verb>1): logger.info('BROKER: server response: %s' % data)
-    if(verb>1): print('BROKER: server response: %s' % data)
+    brkMsg = 'BROKER: server response: %s' % data
+    if(verb>1): logger.info(brkMsg)
+    if(verb>2): print(brkMsg)
 
     msg = {} # placeholder - message from the server
     
@@ -347,23 +350,18 @@ while(cnt>0 or p.cycles==0):
     logger.info('CMD: %s' % cmd)
     proc = None
 
-    jobOutFilename = joblogdir+'/'+ p['job']+'.out'
-    jobErrFilename = joblogdir+'/'+ p['job']+'.err'
+    jobflnm = joblogdir+'/'+ p['job']
+    jobOutFilename = jobflnm+'.out'
+    jobErrFilename = jobflnm+'.err'
     
     jobout = open(jobOutFilename,'w')
     joberr = open(jobErrFilename,'w')
 
-    logger.info('JOB STDOUT: %s' % jobOutFilename)
-    logger.info('JOB STDERR: %s' % jobErrFilename)
-
+    logger.info('JOB STDOUT: %s, JOB STDERR: %s' % (jobOutFilename, jobErrFilename)) 
     
     # EXECUTION
     try:
-        proc = subprocess.Popen(cmd,
-                                stdout=jobout,
-                                stderr=joberr,
-                                env=job_env,
-                                shell=shell)
+        proc = subprocess.Popen(cmd, stdout=jobout, stderr=joberr, env=job_env, shell=shell)
     except:
         joberr.write('nonstarter')
         jobout.close()

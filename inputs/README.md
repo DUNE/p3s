@@ -1,20 +1,21 @@
 # p3s "inputs"
-##Overview
+## Overview
 This directory contains a few examples which are useful
 for testing and debugging. Its subdirectories
 contain a number of XML source files (which typically have the .graphml extension).
-These XML files are expected to contain
-DAG descriptions (workflow templates) in the GraphML formate.
 
-There are also a number of JSON-formatted files contain
-additional information necessary to form a functional workflow
-from the DAG template. The following information can be provided
-my means of these JSON files:
+These XML files are expected to contain DAG descriptions (workflow templates)
+in GraphML format which is compatible with a number of third-party tools.
+
+A functional workflow can be formed based on a template. To "dress up"
+a template with useful content, one can use supplemental information
+submitted with the p3s workflow client as JSON file.
+The following information can be provided my means of these JSON files:
 * job description(s) - paths to payload jobs
 * additional file (data) parameters for a workflow
 * additional job parameters for a workflow
 
-##The "jobs" directory
+## The "jobs" directory
 p3s supports both workflows (collections of related jobs) as well
 as jobs not included in any workflow. Such jobs can be injected
 into the system using specially formatted job descriptions similar
@@ -31,6 +32,10 @@ entry (or entries) correponsing to the content of the template file.
 A single file may contain a description of a single job, or multiple jobs:
 the template file is expected to be formatted as a JSON list.
 
+
+## larsoft
+These files are application-specific and are meant to support LArSoft-based
+applications running at CERN and elsewhere
 
 ## Workflows and DAGs: an overview
 A DAG is supposed to serve as a template for an instance
@@ -50,15 +55,15 @@ will look like "source:target" with actual names of the source and target"),
 and the dictionary within lists the attributes to
 be defined when the client is run (such as "workflow.py").
 
-##Workflow Examples
+## Workflow Examples
 
-###1filter
+### 1filter
 A simple example of a DAG containing just one payload job, with additional
 "NOOP" nodes provided as entry and exit points
 
-###3filters
+### 3filters
 Similar to the above, but with three filters working on same data
 in parallel
 
-###chain
+### chain
 Contains examples of chained jobs
