@@ -86,15 +86,19 @@ def pilotTO(request):
     cutoff = timezone.now() - timedelta(seconds=TO)
 
     logger.info('pilotTO request received from %s', host)
-    
+
+    # select the timed-out pilots
     selection = pilot.objects.filter(ts_lhb__lte=cutoff).exclude(state='stopped').exclude(state='timeout')
     nTO = len(selection)
-    #for p in selection:
-    #    print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
-    #    j = job.objects.filter(uuid=p.j_uuid)
-    #    j.update(state='pilotTO', ts_sto=timezone.now())
-    
-    selection.update(state='timeout', status='FAIL')
+    for p in selection:
+        print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
+        try:
+            j = job.objects.filter(uuid=p.j_uuid)
+            j.update(state='pilotTO', ts_sto=timezone.now())
+        except:
+            pass
+
+    selection.update(state='timeout', status='TO')
 
     return HttpResponse(str(nTO)+' '+host)
 #### FIXME - state of wf and job needs to be updated
