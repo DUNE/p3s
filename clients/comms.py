@@ -48,8 +48,9 @@ def communicate(url, data=None, logger=None, verb=0):
             resp=urllib.request.urlopen(url)
         return resp
     except URLError:
-        if(logger): logger.error('exiting, error at URL: %s' % url)
-        return ('ERROR at URL:%s' %url)
+        errMsg = 'Exiting: error at URL: %s' % url
+        if(logger): logger.error(errMsg)
+        return (errMsg)
 ###################################################################
 def logfailexit(msg, logger):
     error = ''
@@ -60,7 +61,7 @@ def logfailexit(msg, logger):
         logger.error('exiting, received FAIL status from server, no error returned')
     exit(2)
 ###################################################################
-def logkill(logger):
+def logkillexit(logger):
     logger.info('exiting, received KILL status from server')
     exit(0)
 

@@ -347,9 +347,12 @@ def report(request):
 #
 # 0
 #----
-# pilot status can only take two values, 'OK' or 'FAIL' #
-# while it's state can be more complex. This helps      #
-# reflect different failure modes                       #
+# pilot status: 'OK', 'FAIL' or 'TO' while it's state can be more complex.
+# For example, an 'OK' pilot can be waiting for a job, or be in the process
+# of executing one. Likewise, 'FAIL' is a general failure, while the state
+# of the pilot can be more descriptive
+
+
 
 
 #

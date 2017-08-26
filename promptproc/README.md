@@ -5,6 +5,7 @@ The following models are implemented and supported:
 * pilot
 * workflow
 * data
+* site
 
 In addition, there are service modules such as "logic"
 and "monitor". The "info" module contains a view for

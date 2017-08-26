@@ -88,22 +88,24 @@ which are necessary for its function:
 of the objects residing in the server, mostly tailored to support a specific class of
 objects (job, pilot etc).
 
-* **configuration** - to set a few environment variables for convenience, essentially
-a vocabulary of environment variables which both the client and the server
-attempt to read at run time (and will assume default values if these are not found).
+* **configuration** - a few very simple scripts created for convenience and
+used to set a few environment variables necessary for proper client operation
+and some aspects of the server operation. Default values will be assumed
+if the requisite environment variables are missing but proper operation
+is not guaranteed.
 
 Other directories not critical for the system functionality:
 
 * **inputs** contains files that can be used as examples
-and/or templates for testing of p3s but not necessarily
+and/or templates for testing and development of p3s
 suitable for production.
 
-* **documents** (obviously)
+* **documents** (self-explanatory)
 
-* **sandbox** - arbitrary snippets of code of interest
-only to the developers and which won't be helpful for testers
-or users.
+* **sandbox** - collection of arbitrary snippets of code kept as notes and not guaranteed to work at
+all; of interest only to the developers and won't be helpful for testers or users.
 
+* **tools** - placeholder for general p3s tools not fitting into the "client" category
 
 ### DB Connection info
 

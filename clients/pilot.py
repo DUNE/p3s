@@ -17,15 +17,12 @@ import subprocess
 import signal
 import shlex
 
-# --- process management... deferred 4.6.2017
-# import psutil
-
 # Django
 from django.conf	import settings
 from django.utils	import timezone
 
 # local import (utils)
-from comms	import logfailexit, logkill
+from comms	import logfailexit, logkillexit
 from serverAPI	import serverAPI
 from clientenv	import clientenv
 
@@ -291,7 +288,7 @@ while(cnt>0 or p.cycles==0):
     if(p['status']=='FAIL'): logfailexit(msg, logger)
     
     # KILL requested by the server, will log and exit
-    if(p['status']=='KILL'): logkill(logger)
+    if(p['status']=='KILL'): logkillexit(logger)
 
     if(p['state'] in ('no jobs', 'DB lock')): # didn't get a job, skip the cycle.
         logger.info(p['state'])
@@ -315,8 +312,6 @@ while(cnt>0 or p.cycles==0):
                     env = json.loads(msg['env'])
                 except:
                     logger.error('failed to parse JSON description of the environment: %s' % msg['env'])
-            else:
-                env = {}
         except:
             logger.error('exiting, failed to parse the server message at dispatch: %s' % data)
             exit(3)
@@ -448,12 +443,16 @@ if(verb>0): print("Stopped. Processed jobs: %s" % str(p['jobcount']))
 exit(0)
 
 ######################## DUSTY ATTIC ###################################
+# a) --- process management... deferred 4.6.2017
+# import psutil
+#---
+# b) Looking for children:
 #            errCode = proc.poll()
 #            psProc = psutil.Process(pid=jobPID)
 #            psKids=psProc.children(recursive=True)
 #            if(verb>1): print(psKids)
-#
-# Decomissioned way of starting jobs
+#---
+# c) Decomissioned way of starting jobs
 # else: # Deprecated...
 #     try:
 #         x=subprocess.run([payload], stdout=subprocess.PIPE)
@@ -468,9 +467,10 @@ exit(0)
 #         p['event']	='exception'
 #         response = API.reportPilot(p)
 #         logger.info('JOB exception: %s' %  p['job'])
-
-
-# Handling pipes from the process, now deprecated
+#---
+# d) Handling pipes from the process, now deprecated:
+# they just fill up too soon (short buffers)
+#
 # jobout = open(joblogdir+'/'+ p['job']+'.out','w')
 # joberr = open(joblogdir+'/'+ p['job']+'.err','w')
 # jobout.write((proc.stdout.read().decode('utf-8')))
