@@ -51,7 +51,7 @@ def communicate(url, data=None, logger=None, verb=0):
         if(logger): logger.error('exiting, error at URL: %s' % url)
         return ('ERROR at URL:%s' %url)
 ###################################################################
-def logfail(msg, logger):
+def logfailexit(msg, logger):
     error = ''
     try:
         error	= msg['error'] # if the server told us what the error was, log it

@@ -2,7 +2,6 @@
 import argparse
 import json
 
-from comms import logfail
 from serverAPI import serverAPI
 from clientenv import clientenv
 

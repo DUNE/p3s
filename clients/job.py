@@ -16,7 +16,6 @@ import datetime
 import json
 import os
 
-from comms import logfail
 from serverAPI import serverAPI
 from clientenv import clientenv
 

@@ -25,7 +25,7 @@ from django.conf	import settings
 from django.utils	import timezone
 
 # local import (utils)
-from comms	import logfail, logkill
+from comms	import logfailexit, logkill
 from serverAPI	import serverAPI
 from clientenv	import clientenv
 
@@ -257,13 +257,15 @@ except:
     logger.error('exiting, failed to parse the server message at registration: %s' % resp)
     exit(3)
 
-# By now the pilot MUST have some sort of status set by the server's message
-if(p['status']=='FAIL'): logfail(msg, logger)
+# the pilot has some sort of status indicated by the server's message
+if(p['status']=='FAIL'): logfailexit(msg, logger) # server says "fail", we need to bail
 
-#########################################################################
+
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
-cnt		= p.cycles # Number of cycles to go through before exit
-p['jobcount']	= 0 # will count how many jobs were eceuted in this pilot
+cnt		= p.cycles	# Number of cycles to go through before exit
+p['jobcount']	= 0		# will count how many jobs were done by this pilot
+
+
 #################### MAIN "POLL FOR JOBS" LOOP ##########################
 
 while(cnt>0 or p.cycles==0):
@@ -271,13 +273,12 @@ while(cnt>0 or p.cycles==0):
     if(verb>1): print('Attempts left: %s' % str(cnt))
     if(verb>1): logger.info('PILOT: brokering attempts left: %s' % str(cnt))
 
-    data = API.post2server('pilot', 'jobRequestURL',dict(uuid=p['uuid']))
+    data = API.post2server('pilot', 'jobRequestURL', dict(uuid=p['uuid']))
 
     if(verb>1): logger.info('BROKER: server response: %s' % data)
     if(verb>1): print('BROKER: server response: %s' % data)
 
-    #--------------------- important
-    msg = {} # Message from the server
+    msg = {} # placeholder - message from the server
     
     try:
         msg = json.loads(data)
@@ -286,8 +287,8 @@ while(cnt>0 or p.cycles==0):
         logger.error('exiting, failed to parse the server message at brokerage: %s' % data)
         exit(3)
 
-    # Failure reported from brokerage on the server, will log and exit
-    if(p['status']=='FAIL'): logfail(msg, logger)
+    # if a failure reported from brokerage on the server, log and exit
+    if(p['status']=='FAIL'): logfailexit(msg, logger)
     
     # KILL requested by the server, will log and exit
     if(p['status']=='KILL'): logkill(logger)
@@ -399,7 +400,7 @@ while(cnt>0 or p.cycles==0):
                 exit(3)
 
             # Failure reported from brokerage on the server, will log and exit
-            if(p['status']=='FAIL'): logfail(msg, logger)
+            if(p['status']=='FAIL'): logfailexit(msg, logger)
             
             # The server wants to kill the pilot
             if(p['status']=='KILL'):
