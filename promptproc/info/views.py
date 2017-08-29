@@ -38,12 +38,16 @@ def index(request):
     dataDict['hostname']= hostname
     dataDict['uptime']	= upt
 
-    dataDict['pilots']	=	{'entry':'Pilots: total/idle/running/stopped',
+    # Note to self - the N method also takes site, must think about
+    # how to use it 
+    dataDict['pilots']	=	{'entry':'Pilots: total/idle/running/stopped/TO',
                                  'data':(
                                      pilot.N(),
                                      pilot.N(state='no jobs'),
                                      pilot.N(state='running'),
-                                     pilot.N(state='stopped')
+                                     pilot.N(state='stopped'),
+                                     pilot.N(state='timeout'),
+
                                  )}
     
     dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished',
@@ -53,16 +57,16 @@ def index(request):
                                      job.N(state='running'),job.N(state='finished')
                                  )}
     
-    dataDict['workflows']=	{'entry':'Workflows: total/-/-/-', 'data':(workflow.N(),'-','-','-')}
+    dataDict['workflows']=	{'entry':'Workflows: total/-/-/-', 'data':(workflow.N(),'-','-','-','-')}
     
-    dataDict['datasets']=	{'entry':'Datasets:  total/-/-/-', 'data':(dataset.N(),	'-','-','-')}
+    dataDict['datasets']=	{'entry':'Datasets:  total/-/-/-', 'data':(dataset.N(),	'-','-','-','-')}
     
 
     if(out=='json'): return HttpResponse(json.dumps(dataDict))
     
     for k in dataDict.keys():
         try:
-            summaryData.append({'Object': dataDict[k]['entry'],'Number': "%s/%s/%s/%s" % dataDict[k]['data']})
+            summaryData.append({'Object': dataDict[k]['entry'],'Number': "%s/%s/%s/%s/%s" % dataDict[k]['data']})
         except:
             pass
 
