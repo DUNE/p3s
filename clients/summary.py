@@ -16,31 +16,46 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-S", "--server",	type=str,	default=server,
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
+parser.add_argument("-P", "--print",	action='store_true',
+                    help="when set, prints a p3s summary in human-readable text format")
+
+parser.add_argument("-p", "--pilotsActive",	action='store_true',
+                    help="get the number of active pilots (running+idle)")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
-server =  args.server
+server	= args.server
+p	= args.print
+pa	= args.pilotsActive
 
 API  = serverAPI(server=server)
 resp = API.get2server('info','dash', '?out=json')
 info = json.loads(resp)
 
 
-print("Domain: %s, hostname %s, uptime %s" % (info['domain'], info['hostname'], info['uptime']))
+if(pa):
+    N = int(info['pilots']['data'][1])+int(info['pilots']['data'][2])
+    print(N)
+    
 
-print("Pilots: total %s, idle %s, running %s, stopped %s, TO %s"  %
-      (info['pilots']['data'][0],
-       info['pilots']['data'][1],
-       info['pilots']['data'][2],
-       info['pilots']['data'][3],
-       info['pilots']['data'][4]
-      ))
+if(p):
+    print("Domain: %s, hostname %s, uptime %s" % (info['domain'], info['hostname'], info['uptime']))
+    print("Pilots: total %s, idle %s, running %s, stopped %s, TO %s"  %
+          (info['pilots']['data'][0],
+           info['pilots']['data'][1],
+           info['pilots']['data'][2],
+           info['pilots']['data'][3],
+           info['pilots']['data'][4]
+          ))
 
-print("Jobs: total %s, defined %s, running %s, finished %s" %
-      (info['jobs']['data'][0],   info['jobs']['data'][1],   info['jobs']['data'][2],   info['jobs']['data'][3]))
+    print("Jobs: total %s, defined %s, running %s, finished %s" %
+          (info['jobs']['data'][0],
+           info['jobs']['data'][1],
+           info['jobs']['data'][2],
+           info['jobs']['data'][3]
+          ))
 
 
-print("Workflows %s" % info['workflows']['data'][0])
-
-print("Datasets %s" % info['datasets']['data'][0])
+    print("Workflows %s" % info['workflows']['data'][0])
+    print("Datasets %s" % info['datasets']['data'][0])
