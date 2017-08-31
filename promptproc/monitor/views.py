@@ -255,6 +255,8 @@ def data_handler(request, what):
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
     d['title']	= what
     d['N']	= objects.count()
+    d['host']	= settings.HOSTNAME
+
     if(stateselector is not None):
         d['selector1'] = stateselector
     if(SELECTORS[what]['userselector'] is not None):
