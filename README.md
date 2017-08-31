@@ -1,12 +1,10 @@
 # ProtoDUNE Prompt Processing System (p3s)
 ## About the system
-p3s was priginally developed as a light-weight and easy to deploy system
-for managing prompt processing workflows in the protoDUNE experiment
-at CERN.
-
-However, p3s does not contain any specific logic or dependency on protoDUNE,
-is payload job agnostic and can be utilized for many other purposes.
-It design is inspired by the pilot-based frameworks such as PanDA and
+**p3s** stands for the ProtoDUNE Prompt Processing System, as it was developed as a
+lightweight and easy-to-deploy tool for managing prompt processing workflows
+in the protoDUNE experiment at CERN. However, p3s does not contain any special logic
+or dependency related to protoDUNE. It is content-agnostic and can be utilized for
+many other purposes. It design is inspired by the pilot-based frameworks such as PanDA and
 Dirac, but p3s is a clean sheet development and prioritizes simplicity
 and component reuse over most other factors.
 
@@ -187,6 +185,19 @@ have format similar to "http://myP3Sserver.cern.ch:8008/"
 
 Logfiles are kept in the directories "/tmp/p3s" and "/tmp/username/p3s/*",
 in the latter case there are separate folders for pilots, workflows etc.
+
+### Pilots
+p3s won't be able to do anything useful if there are no pilot jobs running
+at the available and properly configured computing resource.
+The p3s pilot job is implemented as a Python script kept in the "clients" directory.
+
+In order to keep  interfaces clean it was decided to leave up to the user (or rather
+the engineer tasked with deployment) how to deploy pilots rather than code specific solution
+into p3s itself. For example, this can be
+done even by running the pilot command interactively or via pdsh if so desired,
+and/or scripts can be created to interface the target batch system. One
+example of such implementation exists in the "dqmconfig" project which
+can be located on GitHub.
 
 
 ## Running the development server
