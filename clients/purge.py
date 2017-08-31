@@ -17,14 +17,35 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-j", "--json_in",	type=str,	default='',
                     help="required: file or a string from which to read purge policy")
 
+parser.add_argument("-w", "--what",	type=str,	default='pilot',
+                    help="what to purge, defaults to pilot")
+
+parser.add_argument("-s", "--state",	type=str,	default='stopped',
+                    help="state of objects to purge, defaults to stopped")
+
 
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, parses input but does not contact the server")
 
 
+
 args	= parser.parse_args()
 json_in	= args.json_in
 tst	= args.test
+
+state	= args.state
+what	= args.what
+
+tst	= args.test
+
+
+
+resp = API.post2server('logic', 'purge', dict(state=state, what=what))
+        
+print(resp)
+
+exit(0)
+
 
 if(json_in==''): exit(-1)
 

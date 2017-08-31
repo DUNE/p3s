@@ -171,8 +171,9 @@ if(adj):
 ########################### JOB PURGE  #################################
 # 
 if(purge!=''):
-    resp = API.post2server('logic', 'purge', dict(interval=purge, timestamp=timestamp, state=state, what="job"))
-    if(verb>0): print(resp)
+# Functionality being moved elsewhere
+#    resp = API.post2server('logic', 'purge', dict(interval=purge, timestamp=timestamp, state=state, what="job"))
+#    if(verb>0): print(resp)
     exit(0)
 
 ########################### JOB DELETE #################################

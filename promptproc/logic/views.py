@@ -51,25 +51,29 @@ logger = logging.getLogger('logic')
 def purge(request):
     post	= request.POST
     
-    interval	= post['interval']
-    timestamp	= post['timestamp'] # print(interval, timestamp)
+    # interval	= post['interval'] # measured in seconds
     state	= post['state']
     what	= post['what']
 
-    # print(what,state,timestamp,interval)
-    
-    cutoff = timezone.now() - dt(interval) #  print(str(timezone.now()), cutoff)
+    # cutoff = timezone.now() - timedelta(seconds=interval)# prior use: dt(interval) 
 
+    logger.info('purge request for %s, state %s', what, state)
+    
+    timestamp = None
     selection = None
     nDeleted  = 0
 
-    kwargs = {'{0}__{1}'.format(timestamp, 'lte'): str(cutoff),}
+    if(what=='pilot'):
+        timestamp='ts_lhb'
+
+    # kwargs = {'{0}__{1}'.format(timestamp, 'lte'): str(cutoff),}
 
     obj = eval(what)
-    selection = obj.objects.filter(**kwargs)
+    #    selection = obj.objects.filter(**kwargs)
+    selection = obj.objects.filter(state=state)
 
     if selection:
-        if(state and state!=''): selection = selection.filter(state=state)
+        # if(state and state!=''): selection = selection.filter(state=state)
         nDeleted = len(selection) # for o in selection: print(o.uuid)
         selection.delete()
     
