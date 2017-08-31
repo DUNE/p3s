@@ -9,6 +9,7 @@ class serverAPI(dict):
         ### INFO
         self['info']	= {
             'dash':	server+'%s',
+            'pilotinfo':server+'pilotinfo'+'%s',
         }
 
         ### JOB

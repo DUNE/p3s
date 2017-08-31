@@ -30,14 +30,16 @@ p	= args.print
 pa	= args.pilotsActive
 
 API  = serverAPI(server=server)
+
+if(pa):
+    N = API.get2server('info','pilotinfo','')
+    print(N)
+    exit(0)
+
+
 resp = API.get2server('info','dash', '?out=json')
 info = json.loads(resp)
 
-
-if(pa):
-    N = int(info['pilots']['data'][1])+int(info['pilots']['data'][2])
-    print(N)
-    
 
 if(p):
     print("Domain: %s, hostname %s, uptime %s" % (info['domain'], info['hostname'], info['uptime']))
@@ -59,3 +61,9 @@ if(p):
 
     print("Workflows %s" % info['workflows']['data'][0])
     print("Datasets %s" % info['datasets']['data'][0])
+
+
+#if(pa):- this doesn't work well since there is also a 'finished' state
+#    N = int(info['pilots']['data'][1])+int(info['pilots']['data'][2])
+#    print(N)
+    
