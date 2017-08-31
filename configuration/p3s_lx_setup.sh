@@ -6,6 +6,7 @@ p3s_dirpath=/eos/experiment/neutplatform/protodune/np04tier0/p3s
 
 export P3S_SERVER="http://p3s-web:80/"
 export P3S_SITE='lxvm'
+export P3S_PILOTS=12
 export P3S_VERBOSITY=0
 export P3S_DIRPATH=$p3s_dirpath
 export P3S_PILOTLOG=$P3S_DIRPATH/pilotlog
