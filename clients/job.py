@@ -218,8 +218,13 @@ if(j_uuid!=''): exit(-1)
 # Check if we want to read a json file with job templates and register
 
 if(json_in!=''):
-    with open(json_in) as data_file:    
-        data = json.load(data_file)
+    data = None
+    try:
+        with open(json_in) as data_file:    
+            data = json.load(data_file)
+    except:
+        if(verb>0): print('Failed to parse JSON')
+        exit(-3)
 
     for jj in data:
         for jN in range(Njobs):

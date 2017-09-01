@@ -7,7 +7,8 @@ class site(models.Model):
     env		= models.TextField(default='{}')			# the default site environment
     server	= models.CharField(max_length=64, default='')		# who the pilot talks to
     pilotcycles	= models.PositiveIntegerField(default=1)		#
-    pilotperiod	= models.PositiveIntegerField(default=5)		# in seconds
+    pilotperiod	= models.PositiveIntegerField(default=10)		# in seconds
+    pilotbeat	= models.PositiveIntegerField(default=20)		# in seconds
 
     def __str__(self):
         return serializers.serialize("json", [self, ])

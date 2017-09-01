@@ -130,8 +130,8 @@ args = parser.parse_args()
     args.usage, args.execute, args.period, args.cycles, args.beat, args.test
 )
 
-keepCycles = cycles # will override the site cycles if negative
-
+keepCycles	= cycles # will override the site cycles and beat if negative
+keepBeat	= beat
 ############################## START ###################################
 if(usage):
     print(Usage)
@@ -156,13 +156,14 @@ if(site!='default' and site!='' and not kill): # bootstrap from the server - nee
 
     s = siteData[0]['fields']
     doubleQ = s['env'].replace("'", "\"")
-    (server, env, period, cycles) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'])
+    (server, env, period, cycles, beat) = (s['server'], json.loads(doubleQ), s['pilotperiod'], s['pilotcycles'], s['pilotbeat'])
 
-    if(verb>0): print('keepCycles ', keepCycles, '  Cycles ', cycles)
+    if(verb>0): print('keepCycles ', keepCycles, '  Cycles ', cycles, '  Beat ', beat)
 
     if(keepCycles<0):
-        cycles=-keepCycles
-        if(verb>0): print('Overriding site cycles with:', cycles)
+        cycles	=	-keepCycles
+        beat	=	keepBeat
+        if(verb>0): print('Overriding site cycles with:', cycles, '   Overriding beat', beat)
     
     for k in env.keys():
         os.environ[k]=env[k]
