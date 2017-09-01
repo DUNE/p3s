@@ -33,20 +33,16 @@ parser.add_argument("-t", "--timeout",	type=int,	default=600,
                     help="pilot timeout in seconds, default 600")
 
 
-parser.add_argument("-T", "--test",	action='store_true',
-                    help="when set, parses input but does not contact the server")
+# parser.add_argument("-T", "--test",	action='store_true', help="when set, parses input but does not contact the server")
 
 
 args	= parser.parse_args()
 to	= args.timeout
-tst	= args.test
+# tst	= args.test
 
 
-if(tst):
-    pass
-else:
-    resp = API.post2server('logic', 'pilotTO', dict(to=to, host=myhost))
-    print(resp)
+resp = API.post2server('logic', 'pilotTO', dict(to=to, host=myhost))
+print(resp)
     
 
 
