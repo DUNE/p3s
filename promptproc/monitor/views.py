@@ -275,6 +275,7 @@ def detail_handler(request, what):
     # FIXME -beautify the timestamp later -mxp-
     now		= datetime.datetime.now().strftime('%x %X')
     d		= dict(domain=domain, time=str(now))
+    d['host']	= settings.HOSTNAME
 
     template, objects, aux1, aux2 = None, None, None, None
     
@@ -287,7 +288,23 @@ def detail_handler(request, what):
         
     if(what=='pilot'):
         template = 'detail3.html'
-        my_pilot = objects.get(pk=pk)
+        my_pilot = None
+        
+        try:
+            my_pilot = objects.get(pk=pk)
+        except:
+            pass
+        
+        try:
+            my_pilot = objects.get(uuid=o_uuid)
+        except:
+            pass
+
+        if(my_pilot):
+            pass
+        else:
+            return HttpResponse("pilot not found")
+        
         aux1 = JobTable(job.objects.filter(p_uuid=my_pilot.uuid))
         aux1.set_site(domain)
         theName = 'pilot '+my_pilot.uuid
