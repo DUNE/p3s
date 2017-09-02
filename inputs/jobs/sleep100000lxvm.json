@@ -1,0 +1,11 @@
+[
+    {
+	"name":		"TOtest",
+	"timeout":	"200000",
+        "jobtype":	"sleep",
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/jobs/sleep100000.sh",
+	"env":		{"P3S_TEST":"TRUE"},
+        "priority":	"1",
+	"state":	"defined"
+    }
+]
