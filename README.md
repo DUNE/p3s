@@ -107,6 +107,11 @@ all; of interest only to the developers and won't be helpful for testers or user
 
 * **tools** - placeholder for general p3s tools not fitting into the "client" category
 
+
+There is an additional project under the p3s umbrella, contained in the folder **display**.
+It's not a part of the core system and should be ignored until further notice.
+
+
 ### DB Connection info
 
 Add a file names "databases.py" to same directory as manage.py, the template is as follows:
