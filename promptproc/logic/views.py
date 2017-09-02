@@ -115,6 +115,6 @@ def pilotTO(request):
 
     selection.update(state='timeout', status='TO')
 
-    return HttpResponse(str(nTO)+' '+host)
+    return HttpResponse(str(nTO))
 
 
