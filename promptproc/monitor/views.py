@@ -178,6 +178,7 @@ def data_handler(request, what):
 
     objects, t, aux1, selector1, selector2 = None, None, None, None, None
     template = 'universo.html'
+    Nfilt    = None
 
     # FIXME - now that multiple selectors work, need to init the checkboxes correctly
 
@@ -226,7 +227,9 @@ def data_handler(request, what):
         if(state	!= ''): kwargs['state__in']=state.split(',')
         
         try:
-            t = x(objects.filter(**kwargs))
+            objs = objects.filter(**kwargs)
+            Nfilt = objs.count()
+            t = x(objs)
         except:
             pass
             
@@ -246,15 +249,22 @@ def data_handler(request, what):
 
     if(what=='dag'):
         objects = dag.objects
-        if(pk != ''):			t = DagTable(objects.filter(pk=pk))
-        if(name != ''):			t = DagTable(objects.filter(name=name))
-        if(pk == '' and name == ''):	t = DagTable(objects.all())
-       
+        if(pk != ''):			objs = objects.filter(pk=pk)
+        if(name != ''):			objs = objects.filter(name=name)
+        if(pk == '' and name == ''):	objs = objects.all()
+        Nfilt = objs.count()
+        t = DagTable(objs)
+        
     t.set_site(domain)
     RequestConfig(request).configure(t)
+
+    Ntot = objects.count()
+    
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
     d['title']	= what
-    d['N']	= objects.count()
+    d['N']	= Ntot
+    if(Nfilt is None): Nfilt = Ntot
+    d['Nfilt']  = Nfilt
     d['host']	= settings.HOSTNAME
 
     if(stateselector is not None):
@@ -279,8 +289,8 @@ def detail_handler(request, what):
 
     template, objects, aux1, aux2 = None, None, None, None
     
-    theName = 'Not Found'
-    objects = eval(what).objects
+    theName	= 'Not Found'
+    objects	= eval(what).objects
 
     if(what in ('job', 'dataset', 'site')):
         template = 'detail.html'
