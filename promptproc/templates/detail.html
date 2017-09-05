@@ -3,5 +3,5 @@
 {% load static %}
 
 {% block title %}{{ title }}{% endblock %}
-{% block headline %}{{ title }}{% endblock %}
+{% block headline %}{{ title }}: {{ uuid }}{% endblock %}
 {% block table %}{% render_table detail %}{% endblock %}

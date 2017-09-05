@@ -262,6 +262,7 @@ def data_handler(request, what):
     
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
     d['title']	= what
+    d['stats']	= 'test'
     d['N']	= Ntot
     if(Nfilt is None): Nfilt = Ntot
     d['Nfilt']  = Nfilt
@@ -319,6 +320,7 @@ def detail_handler(request, what):
         aux1.set_site(domain)
         theName = 'pilot '+my_pilot.uuid
         d['title']	= what
+        d['uuid']	= my_pilot.uuid
 
         
     if(what=='dag'):
@@ -350,9 +352,18 @@ def detail_handler(request, what):
         d['title']	= what+' name: '+theName+', uuid: '+o_uuid
                              
     dicto = {}
+
+    # FIXME - make a nice "not found" page for all of these cases
+    
     if(pk!=''):
         try:
-            dicto = model_to_dict(objects.get(pk=pk))
+            theObj = objects.get(pk=pk)
+            try:
+                d['uuid'] = theObj.uuid
+            except:
+                pass
+            
+            dicto = model_to_dict(theObj)
         except:
             return HttpResponse("%s pk '%s' not found" % (what, pk))
             
@@ -364,6 +375,7 @@ def detail_handler(request, what):
             
     if(o_uuid!=''):
         try:
+            d['uuid'] = o_uuid
             dicto = model_to_dict(objects.get(uuid=o_uuid))
         except:
             return HttpResponse("%s uuid '%s' not found" % (what, o_uuid))
