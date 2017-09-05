@@ -99,5 +99,5 @@ def index(request):
 #
 #
 def pilotinfo(request):
-    activePilots = pilot.N(state='no jobs')+pilot.N(state='active')+pilot.N(state='finished')
+    activePilots = pilot.N(state='running')+pilot.N(state='no jobs')+pilot.N(state='active')+pilot.N(state='finished')
     return HttpResponse(str(activePilots))
