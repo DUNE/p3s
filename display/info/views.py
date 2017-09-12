@@ -9,4 +9,17 @@ from django.utils	import timezone
 from django.conf	import settings
 
 def index(request):
-    return HttpResponse('test index')
+
+#    return HttpResponse('test index')
+    return render(request, 'index.html',
+                  {
+                      'domain':		'domain',
+                      'hostname':	'hostname',
+                      'uptime':		'uptime()',
+                      'time':		'timeString',
+                      'summary':	{'tSummary':'summary'},
+                      'system':		{'tSystem':'system'},
+                      'sites':		'",".join(site.list())',
+                  }
+
+)

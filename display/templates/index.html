@@ -3,14 +3,14 @@
 <!doctype html>
 <html>
   <head>
-    <title>p&#2384;s</title>
+    <title>p&#2384;s@{{ hostname }}</title>
     <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
     <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
   </head>
 
   
   <body>
-    <h2>p&#2384;s</h2>
+    <h2>p&#2384;s@{{ hostname }}</h2>
     {% include "topnavbar.html" %}
     <table border="1">
       <tr>
@@ -19,10 +19,10 @@
       </tr>
       <tr>
 	<td>
-          {% block table1 %}{% render_table summary %}{% endblock %}
+f00
 	</td>
 	<td>
-          {% block table2 %}{% render_table system %}{% endblock %}
+bar
 	</td>
       </tr>
     </table>
