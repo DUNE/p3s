@@ -62,7 +62,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'display.urls'
+ROOT_URLCONF = 'dqm.urls'
 
 TEMPLATES = [
     {
@@ -83,7 +83,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'display.wsgi.application'
+WSGI_APPLICATION = 'dqm.wsgi.application'
 
 
 # Database
