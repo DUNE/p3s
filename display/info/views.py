@@ -9,12 +9,12 @@ from django.utils	import timezone
 from django.conf	import settings
 
 def index(request):
+    hostname	= settings.HOSTNAME
 
-#    return HttpResponse('test index')
     return render(request, 'index.html',
                   {
                       'domain':		'domain',
-                      'hostname':	'hostname',
+                      'hostname':	hostname,
                       'uptime':		'uptime()',
                       'time':		'timeString',
                       'summary':	{'tSummary':'summary'},
@@ -23,3 +23,4 @@ def index(request):
                   }
 
 )
+########    return HttpResponse('test index')
