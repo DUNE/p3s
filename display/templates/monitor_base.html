@@ -1,0 +1,20 @@
+{% load render_table from django_tables2 %}
+{% load static %}
+<!doctype html>
+<html>
+  <head>
+    <title>p&#2384;s display</title>
+    <!-- THIS IS TEMP, until we plant it on Apache -->
+    <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+    <!-- link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" / -->
+  </head>
+
+  
+  <body>
+    <h2>p&#2384;s display</h2>
+    {% include "topnavbar.html" %}
+    {% block table %}{% render_table table %}{% endblock %}
+
+    <hr/>  
+  </body>
+</html>
