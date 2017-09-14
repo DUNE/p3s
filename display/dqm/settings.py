@@ -135,8 +135,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    '/home/maxim/projects/p3s/display/dqm/static',
-#    os.path.join(BASE_DIR, "dqm/static"),
+#    '/home/maxim/projects/p3s/display/dqm/static',
+    os.path.join(BASE_DIR, "static"),
     '/var/www/static/',
 # For illustration:
 #    '/home/maxim/projects/p3s/promptproc/promptproc/static',
