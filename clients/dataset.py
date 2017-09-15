@@ -57,13 +57,13 @@ class Dataset(dict):
         self['wfuuid']	= wfuuid
         
 #########################################################################
-(user, server, verb, site, pl, jl) = clientenv()
+envDict = clientenv(outputDict=True)
+
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-S", "--server",	type=str,
-                    help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
-                    default=server)
+parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
+                    help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-j", "--json",	type=str,	default='',
                     help="json description of the data to be sent")
@@ -86,9 +86,8 @@ parser.add_argument("-a", "--adjust",	action='store_true',
 parser.add_argument("-R", "--registertype",	action='store_true',
                     help="register data type: requires JSON (-j) option, needs to present name, ext, comment. Ext (extension) contains the dot.")
 
-parser.add_argument("-v", "--verbosity",	type=int,
-                    default=0, choices=[0, 1, 2],
-                    help="increase output verbosity")
+parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], choices=[0, 1, 2, 3, 4],
+                    help="output verbosity (0-4), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
                     help="how many cycles (with period in seconds) to stay alive")

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.5
 import os
 #########################################################
-def clientenv():
+def clientenv(outputDict=False):
 
     (user, server, verb, site) = ('', 'http://localhost:8000/',  0, 'default')
         
@@ -22,7 +22,19 @@ def clientenv():
     if 'P3S_SITE' in e:		site	= os.environ['P3S_SITE']
 
     if 'P3S_PILOTLOG' in e:	pilotlog= os.environ['P3S_PILOTLOG']
-    if 'P3S_JOBLOG' in e:	joblog= os.environ['P3S_JOBLOG']
+    if 'P3S_JOBLOG' in e:	joblog	= os.environ['P3S_JOBLOG']
 
-    return (user, server, verb, site, pilotlog, joblog)
+    if(outputDict):
+        d = {}
+        d['user']	= user
+        d['server']	= server
+        d['verb']	= verb
+        d['site']	= site
+        d['pilotlog']	= pilotlog
+        d['joblog']	= joblog
+
+        return d
+
+    else:
+        return (user, server, verb, site, pilotlog, joblog)
 

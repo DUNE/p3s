@@ -65,32 +65,34 @@ from Pilot import Pilot
 #########################################################################        
 #############################  BEGIN  ###################################
 
-(user, server, verb, site, logdefault, joblogdefault) = clientenv()
+
+envDict = clientenv(outputDict=True)
+
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-S", "--server",	type=str,	default=server,
+parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-H", "--host",	type=str,	default='',
                     help="the worker node where a pilot may nee adjustments")
 
-parser.add_argument("-s", "--site",	type=str,	default=site,
+parser.add_argument("-s", "--site",	type=str,	default=envDict['site'],
                     help="site name - pilot parameters will be pulled from the server based on that")
 
 parser.add_argument("-U", "--usage",	action='store_true',
                     help="print usage notes and exit")
 
-parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
-                    help="(defaults to "+logdefault+") the path for all pilots keep their logs")
+parser.add_argument("-l", "--logdir",	type=str,	default=envDict['pilotlog'],
+                    help="(defaults to "+envDict['pilotlog']+") the path for all pilots keep their logs")
 
-parser.add_argument("-L", "--joblogdir",type=str,	default=joblogdefault,
-                    help="(defaults to "+joblogdefault+") the path for all jobs keep their stdout and stderr")
+parser.add_argument("-L", "--joblogdir",type=str,	default=envDict['joblog'],
+                    help="(defaults to "+envDict['joblog']+") the path for all jobs keep their stdout and stderr")
 
 parser.add_argument("-t", "--test",	action='store_true',
                     help="when set, forms a request but does not contact the server")
 
-parser.add_argument("-v", "--verbosity", type=int,	default=verb, choices=[0, 1, 2, 3, 4],
+parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], choices=[0, 1, 2, 3, 4],
                     help="output verbosity (0-4), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
@@ -236,7 +238,7 @@ API.setLogger(logger)
 API.setVerbosity(verb)
 
 logger.info('START %s as pid %s on host %s, user %s, p3s server %s, period %s, %s cycles, verbosity %s' %
-            (str(p['uuid']), p['pid'], p['host'], user, server, period, cycles, verb))
+            (str(p['uuid']), p['pid'], p['host'], envDict['user'], envDict['server'], period, cycles, verb))
 
 #########################################################################
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################

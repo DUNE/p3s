@@ -54,7 +54,10 @@ class Dag(dict):
 
 
 #-------------------------
-(user, server, verb, site) = clientenv()
+envDict = clientenv(outputDict=True)
+
+user = envDict['user']
+
 logdefault	= '/tmp/'+user+'/p3s/workflows'
 host		= socket.gethostname()
 
@@ -73,13 +76,14 @@ parser.add_argument("-m", "--modify",	help="modifies the state of a workflow, ne
 
 parser.add_argument("-D", "--description",type=str,	default='', help="Description (optional).")
 
-parser.add_argument("-S", "--server",	type=str,
-                    help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
-                    default=server)
+parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
+                    help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-w", "--what",	type=str,	default='',choices=['workflow','dag'],
                     help="type of object(s) for deletion")
-parser.add_argument("-v", "--verbosity",type=int,	default=verb, choices=[0, 1, 2], help="set verbosity - also needed for data output.")
+
+parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], choices=[0, 1, 2, 3, 4],
+                    help="output verbosity (0-4), will default to $P3S_VERBOSITY if set")
 
 parser.add_argument("-u", "--uuid",	type=str,	default='', help="uuid of the objet to be modified or deleted")
 

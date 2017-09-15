@@ -19,6 +19,7 @@ import os
 from serverAPI import serverAPI
 from clientenv import clientenv
 
+
 #########################################################
 settings.configure(USE_TZ = True)
 
@@ -74,7 +75,7 @@ class Job(dict):
         self['ts']	= str(timezone.now()) # see TZ note on top
 
 #-------------------------
-(user, server, verb, site, logdefault, joblogdefault) = clientenv()
+envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 
 parser = argparse.ArgumentParser()
 
@@ -84,7 +85,7 @@ parser.add_argument("-d", "--delete",	action='store_true',	help="deletes a job. 
 parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
 parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
-                    default=server)
+                    default=envDict['server'])
 
 parser.add_argument("-s", "--state",	type=str,	help="job state, used with *adjust* and *purge* options",
                     default='')
@@ -108,7 +109,7 @@ parser.add_argument("-u", "--uuid",	type=str,		help="uuid of the job to be adjus
 parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the job to be adjusted (pk)")
 
-parser.add_argument("-v", "--verbosity",	type=int, default=verb, choices=[0, 1, 2],
+parser.add_argument("-v", "--verbosity",	type=int, default=envDict['verb'], choices=[0, 1, 2],
                     help="set output verbosity")
 
 parser.add_argument("-j", "--json_in",	type=str,	default='',
