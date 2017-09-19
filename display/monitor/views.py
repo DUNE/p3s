@@ -1,5 +1,6 @@
 from django.shortcuts	import render
 from django.http	import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 import  django_tables2 as tables
 from	django_tables2			import RequestConfig
@@ -53,5 +54,10 @@ def data_handler(request, what):
     
     return render(request, 'monitor_base.html', d)
 
-    #return HttpResponse('requested: '+str(len(objs)))
 
+@csrf_exempt
+def addpurity(request):
+    post	= request.POST
+
+    print(post['tpc'])
+    return HttpResponse('requested add pur:')

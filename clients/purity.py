@@ -18,6 +18,8 @@ import csv
 
 import os
 
+from collections import OrderedDict
+
 from serverAPI import serverAPI
 from clientenv import clientenv
 
@@ -29,13 +31,22 @@ user		= os.environ['USER']
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
-print('test')
-
 parser.add_argument("-f", "--file",	type=str,	help="input file", default='')
+
+parser.add_argument("-S", "--server",	type=str,
+                    help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
+                    default=envDict['server'])
+
 
 args = parser.parse_args()
 filename = args.file
+server = args.server
+
 f = None
+
+
+### dqm interface defined here
+API  = serverAPI(server=server)
 
 try:
     f = open(filename,"r")
@@ -43,18 +54,22 @@ except:
     print("file '%s' not found." % filename)
     exit(-1)
     
-#l = f.readline()
-#while(l):
-#    print(l)
-#    l = f.readline()
-    
 myreader = csv.reader(f, delimiter=' ', quotechar='|')
+
 frst = True
+
+items = ('run','tpc', 'lifetime', 'error', 'count')
 for row in myreader:
     if(frst):
         frst = False
         continue # skip Bruce's header
+    
+    cnt=0
+    d = OrderedDict.fromkeys(items)
     for e in row:
         e = e.replace(',', '')
-        print(e)
-    print(row)
+        d[items[cnt]] = e
+        cnt+=1
+    # print(row)
+    resp = API.post2server('purity', 'addpurity', d)
+    print(resp)

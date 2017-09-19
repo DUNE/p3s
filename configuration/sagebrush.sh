@@ -13,5 +13,5 @@ export P3S_PILOTLOG=/tmp/pilotlog
 export P3S_JOBLOG=/tmp/joblog
 env | grep P3S
 
-
 export DQM_SERVER="http://serenity.local:8000/"
+env | grep DQM

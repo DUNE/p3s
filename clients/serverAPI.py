@@ -61,6 +61,11 @@ class serverAPI(dict):
             'pilotTO':	server+'logic/pilotTO',
         }
 
+        ### DQM purity
+        self['purity']	= {
+            'addpurity':	server+'monitor/addpurity',
+        }
+
 
     def setLogger(self, logger):
         self.logger=logger
