@@ -59,5 +59,14 @@ def data_handler(request, what):
 def addpurity(request):
     post	= request.POST
 
-    print(post['tpc'])
+    print()
+    p=pur()
+    p.run	= post['run']
+    p.tpc	= post['tpc']
+    p.lifetime	= post['lifetime']
+    p.error	= post['error']
+    p.count	= post['count']
+
+    p.save()
+    
     return HttpResponse('requested add pur:')
