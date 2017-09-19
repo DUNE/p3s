@@ -16,5 +16,20 @@
              "Lifetime": 2.57,
              "Error": 0.19,
              "Count": 15
+         },
+         "tpc6": {
+             "Lifetime": 2.79,
+             "Error": 0.28,
+             "Count": 15
+         },
+         "tpc9": {
+             "Lifetime": 2.62,
+             "Error": 0.12,
+             "Count": 15
+         },
+         "tpc10": {
+             "Lifetime": 2.59,
+             "Error": 0.15,
+             "Count": 15
          }
 }
