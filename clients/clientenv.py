@@ -4,7 +4,9 @@ import os
 def clientenv(outputDict=False):
 
     (user, server, verb, site) = ('', 'http://localhost:8000/',  0, 'default')
-        
+
+    dqmserver = "http://serenity.local:8000/"
+    
     e = os.environ.keys()
     
     if 'USER' in e:
@@ -24,10 +26,14 @@ def clientenv(outputDict=False):
     if 'P3S_PILOTLOG' in e:	pilotlog= os.environ['P3S_PILOTLOG']
     if 'P3S_JOBLOG' in e:	joblog	= os.environ['P3S_JOBLOG']
 
+    if 'DQM_SERVER' in e:	server	= os.environ['DQM_SERVER']
+
+    
     if(outputDict):
         d = {}
         d['user']	= user
         d['server']	= server
+        d['dqmserver']	= dqmserver
         d['verb']	= verb
         d['site']	= site
         d['pilotlog']	= pilotlog
