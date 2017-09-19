@@ -15,20 +15,19 @@
     {% include "topnavbar.html" %}
     <table border="1">
       <tr>
-	<th>Summary</th>
+	<th>Uptime</th>
 	<th>System</th>
       </tr>
       <tr>
 	<td>
-f00
+{{ uptime }}
 	</td>
 	<td>
-bar
+{{ hostname }}
 	</td>
       </tr>
     </table>
 
-    p3s sites: {{ sites }}
     <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
     <hr/>  
   </body>

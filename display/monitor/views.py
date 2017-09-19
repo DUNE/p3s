@@ -47,8 +47,9 @@ def data_handler(request, what):
     t.set_site(domain)
     RequestConfig(request).configure(t)
 
-    d['table'] = t
-    d['N'] = str(len(objs))
+    d['table']	= t
+    d['N']	= str(len(objs))
+    d['domain']	= domain
     
     return render(request, 'monitor_base.html', d)
 
