@@ -60,6 +60,7 @@ frst = True
 
 items = ('run','tpc', 'lifetime', 'error', 'count')
 for row in myreader:
+    # print(row)
     if(frst):
         frst = False
         continue # skip Bruce's header
@@ -70,6 +71,6 @@ for row in myreader:
         e = e.replace(',', '')
         d[items[cnt]] = e
         cnt+=1
-    # print(row)
+        # print(cnt)
     resp = API.post2server('purity', 'addpurity', d)
     print(resp)
