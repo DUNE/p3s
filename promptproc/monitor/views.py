@@ -48,8 +48,8 @@ from .monitorTables import *
 from django import forms
 
 # Users - first element is value, second is the label in the dropdown list
-CHOICES = (('All', 'All'), ('maxim','maxim'), ('brett','brett'),)
-
+CHOICES		= (('All', 'All'), ('maxim','maxim'), ('brett','brett'),)
+PAGECHOICES	= (('25','25'), ('50','50'), ('100','100'),)
 
 SELECTORS	= {
     'pilot':
@@ -158,6 +158,18 @@ class dropDown(forms.Form):
         else:
             return 'user='+selectedUser+'&'
 
+######################
+class dropDownPage(forms.Form):
+    def __init__(self, *args, **kwargs):
+       self.label = kwargs.pop('label')
+       super(dropDownPage, self).__init__(*args, **kwargs)
+       
+       self.fields['dropChoicePage'] = forms.ChoiceField(choices = PAGECHOICES, label = self.label)
+
+    def handleDropSelector(self):
+        selectedNumber = self.cleaned_data['dropChoicePage']
+        return 'perpage='+selectedNumber+'&'
+
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
@@ -169,6 +181,7 @@ def data_handler(request, what):
     state	= request.GET.get('state','')
     user	= request.GET.get('user','')
     host	= request.GET.get('host','')
+    perpage	= request.GET.get('perpage','25')
 
     domain	= request.get_host()
 
@@ -182,7 +195,9 @@ def data_handler(request, what):
 
     # FIXME - now that multiple selectors work, need to init the checkboxes correctly
 
-    stateselector = None
+    stateselector	= None
+    pageselector	= None
+    
     if(what in ['job', 'pilot', 'workflow']):
         t = None # placeholder for the table object
         q = ''
@@ -198,7 +213,12 @@ def data_handler(request, what):
                 userselector = dropDown(request.POST,label='User')
                 if userselector.is_valid():
                     q += userselector.handleDropSelector()
-            
+
+
+            pageselector = dropDownPage(request.POST,label='PerPage', initial={'dropChoicePage':[perpage,]},)
+            if pageselector.is_valid():
+                q += pageselector.handleDropSelector()
+                    
             return makeQuery(what, q)
 #----------
 
@@ -212,6 +232,8 @@ def data_handler(request, what):
             userselector = dropDown(initial={'dropChoice':[user,]}, label='User')
         else:
             userselector = dropDown(label='User')
+            
+        pageselector = dropDownPage(initial={'dropChoicePage':[perpage,]}, label='PerPage')
 
 
         objects = eval(what).objects
@@ -256,8 +278,9 @@ def data_handler(request, what):
         t = DagTable(objs)
         
     t.set_site(domain)
-    RequestConfig(request).configure(t)
 
+    RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
+    
     Ntot = objects.count()
     
     d['table']	= t # reference to "jobs" or "pilots" table, depending on the argument
@@ -272,7 +295,8 @@ def data_handler(request, what):
         d['selector1'] = stateselector
     if(SELECTORS[what]['userselector'] is not None):
         d['selector2'] = eval(SELECTORS[what]['userselector'])
-    
+
+    d['selector3'] = pageselector
     return render(request, template, d)
 
 #########################################################    

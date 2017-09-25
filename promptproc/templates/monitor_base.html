@@ -22,16 +22,27 @@
 		{% if selector1 %}
 		<table>
 		  <tr>
+		    {% if selector1 %}
 		    <td width="50%">
 		      <table>
 			{{ selector1 }}
 		      </table>
 		    </td>
+		    {% endif %}
+		    {% if selector2 %}
 		    <td>
 		      <table>
 			{{ selector2 }}
 		      </table>
 		    </td>
+		    {% endif %}
+		    {% if selector3 %}
+		    <td>
+		      <table>
+			{{ selector3 }}
+		      </table>
+		    </td>
+		    {% endif %}
 		  </tr>
 		</table>
 		

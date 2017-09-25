@@ -4,5 +4,5 @@
 
 {% block title %}{{ title }}{% endblock %}
 {% block headline %}{{ title }}{% endblock %}
-{% block stats %} > Total in DB:{{ N }}, selected:{{ Nfilt }} on server "{{ host }}"{% endblock %}
+{% block stats %}: Total in DB:{{ N }}, selected:{{ Nfilt }} on server "{{ host }}"{% endblock %}
 {% block table %}{% render_table table %}{% endblock %}
