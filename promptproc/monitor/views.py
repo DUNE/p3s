@@ -48,8 +48,8 @@ from .monitorTables import *
 from django import forms
 
 # Users - first element is value, second is the label in the dropdown list
-CHOICES		= (('All', 'All'), ('maxim','maxim'), ('brett','brett'),)
-PAGECHOICES	= (('25','25'), ('50','50'), ('100','100'),)
+CHOICES		= (('All', 'All'), ('maxim','maxim'), ('mxp', 'mxp'), ('brett','brett'),)
+PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),]
 
 SELECTORS	= {
     'pilot':
@@ -215,7 +215,7 @@ def data_handler(request, what):
                     q += userselector.handleDropSelector()
 
 
-            pageselector = dropDownPage(request.POST,label='PerPage', initial={'dropChoicePage':[perpage,]},)
+            pageselector = dropDownPage(request.POST,label='# per page', initial={'dropChoicePage':perpage},)
             if pageselector.is_valid():
                 q += pageselector.handleDropSelector()
                     
@@ -229,11 +229,11 @@ def data_handler(request, what):
             stateselector = boxSelector(initial={'stateChoice':['all',]}, what=what)
 
         if(user!=''):
-            userselector = dropDown(initial={'dropChoice':[user,]}, label='User')
+            userselector = dropDown(initial={'dropChoice':user}, label='User')
         else:
             userselector = dropDown(label='User')
             
-        pageselector = dropDownPage(initial={'dropChoicePage':[perpage,]}, label='PerPage')
+        pageselector = dropDownPage(initial={'dropChoicePage':perpage}, label='# per page')
 
 
         objects = eval(what).objects
