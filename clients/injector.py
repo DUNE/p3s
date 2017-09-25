@@ -86,7 +86,9 @@ verb	= args.verbosity
 # testing (pre-emptive exit with print)
 tst	= args.test
 
+forever = (cycles==0)
 
+print(forever)
 if(tst):
     print('server:',server,'cycles:',cycles)
 
@@ -125,20 +127,12 @@ API.setVerbosity(verb)
 
 if(filename==''): exit(-1)
 
-fileinfo =  '{"NOOP1:filter":{"dirpath":"'+datadir+'","name":"'+filename+'"}}'
-jobinfo  = ''
 
-name=add
-description='test'
-state='defined'
-
-while(cycles>0):
+while(cycles>0 or forever):
     if(os.path.isfile(datadir+'/'+filename)):
         resp = API.registerWorkflow(add, name, state, fileinfo, jobinfo, description)
         print(resp)
     cycles-=1
-    if(cycles==0): # EXHAUSTED ATTEMPTS TO FIND A FILE
-        break
     time.sleep(period)
 
 exit(0)
