@@ -183,6 +183,10 @@ def data_handler(request, what):
     host	= request.GET.get('host','')
     perpage	= request.GET.get('perpage','25')
 
+    states = []
+    if(state	!= ''): states = state.split(',')
+
+    
     domain	= request.get_host()
 
     # FIXME -beautify the timestamp later -mxp-
@@ -224,7 +228,7 @@ def data_handler(request, what):
 
 
         if(state!=''): # from the HTTP request with exception of 'all'
-            stateselector = boxSelector(initial={'stateChoice':[state,]}, what=what)
+            stateselector = boxSelector(initial={'stateChoice': states}, what=what)
         else:
             stateselector = boxSelector(initial={'stateChoice':['all',]}, what=what)
 
@@ -241,12 +245,12 @@ def data_handler(request, what):
             t = x(objects.all())
         
         kwargs = {}
-        if(uuid		!= ''): kwargs['uuid']	= uuid
-        if(wfuuid	!= ''):	kwargs['wfuuid']= wfuuid
-        if(pk		!= ''): kwargs['pk']	= pk
-        if(name		!= ''): kwargs['name']	= name
-        if(user		!= ''): kwargs['user']	= user
-        if(state	!= ''): kwargs['state__in']=state.split(',')
+        if(uuid		!= ''): kwargs['uuid']		= uuid
+        if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
+        if(pk		!= ''): kwargs['pk']		= pk
+        if(name		!= ''): kwargs['name']		= name
+        if(user		!= ''): kwargs['user']		= user
+        if(state	!= ''): kwargs['state__in']	= states
         
         try:
             objs = objects.filter(**kwargs)
