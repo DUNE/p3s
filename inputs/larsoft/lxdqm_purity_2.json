@@ -4,7 +4,7 @@
 	"timeout":	"1000",
         "jobtype":	"purity",
         "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_purity_1.sh",
-	"env":		{"P3S_VENV":"/afs/cern.ch/user/m/mxp/vp3s","P3S_LARSOFT_HOME":"/afs/cern.ch/user/d/dostefan/public/v06/","P3S_LARSOFT_RELEASE":"localProducts_larsoft_v06_45_01_e14_prof","P3S_NEVENTS":"100","P3S_FCL_DIR":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft","P3S_FCL":"lxdqm_purity_1.fcl","P3S_FCL_AUX":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/evdisp.fcl","P3S_INPUT":"/eos/experiment/neutplatform/protodune/npmcproddisk/mcc9/v06_33_00_01/mergeana/ProtoDUNE_beam_7GeV_cosmics_3ms_sce/ProtoDUNE_beam_7GeV_cosmics_3ms_sce_84_20170725T224237_merged0.root","P3S_OUTPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOutput/"},
+	"env":		{"P3S_VENV":"/afs/cern.ch/user/m/mxp/vp3s","P3S_LARSOFT_HOME":"/afs/cern.ch/user/d/dostefan/public/v06/","P3S_LARSOFT_RELEASE":"localProducts_larsoft_v06_45_01_e14_prof","P3S_NEVENTS":"100","P3S_FCL_DIR":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft","P3S_FCL":"lxdqm_purity_1.fcl","P3S_FCL_AUX":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/evdisp.fcl","P3S_INPUT":"/eos/experiment/neutplatform/protodune/npmcproddisk/mcc9/v06_33_00_01/mergeana/ProtoDUNE_beam_7GeV_cosmics_3ms_sce/ProtoDUNE_beam_7GeV_cosmics_3ms_sce_84_20170725T224237_merged0.root","P3S_OUTPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/"},
         "priority":	"1",
 	"state":	"defined"
     }
