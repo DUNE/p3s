@@ -61,6 +61,7 @@ SELECTORS	= {
          ('stopped',	'Stopped'),
          ('timeout',	'Timed out'),
          ('no jobs',	'No Jobs'),
+         ('DB lock',	'DB lock'),
      ],
      'userselector': None,
      'gUrl':'/monitor/pilots',
