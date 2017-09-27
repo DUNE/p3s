@@ -287,16 +287,15 @@ while(cnt>0 or p.cycles==0):
         msg = json.loads(data)
         p['status'], p['state']	= msg['status'], msg['state']
     except:
-        logger.error('exiting, failed to parse the server message at brokerage: %s' % data)
-        exit(3)
+        logger.error('Failed to parse the server message at brokerage: %s' % data)
+        time.sleep(period)
+        continue # will try again...
+        # exit(3)
 
-    # if a failure reported from brokerage on the server, log and exit
-    if(p['status']=='FAIL'): logfailexit(msg, logger)
-    
-    # KILL requested by the server, will log and exit
-    if(p['status']=='KILL'): logkillexit(logger)
+    if(p['status']=='FAIL'): logfailexit(msg, logger)	#  log and exit
+    if(p['status']=='KILL'): logkillexit(logger)	#  log and exit
 
-    if(p['state'] in ('no jobs', 'DB lock')): # didn't get a job, skip the cycle.
+    if(p['state'] in ('no jobs', 'DB lock')):		# didn't get a job, skip the cycle.
         logger.info(p['state'])
         cnt-=1 # won't matter if cycles were set to zero for infinite loop
         if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
@@ -393,7 +392,9 @@ while(cnt>0 or p.cycles==0):
                 p['status'], p['state']	= msg['status'], msg['state']
             except:
                 logger.error('exiting, failed to parse the server message at report: %s' % data)
-                exit(3)
+                time.sleep(period)
+                continue # will try again...
+                # exit(3)
 
             # Failure reported from brokerage on the server, will log and exit
             if(p['status']=='FAIL'): logfailexit(msg, logger)
