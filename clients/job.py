@@ -96,10 +96,6 @@ parser.add_argument("-p", "--priority",	type=int,	help="sets the job priority, n
 parser.add_argument("-N", "--number",	type=int,	help="creates N replicas of same job",
 	            default=1)
 
-
-parser.add_argument("-P", "--purge",	type=str,	help="purge jobs older than YY:DD:HH:MM:SS, based on ts in the T argument",
-	            default='')
-
 parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion", default='defined',
                     choices=['ts_def','ts_sta','ts_sto'])
 
@@ -123,7 +119,6 @@ usage	= args.usage
 server	= args.server
 state	= args.state
 priority= args.priority
-purge	= args.purge
 timestamp= args.timestamp
 j_uuid	= args.uuid
 j_id	= args.id
@@ -168,14 +163,6 @@ if(adj):
         if(verb>0): print(resp)
 
     exit(0) # done with update/adjust
-
-########################### JOB PURGE  #################################
-# 
-if(purge!=''):
-# Functionality being moved elsewhere
-#    resp = API.post2server('logic', 'purge', dict(interval=purge, timestamp=timestamp, state=state, what="job"))
-#    if(verb>0): print(resp)
-    exit(0)
 
 ########################### JOB DELETE #################################
 # Check if it was a deletion request
@@ -244,6 +231,7 @@ if(json_in!=''):
         if(tst): continue # just testing
         resp = API.post2server('job', 'add', j)
         if(verb>0): print(resp)
+        time.sleep(1) # prevent DOS
 
 
 ###################### GRAND FINALE ####################################
