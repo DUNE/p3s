@@ -93,8 +93,11 @@ parser.add_argument("-s", "--state",	type=str,	help="job state, used with *adjus
 parser.add_argument("-p", "--priority",	type=int,	help="sets the job priority, needs *adjust* option",
 	            default=0)
 
-parser.add_argument("-N", "--number",	type=int,	help="creates N replicas of same job",
+parser.add_argument("-N", "--number",	type=int,	help="creates N replicas of same job (delay is configurable)",
 	            default=1)
+
+parser.add_argument("-D", "--delay",	type=int,	help="delay between serial submission of job replicas, ms",
+	            default=1000)
 
 parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion", default='defined',
                     choices=['ts_def','ts_sta','ts_sto'])
@@ -128,6 +131,7 @@ adj	= args.adjust
 delete	= args.delete
 json_in	= args.json_in
 Njobs	= args.number
+delay	= args.delay
 
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
@@ -231,7 +235,7 @@ if(json_in!=''):
         if(tst): continue # just testing
         resp = API.post2server('job', 'add', j)
         if(verb>0): print(resp)
-        time.sleep(1) # prevent DOS
+        time.sleep(delay/1000.0) # prevent DOS
 
 
 ###################### GRAND FINALE ####################################
