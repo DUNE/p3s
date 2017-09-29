@@ -48,7 +48,7 @@ from .monitorTables import *
 from django import forms
 
 # Users - first element is value, second is the label in the dropdown list
-CHOICES		= (('All', 'All'), ('maxim','maxim'), ('mxp', 'mxp'), ('brett','brett'),)
+USERCHOICES	= (('All', 'All'), ('maxim','maxim'), ('mxp', 'mxp'), ('brett','brett'),)
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),]
 
 SELECTORS	= {
@@ -78,7 +78,7 @@ SELECTORS	= {
          ('finished','Finished'),
          ('pilotTO','Pilot Timed Out'),
      ],
-     'userselector': 'userselector',
+     'userselector': True,
      'timeselector': 'timeselector',
      'gUrl':'/monitor/jobs',
      'qUrl':'/monitor/jobs?',
@@ -144,13 +144,12 @@ class boxSelector(forms.Form):
                                             required=False,
                                             widget=forms.CheckboxSelectMultiple,
                                             choices=[('place', 'holder'),])
-
 ######################
 class dropDownGeneric(forms.Form):
     def __init__(self, *args, **kwargs):
        self.label	= kwargs.pop('label')
        self.choices	= kwargs.pop('choices')
-       self.fieldname	= kwargs.pop('fieldname')
+       self.fieldname	= 'choice'
        self.tag		= kwargs.pop('tag')
        
        super(dropDownGeneric, self).__init__(*args, **kwargs)
@@ -163,33 +162,6 @@ class dropDownGeneric(forms.Form):
             return ''
         else:
             return self.tag+'='+selection+'&'
-
-######################
-class dropDown(forms.Form):
-    def __init__(self, *args, **kwargs):
-       self.label = kwargs.pop('label')
-       super(dropDown, self).__init__(*args, **kwargs)
-       
-       self.fields['dropChoice'] = forms.ChoiceField(choices = CHOICES, label = self.label)
-
-    def handleDropSelector(self):
-        selectedUser = self.cleaned_data['dropChoice']
-        if(selectedUser=='All'):
-            return ''
-        else:
-            return 'user='+selectedUser+'&'
-
-######################
-class dropDownPage(forms.Form):
-    def __init__(self, *args, **kwargs):
-       self.label = kwargs.pop('label')
-       super(dropDownPage, self).__init__(*args, **kwargs)
-       
-       self.fields['dropChoicePage'] = forms.ChoiceField(choices = PAGECHOICES, label = self.label)
-
-    def handleDropSelector(self):
-        selectedNumber = self.cleaned_data['dropChoicePage']
-        return 'perpage='+selectedNumber+'&'
 
 #########################################################    
 # general request handler for summary type of a table
@@ -204,10 +176,13 @@ def data_handler(request, what):
     host	= request.GET.get('host','')
     perpage	= request.GET.get('perpage','25')
 
-    states = []
-    if(state	!= ''): states = state.split(',')
-
-    
+    states = ['all',]
+    if(state != ''): states = state.split(',')
+    if(user==''):
+        initUser='All'
+    else:
+        initUser=user
+        
     domain	= request.get_host()
 
     # FIXME -beautify the timestamp later -mxp-
@@ -224,47 +199,43 @@ def data_handler(request, what):
     pageselector	= None
     
     if(what in ['job', 'pilot', 'workflow']):
+
+        selector = SELECTORS[what]
+        
         t = None # placeholder for the table object
         q = ''
-        x=eval(SELECTORS[what]['table'])
+        x=eval(selector['table'])
 
-        timeselector = 'foo'
+        timeselector = 'TBD'
 #----------
+
+        # HANDLE USER'S SELECTIONS HERE
         if request.method == 'POST':
             stateselector = boxSelector(request.POST, what=what)
-            if stateselector.is_valid():
-                q += stateselector.handleBoxSelector()
+            if stateselector.is_valid(): q += stateselector.handleBoxSelector()
                 
-            if(SELECTORS[what]['userselector'] is not None):
-                userselector = dropDownGeneric(request.POST, label='User', choices=CHOICES, fieldname = 'userChoice', tag='user')
-                if userselector.is_valid():
-                    q += userselector.handleDropSelector()
+            if(selector['userselector'] is not None):
+                userselector = dropDownGeneric(request.POST, label='User', choices=USERCHOICES, tag='user')
+                if userselector.is_valid(): q += userselector.handleDropSelector()
+                
+            if(selector['timeselector'] is not None):
+                timeselector = dropDownGeneric(request.POST, label='Time', choices=(('1','100'),('2','200'),), tag='time')
+                # if userselector.is_valid(): q += userselector.handleDropSelector()
 
 
-            pageselector = dropDownPage(request.POST,label='# per page', initial={'dropChoicePage':perpage},)
-            if pageselector.is_valid():
-                q += pageselector.handleDropSelector()
+            pageselector	= dropDownGeneric(request.POST, initial={'pageChoice':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
+            if pageselector.is_valid(): q += pageselector.handleDropSelector()
                     
             return makeQuery(what, q)
 #----------
-
-
-        if(state!=''): # from the HTTP request with exception of 'all'
-            stateselector = boxSelector(initial={'stateChoice': states}, what=what)
-        else:
-            stateselector = boxSelector(initial={'stateChoice':['all',]}, what=what)
-
-        if(user!=''):
-            userselector = dropDownGeneric(initial={'userChoice':user}, label='User', choices = CHOICES, fieldname = 'userChoice', tag='user')
-        else:
-            userselector = dropDownGeneric(label='User', choices = CHOICES, fieldname = 'userChoice', tag='user')
-            
-        pageselector = dropDownPage(initial={'dropChoicePage':perpage}, label='# per page')
+        stateselector	= boxSelector(initial={'stateChoice': states}, what=what)
+        userselector	= dropDownGeneric(initial={'userChoice':initUser},	label='User',		choices = USERCHOICES, tag='user')
+        pageselector	= dropDownGeneric(initial={'pageChoice':perpage},	label='# per page',	choices = PAGECHOICES, tag='perpage')
+        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time')
 
 
         objects = eval(what).objects
-        if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''):
-            t = x(objects.all())
+        if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = x(objects.all())
         
         kwargs = {}
         if(uuid		!= ''): kwargs['uuid']		= uuid
@@ -325,8 +296,10 @@ def data_handler(request, what):
 
     d['selector3'] = pageselector
     
-    if(SELECTORS[what]['timeselector'] is not None):
-        d['selector4'] = timeselector
+    try:
+        if(selector['timeselector'] is not None): d['selector4'] = timeselector
+    except:
+        pass
 
     return render(request, template, d)
 
@@ -478,3 +451,30 @@ def detail_handler(request, what):
 #         return HttpResponseRedirect('/monitor/pilots?state=%s' % state)
 #     else:
 #         return HttpResponseRedirect('/monitor/pilots')
+######################
+# class dropDown(forms.Form):
+#     def __init__(self, *args, **kwargs):
+#        self.label = kwargs.pop('label')
+#        super(dropDown, self).__init__(*args, **kwargs)
+       
+#        self.fields['dropChoice'] = forms.ChoiceField(choices = CHOICES, label = self.label)
+
+#     def handleDropSelector(self):
+#         selectedUser = self.cleaned_data['dropChoice']
+#         if(selectedUser=='All'):
+#             return ''
+#         else:
+#             return 'user='+selectedUser+'&'
+
+# ######################
+# class dropDownPage(forms.Form):
+#     def __init__(self, *args, **kwargs):
+#        self.label = kwargs.pop('label')
+#        super(dropDownPage, self).__init__(*args, **kwargs)
+       
+#        self.fields['dropChoicePage'] = forms.ChoiceField(choices = PAGECHOICES, label = self.label)
+
+#     def handleDropSelector(self):
+#         selectedNumber = self.cleaned_data['dropChoicePage']
+#         return 'perpage='+selectedNumber+'&'
+
