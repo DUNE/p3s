@@ -79,6 +79,7 @@ SELECTORS	= {
          ('pilotTO','Pilot Timed Out'),
      ],
      'userselector': 'userselector',
+     'timeselector': 'timeselector',
      'gUrl':'/monitor/jobs',
      'qUrl':'/monitor/jobs?',
      'table':'JobTable',
@@ -145,6 +146,25 @@ class boxSelector(forms.Form):
                                             choices=[('place', 'holder'),])
 
 ######################
+class dropDownGeneric(forms.Form):
+    def __init__(self, *args, **kwargs):
+       self.label	= kwargs.pop('label')
+       self.choices	= kwargs.pop('choices')
+       self.fieldname	= kwargs.pop('fieldname')
+       self.tag		= kwargs.pop('tag')
+       
+       super(dropDownGeneric, self).__init__(*args, **kwargs)
+       
+       self.fields[self.fieldname] = forms.ChoiceField(choices = self.choices, label = self.label)
+
+    def handleDropSelector(self):
+        selection = self.cleaned_data[self.fieldname]
+        if(selection=='All'):
+            return ''
+        else:
+            return self.tag+'='+selection+'&'
+
+######################
 class dropDown(forms.Form):
     def __init__(self, *args, **kwargs):
        self.label = kwargs.pop('label')
@@ -207,7 +227,8 @@ def data_handler(request, what):
         t = None # placeholder for the table object
         q = ''
         x=eval(SELECTORS[what]['table'])
-        
+
+        timeselector = 'foo'
 #----------
         if request.method == 'POST':
             stateselector = boxSelector(request.POST, what=what)
@@ -215,7 +236,7 @@ def data_handler(request, what):
                 q += stateselector.handleBoxSelector()
                 
             if(SELECTORS[what]['userselector'] is not None):
-                userselector = dropDown(request.POST,label='User')
+                userselector = dropDownGeneric(request.POST, label='User', choices=CHOICES, fieldname = 'userChoice', tag='user')
                 if userselector.is_valid():
                     q += userselector.handleDropSelector()
 
@@ -234,9 +255,9 @@ def data_handler(request, what):
             stateselector = boxSelector(initial={'stateChoice':['all',]}, what=what)
 
         if(user!=''):
-            userselector = dropDown(initial={'dropChoice':user}, label='User')
+            userselector = dropDownGeneric(initial={'userChoice':user}, label='User', choices = CHOICES, fieldname = 'userChoice', tag='user')
         else:
-            userselector = dropDown(label='User')
+            userselector = dropDownGeneric(label='User', choices = CHOICES, fieldname = 'userChoice', tag='user')
             
         pageselector = dropDownPage(initial={'dropChoicePage':perpage}, label='# per page')
 
@@ -298,10 +319,15 @@ def data_handler(request, what):
 
     if(stateselector is not None):
         d['selector1'] = stateselector
+
     if(SELECTORS[what]['userselector'] is not None):
-        d['selector2'] = eval(SELECTORS[what]['userselector'])
+        d['selector2'] = userselector
 
     d['selector3'] = pageselector
+    
+    if(SELECTORS[what]['timeselector'] is not None):
+        d['selector4'] = timeselector
+
     return render(request, template, d)
 
 #########################################################    
