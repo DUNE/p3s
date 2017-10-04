@@ -1,3 +1,6 @@
+import django.db.models
+from django.db.models	import Max
+
 from django.shortcuts	import render
 from django.http	import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -55,14 +58,22 @@ def data_handler(request, what):
     return render(request, 'monitor_base.html', d)
 
 
+#########################################################    
 @csrf_exempt
-def addpurity(request):
+def indpurity(request):
     maxnum = 0
+
     try:
-        maxnum = pur.objects.latest('id').id
+        maxdict = pur.objects.all().aggregate(Max('run'))
+        maxnum = maxdict['run__max'] + 1
     except:
         pass
+    
+    return HttpResponse(str(maxnum))
 
+#########################################################    
+@csrf_exempt
+def addpurity(request):
     post	= request.POST
 
     print()
@@ -76,7 +87,7 @@ def addpurity(request):
     p.save()
 
     
-    return HttpResponse(str(maxnum))
+    return HttpResponse('Adding run '+p.run)
 ###################################################
 @csrf_exempt
 def delpurity(request):
@@ -88,6 +99,12 @@ def delpurity(request):
     except:
         return HttpResponse("Missing key for deletion")
 
+
+    if(p_pk=='ALL'):
+        pur.objects.all().delete()
+        return HttpResponse("Deleted all purity entries")
+        
+    
     p = None
     try:
         p = pur.objects.get(pk=p_pk)
@@ -98,6 +115,7 @@ def delpurity(request):
     return HttpResponse("%s deleted" % p_pk )
 
 #    return HttpResponse('Delete request:'+str(p_pk))
+#    maxnum = pur.objects.latest('id').id
 
 
         

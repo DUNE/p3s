@@ -5,8 +5,8 @@
 # so we are using timzone.now() where needed		#
 #########################################################
 
-from django.conf import settings
-from django.utils import timezone
+from django.conf	import settings
+from django.utils	import timezone
 
 import argparse
 import uuid
@@ -56,6 +56,7 @@ f = None
 ### dqm interface defined here
 API  = serverAPI(server=server)
 
+
 if(delete):
     if(p_id == ''):
         print('ID for deletion not specified, exiting')
@@ -76,9 +77,12 @@ myreader = csv.reader(f, delimiter=' ', quotechar='|')
 
 frst = True
 
+runno = API.get2server('purity', 'ind', '')
+print('Assigning run number'+runno)
+
 items = ('run','tpc', 'lifetime', 'error', 'count')
-for row in myreader:
-    # print(row)
+
+for row in myreader:    # print(row)
     if(frst):
         frst = False
         continue # skip Bruce's header
@@ -90,5 +94,7 @@ for row in myreader:
         d[items[cnt]] = e
         cnt+=1
         # print(cnt)
+
+    d['run'] = runno
     resp = API.post2server('purity', 'add', d)
     print(resp)

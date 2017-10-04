@@ -65,6 +65,7 @@ class serverAPI(dict):
         self['purity']	= {
             'add':	server+'monitor/addpurity',
             'del':	server+'monitor/delpurity',
+            'ind':	server+'monitor/indpurity/%s',
         }
 
 
