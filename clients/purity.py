@@ -32,6 +32,10 @@ envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-f", "--file",	type=str,	help="input file", default='')
+parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs id.")
+parser.add_argument("-i", "--id",	type=str,	default='',
+                    help="id of the job to be adjusted (pk)")
+
 
 parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
@@ -39,14 +43,28 @@ parser.add_argument("-S", "--server",	type=str,
 
 
 args = parser.parse_args()
-filename = args.file
-server = args.server
+
+filename	= args.file
+server		= args.server
+delete		= args.delete
+p_id		= args.id
+
 
 f = None
 
 
 ### dqm interface defined here
 API  = serverAPI(server=server)
+
+if(delete):
+    if(p_id == ''):
+        print('ID for deletion not specified, exiting')
+        
+    resp = API.post2server('purity', 'del', dict(pk=p_id))
+    print(resp)
+
+    exit(0)
+
 
 try:
     f = open(filename,"r")
@@ -72,5 +90,5 @@ for row in myreader:
         d[items[cnt]] = e
         cnt+=1
         # print(cnt)
-    resp = API.post2server('purity', 'addpurity', d)
+    resp = API.post2server('purity', 'add', d)
     print(resp)

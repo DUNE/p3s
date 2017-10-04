@@ -6,4 +6,5 @@ from . import views
 urlpatterns = [
     url(r'^purity',	views.data_handler,	{'what':'purity'},	name='purity'),
     url(r'^addpurity',	views.addpurity,       	name='addpurity'),
+    url(r'^delpurity',	views.delpurity,       	name='delpurity'),
 ]

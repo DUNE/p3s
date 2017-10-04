@@ -57,6 +57,12 @@ def data_handler(request, what):
 
 @csrf_exempt
 def addpurity(request):
+    maxnum = 0
+    try:
+        maxnum = pur.objects.latest('id').id
+    except:
+        pass
+
     post	= request.POST
 
     print()
@@ -68,5 +74,30 @@ def addpurity(request):
     p.count	= post['count']
 
     p.save()
+
     
-    return HttpResponse('requested add pur:')
+    return HttpResponse(str(maxnum))
+###################################################
+@csrf_exempt
+def delpurity(request):
+    post	= request.POST
+    p_pk	= None
+
+    try:
+        p_pk = post['pk']
+    except:
+        return HttpResponse("Missing key for deletion")
+
+    p = None
+    try:
+        p = pur.objects.get(pk=p_pk)
+    except:
+        return HttpResponse("Entry %s not found" % p_pk )
+
+    p.delete()
+    return HttpResponse("%s deleted" % p_pk )
+
+#    return HttpResponse('Delete request:'+str(p_pk))
+
+
+        
