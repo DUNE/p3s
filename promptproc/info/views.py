@@ -35,7 +35,7 @@ def index(request):
     dataDict = collections.OrderedDict()
 
     dataDict['domain']	= domain
-    dataDict['hostname']= hostname
+    dataDict['host']= hostname
     dataDict['uptime']	= upt
 
     # Note to self - the N method also takes site, must think about
@@ -88,7 +88,7 @@ def index(request):
     return render(request, 'index.html',
                   {
                       'domain':		domain,
-                      'hostname':	hostname,
+                      'host':		hostname,
                       'uptime':		uptime(),
                       'time':		timeString,
                       'summary':	tSummary,
