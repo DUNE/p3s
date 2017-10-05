@@ -3,9 +3,11 @@ import os
 #########################################################
 def clientenv(outputDict=False):
 
-    (user, server, verb, site) = ('', 'http://localhost:8000/',  0, 'default')
+    (user, server, dqmserver,
+     verb, site) = ('', 'http://localhost:8000/','http://localhost:8000/',
+                    0, 'default')
 
-    dqmserver = "http://serenity.local:8000/"
+    # dqmserver = "http://serenity.local:8000/"
     
     e = os.environ.keys()
     
@@ -19,14 +21,14 @@ def clientenv(outputDict=False):
     joblog	= '/tmp/'+user+'/p3s/jobs'
 
         
-    if 'P3S_SERVER' in e:	server	= os.environ['P3S_SERVER']
-    if 'P3S_VERBOSITY' in e:	verb	= os.environ['P3S_VERBOSITY']
-    if 'P3S_SITE' in e:		site	= os.environ['P3S_SITE']
+    if 'P3S_SERVER'	in e:	server	= os.environ['P3S_SERVER']
+    if 'P3S_VERBOSITY'	in e:	verb	= os.environ['P3S_VERBOSITY']
+    if 'P3S_SITE'	in e:	site	= os.environ['P3S_SITE']
 
-    if 'P3S_PILOTLOG' in e:	pilotlog= os.environ['P3S_PILOTLOG']
-    if 'P3S_JOBLOG' in e:	joblog	= os.environ['P3S_JOBLOG']
+    if 'P3S_PILOTLOG'	in e:	pilotlog= os.environ['P3S_PILOTLOG']
+    if 'P3S_JOBLOG'	in e:	joblog	= os.environ['P3S_JOBLOG']
 
-    if 'DQM_SERVER' in e:	server	= os.environ['DQM_SERVER']
+    if 'DQM_SERVER'	in e:	dqmserver= os.environ['DQM_SERVER']
 
     
     if(outputDict):

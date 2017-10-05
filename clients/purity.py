@@ -38,8 +38,8 @@ parser.add_argument("-i", "--id",	type=str,	default='',
 
 
 parser.add_argument("-S", "--server",	type=str,
-                    help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
-                    default=envDict['server'])
+                    help="server URL: defaults to $DQM_SERVER or if unset to http://localhost:8000/",
+                    default=envDict['dqmserver'])
 
 
 args = parser.parse_args()
