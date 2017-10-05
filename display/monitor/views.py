@@ -101,8 +101,11 @@ def delpurity(request):
 
 
     if(p_pk=='ALL'):
-        pur.objects.all().delete()
-        return HttpResponse("Deleted all purity entries")
+        try:
+            pur.objects.all().delete()
+            return HttpResponse("Deleted all purity entries")
+        except:
+            return HttpResponse("Deletion of all purity entries failed")
         
     
     p = None
