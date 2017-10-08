@@ -3,15 +3,16 @@
 <!doctype html>
 <html>
   <head>
-    <title>p&#2384;s@{{ hostname }}</title>
+    <title>p&#2384;s@{{ host }}</title>
     <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
     <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
   </head>
 
   
   <body>
-    <h2>p&#2384;s@{{ hostname }}</h2>
+    {% include "linkbar.html" %}
     {% include "topnavbar.html" %}
+    <h2>Home page of p&#2384;s@{{ hostname }}</h2>
     <table border="1">
       <tr>
 	<th>Summary</th>

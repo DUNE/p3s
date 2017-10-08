@@ -8,7 +8,7 @@
         <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
     </head>
     <body>
-      <a href="http://{{ domain }}"><h2>p&#2384;s home on "{{ host }}"</h2></a><br/>
+      {% include "linkbar.html" %}
       {% include "topnavbar.html" %}
       <center>
 	<h3>{% block headline %}{% endblock %}  {% block stats %}{% endblock %}</h3>

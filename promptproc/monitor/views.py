@@ -213,14 +213,20 @@ def data_handler(request, what):
         if request.method == 'POST':
             stateselector = boxSelector(request.POST, what=what)
             if stateselector.is_valid(): q += stateselector.handleBoxSelector()
-                
-            if(selector['userselector'] is not None):
-                userselector = dropDownGeneric(request.POST, label='User', choices=USERCHOICES, tag='user')
-                if userselector.is_valid(): q += userselector.handleDropSelector()
-                
-            if(selector['timeselector'] is not None):
-                timeselector = dropDownGeneric(request.POST, label='Time', choices=(('1','100'),('2','200'),), tag='time')
-                # if userselector.is_valid(): q += userselector.handleDropSelector()
+
+            try:
+                if(selector['userselector'] is not None):
+                    userselector = dropDownGeneric(request.POST, label='User', choices=USERCHOICES, tag='user')
+                    if userselector.is_valid(): q += userselector.handleDropSelector()
+            except:
+                pass
+
+            try:
+                if(selector['timeselector'] is not None):
+                    timeselector = dropDownGeneric(request.POST, label='Time', choices=(('1','100'),('2','200'),), tag='time')
+                    # if userselector.is_valid(): q += userselector.handleDropSelector()
+            except:
+                pass
 
 
             pageselector	= dropDownGeneric(request.POST, initial={'pageChoice':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')

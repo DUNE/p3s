@@ -21,5 +21,6 @@ export P3S_CONDOR_LOG=$P3S_DIRPATH/condorLog
 env | grep P3S
 
 export DQM_DATA_LIFE=1200 # in minutes, e.g. 24 hrs will be 1440
+export DQM_SERVER="http://p3s-content:80/"
 
 env | grep DQM
