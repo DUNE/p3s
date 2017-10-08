@@ -116,6 +116,8 @@ parser.add_argument("-u", "--uuid",	type=str,	default='',
 parser.add_argument("-x", "--execute",	action='store_true',
                     help="force the payloads to run in shell (for experts)")
 
+parser.add_argument("-B", "--batch",	type=str,	default='',
+                    help="(optional) local batch system info pertaining to the pilot job")
 
 
 #########################################################################
@@ -123,13 +125,15 @@ parser.add_argument("-x", "--execute",	action='store_true',
 args = parser.parse_args()
 
 (
-    server,		host,		site,		logdir,		joblogdir,
-    verb,		dlt,		kill,		p_uuid,
-    usage, shell, period, cycles, beat, tst
+    server,	host,	site,	logdir,	joblogdir,
+    verb,	dlt,	kill,	p_uuid,	usage,
+    shell,	period,	cycles, beat,	tst,
+    batch
 ) = (
     args.server,	args.host,	args.site,	args.logdir,	args.joblogdir,
-    args.verbosity,	args.delete,	args.kill,	args.uuid,
-    args.usage, args.execute, args.period, args.cycles, args.beat, args.test
+    args.verbosity,	args.delete,	args.kill,	args.uuid,	args.usage,
+    args.execute,	args.period,	args.cycles,	args.beat,	args.test,
+    args.batch
 )
 
 keepCycles	= cycles # will override the site cycles and beat if negative
@@ -139,9 +143,7 @@ if(usage):
     print(Usage)
     exit(0)
 
-### p3s interface defined here
-API  = serverAPI(server=server)
-
+API  = serverAPI(server=server) # ALL of p3s server interface defined here
 
 if(site!='default' and site!='' and not kill): # bootstrap from the server - need server address
 
@@ -239,6 +241,8 @@ API.setVerbosity(verb)
 
 logger.info('START %s as pid %s on host %s, user %s, p3s server %s, period %s, %s cycles, verbosity %s' %
             (str(p['uuid']), p['pid'], p['host'], envDict['user'], envDict['server'], period, cycles, verb))
+
+logger.info('Local batch extra info: %s' % batch)
 
 #########################################################################
 ################ CONTACT SERVER TO REGISTER THE PILOT ##################
