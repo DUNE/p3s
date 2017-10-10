@@ -42,7 +42,7 @@ info = json.loads(resp)
 
 
 if(p):
-    print("Domain: %s, hostname %s, uptime %s" % (info['domain'], info['hostname'], info['uptime']))
+    print("Domain: %s, hostname %s, uptime %s" % (info['domain'], info['host'], info['uptime']))
     print("Pilots: total %s, idle %s, running %s, stopped %s, TO %s"  %
           (info['pilots']['data'][0],
            info['pilots']['data'][1],
