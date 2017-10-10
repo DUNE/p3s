@@ -18,6 +18,7 @@ class pilot(models.Model):
     jobcount	= models.PositiveIntegerField(default=0) # number of processed jobs
     jobs_done	= models.TextField(default='') # uuid's of processed jobs
     pid		= models.CharField(max_length=16, default='')
+    extra	= models.CharField(max_length=256, default='')	# extra info (e.g. batch)
 
 
     # time autofill:
@@ -43,21 +44,6 @@ class pilot(models.Model):
             cnt+=p.jobcount
         return cnt
             
-    # @classmethod
-    # def Nrun(self, site=None):
-    #     if(site):
-    #         return self.objects.filter(state='running').filter(site=site).count()
-    #     else:
-    #         return self.objects.filter(state='running').count()
-    
-    # @classmethod
-    # def Nidle(self):
-    #     return self.objects.filter(state='no jobs').count()
-
-    # @classmethod
-    # def Nstop(self):
-    #     return self.objects.filter(state='stopped').count()
-
     
     def __str__(self):
         return self.uuid

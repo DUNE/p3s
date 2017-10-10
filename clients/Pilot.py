@@ -3,7 +3,7 @@ import uuid
 import socket
 import os
 class Pilot(dict):
-    def __init__(self, jobcount=0, cycles=1, period=5, site='default'):
+    def __init__(self, jobcount=0, cycles=1, period=5, site='default', extra=''):
         self['state']	= 'active' # start as active
         self['status']	= '' # status of server comms
         self['host']	= socket.gethostname()
@@ -17,5 +17,6 @@ class Pilot(dict):
         self.job	= '' # job uuid (to be yet received)
         self['jpid']	= '' # ditto
         self['errcode']	= '' # ditto
+        self['extra']	= extra
         self['pid']	= os.getpid()
 

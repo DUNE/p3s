@@ -55,12 +55,15 @@ def register(request):
         ts_cre		= post['ts'],
         ts_reg		= t0,
         ts_lhb		= t0,
-        pid		= post['pid']
+        pid		= post['pid'],
+        extra		= post['extra']
     )
 
     p.save()
+    # print(p)
 
     logger.info('pilot %s registered', p_uuid)
+    logger.info('extra: %s', p.extra)
 
     # COMMENT/UNCOMMENT FOR TESTING ERROR CONDITIONS:
     # return HttpResponse(json.dumps({'status':'FAIL', 'state': 'failreg', 'error':'failed registration'}))
