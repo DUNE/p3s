@@ -168,19 +168,16 @@ user = ''
 try:
     user = os.environ['LOGNAME']
 except:
-    pass
-try:
-    user = os.environ['USER']
-except:
-    pass
-try:
-    user = os.environ['LNAME']
-except:
-    pass
-try:
-    user = os.environ['USERNAME']
-except:
-    pass
+    try:
+        user = os.environ['USER']
+    except:
+        try:
+            user = os.environ['LNAME']
+        except:
+            try:
+                user = os.environ['USERNAME']
+            except:
+                pass
 
 if(user==''):
     LOG_DIR = '/tmp/p3s/'

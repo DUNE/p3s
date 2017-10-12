@@ -32,9 +32,14 @@ envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-f", "--file",	type=str,	help="input file", default='')
-parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs id.")
+
+parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number.")
+
 parser.add_argument("-i", "--id",	type=str,	default='',
-                    help="id of the job to be adjusted (pk)")
+                    help="id of the entry to be adjusted or delted (pk)")
+
+parser.add_argument("-r", "--run",	type=str,	default='',
+                    help="run number of the entries to be adjusted or delted")
 
 
 parser.add_argument("-S", "--server",	type=str,
@@ -48,6 +53,7 @@ filename	= args.file
 server		= args.server
 delete		= args.delete
 p_id		= args.id
+run		= args.run
 
 
 f = None
@@ -58,10 +64,16 @@ API  = serverAPI(server=server)
 
 
 if(delete):
-    if(p_id == ''):
-        print('ID for deletion not specified, exiting')
+    if(p_id == '' and run == ''):
+        print('ID/run for deletion not specified, exiting')
+        exit(-1)
+
+    resp = ''
+    if(p_id != ''):
+        resp = API.post2server('purity', 'del', dict(pk=p_id))
+    if(run != ''):
+        resp = API.post2server('purity', 'del', dict(run=run))
         
-    resp = API.post2server('purity', 'del', dict(pk=p_id))
     print(resp)
 
     exit(0)

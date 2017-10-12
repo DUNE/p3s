@@ -88,34 +88,6 @@ def addpurity(request):
 
     
     return HttpResponse('Adding run '+p.run)
-###################################################
-@csrf_exempt
-def delpurity(request):
-    post	= request.POST
-    p_pk	= None
-
-    try:
-        p_pk = post['pk']
-    except:
-        return HttpResponse("Missing key for deletion")
-
-
-    if(p_pk=='ALL'):
-        try:
-            pur.objects.all().delete()
-            return HttpResponse("Deleted all purity entries")
-        except:
-            return HttpResponse("Deletion of all purity entries failed")
-        
-    
-    p = None
-    try:
-        p = pur.objects.get(pk=p_pk)
-    except:
-        return HttpResponse("Entry %s not found" % p_pk )
-
-    p.delete()
-    return HttpResponse("%s deleted" % p_pk )
 
 #    return HttpResponse('Delete request:'+str(p_pk))
 #    maxnum = pur.objects.latest('id').id
