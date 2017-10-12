@@ -64,3 +64,26 @@ def delpurity(request):
         except:
             return HttpResponse("Run %s not found or deletion failed" % run )
 
+#########################################################    
+@csrf_exempt
+def addpurity(request):
+    post	= request.POST
+
+    print()
+    p=pur()
+    p.run	= post['run']
+    p.tpc	= post['tpc']
+    p.lifetime	= post['lifetime']
+    p.error	= post['error']
+    p.count	= post['count']
+
+    p.save()
+
+    
+    return HttpResponse('Adding run '+p.run)
+
+#    return HttpResponse('Delete request:'+str(p_pk))
+#    maxnum = pur.objects.latest('id').id
+
+
+        

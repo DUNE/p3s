@@ -39,7 +39,7 @@ parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the entry to be adjusted or delted (pk)")
 
 parser.add_argument("-r", "--run",	type=str,	default='',
-                    help="run number of the entries to be adjusted or delted")
+                    help="run number of the entries to be added, adjusted or delted")
 
 
 parser.add_argument("-S", "--server",	type=str,
@@ -89,8 +89,9 @@ myreader = csv.reader(f, delimiter=' ', quotechar='|')
 
 frst = True
 
-runno = API.get2server('purity', 'ind', '')
-print('Assigning run number'+runno)
+if(run==''):
+    run = API.get2server('purity', 'ind', '')
+    print('Assigning run number based on DB: '+run)
 
 items = ('run','tpc', 'lifetime', 'error', 'count')
 
@@ -107,6 +108,6 @@ for row in myreader:    # print(row)
         cnt+=1
         # print(cnt)
 
-    d['run'] = runno
+    d['run'] = run
     resp = API.post2server('purity', 'add', d)
-    print(resp)
+    # print(resp)
