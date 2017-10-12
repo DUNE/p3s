@@ -15,7 +15,9 @@
         {% include "topnavbar.html" %}
 
 
-    {% render_table table %}
+      <div id="table">
+        {% block content %}{% endblock %}
+      </div>
 
     <hr/>  
   </body>
