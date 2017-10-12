@@ -55,19 +55,15 @@ def data_handler(request, what):
     d['N']	= str(len(objs))
     d['domain']	= domain
     
-    return render(request, 'monitor_base.html', d)
+    return render(request, 'unitable.html', d)
 
 
 #########################################################    
 @csrf_exempt
-def indpurity(request):
-    maxnum = 0
-
-    try:
-        maxdict = pur.objects.all().aggregate(Max('run'))
-        maxnum = maxdict['run__max'] + 1
-    except:
-        pass
-    
-    return HttpResponse(str(maxnum))
+def evdisp(request):
+    domain	= request.get_host()
+    d = {}
+    d['domain']	= domain
+    # d['image'] = '<img src="'+'{% static '+"'images/dune_logo.png %}'"+'">'
+    return render(request, 'evdisp.html', d)
 

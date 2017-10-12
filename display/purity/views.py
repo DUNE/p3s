@@ -14,8 +14,6 @@ def indpurity(request):
     maxnum = 0
 
     try:
-#        o = pur.objects.all()
-#        maxnum = len(o)
         maxdict = pur.objects.all().aggregate(Max('run'))
         maxnum = maxdict['run__max'] + 1
     except:
