@@ -15,7 +15,8 @@ import os
 # -mxp-
 import socket
 
-import databases # from same dir as "manage"
+import databases	# from same dir as "manage"
+import local		# from same dir as "manage"
 
 try:
     HOSTNAME = socket.gethostname()
@@ -35,15 +36,12 @@ SECRET_KEY = 'y!m33zq-79&%-!r=e!&+jd2cq&ca85e(4q-9dsgsb4xx)g5p*+'
 #DEBUG = False
 DEBUG = True # WARNING: don't run with debug turned on in production
 
-# -mxp- Please note this is for strictly development enviroment
+# -mxp- Please note this is for strictly local development enviroment
 # and wiill be meaningless elsewhere
-# ALLOWED_HOSTS = ['localhost',
-#                  'tranquility.local',
-#                  'serenity.local',
-#                  'felicity.local',
-#                  'ferocity.local',
-#                  'sagacity.local',]
+# ALLOWED_HOSTS = ['localhost', 'tranquility.local', 'serenity.local', 'felicity.local', 'ferocity.local', 'sagacity.local',]
+
 ALLOWED_HOSTS = ['*']
+
 # -mxp- common time format
 TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
@@ -108,7 +106,7 @@ WSGI_APPLICATION = 'promptproc.wsgi.application'
 # Look at the bottom for (previously) working examples
 
 DATABASES = databases.DB
-
+LCL = local.LOCAL
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -217,6 +215,9 @@ LOGGING = {
         },
     },
 }
+
+DIRPATH = LCL['dirpath']
+# print(HOSTNAME,DIRPATH)
 ################################################################################
 # DATABASES = {
 #    'default': {

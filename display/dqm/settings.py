@@ -129,6 +129,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+DIRPATH = os.environ['P3S_DIRPATH']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

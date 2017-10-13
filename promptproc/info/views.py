@@ -29,6 +29,7 @@ def index(request):
 
     domain	= request.get_host()
     hostname	= settings.HOSTNAME
+    dirpath	= settings.DIRPATH
     upt		= uptime()
     ldavg	= loadavg()
 
@@ -94,6 +95,7 @@ def index(request):
                       'summary':	tSummary,
                       'system':		tSystem,
                       'sites':		",".join(site.list()),
+                      'dirpath':	dirpath,
                   }
     )
 #
