@@ -28,11 +28,14 @@ def index(request):
     out		= request.GET.get('out','') # format
 
     domain	= request.get_host()
-    hostname	= settings.HOSTNAME
-    dirpath	= settings.DIRPATH
     upt		= uptime()
     ldavg	= loadavg()
 
+    hostname	= settings.HOSTNAME
+    dirpath	= settings.DIRPATH
+    dqm_domain	= settings.DQM_DOMAIN
+    dqm_host	= settings.DQM_HOST
+    
     dataDict = collections.OrderedDict()
 
     dataDict['domain']	= domain
@@ -90,6 +93,8 @@ def index(request):
                   {
                       'domain':		domain,
                       'host':		hostname,
+                      'dqm_domain':	dqm_domain,
+                      'dqm_host':	dqm_host,
                       'uptime':		uptime(),
                       'time':		timeString,
                       'summary':	tSummary,
