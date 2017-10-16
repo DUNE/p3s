@@ -4,6 +4,12 @@
 {% load static %}
 
 {% block content %}
+<ul>
+{% for ch in chList %}
+    <li>{{ ch }}</li>
+{% endfor %}
+</ul>
+
 <table>
   <tr>
     <td>

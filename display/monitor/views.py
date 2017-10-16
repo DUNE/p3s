@@ -66,6 +66,8 @@ def evdisp(request):
     event	= request.GET.get('event','')
     
     d = {}
+    d['chList'] = ('0-2559','2560-5119','5120-7679')
+
     d['domain']		= domain
     d['directory']	= 'evdisp'
     d['event']		= event
