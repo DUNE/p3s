@@ -7,11 +7,11 @@
 
 <table>
 {% for ch in chList %}
-<tr><td><center><h2>{{ ch }}</h2></center></td></tr>
   <tr>
     <td>
       <img src="http://{{ domain }}/{{ directory }}/adcraw_evt{{ event }}_ch{{ ch }}.png">
     </td>
+    <td><center><h3>{{ ch }}</h3></center></td>
     <td>
       <img src="http://{{ domain }}/{{ directory }}/adcprep_evt{{ event }}_ch{{ ch }}.png">
     </td>
