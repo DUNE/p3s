@@ -7,11 +7,18 @@
 
 
 {% if display %}
+<form>
+  {{ form }}
+  <input type="submit">
+</form>
+<hr/>
+<center>
+<h2> Run {{ run }}, Event {{ event }}</h2>
 <table>
   <tr>
-    <td align="center"><h3>RAW</h3></td>
-    <td align="center"><h3>  </h3></td>
-    <td align="center"><h3>PREP</h3></td>
+    <td align="center"><h4>RAW</h4></td>
+    <td align="center"><h4>  </h4></td>
+    <td align="center"><h4>PREP</h4></td>
   </tr>
 {% for ch in chList %}
   <tr>
@@ -25,7 +32,13 @@
   </tr>
 {% endfor %}
 </table>
+</center>
 {% else %}
 No data.
+<hr/>
+<form>
+  {{ form }}
+  <input type="submit">
+</form>
 {% endif %}
 {% endblock %}

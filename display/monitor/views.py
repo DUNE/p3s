@@ -11,8 +11,14 @@ from	django_tables2.utils		import A
 
 from purity.models import pur
 
+from django import forms
 
+class EvdispForm(forms.Form):
+    run		= forms.CharField(initial='')
+    event	= forms.CharField(initial='')
+    
 
+#########################################################    
 class MonitorTable(tables.Table):
     def set_site(self, site=''):
         self.site=site
@@ -24,6 +30,8 @@ class MonitorTable(tables.Table):
     def renderDateTime(self, dt): # common format defined here.
         return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
 
+#########################################################    
+   
 class PurityTable(MonitorTable):
     run		= tables.Column(verbose_name='Run')
     tpc		= tables.Column(verbose_name='TPC')
@@ -34,7 +42,6 @@ class PurityTable(MonitorTable):
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
-
 
 
 #########################################################    
@@ -61,6 +68,10 @@ def data_handler(request, what):
 #########################################################    
 @csrf_exempt
 def evdisp(request):
+#    if request.method == 'POST':
+#        f = EvdispForm(request.POST)
+#        return("!")
+    
     domain	= request.get_host()
     run		= request.GET.get('run','')
     event	= request.GET.get('event','')
@@ -75,8 +86,14 @@ def evdisp(request):
 
     d['domain']		= domain
     d['directory']	= 'evdisp'
+    d['run']		= run
     d['event']		= event
+
+
+    f = EvdispForm({'run':run, 'event':event})
+
     
-    # d['image'] = '<img src="'+'{% static '+"'images/dune_logo.png %}'"+'">'
+    d['form'] = f.as_table()
+    
     return render(request, 'evdisp.html', d)
 
