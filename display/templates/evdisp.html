@@ -5,6 +5,8 @@
 
 {% block content %}
 
+
+{% if display %}
 <table>
   <tr>
     <td align="center"><h3>RAW</h3></td>
@@ -23,4 +25,7 @@
   </tr>
 {% endfor %}
 </table>
+{% else %}
+No data.
+{% endif %}
 {% endblock %}

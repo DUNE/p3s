@@ -64,8 +64,13 @@ def evdisp(request):
     domain	= request.get_host()
     run		= request.GET.get('run','')
     event	= request.GET.get('event','')
+
+
+    showOrNot = (event != '')
     
     d = {}
+
+    d['display'] = showOrNot
     d['chList'] = ('0-2559','2560-5119','5120-7679','7680-10239','10240-12799','12800-15359')
 
     d['domain']		= domain
