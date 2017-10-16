@@ -62,8 +62,14 @@ def data_handler(request, what):
 @csrf_exempt
 def evdisp(request):
     domain	= request.get_host()
+    run		= request.GET.get('run','')
+    event	= request.GET.get('event','')
+    
     d = {}
-    d['domain']	= domain
+    d['domain']		= domain
+    d['directory']	= 'evdisp'
+    d['event']		= event
+    
     # d['image'] = '<img src="'+'{% static '+"'images/dune_logo.png %}'"+'">'
     return render(request, 'evdisp.html', d)
 
