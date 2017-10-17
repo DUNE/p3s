@@ -18,6 +18,25 @@ import socket
 
 # till later - import databases # from same dir as "manage"
 
+
+import local
+# template -
+# LOCAL = {
+#     'dirpath': 'xxx',
+#     'dqm_domain': 'xxx:8000',
+#     'dqm_host': 'xxx'
+# }
+
+
+
+LCL = local.LOCAL
+
+DIRPATH		= LCL['dirpath']
+DQM_DOMAIN	= LCL['dqm_domain']
+DQM_HOST	= LCL['dqm_host']
+
+
+
 try:
     HOSTNAME = socket.gethostname()
 except:
@@ -128,8 +147,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-DIRPATH = os.environ['P3S_DIRPATH']
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/

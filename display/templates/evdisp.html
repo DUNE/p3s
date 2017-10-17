@@ -4,5 +4,40 @@
 {% load static %}
 
 {% block content %}
-<img src="{% static 'images/dune_logo.png' %}">
+
+
+{% if display %}
+<form>
+  {{ form }}
+  <input type="submit">
+</form>
+<hr/>
+<center>
+<h2> Run {{ run }}, Event {{ event }}</h2>
+<table>
+  <tr>
+    <td align="center"><h4>RAW</h4></td>
+    <td align="center"><h4>  </h4></td>
+    <td align="center"><h4>PREP</h4></td>
+  </tr>
+{% for ch in chList %}
+  <tr>
+    <td>
+      <img src="http://{{ domain }}/{{ evdispURL }}/{{ run }}/adcraw_evt{{ event }}_ch{{ ch }}.png" alt="NOT FOUND">
+    </td>
+    <td><center><h3>{{ ch }}</h3></center></td>
+    <td>
+      <img src="http://{{ domain }}/{{ evdispURL }}/{{ run }}/adcprep_evt{{ event }}_ch{{ ch }}.png" alt="NOT FOUND">
+    </td>
+  </tr>
+{% endfor %}
+</table>
+</center>
+{% else %}
+<!-- hr/ -->
+<form>
+  {{ form }}
+  <input type="submit">
+</form>
+{% endif %}
 {% endblock %}

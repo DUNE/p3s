@@ -11,8 +11,14 @@ from	django_tables2.utils		import A
 
 from purity.models import pur
 
+from django import forms
 
+class EvdispForm(forms.Form):
+    run		= forms.CharField(required=False, initial='')
+    event	= forms.CharField(required=False, initial='')
+    
 
+#########################################################    
 class MonitorTable(tables.Table):
     def set_site(self, site=''):
         self.site=site
@@ -24,6 +30,8 @@ class MonitorTable(tables.Table):
     def renderDateTime(self, dt): # common format defined here.
         return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
 
+#########################################################    
+   
 class PurityTable(MonitorTable):
     run		= tables.Column(verbose_name='Run')
     tpc		= tables.Column(verbose_name='TPC')
@@ -34,7 +42,6 @@ class PurityTable(MonitorTable):
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
-
 
 
 #########################################################    
@@ -55,15 +62,40 @@ def data_handler(request, what):
     d['N']	= str(len(objs))
     d['domain']	= domain
     
+    d['pageName']	= ': Purity Monitor'
+    
     return render(request, 'unitable.html', d)
 
 
 #########################################################    
 @csrf_exempt
 def evdisp(request):
+#    if request.method == 'POST':
+#        f = EvdispForm(request.POST)
+#        return("!")
+    
     domain	= request.get_host()
+    run		= request.GET.get('run','')
+    event	= request.GET.get('event','')
+
+
     d = {}
-    d['domain']	= domain
-    # d['image'] = '<img src="'+'{% static '+"'images/dune_logo.png %}'"+'">'
+
+    d['display'] = (event!='' and run!='')
+    d['chList'] = ('0-2559','2560-5119','5120-7679','7680-10239','10240-12799','12800-15359')
+
+    d['domain']		= domain
+    d['evdispURL']	= 'evdisp'
+    d['run']		= run
+    d['event']		= event
+    
+    d['pageName']	= ': Event Display'
+
+
+    f = EvdispForm({'run':run, 'event':event})
+
+    
+    d['form'] = f.as_table()
+    
     return render(request, 'evdisp.html', d)
 

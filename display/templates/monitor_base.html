@@ -3,7 +3,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>p&#2384;s display</title>
+    <title>protoDUNE DQM{{ pageName }}</title>
     <!-- THIS IS TEMP, until we plant it on Apache -->
     <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
     <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
@@ -11,7 +11,17 @@
 
   
   <body>
-    <h2>p&#2384;s display</h2>
+<table width="60%">
+  <tr>
+    <td>
+      <img src="{% static 'images/dune_logo.png' %}">
+    </td>
+    <td align="left" width="50%">
+    <h2>protoDUNE DQM{{ pageName }}</h2>
+    </td>
+  </tr>
+</table>
+
         {% include "topnavbar.html" %}
 
 
