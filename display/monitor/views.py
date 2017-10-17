@@ -14,8 +14,8 @@ from purity.models import pur
 from django import forms
 
 class EvdispForm(forms.Form):
-    run		= forms.CharField(initial='')
-    event	= forms.CharField(initial='')
+    run		= forms.CharField(required=False, initial='')
+    event	= forms.CharField(required=False, initial='')
     
 
 #########################################################    
@@ -62,6 +62,8 @@ def data_handler(request, what):
     d['N']	= str(len(objs))
     d['domain']	= domain
     
+    d['pageName']	= ': Purity Monitor'
+    
     return render(request, 'unitable.html', d)
 
 
@@ -77,17 +79,17 @@ def evdisp(request):
     event	= request.GET.get('event','')
 
 
-    showOrNot = (event != '')
-    
     d = {}
 
-    d['display'] = showOrNot
+    d['display'] = (event!='' and run!='')
     d['chList'] = ('0-2559','2560-5119','5120-7679','7680-10239','10240-12799','12800-15359')
 
     d['domain']		= domain
-    d['directory']	= 'evdisp'
+    d['evdispURL']	= 'evdisp'
     d['run']		= run
     d['event']		= event
+    
+    d['pageName']	= ': Event Display'
 
 
     f = EvdispForm({'run':run, 'event':event})
