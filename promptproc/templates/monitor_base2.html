@@ -9,7 +9,7 @@
     </head>
   <body>
     {% include "linkbar.html" %}
-    {% include "topnavbar.html" %}
+    <hr/>
     <center>
       <h3>{% block headline %}{% endblock %}  {% block stats %}{% endblock %}</h3>
     </center>
@@ -28,10 +28,12 @@
 		      </table>
 		    </td>
 		    {% endfor %}
+		    <td>
+		      <input type="submit" value="Submit" />
+		    </td>
 		  </tr>
 		</table>
 		
-		<input type="submit" value="Submit" />
 	      </form>
 	      {% endblock %}
 	      <!-- /div -->

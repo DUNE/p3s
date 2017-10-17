@@ -11,12 +11,15 @@
   
   <body>
     {% include "linkbar.html" %}
-    {% include "topnavbar.html" %}
-    <h2>Status of p3s@{{ host }}</h2>
+    <hr/>
+    <!-- include "topnavbar.html" Moved to linkbar-->
+    <center>
+    <!-- h1>&#2384;</h1 -->
+    <h2>Status of p3s running on server "{{ host }}" at {{ time }}</h2>
     <table border="1">
       <tr>
-	<th>Summary</th>
-	<th>System</th>
+	<th>Activity</th>
+	<th>System Status</th>
       </tr>
       <tr>
 	<td>
@@ -28,10 +31,8 @@
       </tr>
     </table>
 
-    p3s sites: {{ sites }}<br/>
-    data location: {{ dirpath }}
     <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
     <hr/>
-    <center><h1>&#2384;</h1></center>
+    </center>
   </body>
 </html>

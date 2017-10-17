@@ -77,14 +77,15 @@ def index(request):
     summaryData.append({'Object': 'Jobs finished as reported by pilots' , 'Number': "%s" % pilot.jobsDone() })
 
     tSummary = SummaryTable(summaryData)
-    timeString = datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
+    timeString = datetime.datetime.now().strftime('%X %x')+' '+timezone.get_current_timezone_name()
     
     systemData = []
-    systemData.append({'attribute': 'Current time',	'value': timeString})
-    systemData.append({'attribute': 'Server',	'value': hostname})
+    # systemData.append({'attribute': 'Current time',	'value': timeString})
+    # systemData.append({'attribute': 'Server',	'value': hostname})
     systemData.append({'attribute': 'Uptime',	'value': upt})
     systemData.append({'attribute': 'Load',	'value': ldavg})
-    systemData.append({'attribute': '>',	'value': '>'})
+    systemData.append({'attribute': 'Sites',	'value': ",".join(site.list())})
+    systemData.append({'attribute': 'Data location',	'value': dirpath})
 
     
     tSystem = DetailTable(systemData)
@@ -99,8 +100,9 @@ def index(request):
                       'time':		timeString,
                       'summary':	tSummary,
                       'system':		tSystem,
-                      'sites':		",".join(site.list()),
-                      'dirpath':	dirpath,
+#                      'sites':		",".join(site.list()),
+#                      'dirpath':	dirpath,
+                      'time':		timeString,
                   }
     )
 #

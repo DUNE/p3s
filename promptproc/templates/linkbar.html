@@ -1,15 +1,18 @@
 {% load static %}
-<table width="60%">
-  <tr>
-    <td>
-      <img src="{% static 'images/dune_logo.png' %}">
-    </td>
-    <td>
-      <a href="http://{{ domain }}"><h2>p3s@"{{ host }}"</h2></a>
-    </td>
-    <td>
-      <a href="http://{{ dqm_domain }}"><h2>DQM@"{{ dqm_host }}"</h2></a>
-    </td>
+<table width="100%">
+  <tr style="font-size:20px">
+    <td width="14%"><img src="{% static 'images/dune_logo.png' %}"></td>
+    <!-- td width="5%"><h2>p3s</h2></td -->
+    <td width="15%"><a href="http://{{ domain }}"><b>p3s home @"{{ host }}"</b></a> </td>
+    <td width="15%"><a href="http://{{ dqm_domain }}"><b>DQM @"{{ dqm_host }}"</b></a></td>
+    <td width="7%"><a href="http://{{ domain }}/monitor/jobs">Jobs</a></td>
+    <td width="7%"><a href="http://{{ domain }}/monitor/pilots">Pilots</a></td>
+    <td width="7%"><a href="http://{{ domain }}/monitor/dags">DAGs</a></td>
+    <td width="7%"><a href="http://{{ domain }}/monitor/workflows">Workflows</a></td>
+    <td width="7%"><a href="http://{{ domain }}/monitor/data">Data</a></td>
+    <td width="7%"><a href="http://{{ domain }}/monitor/datatypes">Data Types</a></td>
+    <td width="14%"><a href="http://{{ domain }}/monitor/sites">Sites</a></td>
+
   </tr>
 </table>
 
