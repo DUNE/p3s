@@ -47,9 +47,12 @@ from .monitorTables import *
 
 from django import forms
 
-# Users - first element is value, second is the label in the dropdown list
-USERCHOICES	= (('All', 'All'), ('maxim','maxim'), ('mxp', 'mxp'), ('brett','brett'),)
-PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),]
+# For choice fields, first element is value, second is the label in the dropdown list
+# ('All', 'All')
+USERCHOICES	= [] # will be aurmented with info from the settings
+JOBTYPECHOICES	= [] # ditto
+
+PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
 SELECTORS	= {
     'pilot':
@@ -166,6 +169,14 @@ class dropDownGeneric(forms.Form):
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
+    dqm_domain	= settings.DQM_DOMAIN
+    dqm_host	= settings.DQM_HOST
+    
+    p3s_users	= settings.P3S_USERS
+    p3s_jobtypes= settings.P3S_JOBTYPES
+    
+    userlist	= p3s_users.split(',')
+    jobtypes	= p3s_jobtypes.split(',')
     
     template = 'universo.html'
 
@@ -187,14 +198,22 @@ def data_handler(request, what):
     domain	= request.get_host()
 
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
-    d		= dict(domain=domain, time=str(now))
+    d		= dict(domain=domain, dqm_domain=dqm_domain, dqm_host=dqm_host, time=str(now))
 
     objects, t, Nfilt					= None, None, None
     stateSelector, perPageSelector, userSelector	= None, None, None
     
     if(what in ['job', 'pilot', 'workflow']):
-
-        selector = SELECTORS[what]
+        
+        uTupleList = []
+        for u in userlist: uTupleList.append((u,u))
+        USERCHOICES = uTupleList
+            
+        jTupleList = []
+        for jt in jobtypes: jTupleList.append((jt,jt))
+        JOBTYPECHOICES = jTupleList
+        
+        selector = SELECTORS[what] # IMPORTANT
         
         t = None # placeholder for the table object
         q = ''
@@ -209,7 +228,7 @@ def data_handler(request, what):
             if stateSelector.is_valid(): q += stateSelector.handleBoxSelector()
 
             try:
-                if(selector['userselector'] is not None):
+                if(selector['userselector']):
                     userSelector = dropDownGeneric(request.POST, label='User', choices=USERCHOICES, tag='user')
                     if userSelector.is_valid():
                         q += userSelector.handleDropSelector()
@@ -231,7 +250,9 @@ def data_handler(request, what):
 #----------
         stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
         
-        userSelector	= dropDownGeneric(initial={'user':initUser},	label='User',		choices = USERCHOICES, tag='user')
+        if(selector['userselector']):
+            userSelector	= dropDownGeneric(initial={'user':initUser},	label='User',		choices = USERCHOICES, tag='user')
+            
         perPageSelector	= dropDownGeneric(initial={'perpage':perpage},	label='# per page',	choices = PAGECHOICES, tag='perpage')
 #        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time') # work in progress
 
@@ -290,18 +311,13 @@ def data_handler(request, what):
     d['Nfilt']  = Nfilt
     d['host']	= settings.HOSTNAME
 
-    if(stateSelector is not None):
-        d['selector1'] = stateSelector
-
-    if(SELECTORS[what]['userselector'] is not None):
-        d['selector2'] = userSelector
-
-    d['selector3'] = perPageSelector
+    selectors = []
     
-    try:
-        if(selector['timeselector'] is not None): d['selector4'] = timeselector
-    except:
-        pass
+    if(stateSelector):	selectors.append(stateSelector)
+    if(userSelector):	selectors.append(userSelector)
+    if(perPageSelector):selectors.append(perPageSelector)
+
+    d['selectors'] = selectors
 
     return render(request, template, d)
 
