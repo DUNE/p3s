@@ -149,8 +149,8 @@ class dropDownGeneric(forms.Form):
     def __init__(self, *args, **kwargs):
        self.label	= kwargs.pop('label')
        self.choices	= kwargs.pop('choices')
-       self.fieldname	= 'choice'
        self.tag		= kwargs.pop('tag')
+       self.fieldname	= self.tag # 'choice'
        
        super(dropDownGeneric, self).__init__(*args, **kwargs)
        
@@ -166,6 +166,8 @@ class dropDownGeneric(forms.Form):
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
+    
+    template = 'universo.html'
 
     uuid	= request.GET.get('uuid','')
     wfuuid	= request.GET.get('wfuuid','')
@@ -178,25 +180,17 @@ def data_handler(request, what):
 
     states = ['all',]
     if(state != ''): states = state.split(',')
-    if(user==''):
-        initUser='All'
-    else:
-        initUser=user
+
+    initUser=user
+    if(user==''): initUser='All'
         
     domain	= request.get_host()
 
-    # FIXME -beautify the timestamp later -mxp-
-    now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name()
+    now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
     d		= dict(domain=domain, time=str(now))
 
-    objects, t, aux1, selector1, selector2 = None, None, None, None, None
-    template = 'universo.html'
-    Nfilt    = None
-
-    # FIXME - now that multiple selectors work, need to init the checkboxes correctly
-
-    stateselector	= None
-    pageselector	= None
+    objects, t, Nfilt					= None, None, None
+    stateSelector, perPageSelector, userSelector	= None, None, None
     
     if(what in ['job', 'pilot', 'workflow']):
 
@@ -211,33 +205,35 @@ def data_handler(request, what):
 
         # HANDLE USER'S SELECTIONS HERE
         if request.method == 'POST':
-            stateselector = boxSelector(request.POST, what=what)
-            if stateselector.is_valid(): q += stateselector.handleBoxSelector()
+            stateSelector = boxSelector(request.POST, what=what)
+            if stateSelector.is_valid(): q += stateSelector.handleBoxSelector()
 
             try:
                 if(selector['userselector'] is not None):
-                    userselector = dropDownGeneric(request.POST, label='User', choices=USERCHOICES, tag='user')
-                    if userselector.is_valid(): q += userselector.handleDropSelector()
+                    userSelector = dropDownGeneric(request.POST, label='User', choices=USERCHOICES, tag='user')
+                    if userSelector.is_valid():
+                        q += userSelector.handleDropSelector()
             except:
                 pass
 
-            try:
-                if(selector['timeselector'] is not None):
-                    timeselector = dropDownGeneric(request.POST, label='Time', choices=(('1','100'),('2','200'),), tag='time')
-                    # if userselector.is_valid(): q += userselector.handleDropSelector()
-            except:
-                pass
+            # try:
+            #     if(selector['timeselector'] is not None):
+            #         timeselector = dropDownGeneric(request.POST, label='Time', choices=(('1','100'),('2','200'),), tag='time')
+            #         # if userSelector.is_valid(): q += userSelector.handleDropSelector()
+            # except:
+            #     pass
 
 
-            pageselector	= dropDownGeneric(request.POST, initial={'pageChoice':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
-            if pageselector.is_valid(): q += pageselector.handleDropSelector()
+            perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
+            if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
                     
             return makeQuery(what, q)
 #----------
-        stateselector	= boxSelector(initial={'stateChoice': states}, what=what)
-        userselector	= dropDownGeneric(initial={'userChoice':initUser},	label='User',		choices = USERCHOICES, tag='user')
-        pageselector	= dropDownGeneric(initial={'pageChoice':perpage},	label='# per page',	choices = PAGECHOICES, tag='perpage')
-        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time')
+        stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
+        
+        userSelector	= dropDownGeneric(initial={'user':initUser},	label='User',		choices = USERCHOICES, tag='user')
+        perPageSelector	= dropDownGeneric(initial={'perpage':perpage},	label='# per page',	choices = PAGECHOICES, tag='perpage')
+#        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time') # work in progress
 
 
         objects = eval(what).objects
@@ -294,13 +290,13 @@ def data_handler(request, what):
     d['Nfilt']  = Nfilt
     d['host']	= settings.HOSTNAME
 
-    if(stateselector is not None):
-        d['selector1'] = stateselector
+    if(stateSelector is not None):
+        d['selector1'] = stateSelector
 
     if(SELECTORS[what]['userselector'] is not None):
-        d['selector2'] = userselector
+        d['selector2'] = userSelector
 
-    d['selector3'] = pageselector
+    d['selector3'] = perPageSelector
     
     try:
         if(selector['timeselector'] is not None): d['selector4'] = timeselector
