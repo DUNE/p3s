@@ -2,7 +2,7 @@
 #########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#
-# so we are using timzone.now() where needed		#
+# so we are using timezone.now() where needed		#
 #########################################################
 
 from django.conf	import settings
@@ -25,7 +25,7 @@ from clientenv import clientenv
 
 
 #########################################################
-settings.configure(USE_TZ = True)
+settings.configure()
 
 user		= os.environ['USER']
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
@@ -108,6 +108,10 @@ for row in myreader:    # print(row)
         cnt+=1
         # print(cnt)
 
-    d['run'] = run
+    d['run']	= run
+    d['ts']	= str(timezone.now())
+    
     resp = API.post2server('purity', 'add', d)
-    # print(resp)
+
+    
+    print(resp)
