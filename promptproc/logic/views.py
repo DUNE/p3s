@@ -93,9 +93,15 @@ def pilotTO(request):
 
     # select the timed-out pilots
     selection = pilot.objects.filter(ts_lhb__lte=cutoff).exclude(state='stopped').exclude(state='timeout')
+
+    tLife = []
     nTO = len(selection)
     for p in selection:
-        print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
+        # print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
+
+        td = p.ts_lhb - p.ts_cre
+        tLife.append(str(td.total_seconds()))
+
         #### FIXME - Improve the update of the state of wf and job
         try:
             j = job.objects.filter(uuid=p.j_uuid)
@@ -115,6 +121,10 @@ def pilotTO(request):
 
     selection.update(state='timeout', status='TO')
 
-    return HttpResponse(str(nTO))
+    retMessage = str(nTO)
+    for t in tLife:
+        retMessage+=':'+t
+
+    return HttpResponse(retMessage)
 
 

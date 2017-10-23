@@ -214,7 +214,7 @@ def request(request): # Pilot's request for a job:
 
         tDiff = p.ts_lhb - p.ts_cre
         logger.info('tDiff %s', str(tDiff.total_seconds()))
-
+        
         with transaction.atomic():
             p.save()
         return HttpResponse(json.dumps({'status': p.status, 'state': p.state}))
