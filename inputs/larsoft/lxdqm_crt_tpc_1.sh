@@ -13,9 +13,10 @@ mrbsetenv
 source ${P3S_VENV}/bin/activate
 
 cd $P3S_OUTPUT
-p=$$
-mkdir $p
-cd $p
+# job uuid is set by the pilot
+tmpdir=$P3S_JOB_UUID
+mkdir $tmpdir
+cd $tmpdir
 pwd
 cp $P3S_CRT_TXT .
 
