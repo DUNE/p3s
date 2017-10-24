@@ -33,6 +33,7 @@ class serverAPI(dict):
             'registertypeURL':	server+'data/registertype',
             'deletedatatypeURL':server+'data/deletedatatype',
             'adjdataURL':	server+'data/adjustdata',
+            'delete':		server+'data/delete',
         }
 
         ### PILOT

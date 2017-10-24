@@ -23,6 +23,8 @@ from django.utils	import timezone
 # local import
 from serverAPI import serverAPI
 from clientenv import clientenv
+
+from clientUtils import takeJson
 #########################################################
 settings.configure(USE_TZ = True) # see the above note on TZ
 
@@ -56,6 +58,7 @@ class Dataset(dict):
         self['wf']	= wf
         self['wfuuid']	= wfuuid
         
+
 #########################################################################
 envDict = clientenv(outputDict=True)
 
@@ -111,7 +114,7 @@ logdir	= args.logdir
 json_in	= args.json
 deltype	= args.deltype
 dlt	= args.delete
-d_uud	= args.uuid
+d_uuid	= args.uuid
 # misc
 verb	= args.verbosity
 usage	= args.usage
@@ -141,10 +144,10 @@ if(dlt):
     if ',' in d_uuid: # assume we have a CSV list
         dList = d_uuid.split(',')
     else:
-        List.append(p_uuid)
+        dList.append(d_uuid)
 
     for d_id in dList:
-        resp = API.post2server('pilot', 'delete', dict(uuid=p_uuid))
+        resp = API.post2server('data', 'delete', dict(uuid=d_id))
 
         if(verb>0): print (resp)
 
@@ -197,16 +200,7 @@ if(regData):
 #########################################################################
 if(regType):
     if(json_in==''): exit(0)
-    data = None
-    if('.json' in json_in):
-        try:
-            with open(json_in) as data_file:    
-                data = json.load(data_file)
-        except:
-            if(verb>0): print('Failed to parse JSON')
-            exit(-3)
-    else:
-        data = json.loads(json_in)
+    data = takeJson(json_in, verb) # None
 
     resp = API.registerDataType(data)
 
