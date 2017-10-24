@@ -200,7 +200,7 @@ if(regData):
 #########################################################################
 if(regType):
     if(json_in==''): exit(0)
-    data = takeJson(json_in, verb) # None
+    data = takeJson(json_in, verb)
 
     resp = API.registerDataType(data)
 

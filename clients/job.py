@@ -19,6 +19,7 @@ import os
 from serverAPI import serverAPI
 from clientenv import clientenv
 
+from clientUtils import takeJson
 
 #########################################################
 settings.configure(USE_TZ = True)
@@ -210,13 +211,7 @@ if(j_uuid!=''): exit(-1)
 # Check if we want to read a json file with job templates and register
 
 if(json_in!=''):
-    data = None
-    try:
-        with open(json_in) as data_file:    
-            data = json.load(data_file)
-    except:
-        if(verb>0): print('Failed to parse JSON')
-        exit(-3)
+    data = takeJson(json_in, verb)
 
     for jj in data:
         for jN in range(Njobs):
