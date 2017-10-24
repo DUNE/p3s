@@ -100,7 +100,7 @@ def pilotTO(request):
         # print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
 
         td = p.ts_lhb - p.ts_cre
-        tLife.append(str(td.total_seconds()))
+        tLife.append(p.extra+'/'+str(td.total_seconds()).split('.')[0])
 
         #### FIXME - Improve the update of the state of wf and job
         try:
@@ -123,7 +123,7 @@ def pilotTO(request):
 
     retMessage = str(nTO)+'->'
     for t in tLife:
-        retMessage+=':'+t.split('.')[0]
+        retMessage+=':'+t
 
     return HttpResponse(retMessage)
 
