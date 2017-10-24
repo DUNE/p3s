@@ -31,7 +31,7 @@ class serverAPI(dict):
         self['data']	= {
             'registerdataURL':	server+'data/registerdata',
             'registertypeURL':	server+'data/registertype',
-            'deletetypeURL':	server+'data/deletetype',
+            'deletedatatypeURL':server+'data/deletedatatype',
             'adjdataURL':	server+'data/adjustdata',
         }
 
@@ -104,11 +104,14 @@ class serverAPI(dict):
     def registerData(self, d):
         return rdec(communicate(self['data']['registerdataURL'], data2post(d).utf8(), self.logger))
 
-    def registerType(self, d):
+    def registerDataType(self, d):
         return rdec(communicate(self['data']['registertypeURL'], data2post(d).utf8(), self.logger))
 
-    def deleteType(self, d):
-        return rdec(communicate(self['data']['deletetypeURL'], data2post(d).utf8(), self.logger))
+    def deleteDataType(self, d):
+        return rdec(communicate(self['data']['deletedatatypeURL'], data2post(d).utf8(), self.logger))
+
+    def deleteData(self, d):
+        return rdec(communicate(self['data']['deletedataURL'], data2post(d).utf8(), self.logger))
 
     def adjData(self, d):
         return rdec(communicate(self['data']['adjdataURL'], data2post(d).utf8()))

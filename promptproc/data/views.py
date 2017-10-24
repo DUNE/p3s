@@ -62,7 +62,24 @@ def registertype(request):
     return HttpResponse("Data Type %s" % name)
 ###################################################
 @csrf_exempt
-def deletetype(request):
+def deletedatatype(request):
+    post	= request.POST
+    name	= post['name']
+
+    print(name)
+    
+    try:
+        dt = datatype.objects.get(name=name)
+    except:
+        return HttpResponse("%s not found" % name )
+
+    dt.delete()
+    return HttpResponse("%s deleted" % name )
+
+
+###################################################
+@csrf_exempt
+def deletedata(request):
     post	= request.POST
     name	= post['name']
 

@@ -89,11 +89,18 @@ parser.add_argument("-R", "--registertype",	action='store_true',
 parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], choices=[0, 1, 2, 3, 4],
                     help="output verbosity (0-4), will default to $P3S_VERBOSITY if set")
 
+parser.add_argument("-p", "--period",	type=int,	default=5,
+                    help="polling period, in seconds")
+
 parser.add_argument("-c", "--cycles",	type=int,	default=1,
                     help="how many cycles (with period in seconds) to stay alive")
 
-parser.add_argument("-p", "--period",	type=int,	default=5,
-                    help="period of the pilot cycle, in seconds")
+parser.add_argument("-d", "--delete",	action='store_true',
+                    help="deletes a  record from the DB. Needs uuid.")
+
+parser.add_argument("-u", "--uuid",	type=str,	default='',
+                    help="uuid of the pilot to be modified")
+
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
@@ -101,9 +108,10 @@ args = parser.parse_args()
 # strings
 server	= args.server
 logdir	= args.logdir
-jtxt	= args.json
+json_in	= args.json
 deltype	= args.deltype
-
+dlt	= args.delete
+d_uud	= args.uuid
 # misc
 verb	= args.verbosity
 usage	= args.usage
@@ -124,6 +132,24 @@ if(usage):
     print(Usage)
     exit(0)
 
+################# DATA RECORD DELETE AND EXIT ##########################
+if(dlt):
+    response = None
+    if(d_uuid==''): exit(-2) # check if we have the key
+
+    dList = []    # Normal delete, by key(s)
+    if ',' in d_uuid: # assume we have a CSV list
+        dList = d_uuid.split(',')
+    else:
+        List.append(p_uuid)
+
+    for d_id in dList:
+        resp = API.post2server('pilot', 'delete', dict(uuid=p_uuid))
+
+        if(verb>0): print (resp)
+
+    exit(0)
+    
 ################### BEGIN: PREPARE LOGGER ##############################
 # Check if we have a log directory, example: /tmp/p3s/. Create if not
 if(not os.path.exists(logdir)):
@@ -170,20 +196,26 @@ if(regData):
         
 #########################################################################
 if(regType):
-    if(jtxt==''): exit(0)
-    
-    j = json.loads(jtxt)
-    resp = API.registerType(j)
+    if(json_in==''): exit(0)
+    data = None
+    if('.json' in json_in):
+        try:
+            with open(json_in) as data_file:    
+                data = json.load(data_file)
+        except:
+            if(verb>0): print('Failed to parse JSON')
+            exit(-3)
+    else:
+        data = json.loads(json_in)
+
+    resp = API.registerDataType(data)
 
     exit(0)
         
 #########################################################################
 if(deltype!=''):
-    
-    d = {}
-    d['name'] = deltype
-    resp = API.deleteType(d)
-
+    resp = API.deleteDataType({'name':deltype})
+    if(verb>0): print(resp)
     exit(0)
         
 #########################################################################
