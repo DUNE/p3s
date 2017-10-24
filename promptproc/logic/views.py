@@ -121,9 +121,9 @@ def pilotTO(request):
 
     selection.update(state='timeout', status='TO')
 
-    retMessage = str(nTO)
+    retMessage = str(nTO)+'->'
     for t in tLife:
-        retMessage+=':'+t
+        retMessage+=':'+t.split('.')[0]
 
     return HttpResponse(retMessage)
 
