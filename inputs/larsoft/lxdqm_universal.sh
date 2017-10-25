@@ -7,6 +7,7 @@ then
     exit
 fi
 
+
 echo Using input file $P3S_INPUT_FILE
 
 # set up larsoft/duneTPC
@@ -21,12 +22,23 @@ mrbsetenv
 # set up the virtual environment
 source ${P3S_VENV}/bin/activate
 
-cd $P3S_OUTPUT
+cd $P3S_OUTPUT_DIR
+
+# job uuid is set by the pilot
+# if not, default to local uuid - for testing!
+
+if [ -z ${P3S_JOB_UUID+x} ];
+then
+    echo P3S_JOB_UUID undefined, setting new value:
+    export P3S_JOB_UUID=`uuid`
+    echo $P3S_JOB_UUID
+fi
+
 tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
 cd $tmpdir
 pwd
 cp $P3S_FCL_DIR/$P3S_FCL .
 env | grep P3S
-lar -c $P3S_FCL $P3S_INPUT -T output1.root -n$P3S_NEVENTS
+lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 exit
