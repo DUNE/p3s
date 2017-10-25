@@ -29,11 +29,11 @@ class serverAPI(dict):
 
         ### DATA
         self['data']	= {
-            'registerdataURL':	server+'data/registerdata',
-            'registertypeURL':	server+'data/registertype',
-            'deletedatatypeURL':server+'data/deletedatatype',
-            'adjdataURL':	server+'data/adjustdata',
+            'register':		server+'data/register',
             'delete':		server+'data/delete',
+            'adjdata':		server+'data/adjust',
+            'registertype':	server+'data/registertype',
+            'deletetype':	server+'data/deletetype',
         }
 
         ### PILOT
@@ -79,12 +79,17 @@ class serverAPI(dict):
         
     ############# GENERAL POST & GET
     def post2server(self, view, url, stuff):
-        # print('************',stuff)
+        # print('************', view, url, stuff, self[view][url])
         return rdec(communicate(self[view][url], data=data2post(stuff).utf8(), logger=self.logger, verb=self.verb))
     
     def get2server(self, view, url, stuff): #        print(self[view][url] % stuff)
         resp = communicate(self[view][url] % stuff, logger=self.logger)
         return rdec(resp)
+
+
+    
+    #############
+    ### Some wrappers for convenience, will keep for now
     
     ############# WORKFLOW
     def deleteAllDagWF(self, what):
@@ -99,21 +104,10 @@ class serverAPI(dict):
     def reportPilot(self, p):
         return self.post2server('pilot', 'reportURL', p)
 
-    # return rdec(communicate(self['pilot']['reportURL'], data2post(p).utf8()))
-    
     ############# DATA
     def registerData(self, d):
-        return rdec(communicate(self['data']['registerdataURL'], data2post(d).utf8(), self.logger))
-
-    def registerDataType(self, d):
-        return rdec(communicate(self['data']['registertypeURL'], data2post(d).utf8(), self.logger))
-
-    def deleteDataType(self, d):
-        return rdec(communicate(self['data']['deletedatatypeURL'], data2post(d).utf8(), self.logger))
-
-    def deleteData(self, d):
-        return rdec(communicate(self['data']['deletedataURL'], data2post(d).utf8(), self.logger))
+        return rdec(communicate(self['data']['register'], data2post(d).utf8(), self.logger))
 
     def adjData(self, d):
-        return rdec(communicate(self['data']['adjdataURL'], data2post(d).utf8()))
+        return rdec(communicate(self['data']['adjdata'], data2post(d).utf8()))
 

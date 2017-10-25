@@ -24,19 +24,60 @@ from .models import dataset, datatype
 #########################################################
 # Register data with the server:
 @csrf_exempt
-def registerdata(request):
+def register(request):
     post	= request.POST
     
     d = dataset(
-        uuid	= post['uuid'],
-        name	= post['name'],
-        state	= post['state'],
-        comment	= post['comment'],
-        datatype= post['datatype'],
-        wf     	= post['wf'],
-        wfuuid 	= post['wfuuid'],
+        uuid	= post.get('uuid','1'),
+        name	= post.get('name','foo'),
+        state	= post.get('state','moo'),
+        comment	= post.get('comment','+'),
+        datatype= post.get('datatype','TXT'),
+        wf     	= post.get('wf',''),
+        wfuuid 	= post.get('wfuuid',''),
     )
 
+    d.save()
+
+    return HttpResponse("DS %s" % d.name)
+
+###################################################
+@csrf_exempt
+def delete(request):
+    post	= request.POST
+    d_uuid	= post['uuid']
+    
+    d		= None
+    
+    if(d_uuid=='ALL'):
+        try:
+            dataset.objects.all().delete()
+        except:
+            return HttpResponse("DELETE ALL: FAILED")
+
+        return HttpResponse("DELETE ALL: SUCCESS")
+
+    try:
+        print(d_uuid)
+        d = dataset.objects.get(uuid=d_uuid)
+    except:
+        return HttpResponse("%s not found" % d_uuid )
+
+    d.delete()
+    return HttpResponse("%s deleted" % d_uuid )
+
+
+#########################################################
+# Adjust data on the server:
+@csrf_exempt
+def adjust(request):
+    post	= request.POST
+    d_uuid	= post['uuid']
+
+    d = dataset.objects.get(uuid=d_uuid)
+
+    for k in ('name', 'state', 'comment', 'datatype', 'wf', 'wfuuid'):
+        if(k in post.keys()): d.__dict__[k]=post[k]
     d.save()
 
     return HttpResponse("DS %s" % d.name)
@@ -62,24 +103,7 @@ def registertype(request):
     return HttpResponse("Data Type %s" % name)
 ###################################################
 @csrf_exempt
-def deletedatatype(request):
-    post	= request.POST
-    name	= post['name']
-
-    print(name)
-    
-    try:
-        dt = datatype.objects.get(name=name)
-    except:
-        return HttpResponse("%s not found" % name )
-
-    dt.delete()
-    return HttpResponse("%s deleted" % name )
-
-
-###################################################
-@csrf_exempt
-def deletedata(request):
+def deletetype(request):
     post	= request.POST
     name	= post['name']
 
@@ -91,19 +115,4 @@ def deletedata(request):
     dt.delete()
     return HttpResponse("%s deleted" % name )
 
-
-#########################################################
-# Adjust data on the server:
-@csrf_exempt
-def adjustdata(request):
-    post	= request.POST
-    d_uuid	= post['uuid']
-
-    d = dataset.objects.get(uuid=d_uuid)
-
-    for k in ('name', 'state', 'comment', 'datatype', 'wf', 'wfuuid'):
-        if(k in post.keys()): d.__dict__[k]=post[k]
-    d.save()
-
-    return HttpResponse("DS %s" % d.name)
 

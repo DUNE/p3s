@@ -181,18 +181,18 @@ API.setVerbosity(verb)
 
 #########################################################################
 if(regData):
-    if(jtxt!=''):
-        j = json.loads(jtxt)
-        d = Dataset(name	=j["name"],
-                    state	=j["state"],
-                    comment	=j["comment"],
-                    datatype	=j["datatype"],
-                    wf		=j["wf"],
-                    wfuuid	=j["wfuuid"]
-        )
-    else:
-        d = Dataset()
-
+    # if(jtxt!=''):
+    #     j = json.loads(jtxt)
+    #     d = Dataset(name	=j["name"],
+    #                 state	=j["state"],
+    #                 comment	=j["comment"],
+    #                 datatype	=j["datatype"],
+    #                 wf		=j["wf"],
+    #                 wfuuid	=j["wfuuid"]
+    #     )
+    # else:
+    #     d = Dataset()
+    d = {}
     resp = API.registerData(d)
 
     exit(0)
@@ -201,15 +201,15 @@ if(regData):
 if(regType):
     if(json_in==''): exit(0)
     data = takeJson(json_in, verb)
-
-    resp = API.registerDataType(data)
-
+    resp = API.post2server('data', 'registertype', data) # API.registerDataType(data)
+    print(resp)
     exit(0)
         
 #########################################################################
 if(deltype!=''):
-    resp = API.deleteDataType({'name':deltype})
-    if(verb>0): print(resp)
+    print(dict({'name':deltype}))
+    resp = API.post2server('data', 'deletetype', dict({'name':deltype}))
+    print(resp)
     exit(0)
         
 #########################################################################
