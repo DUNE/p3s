@@ -1,5 +1,13 @@
 #!/bin/bash
 
+
+if [ -z ${P3S_INPUT_FILE+x} ];
+then
+    echo P3S_INPUT_FILE undefined, exiting
+    exit
+fi
+
+
 # set up larsoft/duneTPC
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
 source /cvmfs/fermilab.opensciencegrid.org/products/larsoft/setups
