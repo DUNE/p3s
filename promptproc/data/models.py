@@ -29,6 +29,8 @@ class dataset(models.Model):
 
     sourceuuid	= models.CharField(max_length=36, default='')
     targetuuid	= models.CharField(max_length=36, default='')
+    ts_reg	= models.DateTimeField('ts_reg',  blank=True, null=True)
+    ts_upd	= models.DateTimeField('ts_upd',  blank=True, null=True)
 
     def __str__(self):
         return serializers.serialize("json", [self, ])

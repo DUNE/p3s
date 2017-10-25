@@ -61,7 +61,7 @@ class Dataset(dict):
 
 #########################################################################
 envDict = clientenv(outputDict=True)
-
+#exit(0)
 
 parser = argparse.ArgumentParser()
 
@@ -181,19 +181,12 @@ API.setVerbosity(verb)
 
 #########################################################################
 if(regData):
-    # if(jtxt!=''):
-    #     j = json.loads(jtxt)
-    #     d = Dataset(name	=j["name"],
-    #                 state	=j["state"],
-    #                 comment	=j["comment"],
-    #                 datatype	=j["datatype"],
-    #                 wf		=j["wf"],
-    #                 wfuuid	=j["wfuuid"]
-    #     )
-    # else:
-    #     d = Dataset()
-    d = {}
-    resp = API.registerData(d)
+    if(json_in==''): exit(0)
+    data		= takeJson(json_in, verb)
+    data['uuid']	= uuid.uuid1()
+    data['dirpath']	= envDict['dirpath']
+    
+    resp = API.registerData(data)
 
     exit(0)
         

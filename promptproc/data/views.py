@@ -25,16 +25,26 @@ from .models import dataset, datatype
 # Register data with the server:
 @csrf_exempt
 def register(request):
+    t0		= timezone.now()
+    
     post	= request.POST
     
+    d_uuid = post.get('uuid','')
+    
+    if(d_uuid==''):
+        return HttpResponse("Missing uuid")
+    
     d = dataset(
-        uuid	= post.get('uuid','1'),
-        name	= post.get('name','foo'),
-        state	= post.get('state','moo'),
-        comment	= post.get('comment','+'),
-        datatype= post.get('datatype','TXT'),
+        uuid	= d_uuid,
+        name	= post.get('name',''),
+        dirpath	= post.get('dirpath','dummypath'), # designed to fail if not set
+        state	= post.get('state',''),
+        comment	= post.get('comment',''),
+        datatype= post.get('datatype',''),
         wf     	= post.get('wf',''),
         wfuuid 	= post.get('wfuuid',''),
+        ts_reg	= t0,
+        ts_upd	= t0,
     )
 
     d.save()

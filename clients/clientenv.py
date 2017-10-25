@@ -4,9 +4,12 @@ import os
 def clientenv(outputDict=False):
 
     (user, server, dqmserver,
-     verb, site) = ('', 'http://localhost:8000/','http://localhost:8000/',
-                    0, 'default')
+     verb, site, dirpath) = ('', 'http://localhost:8000/','http://localhost:8000/',
+                             0, 'default', 'dummypath')
 
+    
+    
+    # dummy path will fail if not set later to a valid value - on purpose
     # dqmserver = "http://serenity.local:8000/"
     
     e = os.environ.keys()
@@ -28,6 +31,7 @@ def clientenv(outputDict=False):
     if 'P3S_PILOTLOG'	in e:	pilotlog= os.environ['P3S_PILOTLOG']
     if 'P3S_JOBLOG'	in e:	joblog	= os.environ['P3S_JOBLOG']
 
+    if 'P3S_DIRPATH'	in e:	dirpath	= os.environ['P3S_DIRPATH']
     if 'DQM_SERVER'	in e:	dqmserver= os.environ['DQM_SERVER']
 
     
@@ -40,6 +44,7 @@ def clientenv(outputDict=False):
         d['site']	= site
         d['pilotlog']	= pilotlog
         d['joblog']	= joblog
+        d['dirpath']	= dirpath
 
         return d
 
