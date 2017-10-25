@@ -13,7 +13,17 @@ mrbsetenv
 source ${P3S_VENV}/bin/activate
 
 cd $P3S_OUTPUT_DIR
+
 # job uuid is set by the pilot
+# if not, default to local uuid - for testing!
+
+if [ -z ${P3S_JOB_UUID+x} ];
+then
+    echo P3S_JOB_UUID undefined, setting new value:
+    export P3S_JOB_UUID=`uuid`
+    echo $P3S_JOB_UUID
+fi
+
 tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
 cd $tmpdir
