@@ -6,6 +6,7 @@
 # Run protodune reco only through data prep.
 # Edits by Maxim Potekhin to accomodate for the "Reco" process in mcc9 files
 
+#include "protoDUNE_reco_noise.fcl"
 
 physics.reco: ["caldata"]
 
