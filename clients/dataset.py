@@ -184,11 +184,12 @@ if(regData):
     if(json_in==''): exit(0)
     
     data		= takeJson(json_in, verb)
-    data['uuid']	= uuid.uuid1()
+    data['uuid']	= uuid.uuid1() # note we create a fresh UUID here
     data['dirpath']	= envDict['dirpath']
     
-    resp = API.registerData(data)
-
+    resp = API.post2server('data', 'register', data)
+    print(resp)
+    
     exit(0)
         
 #########################################################################

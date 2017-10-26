@@ -1,7 +1,16 @@
+###########################################################################
+# This is a dictionary which maps mneumonic keys to URLs of the p3s       #
+# server. It thus allows for more flexibility when changing URLs and also #
+# serves as a reference to the server API.                                #
+###########################################################################
+
 from comms		import data2post, rdec, communicate
-########################################################################
+
+
+###########################################################################
 class serverAPI(dict):
     def __init__(self, server='http://localhost:8000/', logger=None, verb=0):
+        
         self.server	= server
         self.logger	= logger
         self.verb	= verb
@@ -89,7 +98,7 @@ class serverAPI(dict):
 
     
     #############
-    ### Some wrappers for convenience, will keep for now
+    # Some wrappers for convenience, will keep for now
     
     ############# WORKFLOW
     def deleteAllDagWF(self, what):
@@ -104,10 +113,10 @@ class serverAPI(dict):
     def reportPilot(self, p):
         return self.post2server('pilot', 'reportURL', p)
 
-    ############# DATA
-    def registerData(self, d):
-        return rdec(communicate(self['data']['register'], data2post(d).utf8(), self.logger))
+    ############# DATA /deprecated
+    #    def registerData(self, d):
+    #        return rdec(communicate(self['data']['register'], data2post(d).utf8(), self.logger))
 
-#    def adjData(self, d):
-#        return rdec(communicate(self['data']['adjdata'], data2post(d).utf8()))
+    #    def adjData(self, d):
+    #        return rdec(communicate(self['data']['adjdata'], data2post(d).utf8()))
 
