@@ -1,6 +1,7 @@
 tools: {
   adcdisp_text_prep: {
     tool_type: AdcDataDumper
+    process_name: "Reco2"
     FileName: "evtext_%PAT%_chans%CHAN1%-%CHAN2%.dat"
     Prefix: "ADC dump for "
     NewFile: true
