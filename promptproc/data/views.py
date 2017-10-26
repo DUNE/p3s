@@ -82,12 +82,24 @@ def delete(request):
 @csrf_exempt
 def adjust(request):
     post	= request.POST
-    d_uuid	= post['uuid']
+    d_uuid	= post.get('uuid','')
+    d		= None
 
-    d = dataset.objects.get(uuid=d_uuid)
+    if(d_uuid==''):
+        return HttpResponse("Missing UUID")
+    
+    try:
+        d = dataset.objects.get(uuid=d_uuid)
+    except:
+        pass
 
-    for k in ('name', 'state', 'comment', 'datatype', 'wf', 'wfuuid'):
+    if(d is None):
+        return HttpResponse("DS %s not found" % d_uuid)
+    
+    for k in ('name', 'state', 'comment', 'datatype', 'wf', 'wfuuid','targetuuid'):
         if(k in post.keys()): d.__dict__[k]=post[k]
+        
+    d.ts_upd = timezone.now()
     d.save()
 
     return HttpResponse("DS %s" % d.name)

@@ -69,7 +69,7 @@ parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-j", "--json",	type=str,	default='',
-                    help="json description of the data to be sent")
+                    help="json description of the data to be manipulated")
 
 parser.add_argument("-D", "--deltype",	type=str,	default='',
                     help="the name of the data type to be deleted from the server")
@@ -83,8 +83,8 @@ parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
 parser.add_argument("-r", "--registerdata",	action='store_true',
                     help="register dataset")
 
-parser.add_argument("-a", "--adjust",	action='store_true',
-                    help="adjust dataset")
+parser.add_argument("-a", "--adjust",	type=str,	default='',
+                    help="the uuid of the dataset to be adjusted, needs JSON input")
 
 parser.add_argument("-R", "--registertype",	action='store_true',
                     help="register data type: requires JSON (-j) option, needs to present name, ext, comment. Ext (extension) contains the dot.")
@@ -102,7 +102,7 @@ parser.add_argument("-d", "--delete",	action='store_true',
                     help="deletes a  record from the DB. Needs uuid.")
 
 parser.add_argument("-u", "--uuid",	type=str,	default='',
-                    help="uuid of the pilot to be modified")
+                    help="uuid of the data file (or dataset) to be modified or deleted")
 
 
 ########################### Parse all arguments #########################
@@ -182,6 +182,7 @@ API.setVerbosity(verb)
 #########################################################################
 if(regData):
     if(json_in==''): exit(0)
+    
     data		= takeJson(json_in, verb)
     data['uuid']	= uuid.uuid1()
     data['dirpath']	= envDict['dirpath']
@@ -193,8 +194,9 @@ if(regData):
 #########################################################################
 if(regType):
     if(json_in==''): exit(0)
+    
     data = takeJson(json_in, verb)
-    resp = API.post2server('data', 'registertype', data) # API.registerDataType(data)
+    resp = API.post2server('data', 'registertype', data)
     print(resp)
     exit(0)
         
@@ -206,12 +208,15 @@ if(deltype!=''):
     exit(0)
         
 #########################################################################
-if(adjust):
-    if(jtxt!=''):
-        resp = API.adjData(json.loads(jtxt))
-    else:
-        exit(-1)
+if(adjust!=''):
+    if(json_in==''): exit(0)
+    
+    data	= takeJson(json_in, verb)
+    data['uuid']= adjust
+    print(data)
 
+    resp = API.post2server('data', 'adjust', data)
+    print(resp)
 
     exit(0)
         

@@ -31,7 +31,7 @@ class serverAPI(dict):
         self['data']	= {
             'register':		server+'data/register',
             'delete':		server+'data/delete',
-            'adjdata':		server+'data/adjust',
+            'adjust':		server+'data/adjust',
             'registertype':	server+'data/registertype',
             'deletetype':	server+'data/deletetype',
         }
@@ -108,6 +108,6 @@ class serverAPI(dict):
     def registerData(self, d):
         return rdec(communicate(self['data']['register'], data2post(d).utf8(), self.logger))
 
-    def adjData(self, d):
-        return rdec(communicate(self['data']['adjdata'], data2post(d).utf8()))
+#    def adjData(self, d):
+#        return rdec(communicate(self['data']['adjdata'], data2post(d).utf8()))
 
