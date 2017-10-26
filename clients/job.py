@@ -81,39 +81,39 @@ envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-U", "--usage",	action='store_true',	help="print usage notes and exit")
+
 parser.add_argument("-a", "--adjust",	action='store_true',	help="enables state/priority adjustments. Needs uuid.")
+
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes a job. Needs uuid.")
+
 parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
+
 parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
                     default=envDict['server'])
 
-parser.add_argument("-s", "--state",	type=str,	help="job state, used with *adjust* and *purge* options",
-                    default='')
+parser.add_argument("-s", "--state",	type=str,	help="job state - for  *adjust* and *purge* options",	default='')
 
-parser.add_argument("-p", "--priority",	type=int,	help="sets the job priority, needs *adjust* option",
-	            default=0)
+parser.add_argument("-p", "--priority",	type=int,	help="sets the job priority, needs *adjust* option",	default=0)
 
-parser.add_argument("-N", "--number",	type=int,	help="creates N replicas of same job (delay is configurable)",
-	            default=1)
+parser.add_argument("-N", "--number",	type=int,	help="creates N job replicas (delay is configurable)",	default=1)
 
-parser.add_argument("-D", "--delay",	type=int,	help="delay between serial submission of job replicas, ms",
-	            default=1000)
+parser.add_argument("-D", "--delay",	type=int,	help="delay in serial submission of replicas, ms",	default=1000)
 
-parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion", default='defined',
+parser.add_argument("-u", "--uuid",	type=str,	help="uuid of the job to be adjusted",			default='')
+
+parser.add_argument("-i", "--id",	type=str,	help="id of the job to be adjusted (pk)",		default='')
+
+
+parser.add_argument("-j", "--json_in",	type=str,	help="JSON file (list) of jobs",			default='')
+
+
+parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion",			default='defined',
                     choices=['ts_def','ts_sta','ts_sto'])
-
-parser.add_argument("-u", "--uuid",	type=str,		help="uuid of the job to be adjusted",
-                    default='')
-
-parser.add_argument("-i", "--id",	type=str,	default='',
-                    help="id of the job to be adjusted (pk)")
 
 parser.add_argument("-v", "--verbosity",	type=int, default=envDict['verb'], choices=[0, 1, 2],
                     help="set output verbosity")
 
-parser.add_argument("-j", "--json_in",	type=str,	default='',
-                    help="file from which to read job templates (must be a list)")
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
@@ -211,6 +211,13 @@ if(j_uuid!=''): exit(-1)
 # Check if we want to read a json file with job templates and register
 
 if(json_in!=''):
+    inputOverride = None
+
+    try:
+        inputOverride = os.environ['P3S_INPUT_FILE']
+    except:
+        pass
+
     data = takeJson(json_in, verb)
 
     for jj in data:
@@ -219,8 +226,11 @@ if(json_in!=''):
             for k in jj.keys():
                 if isinstance(jj[k],dict):
                     j[k] = json.dumps(jj[k])
+                    if(inputOverride):
+                        j['P3S_INPUT_FILE']=inputOverride
                 else:
                     j[k] = jj[k]
+
             jobList.append(j)
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
@@ -230,7 +240,7 @@ if(json_in!=''):
         if(tst): continue # just testing
         resp = API.post2server('job', 'add', j)
         if(verb>0): print(resp)
-        time.sleep(delay/1000.0) # prevent DOS
+        time.sleep(delay/1000.0) # prevent self-inflicted DOS
 
 
 ###################### GRAND FINALE ####################################
