@@ -101,20 +101,12 @@ def kill(request): # the client signals that the pulot be killed
     post	= request.POST
     kwargs = None
 
-    try:
-        kwargs	= {'uuid':post['uuid'],}
-    except:
-        pass
+    for what in ('uuid','host','site'):
+        try:
+            kwargs	= {what:post[what]}
+        except:
+            pass
 
-    try:
-        kwargs	= {'host':post['host']}
-    except:
-        pass
-
-    try:
-        kwargs	= {'site':post['site'],}
-    except:
-        pass
 
     pilots = None
     plist = []
@@ -165,18 +157,25 @@ def request(request): # Pilot's request for a job:
     for prio in priolist:
         try:
             with transaction.atomic():
-                tjs = job.objects.select_for_update().filter(priority=prio, state='defined', p_uuid='') # save for later - .order_by(ordering)
+                
+                # Note that we only select DEFINED job entries, e.g. "template" won't show up in this query
+                
+                tjs = job.objects.select_for_update().filter(priority=prio, state='defined', p_uuid='')
+                # save for later - .order_by(ordering).....
+
+                
                 if(len(tjs)==0): continue
                 
                 ###  FOUND A JOB
-                j_candidate = tjs[0]
-                j_candidate.p_uuid = p_uuid
+                j_candidate		= tjs[0]
+                j_candidate.p_uuid	= p_uuid
                 j_candidate.save()
                 
                 logger.info('pilot %s, candidate %s', p_uuid, j_candidate.uuid)
 
                 j = job.objects.get(uuid=j_candidate.uuid)
-                if(j.p_uuid==p_uuid):
+                
+                if(j.p_uuid==p_uuid): # paranoid - race condition might happen
                                         
                     logger.info('%s selected', j.uuid)
                     j.state		= 'dispatched'
