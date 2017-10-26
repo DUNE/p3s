@@ -1,0 +1,21 @@
+[
+    {
+	"name":		"CRT+Wrapper",
+	"timeout":	"1000",
+        "jobtype":	"crt2tpc",
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_2.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":	{
+	    "P3S_VENV":"/afs/cern.ch/user/m/mxp/vp3s",
+	    "P3S_LARSOFT_HOME":"/afs/cern.ch/user/d/dostefan/public/v06/",
+	    "P3S_LARSOFT_RELEASE":"localProducts_larsoft_v06_45_01_e14_prof",
+	    "P3S_NEVENTS":"1",
+	    "P3S_FCL":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_1.fcl",
+	    "P3S_CRT_TXT":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/CRTs.txt",
+	    "P3S_INPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testInput",
+	    "P3S_INPUT_FILE":"ProtoDUNE_beam_3GeV_cosmics_3ms_sce_0_20170614T221716_merged0.root",
+	    "P3S_DATA":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/"
+	}
+    }
+]
