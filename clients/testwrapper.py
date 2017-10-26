@@ -5,10 +5,18 @@ import os
 import argparse
 
 
+#####
+inputOverride = None
+
+try:
+    inputOverride = os.environ['P3S_INPUT_FILE']
+except:
+    pass
+#####
+
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-j", "--json_in",	type=str,	default='',
-                    help="file from which to read the job (must be enclosed in p[])")
+parser.add_argument("-j", "--json_in", type=str, default='', help="file from which to read the job (must be a list)")
 
 args = parser.parse_args()
 
@@ -27,6 +35,11 @@ print("JOB ENVIRONMENT\n--------------------------")
 for k in data['env'].keys():
     os.environ[k]=data['env'][k]
     print(k+'='+data['env'][k])
+
+if(inputOverride):
+    os.environ['P3S_INPUT_FILE']=inputOverride
+    print('Override:',os.environ['P3S_INPUT_FILE'])
+
 
 print("--------------------------")
     
