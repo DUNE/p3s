@@ -225,9 +225,11 @@ if(json_in!=''):
             j = Job()
             for k in jj.keys():
                 if isinstance(jj[k],dict):
+                    if(inputOverride and k=='env'):
+                        jj[k]['P3S_INPUT_FILE']=inputOverride
+
                     j[k] = json.dumps(jj[k])
-                    if(inputOverride):
-                        j['P3S_INPUT_FILE']=inputOverride
+                    print(j[k])
                 else:
                     j[k] = jj[k]
 

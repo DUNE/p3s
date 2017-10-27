@@ -1,6 +1,6 @@
 [
     {
-	"note":		"Developer's note - switched to fcl 4",
+	"note":		"Switched to fcl 4, original test input was ProtoDUNE_beam_2GeVc_cosmics_1ms_noise_low_16_20170101T212803_detsim2_78103258-eb35-4faa-b13d-8fcca78ba0c0.root",
 	"name":		"EvDisp DQM",
 	"timeout":	"1000",
         "jobtype":	"evdisp",
@@ -15,8 +15,8 @@
 	    "P3S_FCL_DIR":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft",
 	    "P3S_FCL":"lxdqm_evdisp_4.fcl",
 	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
-	    "P3S_INPUT_FILE":"ProtoDUNE_beam_2GeVc_cosmics_1ms_noise_low_16_20170101T212803_detsim2_78103258-eb35-4faa-b13d-8fcca78ba0c0.root",
-	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOutput/",
+	    "P3S_INPUT_FILE":"dummy",
+	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/oututput/",
 	    "P3S_OUTPUT_FILE":"evdisp.root"}
     }
 ]
