@@ -3,7 +3,7 @@
 	"name":		"simple p3s job, type 1",
 	"timeout":	"100",
         "jobtype":	"type1",
-        "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplepayload1.sh",
+        "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob1.sh",
 	"env":		{"P3S_TEST":"TRUE"},
         "priority":	"1",
 	"state":	"defined"
