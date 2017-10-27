@@ -13,7 +13,7 @@ class Job(dict):
         
         self['name']	= name
         self['user']	= os.environ['USER']
-        self['uuid']	= uuid.uuid1()
+        self['uuid']	= str(uuid.uuid1())
         self['jobtype']	= jobtype
         self['payload']	= payload
         self['env']	= env

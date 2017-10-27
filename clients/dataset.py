@@ -234,7 +234,7 @@ if(adjust!=''):
         
 #########################################################################
 if(generateJob): #
-    if(JSON_in==''): exit(0)
+    if(JSON_in==''): exit(-1)
 
     data	= takeJson(JSON_in, verb)
 
@@ -247,8 +247,19 @@ if(generateJob): #
 
     if(filename!=''): inputFile = filename
         
-    for j in data:
-        j['env']['P3S_INPUT_FILE'] = inputFile
+    data[0]['env']['P3S_INPUT_FILE'] = inputFile
 
-    print(json.dumps(data))
-    
+    # print(json.dumps(data))
+
+    j = Job()
+
+    for k in data[0].keys():
+        if isinstance(data[0][k], dict):
+            j[k] = json.dumps(data[0][k])
+        else:
+            j[k] = data[0][k]
+
+    # print(json.dumps(j))
+
+    resp = API.post2server('job', 'add', j)
+    print(resp)
