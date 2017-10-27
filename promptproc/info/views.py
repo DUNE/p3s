@@ -34,6 +34,10 @@ def index(request):
     hostname	= settings.HOSTNAME
     dirpath	= settings.DIRPATH
     dqm_domain	= settings.DQM_DOMAIN
+
+    # Accomodate testing on the custom ssh tunnel
+    if(domain=='localhost:8008') : dqm_domain = 'localhost:8009'
+    
     dqm_host	= settings.DQM_HOST
     
     dataDict = collections.OrderedDict()
