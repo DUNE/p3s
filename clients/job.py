@@ -16,10 +16,11 @@ import datetime
 import json
 import os
 
-from serverAPI import serverAPI
-from clientenv import clientenv
+from serverAPI		import serverAPI
+from clientenv		import clientenv
 
-from clientUtils import takeJson
+from clientUtils	import takeJson
+from Job		import Job
 
 #########################################################
 settings.configure(USE_TZ = True)
@@ -56,25 +57,6 @@ outputs
 '''
 
 #-------------------------
-class Job(dict):
-    def __init__(self, name='',
-                 priority=0,
-                 jobtype='default',
-                 payload='/bin/true',
-                 env='',
-                 state='defined'):
-        
-        self['name']	= name
-        self['user']	= user
-        self['uuid']	= uuid.uuid1()
-        self['jobtype']	= jobtype
-        self['payload']	= payload
-        self['env']	= env
-        self['priority']= priority
-        self['state']	= state
-        self['subhost']	= socket.gethostname() # submission host
-        self['ts']	= str(timezone.now()) # see TZ note on top
-
 #-------------------------
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 
@@ -225,11 +207,8 @@ if(json_in!=''):
             j = Job()
             for k in jj.keys():
                 if isinstance(jj[k],dict):
-                    if(inputOverride and k=='env'):
-                        jj[k]['P3S_INPUT_FILE']=inputOverride
-
+                    if(inputOverride and k=='env'): jj[k]['P3S_INPUT_FILE']=inputOverride
                     j[k] = json.dumps(jj[k])
-                    print(j[k])
                 else:
                     j[k] = jj[k]
 
