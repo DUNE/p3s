@@ -1,4 +1,5 @@
 import json
+
 def takeJson(json_in, verb):
     if('.json' in json_in):
         try:

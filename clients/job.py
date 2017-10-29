@@ -204,19 +204,12 @@ if(json_in!=''):
 
     for jj in data:
         for jN in range(Njobs):
-            j = Job()
-            for k in jj.keys():
-                if isinstance(jj[k],dict):
-                    if(inputOverride and k=='env'): jj[k]['P3S_INPUT_FILE']=inputOverride
-                    j[k] = json.dumps(jj[k])
-                else:
-                    j[k] = jj[k]
-
-            jobList.append(j)
+            if(inputOverride): jj['env']['P3S_INPUT_FILE'] = inputOverride
+            jobList.append(Job(jj))
+    
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
-    # Contact the server, register the job(s)
-    for j in jobList:
+    for j in jobList:# Contact the server, register the job(s)
         if(verb>1): print(j)
         if(tst): continue # just testing
         resp = API.post2server('job', 'add', j)

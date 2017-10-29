@@ -249,17 +249,7 @@ if(generateJob): #
         
     data[0]['env']['P3S_INPUT_FILE'] = inputFile
 
-    # print(json.dumps(data))
-
-    j = Job()
-
-    for k in data[0].keys():
-        if isinstance(data[0][k], dict):
-            j[k] = json.dumps(data[0][k])
-        else:
-            j[k] = data[0][k]
-
-    # print(json.dumps(j))
+    j = Job(data[0])
 
     resp = API.post2server('job', 'add', j)
     print(resp)
