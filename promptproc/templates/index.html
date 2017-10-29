@@ -27,6 +27,7 @@
     <table border="1">
       <tr>
 	<th>Activity</th>
+	<th>Jobs</th>
 	<th>System Status</th>
       </tr>
       <tr>
@@ -34,7 +35,10 @@
           {% block table1 %}{% render_table summary %}{% endblock %}
 	</td>
 	<td>
-          {% block table2 %}{% render_table system %}{% endblock %}
+          {% block table2 %}{% render_table jobs %}{% endblock %}
+	</td>
+	<td>
+          {% block table3 %}{% render_table system %}{% endblock %}
 	</td>
       </tr>
     </table>

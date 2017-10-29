@@ -24,6 +24,7 @@ from utils.timeUtils import loadavg
 
 def index(request):
     summaryData = []
+    jobsData = []
     
     out		= request.GET.get('out','') # format
 
@@ -62,34 +63,6 @@ def index(request):
                                      job.N(state='pilotTO')
                                  )}
 
-    dataDict['defJobs']	=	{'entry': 'Jobs Defined in the past: 1min/10min/1hr/2hrs/24hrs',
-                                 'data':(
-                                     job.timeline('ts_def', 60),
-                                     job.timeline('ts_def', 600),
-                                     job.timeline('ts_def', 3600),
-                                     job.timeline('ts_def', 7200),
-                                     job.timeline('ts_def', 24*3600)
-                                 )}
-
-    dataDict['staJobs']	=	{'entry': 'Jobs Started in the past: 1min/10min/1hr/2hrs/24hrs',
-                                 'data':(
-                                     job.timeline('ts_sta', 60),
-                                     job.timeline('ts_sta', 600),
-                                     job.timeline('ts_sta', 3600),
-                                     job.timeline('ts_sta', 7200),
-                                     job.timeline('ts_sta', 24*3600)
-                                 )}
-
-    dataDict['stoJobs']	=	{'entry': 'Jobs Stopped in the past: 1min/10min/1hr/2hrs/24hrs',
-                                 'data':(
-                                     job.timeline('ts_sto', 60),
-                                     job.timeline('ts_sto', 600),
-                                     job.timeline('ts_sto', 3600),
-                                     job.timeline('ts_sto', 7200),
-                                     job.timeline('ts_sto', 24*3600)
-                                 )}
-
-
     
     dataDict['workflows']=	{'entry':'Workflows: total', 'data':(workflow.N(),)}
     
@@ -111,13 +84,47 @@ def index(request):
 
     tSummary = SummaryTable(summaryData)
     timeString = datetime.datetime.now().strftime('%X %x')+' '+timezone.get_current_timezone_name()
+
+    jobsData.append(
+        {
+            'State':'Defined',
+            'OneMin':job.timeline('ts_def', 60),
+            'TenMin':job.timeline('ts_def', 600),
+            'OneHour':job.timeline('ts_def', 3600),
+            'TwoHours':job.timeline('ts_def', 7200),
+            'Day':job.timeline('ts_def', 24*3600)
+        }
+    )
+    
+    jobsData.append(
+        {
+            'State':'Started',
+            'OneMin':job.timeline('ts_sta', 60),
+            'TenMin':job.timeline('ts_sta', 600),
+            'OneHour':job.timeline('ts_sta', 3600),
+            'TwoHours':job.timeline('ts_sta', 7200),
+            'Day':job.timeline('ts_sta', 24*3600)
+        }
+    )
+    
+    jobsData.append(
+        {
+            'State':'Stopped',
+            'OneMin':job.timeline('ts_sto', 60),
+            'TenMin':job.timeline('ts_sto', 600),
+            'OneHour':job.timeline('ts_sto', 3600),
+            'TwoHours':job.timeline('ts_sto', 7200),
+            'Day':job.timeline('ts_sto', 24*3600)
+        }
+    )
+    
+    tJobs = TimelineTable(jobsData)
+
     
     systemData = []
-    # systemData.append({'attribute': 'Current time',	'value': timeString})
-    # systemData.append({'attribute': 'Server',	'value': hostname})
-    systemData.append({'attribute': 'Uptime',	'value': upt})
-    systemData.append({'attribute': 'Load',	'value': ldavg})
-    systemData.append({'attribute': 'Sites',	'value': ",".join(site.list())})
+    systemData.append({'attribute': 'Uptime',		'value': upt})
+    systemData.append({'attribute': 'Load',		'value': ldavg})
+    systemData.append({'attribute': 'Sites',		'value': ",".join(site.list())})
     systemData.append({'attribute': 'Data location',	'value': dirpath})
 
     
@@ -132,14 +139,13 @@ def index(request):
                       'uptime':		uptime(),
                       'time':		timeString,
                       'summary':	tSummary,
+                      'jobs':		tJobs,
                       'system':		tSystem,
-#                      'sites':		",".join(site.list()),
-#                      'dirpath':	dirpath,
                       'time':		timeString,
                   }
     )
-#
-#
+
+####
 def pilotinfo(request):
     activePilots = pilot.N(state='running')+pilot.N(state='no jobs')+pilot.N(state='active')+pilot.N(state='finished')
     return HttpResponse(str(activePilots))

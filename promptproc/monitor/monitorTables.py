@@ -32,6 +32,20 @@ class DetailTable(tables.Table):
         attrs	= {'class': 'paleblue'}
 
 #--------------------------------------------------------
+class TimelineTable(tables.Table):
+    State	= tables.Column(verbose_name='State')
+    OneMin	= tables.Column(verbose_name='1min')
+    TenMin	= tables.Column(verbose_name='10min')
+    OneHour	= tables.Column(verbose_name='1hr')
+    TwoHours	= tables.Column(verbose_name='2hrs')
+    Day		= tables.Column(verbose_name='24hrs')
+    
+    def set_site(self, site=''):
+        self.site=site
+    class Meta:
+        attrs	= {'class': 'paleblue'}
+
+#--------------------------------------------------------
 class SummaryTable(tables.Table):
     Object	= tables.Column()
     Number	= tables.Column()
