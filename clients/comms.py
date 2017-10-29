@@ -52,16 +52,3 @@ def communicate(url, data=None, logger=None, verb=0):
         if(logger): logger.error(errMsg)
         return (errMsg)
 ###################################################################
-def logfailexit(msg, logger):
-    error = ''
-    try:
-        error	= msg['error'] # if the server told us what the error was, log it
-        logger.error('exiting, received FAIL status from server, error:%s' % error)
-    except:
-        logger.error('exiting, received FAIL status from server, no error returned')
-    exit(2)
-###################################################################
-def logkillexit(logger):
-    logger.info('exiting, received KILL status from server')
-    exit(0)
-

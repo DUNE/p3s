@@ -42,12 +42,7 @@ def index(request):
     
     dataDict = collections.OrderedDict()
 
-    dataDict['domain']	= domain
-    dataDict['host']= hostname
-    dataDict['uptime']	= upt
-
-    # Note to self - the N method also takes site, must think about
-    # how to use it 
+    # Note to self - the N method also takes site, must think about how to use it 
     dataDict['pilots']	=	{'entry':'Pilots: total/idle/running/stopped/TO',
                                  'data':(
                                      pilot.N(),
@@ -58,23 +53,57 @@ def index(request):
 
                                  )}
     
-    dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished',
+    dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished/TO',
                                  'data':(
                                      job.N(),
                                      job.N(state='defined'),
-                                     job.N(state='running'),job.N(state='finished')
+                                     job.N(state='running'),
+                                     job.N(state='finished'),
+                                     job.N(state='pilotTO')
                                  )}
+
+    dataDict['defJobs']	=	{'entry': 'Jobs Defined in the past: 1min/10min/1hr/2hrs/24hrs',
+                                 'data':(
+                                     job.timeline('ts_def', 60),
+                                     job.timeline('ts_def', 600),
+                                     job.timeline('ts_def', 3600),
+                                     job.timeline('ts_def', 7200),
+                                     job.timeline('ts_def', 24*3600)
+                                 )}
+
+    dataDict['staJobs']	=	{'entry': 'Jobs Started in the past: 1min/10min/1hr/2hrs/24hrs',
+                                 'data':(
+                                     job.timeline('ts_sta', 60),
+                                     job.timeline('ts_sta', 600),
+                                     job.timeline('ts_sta', 3600),
+                                     job.timeline('ts_sta', 7200),
+                                     job.timeline('ts_sta', 24*3600)
+                                 )}
+
+    dataDict['stoJobs']	=	{'entry': 'Jobs Stopped in the past: 1min/10min/1hr/2hrs/24hrs',
+                                 'data':(
+                                     job.timeline('ts_sto', 60),
+                                     job.timeline('ts_sto', 600),
+                                     job.timeline('ts_sto', 3600),
+                                     job.timeline('ts_sto', 7200),
+                                     job.timeline('ts_sto', 24*3600)
+                                 )}
+
+
     
-    dataDict['workflows']=	{'entry':'Workflows: total/-/-/-', 'data':(workflow.N(),'-','-','-','-')}
+    dataDict['workflows']=	{'entry':'Workflows: total', 'data':(workflow.N(),)}
     
-    dataDict['datasets']=	{'entry':'Datasets:  total/-/-/-', 'data':(dataset.N(),	'-','-','-','-')}
+    dataDict['datasets']=	{'entry':'Datasets:  total', 'data':(dataset.N(),)}
     
 
     if(out=='json'): return HttpResponse(json.dumps(dataDict))
-    
+
+
     for k in dataDict.keys():
         try:
-            summaryData.append({'Object': dataDict[k]['entry'],'Number': "%s/%s/%s/%s/%s" % dataDict[k]['data']})
+            string = ''
+            for element in dataDict[k]['data']: string+=str(element)+' '
+            summaryData.append({'Object': dataDict[k]['entry'],'Number': string })
         except:
             pass
 

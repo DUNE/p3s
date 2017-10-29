@@ -22,9 +22,9 @@ from django.conf	import settings
 from django.utils	import timezone
 
 # local import (utils)
-from comms	import logfailexit, logkillexit
-from serverAPI	import serverAPI
-from clientenv	import clientenv
+from clientUtils	import logexit
+from serverAPI		import serverAPI
+from clientenv		import clientenv
 
 #########################################################
 #########################################################
@@ -262,7 +262,7 @@ except:
     exit(3)
 
 # the pilot has some sort of status indicated by the server's message
-if(p['status']=='FAIL'): logfailexit(msg, logger) # server says "fail", we need to bail
+if(p['status']=='FAIL'): logexit('FAIL', msg, logger) # server says "fail", we need to bail
 
 
 ################ REGISTERED, ASK FOR JOB DISPATCH #######################
@@ -294,18 +294,17 @@ while(cnt>0 or p.cycles==0):
         logger.error('Failed to parse the server message at brokerage: %s' % data)
         time.sleep(period)
         continue # will try again...
-        # exit(3)
 
-    if(p['status']=='FAIL'): logfailexit(msg, logger)	#  log and exit
-    if(p['status']=='KILL'): logkillexit(logger)	#  log and exit
+    if(p['status'] in ('FAIL','KILL')): logexit(p['status'], msg, logger)	#  log and exit
 
     if(p['state'] in ('no jobs', 'DB lock')):		# didn't get a job, skip the cycle.
         logger.info(p['state'])
-        cnt-=1 # won't matter if cycles were set to zero for infinite loop
-        if(cnt==0): # EXHAUSTED ATTEMPTS TO GET A JOB
-            break
+        cnt-=1
+        if(cnt==0): break   # EXHAUSTED NUMBER OF ATTEMPTS
+            
+        
         time.sleep(period)
-        continue # NEXT ITERATION OF THE MAIN LOOP IF DIDN'T GET A JOB, otherwise - below
+        continue # NEXT ITERATION OF THE MAIN LOOP
     
 ######################### GOT A JOB TO DO ###############################
     payload	= ''
@@ -400,14 +399,10 @@ while(cnt>0 or p.cycles==0):
                 continue # will try again...
                 # exit(3)
 
-            # Failure reported from brokerage on the server, will log and exit
-            if(p['status']=='FAIL'): logfailexit(msg, logger)
+            if(p['status'] in ('FAIL','KILL')):
+                if(p['status']=='KILL'): os.kill(jobPID, signal.SIGTERM)
+                logexit(p['status'], msg, logger)	#  log and exit
             
-            # The server wants to kill the pilot
-            if(p['status']=='KILL'):
-                os.kill(jobPID, signal.SIGTERM)
-                logger.info('received kill request from server')
-                exit(0) # FIXME - will make all this more fancy later
 
             if(verb>2): logger.info('HEARTBEAT, server response: %s' % data)
         else: # see the "pipe" note on the bottom"

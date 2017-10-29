@@ -1,6 +1,10 @@
 import json
+import datetime
+from datetime		import timedelta
+
 from django.db		import models
 from django.core	import serializers
+from django.utils	import timezone
 
 class job(models.Model):
     uuid	= models.CharField(max_length=36, default='')
@@ -46,8 +50,11 @@ class job(models.Model):
             else:
                 return self.objects.count()
 
-#    def N(self):
-#        return self.objects.count()
+    @classmethod
+    def timeline(self, timestamp, seconds):
+        cutoff = timezone.now() - timedelta(seconds=seconds)
+        kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),}
+        return self.objects.filter(**kwargs).count()
 
 
     

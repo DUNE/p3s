@@ -324,14 +324,19 @@ def data_handler(request, what):
 #########################################################    
 # general request handler for detail type of a table
 def detail_handler(request, what):
+    dqm_domain	= settings.DQM_DOMAIN
+    dqm_host	= settings.DQM_HOST
+
     pk 		= request.GET.get('pk','')
     name 	= request.GET.get('name','')
     o_uuid 	= request.GET.get('uuid','')
     domain	= request.get_host()
+    host	= request.GET.get('host','')
 
     # FIXME -beautify the timestamp later -mxp-
     now		= datetime.datetime.now().strftime('%x %X')
     d		= dict(domain=domain, time=str(now))
+    d		= dict(domain=domain, dqm_domain=dqm_domain, dqm_host=dqm_host, time=str(now))
     d['host']	= settings.HOSTNAME
 
     template, objects, aux1, aux2 = None, None, None, None
