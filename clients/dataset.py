@@ -61,6 +61,7 @@ Verbosity will default to $P3S_VERBOSITY if not set explicitly
 
 '''
 ######################### THE DATASET CLASS #############################
+# (Temporarily) deprecated
 class Dataset(dict):
     def __init__(self, name='', state='', comment='', datatype='', wf='', wfuuid=''):
         self['uuid']	= uuid.uuid1()

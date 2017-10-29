@@ -6,6 +6,7 @@ import os
 
 from serverAPI import serverAPI
 from clientenv import clientenv
+from clientUtils import takeJson
 
 (user, server, verb, site, pl, jl) = clientenv()
 
@@ -47,29 +48,15 @@ print(resp)
 exit(0)
 
 
+# What's below is kept for future development
+
 if(json_in==''): exit(-1)
 
 
 f = None
 data = None
 
-if('.json' in json_in): # assume it's a file
-    try:
-        f = open(json_in)
-        print('opened file')
-    except:
-        exit(-2)
-        
-    try:
-        data = json.load(f)
-        print('parsed data', data)
-    except:
-        exit(-3)
-else: # assume it's a string on the command line
-    try:
-        data = json.loads(json_in)
-    except:
-        exit(-4)
+data = takeJson(json_in)
 
 
 print(data)
