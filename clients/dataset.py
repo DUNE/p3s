@@ -48,6 +48,17 @@ quotes and is ecpeted to have:
 - wf
 - wfuuid
 
+* Registering data type *
+-R option; also requires JSON (-j) option, needs to contain name, ext, comment.
+"Ext" (extension) contains the dot e.g. ".txt"
+
+
+
+* Misc Notes *
+The file name in logdir will be 'injector.log'
+If P3S_SERVER is unset the default will be http://localhost:8000/
+Verbosity will default to $P3S_VERBOSITY if not set explicitly
+
 '''
 ######################### THE DATASET CLASS #############################
 class Dataset(dict):
@@ -67,46 +78,29 @@ envDict = clientenv(outputDict=True)
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
-                    help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
-parser.add_argument("-J", "--JSON",	type=str,	help="JSON template of the job to be generated",	default='')
+parser.add_argument("-U", "--usage",	help="print usage notes and exit", action='store_true')
 
-parser.add_argument("-f", "--filename",	type=str,	help="filename to plug into the template",		default='')
 
-parser.add_argument("-j", "--json",	type=str,	help="JSON description of the data to be manipulated",	default='')
+parser.add_argument("-S", "--server",	type=str, help="the server address, defaults to $P3S_SERVER",	default=envDict['server'])
+parser.add_argument("-J", "--JSON",	type=str, help="JSON template of the job to be generated",	default='')
+parser.add_argument("-f", "--filename",	type=str, help="filename to plug into the template",		default='')
+parser.add_argument("-j", "--json",	type=str, help="JSON description of the data to be manipulated",default='')
+parser.add_argument("-a", "--adjust",	type=str, help="the uuid to be adjusted, needs JSON input",	default='')
+parser.add_argument("-D", "--deltype",	type=str, help="data type to be deleted from the server",	default='')
+parser.add_argument("-l", "--logdir",	type=str, help="Log directory (defaults to "+logdefault+").",	default=logdefault)
+parser.add_argument("-u", "--uuid",	type=str, help="uuid of the data to be modified or deleted",	default='')
 
-parser.add_argument("-a", "--adjust",	type=str,	help="the uuid to be adjusted, needs JSON input",	default='')
 
-parser.add_argument("-D", "--deltype",	type=str,	help="data type to be deleted from the server",		default='')
+parser.add_argument("-r", "--registerdata",	  help="register dataset",				action='store_true')
+parser.add_argument("-g", "--generateJob",	  help="generate job (needs -J)",			action='store_true')
+parser.add_argument("-R", "--registertype",	  help="register data type (see Usage for details)",	action='store_true')
+parser.add_argument("-d", "--delete",		  help="deletes a record from the DB. Needs uuid.",	action='store_true')
 
-parser.add_argument("-U", "--usage",	action='store_true',
-                    help="print usage notes and exit")
+parser.add_argument("-v", "--verbosity", type=int,help="output verbosity (0-4)",choices=[0, 1, 2, 3, 4],default=envDict['verb'])
 
-parser.add_argument("-l", "--logdir",	type=str,	default=logdefault,
-                    help="Log directory (defaults to "+logdefault+"). The file name in logdir will be 'injector.log'")
-
-parser.add_argument("-r", "--registerdata",		help="register dataset",	action='store_true')
-
-parser.add_argument("-g", "--generateJob",		help="generate job (needs -J)",	action='store_true')
-
-parser.add_argument("-R", "--registertype",	action='store_true',
-                    help="register data type: requires JSON (-j) option, needs to present name, ext, comment. Ext (extension) contains the dot.")
-
-parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], choices=[0, 1, 2, 3, 4],
-                    help="output verbosity (0-4), will default to $P3S_VERBOSITY if set")
-
-parser.add_argument("-p", "--period",	type=int,	default=5,
-                    help="polling period, in seconds")
-
-parser.add_argument("-c", "--cycles",	type=int,	default=1,
-                    help="how many cycles (with period in seconds) to stay alive")
-
-parser.add_argument("-d", "--delete",	action='store_true',
-                    help="deletes a  record from the DB. Needs uuid.")
-
-parser.add_argument("-u", "--uuid",	type=str,	default='',
-                    help="uuid of the data file (or dataset) to be modified or deleted")
+parser.add_argument("-p", "--period",	type=int, help="polling period, in seconds",			default=5)
+parser.add_argument("-c", "--cycles",	type=int, help="number of cycles to stay alive",		default=1)
 
 
 ########################### Parse all arguments #########################
