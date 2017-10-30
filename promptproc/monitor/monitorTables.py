@@ -71,8 +71,8 @@ class MonitorTable(tables.Table):
 #########################################################    
 ############### SUMMARY TABLES ##########################    
 #########################################################    
-# NOTE THAT WE INSTRUMENT SOME COLUMNS WHILE DECIDING TO#
-# NOT DISPLAY THEM. THIS IS TEMPORARY/HISTORICAL        #
+# NOTE THAT WE INSTRUMENT SOME COLUMNS WHILE DECIDING   #
+# TO NOT DISPLAY THEM. THIS IS TEMPORARY/HISTORICAL     #
 #########################################################    
 class JobTable(MonitorTable):
 
@@ -103,6 +103,7 @@ class DataTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('datadetail',	'uuid',	value)
     #    def render_wfuuid(self,value):	return self.makelink('wfdetail',	'uuid',	value)
     def render_datatype(self,value):	return self.makelink('datatypes',	'',	value)
+    def render_targetuuid(self,value):	return self.makelink('jobdetail',	'uuid',	value)
 
     class Meta:
         model = dataset

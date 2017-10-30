@@ -43,6 +43,7 @@ def register(request):
         datatype= post.get('datatype',''),
         wf     	= post.get('wf',''),
         wfuuid 	= post.get('wfuuid',''),
+        targetuuid= post.get('targetuuid',''),
         ts_reg	= t0,
         ts_upd	= t0,
     )
@@ -137,4 +138,9 @@ def deletetype(request):
     dt.delete()
     return HttpResponse("%s deleted" % name )
 
+###################################################
+def getdata(request):
+    name = request.GET.get('name','')
+
+    return HttpResponse(serializers.serialize("json", dataset.objects.filter(name=name)))
 

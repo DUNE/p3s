@@ -91,6 +91,7 @@ parser.add_argument("-a", "--adjust",	type=str, help="the uuid to be adjusted, n
 parser.add_argument("-D", "--deltype",	type=str, help="data type to be deleted from the server",	default='')
 parser.add_argument("-l", "--logdir",	type=str, help="Log directory (defaults to "+logdefault+").",	default=logdefault)
 parser.add_argument("-u", "--uuid",	type=str, help="uuid of the data to be modified or deleted",	default='')
+parser.add_argument("-i", "--inputdir",	type=str, help="input directory",				default='')
 
 
 parser.add_argument("-r", "--registerdata",	  help="register dataset",				action='store_true')
@@ -116,6 +117,7 @@ filename= args.filename
 deltype	= args.deltype
 dlt	= args.delete
 d_uuid	= args.uuid
+inputDir= args.inputdir
 
 # misc
 verb	= args.verbosity
@@ -241,10 +243,31 @@ if(generateJob): #
         pass
 
     if(filename!=''): inputFile = filename
-        
+
+    theDir = ''
+    try:
+        theDir=envDict['dirpath']+'/input'
+    except:
+        pass
+    
+
+    if(inputDir!=''):
+        theDir = inputDir
+    
     data[0]['env']['P3S_INPUT_FILE'] = inputFile
 
     j = Job(data[0])
 
-    resp = API.post2server('job', 'add', j)
+    j_uuid = API.post2server('job', 'add', j)
+    print(j_uuid)
+    
+    data		= {}
+    data['name']	= inputFile
+    data['state']	= 'defined'
+
+    data['targetuuid']	= j_uuid
+    data['uuid']	= uuid.uuid1() # note we create a fresh UUID here
+    data['dirpath']	= theDir
+    
+    resp = API.post2server('data', 'register', data)
     print(resp)

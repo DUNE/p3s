@@ -2,7 +2,7 @@
 
 # setting up the p3s environment
 
-p3s_dirpath=/home/maxim/p3sdata/
+p3s_dirpath=/home/maxim/p3sdata
 
 export P3S_SERVER="http://serenity.local:8000/"
 export P3S_SITE='sagebrush'

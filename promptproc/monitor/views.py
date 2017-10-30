@@ -8,6 +8,7 @@
 #########################################################
 
 # python utiility classes
+import os
 import uuid
 import datetime
 from datetime				import timedelta
@@ -465,7 +466,15 @@ def detail_handler(request, what):
         RequestConfig(request).configure(aux2)
 
     return render(request, template, d)
+
+
 ###################################################################################
+def filesystem(request):
+    l = os.listdir(settings.P3S_INPUT)
+    return HttpResponse(l)
+    
+#########################################################    
+
 # if selector.is_valid():
 #     selectedStates = selector.cleaned_data['stateChoice']
 #     if len(selectedStates):

@@ -1,0 +1,39 @@
+[
+    {
+	"name":		"simple p3s job, type 1",
+	"timeout":	"100",
+        "jobtype":	"type1",
+        "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob1.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "P3S_TEST":"TRUE",
+	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-1.out"
+	}
+    },
+    {
+	"name":		"simple p3s job, type 2",
+	"timeout":	"100",
+        "jobtype":	"type1",
+        "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob2.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "P3S_TEST":"TRUE",
+	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-2.out"
+	}
+    },
+    {
+	"name":		"simple p3s job, type 1",
+	"timeout":	"100",
+        "jobtype":	"type1",
+        "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob3.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "P3S_TEST":"TRUE",
+	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-3.out"
+	}
+    }
+    
+]
