@@ -249,9 +249,9 @@ if(generateJob): #
 
     if(len(result)!=0):
         print('File '+filename+' already registered')
-    exit(0)
+        exit(0)
 
-    
+
     theDir = ''
     try:
         theDir=envDict['dirpath']+'/input'

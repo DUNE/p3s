@@ -7,7 +7,7 @@
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "P3S_TEST":"TRUE",
+	    "P3S_INPUT_DIR":"/home/maxim/p3sdata/input",
 	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-1.out"
 	}
     },
@@ -19,7 +19,7 @@
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "P3S_TEST":"TRUE",
+	    "P3S_INPUT_DIR":"/home/maxim/p3sdata/input",
 	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-2.out"
 	}
     },
@@ -31,7 +31,7 @@
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "P3S_TEST":"TRUE",
+	    "P3S_INPUT_DIR":"/home/maxim/p3sdata/input",
 	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-3.out"
 	}
     }
