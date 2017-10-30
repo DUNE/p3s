@@ -24,7 +24,7 @@
 	}
     },
     {
-	"name":		"simple p3s job, type 1",
+	"name":		"simple p3s job, type 3",
 	"timeout":	"100",
         "jobtype":	"type1",
         "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob3.sh",

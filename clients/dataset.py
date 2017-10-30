@@ -244,6 +244,14 @@ if(generateJob): #
 
     if(filename!=''): inputFile = filename
 
+    resp	= API.get2server('data', 'getdata', filename)
+    result	= takeJson(resp, verb)
+
+    if(len(result)!=0):
+        print('File '+filename+' already registered')
+    exit(0)
+
+    
     theDir = ''
     try:
         theDir=envDict['dirpath']+'/input'
@@ -253,21 +261,22 @@ if(generateJob): #
 
     if(inputDir!=''):
         theDir = inputDir
-    
-    data[0]['env']['P3S_INPUT_FILE'] = inputFile
 
-    j = Job(data[0])
+    for job in data:
+        job['env']['P3S_INPUT_FILE'] = inputFile
 
-    j_uuid = API.post2server('job', 'add', j)
-    print(j_uuid)
-    
-    data		= {}
-    data['name']	= inputFile
-    data['state']	= 'defined'
+        j = Job(job)
 
-    data['targetuuid']	= j_uuid
-    data['uuid']	= uuid.uuid1() # note we create a fresh UUID here
-    data['dirpath']	= theDir
+        j_uuid = API.post2server('job', 'add', j)
+        print('job uuid:', j_uuid)
     
-    resp = API.post2server('data', 'register', data)
+    dataSet		= {}
+    dataSet['name']	= inputFile
+    dataSet['state']	= 'defined'
+
+    dataSet['targetuuid']	= j_uuid
+    dataSet['uuid']		= uuid.uuid1() # note we create a fresh UUID here
+    dataSet['dirpath']	= theDir
+    
+    resp = API.post2server('data', 'register', dataSet)
     print(resp)
