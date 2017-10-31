@@ -1,9 +1,19 @@
 #!/bin/sh
-echo "${P3S_SITE}"
-#if [ "${P3S_SITE}" -eq "sagebrush" ]; then
-#    echo hi
-#fi
-#exit 0
+Nargs=$#
+
+if [ ! $Nargs -eq 3 ]; then
+    echo Wrong number of arguments - expecting 3 - exiting...
+    exit
+fi
+
+
+if [ "${P3S_SITE}" = 'lxvm' ]
+then
+    echo Activating venv at lxvm
+    source /afs/cern.ch/user/m/mxp/vp3s/bin/activate
+fi
+
+# exit 0
 
 
 
@@ -17,13 +27,18 @@ if [ -z "$2" ]; then
     exit 0
 fi
 
-# -- source /afs/cern.ch/user/m/mxp/vp3s/bin/activate
 
-export P3S_HOME=/home/maxim/projects/p3s/
+export P3S_HOME=/home/maxim/projects/p3s
 
 cd $1
 d=`pwd`
 echo Directory: $d
-# echo Files:
-f=`find . -maxdepth 1 -mindepth 1 -mmin $2 | sed 's/\.\///'`
-echo $P3S_HOME/clients/dataset.py -i $d -f $f
+files=`find . -maxdepth 1 -mindepth 1 -mmin $2 | sed 's/\.\///'`
+echo Files:$files
+echo ${#files[@]}
+for f in $files
+do
+    echo ! $f
+    echo $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/inputs/jobs/$3
+    $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/inputs/jobs/$3
+done
