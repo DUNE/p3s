@@ -28,6 +28,7 @@ class job(models.Model):
     pid		= models.CharField(max_length=16, default='')
     errcode	= models.CharField(max_length=16, default='')		#
     directive	= models.CharField(max_length=16, default='')		#
+    auxi	= models.CharField(max_length=16, default='')		#
 
     def __str__(self):
         return serializers.serialize("json", [self, ])
