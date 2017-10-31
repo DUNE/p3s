@@ -81,6 +81,7 @@ parser = argparse.ArgumentParser()
 
 
 parser.add_argument("-U", "--usage",	help="print usage notes and exit", action='store_true')
+parser.add_argument("-t", "--test",	help="print, do not contact the server", action='store_true')
 
 
 parser.add_argument("-S", "--server",	type=str, help="the server address, defaults to $P3S_SERVER",	default=envDict['server'])
@@ -122,7 +123,7 @@ inputDir= args.inputdir
 # misc
 verb	= args.verbosity
 usage	= args.usage
-
+tst	= args.test
 # scheduling
 period	= args.period
 cycles	= args.cycles
