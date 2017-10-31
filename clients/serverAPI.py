@@ -43,6 +43,7 @@ class serverAPI(dict):
             'adjust':		server+'data/adjust',
             'registertype':	server+'data/registertype',
             'deletetype':	server+'data/deletetype',
+            'getdata':		server+'data/getdata?name=%s',
         }
 
         ### PILOT

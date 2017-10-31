@@ -17,6 +17,8 @@ urlpatterns = [
     url(r'^pilotdetail',views.detail_handler,	{'what':'pilot'},	name='pilotdetail'),
     url(r'^dagdetail',	views.detail_handler,	{'what':'dag'},		name='dagdetail'),
     url(r'^wfdetail',	views.detail_handler,	{'what':'workflow'},	name='wfdetail'),
+    # -----
+    url(r'^filesystem',	views.filesystem,	name='filesystem'),
 ]
 
 #    url(r'^dags',	views.dags, 		name='dags'),

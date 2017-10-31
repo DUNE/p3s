@@ -81,6 +81,7 @@ parser = argparse.ArgumentParser()
 
 
 parser.add_argument("-U", "--usage",	help="print usage notes and exit", action='store_true')
+parser.add_argument("-t", "--test",	help="print, do not contact the server", action='store_true')
 
 
 parser.add_argument("-S", "--server",	type=str, help="the server address, defaults to $P3S_SERVER",	default=envDict['server'])
@@ -91,6 +92,7 @@ parser.add_argument("-a", "--adjust",	type=str, help="the uuid to be adjusted, n
 parser.add_argument("-D", "--deltype",	type=str, help="data type to be deleted from the server",	default='')
 parser.add_argument("-l", "--logdir",	type=str, help="Log directory (defaults to "+logdefault+").",	default=logdefault)
 parser.add_argument("-u", "--uuid",	type=str, help="uuid of the data to be modified or deleted",	default='')
+parser.add_argument("-i", "--inputdir",	type=str, help="input directory",				default='')
 
 
 parser.add_argument("-r", "--registerdata",	  help="register dataset",				action='store_true')
@@ -116,11 +118,12 @@ filename= args.filename
 deltype	= args.deltype
 dlt	= args.delete
 d_uuid	= args.uuid
+inputDir= args.inputdir
 
 # misc
 verb	= args.verbosity
 usage	= args.usage
-
+tst	= args.test
 # scheduling
 period	= args.period
 cycles	= args.cycles
@@ -241,10 +244,40 @@ if(generateJob): #
         pass
 
     if(filename!=''): inputFile = filename
-        
-    data[0]['env']['P3S_INPUT_FILE'] = inputFile
 
-    j = Job(data[0])
+    resp	= API.get2server('data', 'getdata', filename)
+    result	= takeJson(resp, verb)
 
-    resp = API.post2server('job', 'add', j)
+    if(len(result)!=0):
+        print('File '+filename+' already registered')
+        exit(0)
+
+
+    theDir = ''
+    try:
+        theDir=envDict['dirpath']+'/input'
+    except:
+        pass
+    
+
+    if(inputDir!=''):
+        theDir = inputDir
+
+    for job in data:
+        job['env']['P3S_INPUT_FILE'] = inputFile
+
+        j = Job(job)
+
+        j_uuid = API.post2server('job', 'add', j)
+        print('job uuid:', j_uuid)
+    
+    dataSet		= {}
+    dataSet['name']	= inputFile
+    dataSet['state']	= 'defined'
+
+    dataSet['targetuuid']	= j_uuid
+    dataSet['uuid']		= uuid.uuid1() # note we create a fresh UUID here
+    dataSet['dirpath']	= theDir
+    
+    resp = API.post2server('data', 'register', dataSet)
     print(resp)
