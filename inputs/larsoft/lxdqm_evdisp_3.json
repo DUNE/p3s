@@ -1,6 +1,5 @@
 [
     {
-	"note":		"Switched to fcl 4, original test input was ProtoDUNE_beam_2GeVc_cosmics_1ms_noise_low_16_20170101T212803_detsim2_78103258-eb35-4faa-b13d-8fcca78ba0c0.root",
 	"name":		"EvDisp:Main",
 	"timeout":	"1000",
         "jobtype":	"evdisp",
