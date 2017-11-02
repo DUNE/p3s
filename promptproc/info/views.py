@@ -68,6 +68,9 @@ def index(request):
     
     dataDict['datasets']=	{'entry':'Datasets:  total', 'data':(dataset.N(),)}
     
+    dataDict['domain']	= domain
+    dataDict['host']	= hostname
+    dataDict['uptime']	= upt
 
     if(out=='json'): return HttpResponse(json.dumps(dataDict))
 
