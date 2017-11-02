@@ -1,9 +1,9 @@
 [
     {
-	"name":		"CRT+Wrapper",
+	"name":		"CRT:Main",
 	"timeout":	"1000",
         "jobtype":	"crt2tpc",
-        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_2.sh",
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_3.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":	{
@@ -14,7 +14,7 @@
 	    "P3S_FCL":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_1.fcl",
 	    "P3S_CRT_TXT":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/CRTs.txt",
 	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output",
-	    "P3S_INPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input",
+	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input",
 	    "P3S_DATA":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/"
 	}
     }
