@@ -16,10 +16,14 @@ def logexit(mode, msg, logger):
     exit(0)
 ###################################################################
 def takeJson(json_in, verb):
+    data=None
+
     if('.json' in json_in):
         try:
-            with open(json_in) as data_file:    
-                data = json.load(data_file)
+            f=open(json_in)
+            data=json.load(f)
+            #            with open(json_in) as data_file:    
+            #                data = json.load(data_file)
         except:
             if(verb>0): print('Failed to parse JSON')
             exit(-3)
