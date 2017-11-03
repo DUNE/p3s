@@ -76,7 +76,7 @@ parser.add_argument("-S", "--server",	type=str,
 
 parser.add_argument("-s", "--state",	type=str,	help="job state - for  *adjust* and *purge* options",	default='')
 
-parser.add_argument("-p", "--priority",	type=int,	help="sets the job priority, needs *adjust* option",	default=0)
+parser.add_argument("-P", "--priority",	type=int,	help="sets the job priority, needs *adjust* option",	default=0)
 
 parser.add_argument("-N", "--number",	type=int,	help="creates N job replicas (delay is configurable)",	default=1)
 
@@ -84,10 +84,14 @@ parser.add_argument("-D", "--delay",	type=int,	help="delay in serial submission 
 
 parser.add_argument("-u", "--uuid",	type=str,	help="uuid of the job to be adjusted",			default='')
 
-parser.add_argument("-i", "--id",	type=str,	help="id of the job to be adjusted (pk)",		default='')
+parser.add_argument("-p", "--pk",	type=str,	help="pk of the job to be adjusted",		default='')
 
 
-parser.add_argument("-j", "--json_in",	type=str,	help="JSON file (list) of jobs",			default='')
+parser.add_argument("-j", "--json_in",	type=str,	help="JSON file with job templates (list)",			default='')
+
+parser.add_argument("-f", "--filename",	type=str, help="filename to plug into the template",		default='')
+
+parser.add_argument("-i", "--inputdir",	type=str, help="input directory",				default='')
 
 
 parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion",			default='defined',
@@ -107,7 +111,7 @@ state	= args.state
 priority= args.priority
 timestamp= args.timestamp
 j_uuid	= args.uuid
-j_id	= args.id
+j_id	= args.pk
 verb	= args.verbosity
 tst	= args.test
 adj	= args.adjust
@@ -115,6 +119,11 @@ delete	= args.delete
 json_in	= args.json_in
 Njobs	= args.number
 delay	= args.delay
+
+
+filename= args.filename
+inputDir= args.inputdir
+
 
 # prepare a list which may be used in a variety of operations,
 # contents will vary depending on context
@@ -193,18 +202,20 @@ if(j_uuid!=''): exit(-1)
 # Check if we want to read a json file with job templates and register
 
 if(json_in!=''):
-    inputOverride = None
+    inputFile = ''
 
     try:
-        inputOverride = os.environ['P3S_INPUT_FILE']
+        inputFile = os.environ['P3S_INPUT_FILE']
     except:
         pass
+
+    if(filename!=''): inputFile = filename
 
     data = takeJson(json_in, verb)
 
     for jj in data:
         for jN in range(Njobs):
-            if(inputOverride): jj['env']['P3S_INPUT_FILE'] = inputOverride
+            if(inputFile!=''): jj['env']['P3S_INPUT_FILE'] = inputFile
             jobList.append(Job(jj))
     
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))

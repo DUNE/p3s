@@ -51,11 +51,12 @@ if(p):
            info['pilots']['data'][4]
           ))
 
-    print("Jobs: total %s, defined %s, running %s, finished %s" %
+    print("Jobs: total %s, defined %s, running %s, finished %s, pilotTO %s" %
           (info['jobs']['data'][0],
            info['jobs']['data'][1],
            info['jobs']['data'][2],
-           info['jobs']['data'][3]
+           info['jobs']['data'][3],
+           info['jobs']['data'][4],
           ))
 
 
