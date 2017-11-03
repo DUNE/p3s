@@ -1,10 +1,10 @@
 # Startup definitions. A placeholder for now.
 
-from django.conf	import settings
-from django.db	import connection
+#from django.conf	import settings
+#from django.db	import connection
 
 def run():
-    print('*** Starting the p3s server on host "%s" ***' % settings.HOSTNAME)
+    print('*** Starting the p3s server on host "%s" ***' % 'p3s') #settings.HOSTNAME)
     
 #    sqliteTO = 'PRAGMA busy_timeout = 2000;'
     
