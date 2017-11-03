@@ -268,8 +268,11 @@ if(generateJob): #
 
         j = Job(job)
 
-        j_uuid = API.post2server('job', 'add', j)
-        print('job uuid:', j_uuid)
+        if(tst):
+            print('testing... job submissio skipped')
+        else:
+            j_uuid = API.post2server('job', 'add', j)
+            print('job uuid:', j_uuid)
     
     dataSet		= {}
     dataSet['name']	= inputFile
@@ -278,6 +281,8 @@ if(generateJob): #
     dataSet['targetuuid']	= j_uuid
     dataSet['uuid']		= uuid.uuid1() # note we create a fresh UUID here
     dataSet['dirpath']	= theDir
+
+    print(dataSet)
     
     resp = API.post2server('data', 'register', dataSet)
     print(resp)
