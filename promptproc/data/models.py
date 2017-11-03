@@ -12,7 +12,7 @@ from django.core	import serializers
 class dataset(models.Model):
     #
     uuid	= models.CharField(max_length=36, default='')
-    name	= models.CharField(max_length=64, default='')
+    name	= models.CharField(max_length=256, default='')
     dirpath	= models.CharField(max_length=256,default='')
     #
     state	= models.CharField(max_length=64, default='')
