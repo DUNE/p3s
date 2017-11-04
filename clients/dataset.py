@@ -286,3 +286,5 @@ if(generateJob): #
     
     resp = API.post2server('data', 'register', dataSet)
     print(resp)
+    delay = 5
+    time.sleep(delay/1000.0) # prevent self-inflicted DOS

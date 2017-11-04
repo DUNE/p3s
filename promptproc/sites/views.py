@@ -14,9 +14,6 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 
-
-from django.core			import serializers
-
 from django.shortcuts			import render
 from django.http			import HttpResponse
 from django.views.decorators.csrf	import csrf_exempt
@@ -24,8 +21,6 @@ from django.utils			import timezone
 from django.core			import serializers
 
 from .models import site as S
-
-
 
 from utils.timeUtils import dt
 
@@ -60,11 +55,13 @@ def define(request):
     post	= request.POST
     siteJson	= post['site']
 
-    if(siteJson!=''):
-        try:
-            siteInfo = json.loads(siteJson)
-        except:
-            return HttpResponse("Error parsing JSON")
+    if(siteJson==''):
+        return HttpResponse("No data provided for site definition")
+
+    try:
+        siteInfo = json.loads(siteJson)
+    except:
+        return HttpResponse("Error parsing JSON")
 
     s = S()
     for k in siteInfo.keys():

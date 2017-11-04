@@ -13,7 +13,6 @@
 	    "P3S_NEVENTS":"50",
 	    "P3S_FCL_DIR":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft",
 	    "P3S_FCL":"lxdqm_evdisp_4.fcl",
-	    "P3S_FCL_AUX":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/evdisp.fcl",
 	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
 	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
 	    "P3S_OUTPUT_FILE":"evdisp.root"}
