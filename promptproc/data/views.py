@@ -84,15 +84,18 @@ def delete(request):
 def adjust(request):
     post	= request.POST
     d_uuid	= post.get('uuid','')
+    d_name	= post.get('name','')
     d		= None
 
-    if(d_uuid==''):
-        return HttpResponse("Missing UUID")
-    
-    try:
-        d = dataset.objects.get(uuid=d_uuid)
-    except:
-        pass
+    if(d_uuid=='' and d_name==''):
+        return HttpResponse("Missing identifyer")
+
+
+    if(d_uuid!=''):
+        try:
+            d = dataset.objects.get(uuid=d_uuid)
+        except:
+            pass
 
     if(d is None):
         return HttpResponse("DS %s not found" % d_uuid)
