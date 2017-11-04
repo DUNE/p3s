@@ -4,8 +4,8 @@
 
 export P3S_SERVER="http://p3s-web:80/"
 export P3S_SITE='lxvm'
-export P3S_PILOTS=50
-export P3S_PILOT_TO=3000
+export P3S_PILOTS=1000
+export P3S_PILOT_TO=1000
 export P3S_PILOT_MAXRUNTIME=90000
 export P3S_VERBOSITY=0
 #

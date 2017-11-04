@@ -3,4 +3,5 @@ db.sqlite3
 *.pyc
 nohup.out
 migrations/
+*/migrations/*
 000*
