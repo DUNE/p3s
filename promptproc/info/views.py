@@ -81,10 +81,11 @@ def index(request):
             for element in dataDict[k]['data']:
                 myStr=str(element)
                 missing=7-len(myStr)
+                expanded=''
                 if(missing>0):
-                    for i in range(0,missing): myStr+='_'
+                    for i in range(0,missing): expanded+='_'
+                string+=expanded+myStr
                     
-                string+=myStr
             summaryData.append({'Object': dataDict[k]['entry'],'Number': string })
         except:
             pass
