@@ -1,12 +1,13 @@
 #!/bin/sh
 Nargs=$#
 
-if [ ! $Nargs -eq 3 ]; then
-    echo Wrong number of arguments - expecting 3 - exiting...
+if [ ! $Nargs -eq 4 ]; then
+    echo Wrong number of arguments - expecting 4 - exiting...
     echo Expecting:
     echo \* time window \(minutes\) to trigger on a modified file, needs to be negative for "newer than" and positive for "older than"
     echo \* wildcard or part of it e.g. Proto
     echo \* path to the job template starting with 'input'
+    echo \* blank in quotes or "-A" as an argument to "dataset"
     exit
 fi
 
@@ -25,9 +26,7 @@ fi
 # exit 0
 
 
-
-
-
+echo Special argument: $4
 
 cd $P3S_INPUT_DIR
 d=`pwd`
@@ -42,7 +41,7 @@ for f in $files
 do
     echo ! $f
     #echo $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/$3
-    $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/$3
+    $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/$3 $4
 done
 
 ###### Old bits of code for reference

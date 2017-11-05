@@ -100,6 +100,9 @@ parser.add_argument("-g", "--generateJob",	  help="generate job (needs -J)",			a
 parser.add_argument("-R", "--registertype",	  help="register data type (see Usage for details)",	action='store_true')
 parser.add_argument("-d", "--delete",		  help="deletes a record from the DB. Needs uuid.",	action='store_true')
 
+parser.add_argument("-A", "--allow",		  help="allow job generation on data already used",	action='store_true')
+
+
 parser.add_argument("-v", "--verbosity", type=int,help="output verbosity (0-4)",choices=[0, 1, 2, 3, 4],default=envDict['verb'])
 
 parser.add_argument("-p", "--period",	type=int, help="polling period, in seconds",			default=5)
@@ -133,6 +136,8 @@ regData	= args.registerdata
 regType	= args.registertype
 adjust	= args.adjust
 
+
+allow	= args.allow
 
 generateJob = args.generateJob
 
@@ -245,13 +250,14 @@ if(generateJob): #
 
     if(filename!=''): inputFile = filename
 
-    resp	= API.get2server('data', 'getdata', filename)
-    result	= takeJson(resp, verb)
 
-    if(len(result)!=0):
-        print('File '+filename+' already registered')
-        exit(0)
+    if (not allow):
+        resp	= API.get2server('data', 'getdata', filename)
+        result	= takeJson(resp, verb)
 
+        if(len(result)!=0):
+            print('File '+filename+' already registered')
+            exit(0)
 
     theDir = ''
     try:
