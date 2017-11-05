@@ -54,7 +54,7 @@ def index(request):
 
                                  )}
     
-    dataDict['jobs']	=	{'entry': 'Jobs:_____total___defined___running__finished________TO',
+    dataDict['jobs']	=	{'entry': 'Jobs:_______total___defined___running__finished________TO',
                                  'data':(
                                      job.N(),
                                      job.N(state='defined'),
