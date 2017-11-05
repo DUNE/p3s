@@ -41,5 +41,11 @@ pwd
 cp $P3S_FCL_DIR/$P3S_FCL .
 env | grep P3S
 lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
-# mv $P3S_INPUT_DIR/$P3S_INPUT_FILE $P3S_USED_DIR
+
+dest=$P3S_EVDISP_DIR/$P3S_JOB_UUID
+
+echo making $dest
+mkdir $dest
+cp *.png $dest
+
 exit
