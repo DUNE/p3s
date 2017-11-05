@@ -3,7 +3,7 @@
 	"name":		"EvDisp:Main",
 	"timeout":	"1000",
         "jobtype":	"evdisp",
-        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_universal.sh",
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_evdisp_4.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
