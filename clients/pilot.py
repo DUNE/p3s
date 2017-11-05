@@ -405,9 +405,14 @@ while(cnt>0 or p.cycles==0):
             
 
             if(verb>2): logger.info('HEARTBEAT, server response: %s' % data)
-        else: # see the "pipe" note on the bottom"
-            jobout.close()
-            joberr.close()
+        else:
+            # Empirically, this may fail on certain file systems
+            # under heavy load. So add exception handling here.
+            try:
+                jobout.close()
+                joberr.close()
+            except:
+                logger.info('JOB STDIO AND STDERR ERROR')
             break
 
         # continue the process polling loop, sleep a little

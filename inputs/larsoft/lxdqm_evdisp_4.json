@@ -15,6 +15,7 @@
 	    "P3S_FCL":"lxdqm_evdisp_4.fcl",
 	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
 	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
+	    "P3S_USED_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/used/",
 	    "P3S_OUTPUT_FILE":"evdisp.root"}
     }
 ]
