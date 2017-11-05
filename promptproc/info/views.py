@@ -82,7 +82,7 @@ def index(request):
                 myStr=str(element)
                 missing=7-len(myStr)
                 if(missing>0):
-                    for i in range(0,missing): myStr+='&nbsp;'
+                    for i in range(0,missing): myStr+='.'
                     
                 string+=myStr
             summaryData.append({'Object': dataDict[k]['entry'],'Number': string })
