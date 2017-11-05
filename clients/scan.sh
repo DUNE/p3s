@@ -1,8 +1,12 @@
 #!/bin/sh
 Nargs=$#
 
-if [ ! $Nargs -eq 2 ]; then
-    echo Wrong number of arguments - expecting 2 - exiting...
+if [ ! $Nargs -eq 3 ]; then
+    echo Wrong number of arguments - expecting 3 - exiting...
+    echo Expecting:
+    echo \* time window \(minutes\) to trigger on a modified file, needs to be negative for "newer than" and positive for "older than"
+    echo \* wildcard or part of it e.g. Proto
+    echo \* path to the job template starting with 'input'
     exit
 fi
 
@@ -22,27 +26,32 @@ fi
 
 
 
-#if [ ! -d "$1" ]; then
-#    echo Directory $1 not found, exiting
-#    exit 0
-#fi
-
-if [ -z "$1" ]; then
-    echo "No time window defined"
-    exit 0
-fi
 
 
 
 cd $P3S_INPUT_DIR
 d=`pwd`
 echo Directory: $d
-files=`find . -maxdepth 1 -mindepth 1 -mmin $1 | sed 's/\.\///'`
+files=`find . -maxdepth 1 -mindepth 1 -mmin $1 -name "$2*" | sed 's/\.\///'`
 echo Files:$files
-echo ${#files[@]}
+# echo ${#files[@]}
+
+# exit 0
+
 for f in $files
 do
     echo ! $f
-    echo $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/$2
-    $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/$2
+    #echo $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/$3
+    $P3S_HOME/clients/dataset.py -g -i $d -f $f -J $P3S_HOME/$3
 done
+
+###### Old bits of code for reference
+#if [ ! -d "$1" ]; then
+#    echo Directory $1 not found, exiting
+#    exit 0
+#fi
+####
+#if [ -z "$1" ]; then
+#    echo "No time window defined"
+#    exit 0
+#fi

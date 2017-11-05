@@ -44,7 +44,7 @@ def index(request):
     dataDict = collections.OrderedDict()
 
     # Note to self - the N method also takes site, must think about how to use it 
-    dataDict['pilots']	=	{'entry':'Pilots: total/idle/running/stopped/TO',
+    dataDict['pilots']	=	{'entry':'Pilots:_____total_____idle___running___stopped________TO',
                                  'data':(
                                      pilot.N(),
                                      pilot.N(state='no jobs'),
@@ -54,7 +54,7 @@ def index(request):
 
                                  )}
     
-    dataDict['jobs']	=	{'entry': 'Jobs: total/defined/running/finished/TO',
+    dataDict['jobs']	=	{'entry': 'Jobs:_____total___defined___running__finished________TO',
                                  'data':(
                                      job.N(),
                                      job.N(state='defined'),
