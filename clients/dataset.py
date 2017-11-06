@@ -284,7 +284,7 @@ if(generateJob): #
             print('job uuid:', j_uuid)
     
     if(noreg):
-        print('SKIPPING REG')
+        if(verb>0): print('SKIPPING REG')
         exit(0)
 
     dataSet		= {}
