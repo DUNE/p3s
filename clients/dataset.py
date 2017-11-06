@@ -102,6 +102,8 @@ parser.add_argument("-d", "--delete",		  help="deletes a record from the DB. Nee
 
 parser.add_argument("-A", "--allow",		  help="allow job generation on data already used",	action='store_true')
 
+parser.add_argument("-N", "--noreg",		  help="no registration of input data",			action='store_true')
+
 
 parser.add_argument("-v", "--verbosity", type=int,help="output verbosity (0-4)",choices=[0, 1, 2, 3, 4],default=envDict['verb'])
 
@@ -138,6 +140,7 @@ adjust	= args.adjust
 
 
 allow	= args.allow
+noreg	= args.noreg
 
 generateJob = args.generateJob
 
@@ -280,6 +283,10 @@ if(generateJob): #
             j_uuid = API.post2server('job', 'add', j)
             print('job uuid:', j_uuid)
     
+    if(noreg):
+        print('SKIPPING REG')
+        exit(0)
+
     dataSet		= {}
     dataSet['name']	= inputFile
     dataSet['state']	= 'defined'
