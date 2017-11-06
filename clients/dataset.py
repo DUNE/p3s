@@ -259,7 +259,7 @@ if(generateJob): #
         result	= takeJson(resp, verb)
 
         if(len(result)!=0):
-            iv(verb>0): print('File '+filename+' already registered')
+            if(verb>0): print('File '+filename+' already registered')
             exit(0)
 
     theDir = ''
