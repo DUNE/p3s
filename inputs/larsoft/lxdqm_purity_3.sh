@@ -41,4 +41,5 @@ pwd
 cp $P3S_FCL_DIR/$P3S_FCL .
 env | grep P3S
 lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
+/afs/cern.ch/user/m/mxp/projects/p3s/clients/purity.py -f Lifetime_Run1.txt
 exit
