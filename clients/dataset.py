@@ -259,7 +259,7 @@ if(generateJob): #
         result	= takeJson(resp, verb)
 
         if(len(result)!=0):
-            print('File '+filename+' already registered')
+            iv(verb>0): print('File '+filename+' already registered')
             exit(0)
 
     theDir = ''
@@ -278,10 +278,10 @@ if(generateJob): #
         j = Job(job)
 
         if(tst):
-            print('testing... job submissio skipped')
+            if(verb>0): print('testing... job submission skipped')
         else:
             j_uuid = API.post2server('job', 'add', j)
-            print('job uuid:', j_uuid)
+            if(verb>0): print('job uuid:', j_uuid)
     
     if(noreg):
         if(verb>0): print('SKIPPING REG')
@@ -295,9 +295,9 @@ if(generateJob): #
     dataSet['uuid']		= uuid.uuid1() # note we create a fresh UUID here
     dataSet['dirpath']	= theDir
 
-    print(dataSet)
+    if(verb>0): print(dataSet)
     
     resp = API.post2server('data', 'register', dataSet)
-    print(resp)
+    if(verb>0): print(resp)
     delay = 5
     time.sleep(delay/1000.0) # prevent self-inflicted DOS
