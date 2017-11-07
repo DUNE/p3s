@@ -126,6 +126,16 @@ def index(request):
             'TwoHours':job.timeline('ts_sto', 7200),
             'Day':job.timeline('ts_sto', 24*3600)
         }
+
+    jobsData.append(
+        {
+            'State':'TO',
+            'OneMin':job.timeline('ts_sto', 60, 'pilotTO'),
+            'TenMin':job.timeline('ts_sto', 600, 'pilotTO'),
+            'OneHour':job.timeline('ts_sto', 3600, 'pilotTO'),
+            'TwoHours':job.timeline('ts_sto', 7200, 'pilotTO'),
+            'Day':job.timeline('ts_sto', 24*3600, 'pilotTO')
+        }
     )
     
     tJobs = TimelineTable(jobsData)

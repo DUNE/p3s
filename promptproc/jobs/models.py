@@ -52,9 +52,13 @@ class job(models.Model):
                 return self.objects.count()
 
     @classmethod
-    def timeline(self, timestamp, seconds):
+    def timeline(self, timestamp, seconds, state=None):
         cutoff = timezone.now() - timedelta(seconds=seconds)
-        kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),}
+        kwargs = None
+        if(state):
+            kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),'{0}__{1}'.format(state, 'eq'): state,}
+        else:
+            kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),}
         return self.objects.filter(**kwargs).count()
 
 

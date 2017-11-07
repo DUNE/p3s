@@ -1,4 +1,8 @@
 #!/bin/sh
+
+# Maxim's note - let's mute the output for now as the short
+# cron cycle leads to flooding of my mailbox
+
 export P3S_HOME=/afs/cern.ch/user/m/mxp/projects/p3s
 export DQM_HOME=/afs/cern.ch/user/m/mxp/projects/dqmconfig
 
@@ -22,9 +26,9 @@ export P3S_INPUT_DIR=$P3S_DIRPATH/input
 
 cd $P3S_INPUT_DIR
 d=`pwd`
-echo Directory: $d
+# echo Directory: $d
 files=`find . -maxdepth 1 -mindepth 1 -mmin $1 -size +1 -name "$2*" | sed 's/\.\///'`
-echo Files:$files
+# echo Files:$files
 
 # echo ${#files[@]}
 
