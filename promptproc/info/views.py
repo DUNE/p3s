@@ -126,6 +126,7 @@ def index(request):
             'TwoHours':job.timeline('ts_sto', 7200),
             'Day':job.timeline('ts_sto', 24*3600)
         }
+    )
 
     jobsData.append(
         {
