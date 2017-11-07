@@ -127,10 +127,7 @@ def index(request):
             'Day':job.timeline('ts_sto', 24*3600)
         }
     )
-<<<<<<< HEAD
-=======
 
->>>>>>> 0995bb9786c42e9c6f84fc78858f60b3c0f6188d
     jobsData.append(
         {
             'State':'pilotTO',
