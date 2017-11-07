@@ -1,21 +1,25 @@
 {% load static %}
 <table width="100%">
   <tr> <!-- style="font-size:20px" -->
-    <td width="14%"><img src="{% static 'images/dune_logo.png' %}"></td>
-    <td width="14%"><a href="http://{{ domain }}">	<b>p3s home @"{{ host }}"	</b></a></td>
-    <td width="14%" ><a href="http://{{ domain }}/monitor/jobs">		Jobs</a><br/>
-    <a href="http://{{ domain }}/monitor/pilots">	Pilots</a></td>
+    <td width="20%"><img src="{% static 'images/Logo_NP_Blue.png' %}"  width="50%" ></td> <!-- images/dune_logo.png -->
+    <td width="40%"><a href="http://{{ domain }}">	<b>p3s home @"{{ host }}"	</b></a></td>
+    <td width="40%"><a href="http://{{ dqm_domain }}">	<b>DQM @"{{ dqm_host }}"	</b></a></td>
+  </tr>
+</table>
+<hr/>
+<table width="100%">
+  <tr> <!-- style="font-size:20px" -->
+    <td width="12%" ><a href="http://{{ domain }}/monitor/jobs">	Jobs</a></td>
+    <td width="12%" ><a href="http://{{ domain }}/monitor/pilots">	Pilots</a></td>
 
-    <td width="14%" ><a href="http://{{ domain }}/monitor/workflows">	Workflows</a><br/>
-    <a href="http://{{ domain }}/monitor/dags">		DAGs</a></td>
+    <td width="12%" ><a href="http://{{ domain }}/monitor/workflows">	Workflows</a></td>
+    <td width="12%" ><a href="http://{{ domain }}/monitor/dags">	DAGs</a></td>
 
-    <td width="14%" ><a href="http://{{ domain }}/monitor/data">Data</a><br/>
-      <a href="http://{{ domain }}/monitor/datatypes">	Data Types</a><br/>
-      <a href="http://{{ domain }}/monitor/filesystem">	Filesystem</a>
-    </td>
+    <td width="12%" ><a href="http://{{ domain }}/monitor/data">	Data</a></td>
+    <td width="12%" >  <a href="http://{{ domain }}/monitor/datatypes">	Data Types</a></td>
+    <td width="12%" >  <a href="http://{{ domain }}/monitor/filesystem">Filesystem</a></td>
 
-    <td width="14%"><a href="http://{{ domain }}/monitor/sites">	Sites</a></td>
-    <td width="16%"><a href="http://{{ dqm_domain }}">	<b>DQM @"{{ dqm_host }}"	</b></a></td>
+    <td width="16%"><a href="http://{{ domain }}/monitor/sites">	Sites</a></td>
 
   </tr>
 </table>
