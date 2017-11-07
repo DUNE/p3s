@@ -54,12 +54,11 @@ class job(models.Model):
     @classmethod
     def timeline(self, timestamp, seconds, state=None):
         cutoff = timezone.now() - timedelta(seconds=seconds)
-        kwargs = None
+        kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),}
         if(state):
-            kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),'{0}__{1}'.format(state, 'eq'): state,}
+            return self.objects.filter(**kwargs).filter(state=state).count()
         else:
-            kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),}
-        return self.objects.filter(**kwargs).count()
+            return self.objects.filter(**kwargs).count()
 
 
     
