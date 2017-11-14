@@ -83,6 +83,7 @@ SELECTORS	= {
          ('pilotTO','Pilot Timed Out'),
      ],
      'userselector': True,
+     'typeselector': True,
      'timeselector': 'timeselector',
      'gUrl':'/monitor/jobs',
      'qUrl':'/monitor/jobs?',
@@ -172,13 +173,16 @@ class dropDownGeneric(forms.Form):
 def data_handler(request, what):
     dqm_domain	= settings.DQM_DOMAIN
     dqm_host	= settings.DQM_HOST
-    
+
+
+
+    # this is likely provisional - initialization from the local config file
     p3s_users	= settings.P3S_USERS
     p3s_jobtypes= settings.P3S_JOBTYPES
     
     userlist	= p3s_users.split(',')
     jobtypes	= p3s_jobtypes.split(',')
-    
+    #----------------------------------------------
     template = 'universo.html'
 
     uuid	= request.GET.get('uuid','')
@@ -186,6 +190,7 @@ def data_handler(request, what):
     pk		= request.GET.get('pk','')
     name	= request.GET.get('name','')
     state	= request.GET.get('state','')
+    jobtype	= request.GET.get('jobtype','')
     user	= request.GET.get('user','')
     host	= request.GET.get('host','')
     perpage	= request.GET.get('perpage','25')
@@ -196,13 +201,16 @@ def data_handler(request, what):
     initUser=user
     if(user==''): initUser='All'
         
+    initJobType=jobtype
+    if(jobtype==''): initJobType='All'
+        
     domain	= request.get_host()
 
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
     d		= dict(domain=domain, dqm_domain=dqm_domain, dqm_host=dqm_host, time=str(now))
 
-    objects, t, Nfilt					= None, None, None
-    stateSelector, perPageSelector, userSelector	= None, None, None
+    objects, t, Nfilt						= None, None, None
+    stateSelector, perPageSelector, userSelector, typeSelector	= None, None, None, None
     
     if(what in ['job', 'pilot', 'workflow']):
         
@@ -236,6 +244,14 @@ def data_handler(request, what):
             except:
                 pass
 
+            try:
+                if(selector['typeselector']):
+                    typeSelector = dropDownGeneric(request.POST, label='Type', choices=JOBTYPECHOICES, tag='jobtype')
+                    if typeSelector.is_valid():
+                        q += typeSelector.handleDropSelector()
+            except:
+                pass
+
             # try:
             #     if(selector['timeselector'] is not None):
             #         timeselector = dropDownGeneric(request.POST, label='Time', choices=(('1','100'),('2','200'),), tag='time')
@@ -251,22 +267,34 @@ def data_handler(request, what):
 #----------
         stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
         
-        if(selector['userselector']):
-            userSelector	= dropDownGeneric(initial={'user':initUser},	label='User',		choices = USERCHOICES, tag='user')
+        try:
+            if(selector['userselector']): userSelector	= dropDownGeneric(initial={'user':initUser},	label='User',	choices = USERCHOICES, tag='user')
+        except:
+            pass
+            
+        try:
+            if(selector['typeselector']): typeSelector	= dropDownGeneric(initial={'jobtype':'All'},	label='Type',	choices = JOBTYPECHOICES, tag='jobtype')
+        except:
+            pass
             
         perPageSelector	= dropDownGeneric(initial={'perpage':perpage},	label='# per page',	choices = PAGECHOICES, tag='perpage')
+
+        
 #        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time') # work in progress
 
 
         objects = eval(what).objects
         if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = x(objects.all())
         
+
+        # Don't forget to update this filter part as you add functionality!
         kwargs = {}
         if(uuid		!= ''): kwargs['uuid']		= uuid
         if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
         if(pk		!= ''): kwargs['pk']		= pk
         if(name		!= ''): kwargs['name']		= name
         if(user		!= ''): kwargs['user']		= user
+        if(jobtype	!= ''): kwargs['jobtype']	= jobtype
         if(state	!= ''): kwargs['state__in']	= states
         
         try:
@@ -316,6 +344,7 @@ def data_handler(request, what):
     
     if(stateSelector):	selectors.append(stateSelector)
     if(userSelector):	selectors.append(userSelector)
+    if(typeSelector):	selectors.append(typeSelector)
     if(perPageSelector):selectors.append(perPageSelector)
 
     d['selectors'] = selectors
