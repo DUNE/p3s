@@ -95,16 +95,15 @@ def index(request):
     tSummary = SummaryTable(summaryData)
     timeString = datetime.datetime.now().strftime('%X %x')+' '+timezone.get_current_timezone_name()
 
-    jobsData.append(
-        {
-            'State':'Defined',
-            'OneMin':job.timeline('ts_def', 60),
-            'TenMin':job.timeline('ts_def', 600),
-            'OneHour':job.timeline('ts_def', 3600),
-            'TwoHours':job.timeline('ts_def', 7200),
-            'Day':job.timeline('ts_def', 24*3600)
-        }
-    )
+
+    times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
+    states	= (('Defined','ts_def'))
+    
+#    for s in states:
+    tmpDict = collections.OrderedDict()
+    tmpDict['State']='Defined'
+    for t in times: tmpDict[t[0]]=job.timeline('ts_def', t[1])
+    jobsData.append(tmpDict)
     
     jobsData.append(
         {
