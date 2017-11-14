@@ -126,6 +126,6 @@ def pilotTO(request):
     for t in tLife:
         retMessage+=t+'\n'
 
-    return HttpResponse(retMessage)
+    return HttpResponse(retMessage, content_type="text/plain")
 
 
