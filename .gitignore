@@ -4,4 +4,5 @@ db.sqlite3
 nohup.out
 migrations/
 */migrations/*
+promptproc/*/migrations/*
 000*

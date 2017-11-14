@@ -1,6 +1,6 @@
 [
     {
-	"name":		"simple p3s job, type 1",
+	"name":		"job1",
 	"timeout":	"100",
         "jobtype":	"type1",
         "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob1.sh",
@@ -8,30 +8,33 @@
 	"state":	"defined",
 	"env":		{
 	    "P3S_INPUT_DIR":"/home/maxim/p3sdata/input",
+	    "P3S_INPUT_FILE":"file1",
 	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-1.out"
 	}
     },
     {
-	"name":		"simple p3s job, type 2",
+	"name":		"job2",
 	"timeout":	"100",
-        "jobtype":	"type1",
+        "jobtype":	"type2",
         "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob2.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
 	    "P3S_INPUT_DIR":"/home/maxim/p3sdata/input",
+	    "P3S_INPUT_FILE":"file2",
 	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-2.out"
 	}
     },
     {
-	"name":		"simple p3s job, type 3",
+	"name":		"job3",
 	"timeout":	"100",
-        "jobtype":	"type1",
+        "jobtype":	"type3",
         "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob3.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
 	    "P3S_INPUT_DIR":"/home/maxim/p3sdata/input",
+	    "P3S_INPUT_FILE":"file3",
 	    "P3S_OUTPUT_FILE":"/home/maxim/p3s-3.out"
 	}
     }

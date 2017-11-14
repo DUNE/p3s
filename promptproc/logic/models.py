@@ -4,6 +4,14 @@ from django.utils	import timezone
 from data.models	import dataset, datatype
 from jobs.models	import job
 
+
+class service(models.Model):
+    name	= models.CharField(max_length=32, default='')
+    ts		= models.DateTimeField('ts',  blank=True, null=True)
+    info	= models.TextField(default='')
+
+
+
 class manager(object):
     def __init__(self):
         self.x = 0
