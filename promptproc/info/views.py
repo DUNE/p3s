@@ -92,51 +92,24 @@ def index(request):
 
     summaryData.append({'Object': 'Jobs finished as reported by pilots' , 'Number': "%s" % pilot.jobsDone() })
 
-    tSummary = SummaryTable(summaryData)
-    timeString = datetime.datetime.now().strftime('%X %x')+' '+timezone.get_current_timezone_name()
+    tSummary	= SummaryTable(summaryData)
+    timeString	= datetime.datetime.now().strftime('%X %x')+' '+timezone.get_current_timezone_name()
 
 
     times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
-    states	= (('Defined','ts_def'))
-    
-#    for s in states:
-    tmpDict = collections.OrderedDict()
-    tmpDict['State']='Defined'
-    for t in times: tmpDict[t[0]]=job.timeline('ts_def', t[1])
-    jobsData.append(tmpDict)
-    
-    jobsData.append(
-        {
-            'State':'Started',
-            'OneMin':job.timeline('ts_sta', 60),
-            'TenMin':job.timeline('ts_sta', 600),
-            'OneHour':job.timeline('ts_sta', 3600),
-            'TwoHours':job.timeline('ts_sta', 7200),
-            'Day':job.timeline('ts_sta', 24*3600)
-        }
+    states	= (
+        ('Defined','ts_def',None),
+        ('Started','ts_sta',None),
+        ('Stopped','ts_sto',None),
+        ('pilotTO','ts_sto','pilotTO')
     )
     
-    jobsData.append(
-        {
-            'State':'Stopped',
-            'OneMin':job.timeline('ts_sto', 60),
-            'TenMin':job.timeline('ts_sto', 600),
-            'OneHour':job.timeline('ts_sto', 3600),
-            'TwoHours':job.timeline('ts_sto', 7200),
-            'Day':job.timeline('ts_sto', 24*3600)
-        }
-    )
-
-    jobsData.append(
-        {
-            'State':'pilotTO',
-            'OneMin':job.timeline('ts_sto', 60, 'pilotTO'),
-            'TenMin':job.timeline('ts_sto', 600, 'pilotTO'),
-            'OneHour':job.timeline('ts_sto', 3600, 'pilotTO'),
-            'TwoHours':job.timeline('ts_sto', 7200, 'pilotTO'),
-            'Day':job.timeline('ts_sto', 24*3600, 'pilotTO')
-        }
-    )
+    for s in states:
+        tmpDict = collections.OrderedDict()
+        tmpDict['State']=s[0]
+        for t in times: tmpDict[t[0]]=job.timeline(s[1], t[1], s[2])
+        jobsData.append(tmpDict)
+    
     
     tJobs = TimelineTable(jobsData)
 
