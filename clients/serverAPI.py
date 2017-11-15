@@ -70,6 +70,7 @@ class serverAPI(dict):
         self['logic']	= {
             'purge':	server+'logic/purge',
             'pilotTO':	server+'logic/pilotTO',
+            'service':	server+'logic/service',
         }
 
         ### DQM purity

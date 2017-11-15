@@ -40,6 +40,8 @@ from	django_tables2.utils		import A
 
 from utils.timeUtils import dt
 
+from .models import service
+
 
 # Get an instance of a logger
 logger = logging.getLogger('logic')
@@ -127,5 +129,16 @@ def pilotTO(request):
         retMessage+=t+'\n'
 
     return HttpResponse(retMessage, content_type="text/plain")
+
+###################################################
+@csrf_exempt
+def serviceReport(request):
+    
+    post	= request.POST
+
+    s = service()
+    s.save()
+    
+    return HttpResponse("OK")
 
 

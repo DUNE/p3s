@@ -36,6 +36,8 @@ from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow
 
+from logic.models			import service
+
 # tables2 machinery
 import	django_tables2 as tables
 from	django_tables2			import RequestConfig
@@ -211,6 +213,12 @@ def data_handler(request, what):
 
     objects, t, Nfilt						= None, None, None
     stateSelector, perPageSelector, userSelector, typeSelector	= None, None, None, None
+
+    if(what=='service'):
+        objects = eval(what).objects
+        f=len(objects.all())
+
+        return HttpResponse(str(f))
     
     if(what in ['job', 'pilot', 'workflow']):
         

@@ -10,6 +10,7 @@ urlpatterns = [
     url(r'^pilots',	views.data_handler,	{'what':'pilot'},	name='pilots'),
     url(r'^dags',	views.data_handler,	{'what':'dag'},		name='dags'),
     url(r'^workflows',	views.data_handler,	{'what':'workflow'},	name='workflows'),
+    url(r'^services',	views.data_handler,	{'what':'service'},	name='services'),
     # -----
     url(r'^sitedetail',	views.detail_handler,	{'what':'site'},	name='sitedetail'),
     url(r'^jobdetail',	views.detail_handler,	{'what':'job'},		name='jobdetail'),
