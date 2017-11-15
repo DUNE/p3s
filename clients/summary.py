@@ -8,12 +8,11 @@ from clientenv import clientenv
 #########################################################################        
 #############################  BEGIN  ###################################
 
-(user, server, verb, site, pl, jl) = clientenv()
-
+envDict = clientenv(outputDict=True) # Will need 'server' only
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-S", "--server",	type=str,	default=server,
+parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-P", "--print",	action='store_true',
