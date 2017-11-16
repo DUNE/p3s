@@ -11,7 +11,9 @@ from jobs.models			import job
 from data.models			import dataset, datatype
 from pilots.models			import pilot
 
-from workflows.models import dag,dagVertex,dagEdge,workflow
+from workflows.models			import dag,dagVertex,dagEdge,workflow
+
+from logic.models			import service
 
 
 # We need this to make links to this service itself.
@@ -22,6 +24,19 @@ except ImportError:
     exit(-3)
 
 ##### BASE CLASSES FOR MONITOR AND DETAIL TABLES ########
+class MonitorTable(tables.Table):
+    def set_site(self, site=''):
+        self.site=site
+
+    def makelink(self, what, key, value):
+        return mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
+                         % (self.site, reverse(what), key, value, value))
+
+    def renderDateTime(self, dt): # common format defined here.
+        return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
+    
+#--------------------------------------------------------
+
 class DetailTable(tables.Table):
     attribute	= tables.Column()
     value	= tables.Column()
@@ -31,7 +46,7 @@ class DetailTable(tables.Table):
     class Meta:
         attrs	= {'class': 'paleblue'}
 
-#--------------------------------------------------------
+##### FOR THE DASHBOARD
 class TimelineTable(tables.Table):
     State	= tables.Column(verbose_name='State')
     OneMin	= tables.Column(verbose_name='1min')
@@ -56,17 +71,15 @@ class SummaryTable(tables.Table):
         attrs	= {'class': 'paleblue'}
 
 #--------------------------------------------------------
-class MonitorTable(tables.Table):
-    def set_site(self, site=''):
-        self.site=site
+class ServiceTable(MonitorTable):
+    name	= tables.Column(verbose_name='Name')
+    ts		= tables.Column(verbose_name='Time')
+    info	= tables.Column(verbose_name='Info')
+   
 
-    def makelink(self, what, key, value):
-        return mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
-                         % (self.site, reverse(what), key, value, value))
-
-    def renderDateTime(self, dt): # common format defined here.
-        return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
-        
+    class Meta:
+        model = service
+        attrs = {'class': 'paleblue'}
 
 #########################################################    
 ############### SUMMARY TABLES ##########################    

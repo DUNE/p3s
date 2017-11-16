@@ -61,28 +61,20 @@ SELECTORS	= {
     'pilot':
     {'stateLabel':'Pilot States',
      'states':[
-         ('all',	'All'),
-         ('active',	'Active'),
-         ('running',	'Running'),
-         ('stopped',	'Stopped'),
-         ('timeout',	'Timed out'),
-         ('no jobs',	'No Jobs'),
-         ('DB lock',	'DB lock'),
+         ('all',	'All'),		('active',	'Active'),	('running',	'Running'),	('stopped',	'Stopped'),
+         ('timeout',	'Timed out'),	('no jobs',	'No Jobs'),	('DB lock',	'DB lock'),
      ],
      'userselector': None,
      'gUrl':'/monitor/pilots',
      'qUrl':'/monitor/pilots?',
      'table':'PilotTable',
     },
+    
     'job':
     {'stateLabel':'Job States',
      'states':[
-         ('all',	'All'),
-         ('template',	'Template'),
-         ('defined',	'Defined'),
-         ('running',	'Running'),
-         ('finished','Finished'),
-         ('pilotTO','Pilot Timed Out'),
+         ('all',	'All'),		('template',	'Template'),	('defined',	'Defined'),	('running',	'Running'),
+         ('finished','Finished'),	('pilotTO','Pilot Timed Out'),
      ],
      'userselector': True,
      'typeselector': True,
@@ -91,32 +83,26 @@ SELECTORS	= {
      'qUrl':'/monitor/jobs?',
      'table':'JobTable',
     },
+    
     'workflow':
     {'stateLabel':'Workflow States',
      'states':[
-         ('all',	'All'),
-         ('template',	'Template'),
-         ('defined',	'Defined'),
-         ('running',	'Running'),
-         ('finished','Finished'),
+         ('all',	'All'),         ('template',	'Template'),	('defined',	'Defined'),
+         ('running',	'Running'),	('finished','Finished'),
      ],
      'userselector': 'userselector',
      'gUrl':'/monitor/workflows',
      'qUrl':'/monitor/workflows?state=%s',
      'table':'WfTable',
     },
-    'site':
-    {'userselector': None,
-    },
-    'dataset':
-    {'userselector': None,
-    },
-    'datatype':
-    {'userselector': None,
-    },
-    'dag':
-    {'userselector': None,
-    },
+    
+    'site':	{'userselector': None,	'table': 'SiteTable',    },
+    
+    'dataset':	{'userselector': None,	'table': 'DataTable',    },
+    
+    'datatype':	{'userselector': None,	'table': 'DataTypeTable',},
+    
+    'dag':	{'userselector': None, },
 }
 
 #
@@ -214,11 +200,13 @@ def data_handler(request, what):
     objects, t, Nfilt						= None, None, None
     stateSelector, perPageSelector, userSelector, typeSelector	= None, None, None, None
 
+    t = None  # placeholder for the main table object
+    
     if(what=='service'):
         objects = eval(what).objects
-        f=len(objects.all())
+        t = ServiceTable(objects.all())
 
-        return HttpResponse(str(f))
+        # return HttpResponse(str(f))
     
     if(what in ['job', 'pilot', 'workflow']):
         
@@ -232,9 +220,9 @@ def data_handler(request, what):
         
         selector = SELECTORS[what] # IMPORTANT
         
-        t = None # placeholder for the table object
-        q = ''
-        x=eval(selector['table'])
+        q = '' # stub for the query
+        
+        chosenTable=eval(selector['table'])
 
         timeselector = 'TBD'
 #----------
@@ -271,8 +259,13 @@ def data_handler(request, what):
             perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
             if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
                     
-            return makeQuery(what, q)
-#----------
+            return makeQuery(what, q) # will go and get the query results...
+
+        #################################################
+        ###### IF NOT RESPONSE TO QUERY, ################
+        ###### BUILD THE DEFAULT PAGE    ################
+        #################################################
+        
         stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
         
         try:
@@ -292,7 +285,8 @@ def data_handler(request, what):
 
 
         objects = eval(what).objects
-        if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = x(objects.all())
+        # there is a catch-all below, so this default is not necessary (I guess)
+        # if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = chosenTable(objects.all())
         
 
         # Don't forget to update this filter part as you add functionality!
@@ -303,28 +297,22 @@ def data_handler(request, what):
         if(name		!= ''): kwargs['name']		= name
         if(user		!= ''): kwargs['user']		= user
         if(jobtype	!= ''): kwargs['jobtype']	= jobtype
-        if(state	!= ''): kwargs['state__in']	= states
+        if(state	!= ''): kwargs['state__in']	= states # notice multiple values
         
         try:
             objs = objects.filter(**kwargs)
             Nfilt = objs.count()
-            t = x(objs)
+            t = chosenTable(objs)
         except:
             pass
             
-        if(t is None):t = x(objects.all()) # FIXME - check kwargs instead
-            
-    if(what=='dataset'):
-        objects = dataset.objects
-        t = DataTable(objects.all())
+        if(t is None):t = chosenTable(objects.all()) # FIXME - check kwargs instead
 
-    if(what=='site'):
-        objects = site.objects
-        t = SiteTable(objects.all())
-
-    if(what=='datatype'):
-        objects = datatype.objects
-        t = DataTypeTable(objects.all())
+    if(what in ['dataset', 'site', 'datatype']):
+        selector = SELECTORS[what] # IMPORTANT
+        chosenTable=eval(selector['table'])
+        objects = eval(what).objects
+        t = chosenTable(objects.all())
 
     if(what=='dag'):
         objects = dag.objects

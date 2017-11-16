@@ -135,8 +135,9 @@ def pilotTO(request):
 def serviceReport(request):
     
     post	= request.POST
+    t0		= timezone.now()
 
-    s = service()
+    s = service(name='service', ts=t0, info='foo')
     s.save()
     
     return HttpResponse("OK")
