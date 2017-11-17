@@ -67,6 +67,10 @@ if(delete):
 
 
 if(message!='' and name!=''):
+    if(verb>1):
+        print('service', name)
+        print('message', message)
+        
     resp = API.post2server('logic', 'service', dict(message=message,name=name))
     print(resp)
     
