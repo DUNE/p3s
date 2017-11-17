@@ -7,5 +7,3 @@ class pilotAdmin(admin.ModelAdmin):
     empty_value_display = '-empty-'
     
 admin.site.register(pilot, pilotAdmin)
-
-# Register your models here.
