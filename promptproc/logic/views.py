@@ -9,7 +9,10 @@ import logging
 # python utiility classes
 import uuid
 import datetime
+import json
+
 from datetime				import timedelta
+import collections
 
 # core django
 from django.shortcuts			import render
@@ -89,7 +92,8 @@ def pilotTO(request):
     post	= request.POST
     TO		= int(post['to']) # time out, meausured in seconds
     host	= post['host']
-    
+    direct	= post.get('direct', '')
+
     cutoff = timezone.now() - timedelta(seconds=TO)
 
     logger.info('pilotTO request received from %s', host)
@@ -99,11 +103,14 @@ def pilotTO(request):
 
     tLife = []
     nTO = len(selection)
-    for p in selection:
-        # print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
+    dictTO = {}
+    
+    for p in selection:   # print('TO pilot:', p.uuid, 'TO pilot job:', p.j_uuid)
 
         td = p.ts_lhb - p.ts_cre
         tLife.append(p.extra+'/'+str(td.total_seconds()).split('.')[0])
+        
+        dictTO[p.extra]=str(td.total_seconds()).split('.')[0]
 
         #### FIXME - Improve the update of the state of wf and job
         try:
@@ -125,12 +132,20 @@ def pilotTO(request):
     selection.update(state='timeout', status='TO')
 
     if(len(tLife)==0): return HttpResponse('')
-    retMessage = 'Number of TO pilots: '+str(nTO)+'\n'
-    for t in tLife:
-        retMessage+=t+'\n'
 
-    return HttpResponse(retMessage, content_type="text/plain")
-
+    outDict = collections.OrderedDict()
+    
+    outDict['N']=str(nTO)
+    outDict['TO']=dictTO
+    
+    ret = json.dumps(outDict)
+    if(direct!=''): # just write the message to the DB and exit with empty string
+        t0		= timezone.now()
+        s = service(name='TO', ts=t0, info=ret)
+        s.save()
+        return HttpResponse('')
+    else:
+        return HttpResponse(ret)
 ###################################################
 @csrf_exempt
 def serviceReport(request):
@@ -139,16 +154,16 @@ def serviceReport(request):
 
     message	= post.get('message', '')
     name	= post.get('name', '')
-
     
     t0		= timezone.now()
-    print(name, message, t0)
+    
+    print(name, message, t0, direct)
 
     if(message==''):
         return HttpResponse("empty message")
 
     s = service(name=name, ts=t0, info=message)
-    print(s)
+
     s.save()
 
     return HttpResponse("OK")
