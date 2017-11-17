@@ -136,11 +136,21 @@ def pilotTO(request):
 def serviceReport(request):
     
     post	= request.POST
-    t0		= timezone.now()
 
-    s = service(name='service', ts=t0, info='foo')
-    s.save()
+    message	= post.get('message', '')
+    name	= post.get('name', '')
+
     
+    t0		= timezone.now()
+    print(name, message, t0)
+
+    if(message==''):
+        return HttpResponse("empty message")
+
+    s = service(name=name, ts=t0, info=message)
+    print(s)
+    s.save()
+
     return HttpResponse("OK")
 
 ###################################################
@@ -168,10 +178,7 @@ def serviceDelete(request):
             pdeleted.append(pk)
         except:
             pass
-        #return HttpResponse("Entry %s not found or deletion failed" % pk )
             
     return HttpResponse("Entries %s deleted" % pdeleted )
-
-    return HttpResponse("deleted OK")
 
 

@@ -28,7 +28,10 @@ parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
                     default=envDict['server'])
 
-parser.add_argument("-p", "--publish",	type=str,	default='',
+parser.add_argument("-n", "--name",	type=str,	default='',
+                    help="the name of the service publishing the message")
+
+parser.add_argument("-m", "--message",	type=str,	default='',
                     help="the message to be published on the server")
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number.")
@@ -43,6 +46,9 @@ parser.add_argument("-v", "--verbosity",	type=int, default=envDict['verb'], choi
 args	= parser.parse_args()
 server	= args.server
 delete	= args.delete
+message	= args.message
+name	= args.name
+
 s_id	= args.id
 
 verb	= args.verbosity
@@ -59,8 +65,10 @@ if(delete):
     print(resp)
     exit(0)
 
-resp = API.post2server('logic', 'service', dict(foo='moo'))
-print(resp)
+
+if(message!='' and name!=''):
+    resp = API.post2server('logic', 'service', dict(message=message,name=name))
+    print(resp)
     
 
 
