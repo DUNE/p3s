@@ -28,17 +28,36 @@ parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
                     default=envDict['server'])
 
+parser.add_argument("-p", "--publish",	type=str,	default='',
+                    help="the message to be published on the server")
+
+parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number.")
+
+parser.add_argument("-i", "--id",	type=str,	default='',
+                    help="id of the entry to be adjusted or deleted (pk)")
+
 parser.add_argument("-v", "--verbosity",	type=int, default=envDict['verb'], choices=[0, 1, 2],
                     help="set output verbosity")
 
 
 args	= parser.parse_args()
-verb	= args.verbosity
 server	= args.server
+delete	= args.delete
+s_id	= args.id
+
+verb	= args.verbosity
 
 ### p3s interface defined here
 API  = serverAPI(server=server, verb=0)
 
+if(delete):
+    if(s_id == ''):
+        print('ID not specified, exiting')
+        exit(-1)
+
+    resp = API.post2server('logic', 'delete', dict(pk=s_id))
+    print(resp)
+    exit(0)
 
 resp = API.post2server('logic', 'service', dict(foo='moo'))
 print(resp)

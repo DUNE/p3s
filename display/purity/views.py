@@ -64,7 +64,6 @@ def delpurity(request):
         pklist = parseCommaDash(p_pk)
         pdeleted = []
         for pk in pklist:
-            print(pk)
             try:
                 p = pur.objects.get(pk=pk)
                 p.delete()

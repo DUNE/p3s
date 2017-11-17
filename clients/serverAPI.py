@@ -71,6 +71,7 @@ class serverAPI(dict):
             'purge':	server+'logic/purge',
             'pilotTO':	server+'logic/pilotTO',
             'service':	server+'logic/service',
+            'delete':	server+'logic/delete',
         }
 
         ### DQM purity

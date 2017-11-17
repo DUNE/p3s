@@ -39,6 +39,7 @@ from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
 from utils.timeUtils import dt
+from utils.miscUtils import parseCommaDash
 
 from .models import service
 
@@ -141,5 +142,36 @@ def serviceReport(request):
     s.save()
     
     return HttpResponse("OK")
+
+###################################################
+@csrf_exempt
+def serviceDelete(request):
+    
+    post	= request.POST
+    s_pk	= post.get('pk', None)
+
+    if(s_pk is None): return HttpResponse("No key for deletion")
+
+    if(s_pk=='ALL'):
+        try:
+            service.objects.all().delete()
+            return HttpResponse("Deleted all service entries")
+        except:
+            return HttpResponse("Deletion of all service entries failed")
+
+    pklist = parseCommaDash(s_pk)
+    pdeleted = []
+    for pk in pklist:
+        try:
+            s = service.objects.get(pk=pk)
+            s.delete()
+            pdeleted.append(pk)
+        except:
+            pass
+        #return HttpResponse("Entry %s not found or deletion failed" % pk )
+            
+    return HttpResponse("Entries %s deleted" % pdeleted )
+
+    return HttpResponse("deleted OK")
 
 

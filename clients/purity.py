@@ -39,7 +39,7 @@ parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the entry to be adjusted or delted (pk)")
 
 parser.add_argument("-r", "--run",	type=str,	default='',
-                    help="run number of the entries to be added, adjusted or delted")
+                    help="run number of the entries to be added, adjusted or deleted")
 
 
 parser.add_argument("-S", "--server",	type=str,
