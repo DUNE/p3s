@@ -149,15 +149,14 @@ def pilotTO(request):
 ###################################################
 @csrf_exempt
 def serviceReport(request):
-    
+
     post	= request.POST
 
     message	= post.get('message', '')
     name	= post.get('name', '')
-    
     t0		= timezone.now()
     
-    print(name, message, t0, direct)
+    # print(name, message, t0)
 
     if(message==''):
         return HttpResponse("empty message")
