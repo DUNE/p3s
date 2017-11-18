@@ -58,8 +58,9 @@ def purge(request):
     post	= request.POST
     
     # interval	= post['interval'] # measured in seconds
-    state	= post['state']
-    what	= post['what']
+    state	= post.get('state','')
+    what	= post.get('what','')
+    direct	= post.get('direct', '')
 
     # cutoff = timezone.now() - timedelta(seconds=interval)# prior use: dt(interval) 
 
@@ -74,16 +75,25 @@ def purge(request):
 
     # kwargs = {'{0}__{1}'.format(timestamp, 'lte'): str(cutoff),}
 
-    obj = eval(what)
-    #    selection = obj.objects.filter(**kwargs)
-    selection = obj.objects.filter(state=state)
-
+    try:
+        obj = eval(what)    #    selection = obj.objects.filter(**kwargs)
+        selection = obj.objects.filter(state=state)
+    except:
+        HttpResponse("purge failed")
+        
     if selection:
         # if(state and state!=''): selection = selection.filter(state=state)
         nDeleted = len(selection) # for o in selection: print(o.uuid)
         selection.delete()
-    
-    return HttpResponse(str(nDeleted))
+
+    ret = 'purge object:"'+what+'" in state:"'+state+'" deletions:'+str(nDeleted)
+    if(direct!=''): # just write the message to the DB and exit with empty string
+        t0		= timezone.now()
+        s = service(name='purge', ts=t0, info=ret)
+        s.save()
+        return HttpResponse('')
+    else:
+        return HttpResponse(ret)
 
 ###################################################
 @csrf_exempt

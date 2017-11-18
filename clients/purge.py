@@ -25,9 +25,9 @@ parser.add_argument("-s", "--state",	type=str,	default='stopped',
                     help="state of objects to purge, defaults to stopped")
 
 
-parser.add_argument("-t", "--test",	action='store_true',
-                    help="when set, parses input but does not contact the server")
+parser.add_argument("-t", "--test",	action='store_true', help="parse input but do not contact the server")
 
+parser.add_argument("-d", "--direct",	action='store_true', help="direct logging in the internal server DB")
 
 
 args	= parser.parse_args()
@@ -38,16 +38,17 @@ state	= args.state
 what	= args.what
 
 tst	= args.test
+direct	= args.direct
 
-
-
-resp = API.post2server('logic', 'purge', dict(state=state, what=what))
+d = dict(state=state, what=what)
+if(direct): d['direct']='True'
+resp = API.post2server('logic', 'purge', d)
         
-print(resp)
+if(resp!=''): print(resp)
 
 exit(0)
 
-
+##################################################################################
 # What's below is kept for future development
 
 if(json_in==''): exit(-1)
@@ -99,9 +100,9 @@ for what in data.keys():
     except:
         pass
     
-    # print(state,status,'*',timestamp,'*',interval)
     if(tst):
-        pass
+        print(state,status,'*',timestamp,'*',interval)
+        exit(0)
     else:
         resp = API.post2server('logic', 'purge', dict(interval=interval, timestamp=timestamp, state=state, what=what))
         
