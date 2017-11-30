@@ -28,7 +28,10 @@ cd $P3S_INPUT_DIR
 d=`pwd`
 # echo Directory: $d
 files=`find . -maxdepth 1 -mindepth 1 -mmin $1 -size +1 -name "$2*" | sed 's/\.\///'`
+
 # echo Files:$files
+
+$P3S_HOME/clients/service.py -n tscan -m "$files"
 
 # echo ${#files[@]}
 
@@ -39,3 +42,5 @@ do
     $P3S_HOME/clients/dataset.py -v 0 -g -i $d -f $f -J $P3S_HOME/inputs/larsoft/lxdqm_crt_tpc_3.json -N
     $P3S_HOME/clients/dataset.py -v 0 -g -i $d -f $f -J $P3S_HOME/inputs/larsoft/lxdqm_purity_5.json
 done
+
+# env | grep P3

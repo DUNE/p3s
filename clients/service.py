@@ -72,7 +72,7 @@ if(message!='' and name!=''):
         print('message:', message)
         
     resp = API.post2server('logic', 'service', dict(message=message,name=name))
-    print(resp)
+#    print(resp)
     
 
 
