@@ -39,8 +39,6 @@ def index(request):
     # Accomodate testing on the custom ssh tunnel
     if(domain=='localhost:8008') : dqm_domain = 'localhost:8009'
     
-    dqm_host	= settings.DQM_HOST
-    
     dataDict = collections.OrderedDict()
 
     # Note to self - the N method also takes site, must think about how to use it 
@@ -128,7 +126,7 @@ def index(request):
                       'domain':		domain,
                       'host':		hostname,
                       'dqm_domain':	dqm_domain,
-                      'dqm_host':	dqm_host,
+                      'dqm_host':	settings.SITE['dqm_host'],
                       'uptime':		uptime(),
                       'time':		timeString,
                       'summary':	tSummary,
