@@ -159,14 +159,14 @@ class dropDownGeneric(forms.Form):
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
-    dqm_domain	= settings.DQM_DOMAIN
-    dqm_host	= settings.DQM_HOST
+    dqm_domain	= settings.SITE['dqm_domain']
+    dqm_host	= settings.SITE['dqm_host']
 
 
 
     # this is likely provisional - initialization from the local config file
-    p3s_users	= settings.P3S_USERS
-    p3s_jobtypes= settings.P3S_JOBTYPES
+    p3s_users	= settings.SITE['p3s_users']
+    p3s_jobtypes= settings.SITE['p3s_jobtypes']
     
     userlist	= p3s_users.split(',')
     jobtypes	= p3s_jobtypes.split(',')
@@ -495,7 +495,7 @@ def detail_handler(request, what):
 
 ###################################################################################
 def filesystem(request):
-    l = os.listdir(settings.P3S_INPUT)
+    l = os.listdir(settings.SITE['p3s_input'])
     return HttpResponse(l)
     
 #########################################################    

@@ -128,39 +128,12 @@ WSGI_APPLICATION = 'promptproc.wsgi.application'
 # Look at the bottom for (previously) working examples
 
 DATABASES = databases.DB
-LCL = local.LOCAL
+SITE = local.SITE
 
 try:
-    DIRPATH	= LCL['dirpath']
+    DIRPATH	= SITE['dirpath']
 except:
     pass
-try:
-    DQM_DOMAIN	= LCL['dqm_domain']
-except:
-    pass
-try:
-    DQM_HOST	= LCL['dqm_host']
-except:
-    pass
-try:
-    P3S_USERS	= LCL['p3s_users']
-except:
-    pass
-try:
-    P3S_JOBTYPES= LCL['p3s_jobtypes']
-except:
-    pass
-
-
-try:
-    P3S_INPUT= LCL['p3s_input']
-except:
-    pass
-try:
-    P3S_OUTPUT= LCL['p3s_output']
-except:
-    pass
-
 
 
 # Password validation

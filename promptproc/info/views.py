@@ -33,8 +33,8 @@ def index(request):
     ldavg	= loadavg()
 
     hostname	= settings.HOSTNAME
-    dirpath	= settings.DIRPATH
-    dqm_domain	= settings.DQM_DOMAIN
+    dirpath	= settings.SITE['dirpath']
+    dqm_domain	= settings.SITE['dqm_domain']
 
     # Accomodate testing on the custom ssh tunnel
     if(domain=='localhost:8008') : dqm_domain = 'localhost:8009'
