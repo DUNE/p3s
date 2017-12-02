@@ -64,6 +64,7 @@ SELECTORS	= {
          ('all',	'All'),		('active',	'Active'),	('running',	'Running'),	('stopped',	'Stopped'),
          ('timeout',	'Timed out'),	('no jobs',	'No Jobs'),	('DB lock',	'DB lock'),
      ],
+     'stateselector':True,
      'userselector': None,
      'gUrl':'/monitor/pilots',
      'qUrl':'/monitor/pilots?',
@@ -76,6 +77,7 @@ SELECTORS	= {
          ('all',	'All'),		('template',	'Template'),	('defined',	'Defined'),	('running',	'Running'),
          ('finished','Finished'),	('pilotTO','Pilot Timed Out'),
      ],
+     'stateselector':True,
      'userselector': True,
      'typeselector': True,
      'timeselector': 'timeselector',
@@ -90,22 +92,26 @@ SELECTORS	= {
          ('all',	'All'),         ('template',	'Template'),	('defined',	'Defined'),
          ('running',	'Running'),	('finished','Finished'),
      ],
+     'stateselector':True,
      'userselector': 'userselector',
      'gUrl':'/monitor/workflows',
      'qUrl':'/monitor/workflows?state=%s',
      'table':'WfTable',
     },
     
-    'site':	{'userselector': None,	'table': 'SiteTable',    },
+    'site':	{'stateselector':None,	'userselector': None,	'table': 'SiteTable',    },
     
-    'dataset':	{'userselector': None,	'table': 'DataTable',    },
+    'dataset':	{'stateselector':None,	'userselector': None,	'table': 'DataTable',    },
     
-    'datatype':	{'userselector': None,	'table': 'DataTypeTable',},
+    'datatype':	{'stateselector':None,	'userselector': None,	'table': 'DataTypeTable',},
     
-    'dag':	{'userselector': None, },
+    'dag':	{'stateselector':None,	'userselector': None, },
+
+    'service':	{'stateselector':None,	'userselector': None,	'table': 'ServiceTable', 'serviceselector': True},
 }
 
-#
+
+#########################################################    
 def makeQuery(what, q=''):
     gUrl= SELECTORS[what]['gUrl']
     qUrl= SELECTORS[what]['qUrl']
@@ -114,6 +120,13 @@ def makeQuery(what, q=''):
         return HttpResponseRedirect(gUrl)
     
     return HttpResponseRedirect(qUrl+q)
+
+#########################################################    
+def makeTupleList(listOfStuff):
+    theList = []
+    for stuff in listOfStuff: theList.append((stuff,stuff))
+    return theList
+
 #########################################################    
 class boxSelector(forms.Form):
 
@@ -159,17 +172,23 @@ class dropDownGeneric(forms.Form):
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
-    dqm_domain	= settings.SITE['dqm_domain']
-    dqm_host	= settings.SITE['dqm_host']
 
+    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
 
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_users	= settings.SITE['p3s_users']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_users,p3s_jobtypes, p3s_services")
 
-    # this is likely provisional - initialization from the local config file
-    p3s_users	= settings.SITE['p3s_users']
-    p3s_jobtypes= settings.SITE['p3s_jobtypes']
     
     userlist	= p3s_users.split(',')
     jobtypes	= p3s_jobtypes.split(',')
+    services	= p3s_services.split(',')
+    
     #----------------------------------------------
     template = 'universo.html'
 
@@ -198,25 +217,15 @@ def data_handler(request, what):
     d		= dict(domain=domain, dqm_domain=dqm_domain, dqm_host=dqm_host, time=str(now))
 
     objects, t, Nfilt						= None, None, None
-    stateSelector, perPageSelector, userSelector, typeSelector	= None, None, None, None
+    stateSelector, perPageSelector,userSelector, typeSelector,serviceSelector	= None, None, None, None, None
 
     t = None  # placeholder for the main table object
     
-    if(what=='service'):
-        objects = eval(what).objects
-        t = ServiceTable(objects.all())
-
-        # return HttpResponse(str(f))
-    
-    if(what in ['job', 'pilot', 'workflow']):
+    if(what in ['job', 'pilot', 'workflow', 'service']):
         
-        uTupleList = []
-        for u in userlist: uTupleList.append((u,u))
-        USERCHOICES = uTupleList
-            
-        jTupleList = []
-        for jt in jobtypes: jTupleList.append((jt,jt))
-        JOBTYPECHOICES = jTupleList
+        USERCHOICES	= makeTupleList(userlist)
+        JOBTYPECHOICES	= makeTupleList(jobtypes)
+        SERVICECHOICES	= makeTupleList(services)
         
         selector = SELECTORS[what] # IMPORTANT
         
@@ -227,24 +236,35 @@ def data_handler(request, what):
         timeselector = 'TBD'
 #----------
 
-        # HANDLE USER'S SELECTIONS HERE
+        # There may be two types of selectors here: checkbox and dropdown
+        # Find which ones exist by handling exceptions
         if request.method == 'POST':
-            stateSelector = boxSelector(request.POST, what=what)
-            if stateSelector.is_valid(): q += stateSelector.handleBoxSelector()
+            try:
+                if(selector['stateselector']):
+                    stateSelector = boxSelector(request.POST, what=what)
+                    if stateSelector.is_valid():q += stateSelector.handleBoxSelector()
+            except:
+                pass
 
+            # PLEASE HASH ME! Will remove redundant code later -mxp-
             try:
                 if(selector['userselector']):
                     userSelector = dropDownGeneric(request.POST, label='User', choices=USERCHOICES, tag='user')
-                    if userSelector.is_valid():
-                        q += userSelector.handleDropSelector()
+                    if userSelector.is_valid():	q += userSelector.handleDropSelector()
             except:
                 pass
 
             try:
                 if(selector['typeselector']):
                     typeSelector = dropDownGeneric(request.POST, label='Type', choices=JOBTYPECHOICES, tag='jobtype')
-                    if typeSelector.is_valid():
-                        q += typeSelector.handleDropSelector()
+                    if typeSelector.is_valid(): q += typeSelector.handleDropSelector()
+            except:
+                pass
+
+            try:
+                if(selector['serviceselector']):
+                    serviceSelector = dropDownGeneric(request.POST, label='Service', choices=SERVICECHOICES, tag='service')
+                    if typeSelector.is_valid(): q += typeSelector.handleDropSelector()
             except:
                 pass
 
@@ -265,9 +285,12 @@ def data_handler(request, what):
         ###### IF NOT RESPONSE TO QUERY, ################
         ###### BUILD THE DEFAULT PAGE    ################
         #################################################
-        
-        stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
-        
+
+        try:
+            if(selector['stateselector']):stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
+        except:
+            pass
+            
         try:
             if(selector['userselector']): userSelector	= dropDownGeneric(initial={'user':initUser},	label='User',	choices = USERCHOICES, tag='user')
         except:
@@ -275,6 +298,14 @@ def data_handler(request, what):
             
         try:
             if(selector['typeselector']): typeSelector	= dropDownGeneric(initial={'jobtype':'All'},	label='Type',	choices = JOBTYPECHOICES, tag='jobtype')
+        except:
+            pass
+            
+        try:
+            if(selector['serviceselector']):
+                print(selector)
+                serviceSelector	= dropDownGeneric(initial={'service':'All'},	label='Service',choices = SERVICECHOICES, tag='service')
+                print(SERVICECHOICES)
         except:
             pass
             
@@ -309,7 +340,7 @@ def data_handler(request, what):
         if(t is None):t = chosenTable(objects.all()) # FIXME - check kwargs instead
 
     if(what in ['dataset', 'site', 'datatype']):
-        selector = SELECTORS[what] # IMPORTANT
+        selector = SELECTORS[what]               # IMPORTANT
         chosenTable=eval(selector['table'])
         objects = eval(what).objects
         t = chosenTable(objects.all())
@@ -341,6 +372,7 @@ def data_handler(request, what):
     if(stateSelector):	selectors.append(stateSelector)
     if(userSelector):	selectors.append(userSelector)
     if(typeSelector):	selectors.append(typeSelector)
+    if(serviceSelector):selectors.append(serviceSelector)
     if(perPageSelector):selectors.append(perPageSelector)
 
     d['selectors'] = selectors
