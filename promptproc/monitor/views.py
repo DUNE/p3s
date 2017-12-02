@@ -297,15 +297,13 @@ def data_handler(request, what):
             pass
             
         try:
-            if(selector['typeselector']): typeSelector	= dropDownGeneric(initial={'jobtype':'All'},	label='Type',	choices = JOBTYPECHOICES, tag='jobtype')
+            if(selector['typeselector']): typeSelector	= dropDownGeneric(initial={'jobtype':initJobType},label='Type',	choices = JOBTYPECHOICES, tag='jobtype')
         except:
             pass
             
         try:
             if(selector['serviceselector']):
-                print(selector)
                 serviceSelector	= dropDownGeneric(initial={'service':'All'},	label='Service',choices = SERVICECHOICES, tag='service')
-                print(SERVICECHOICES)
         except:
             pass
             
@@ -368,12 +366,9 @@ def data_handler(request, what):
     d['host']	= settings.HOSTNAME
 
     selectors = []
-    
-    if(stateSelector):	selectors.append(stateSelector)
-    if(userSelector):	selectors.append(userSelector)
-    if(typeSelector):	selectors.append(typeSelector)
-    if(serviceSelector):selectors.append(serviceSelector)
-    if(perPageSelector):selectors.append(perPageSelector)
+
+    for s in (stateSelector, userSelector, typeSelector, serviceSelector, perPageSelector):
+        if(s):	selectors.append(s)
 
     d['selectors'] = selectors
 
