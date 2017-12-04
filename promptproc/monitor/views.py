@@ -320,13 +320,21 @@ def data_handler(request, what):
 
         # Don't forget to update this filter part as you add functionality!
         kwargs = {}
-        if(uuid		!= ''): kwargs['uuid']		= uuid
-        if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
-        if(pk		!= ''): kwargs['pk']		= pk
-        if(name		!= ''): kwargs['name']		= name
-        if(user		!= ''): kwargs['user']		= user
-        if(jobtype	!= ''): kwargs['jobtype']	= jobtype
-        if(state	!= ''): kwargs['state__in']	= states # notice multiple values
+
+        for look4 in ('uuid','wfuuid','pk','name','user','jobtype','state'):
+            val = eval(look4)
+            print(look4, val)
+            if(val!=''): kwargs[look4] = val
+            
+        if(service != ''): kwargs['name']		= service
+        print(kwargs)
+#        if(uuid		!= ''): kwargs['uuid']		= uuid
+#        if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
+#        if(pk		!= ''): kwargs['pk']		= pk
+#        if(name		!= ''): kwargs['name']		= name
+#        if(user		!= ''): kwargs['user']		= user
+#        if(jobtype	!= ''): kwargs['jobtype']	= jobtype
+#        if(state	!= ''): kwargs['state__in']	= states # notice multiple values
         
         try:
             objs = objects.filter(**kwargs)
@@ -377,9 +385,15 @@ def data_handler(request, what):
 #########################################################    
 # general request handler for detail type of a table
 def detail_handler(request, what):
-    dqm_domain	= settings.DQM_DOMAIN
-    dqm_host	= settings.DQM_HOST
-
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_users	= settings.SITE['p3s_users']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_users,p3s_jobtypes, p3s_services")
+    
     pk 		= request.GET.get('pk','')
     name 	= request.GET.get('name','')
     o_uuid 	= request.GET.get('uuid','')
