@@ -95,7 +95,7 @@ SELECTORS	= {
      'stateselector':True,
      'userselector': 'userselector',
      'gUrl':'/monitor/workflows',
-     'qUrl':'/monitor/workflows?state=%s',
+     'qUrl':'/monitor/workflows?state=%s',  # FIXME - we already created a method which works different to form the URL
      'table':'WfTable',
     },
     
@@ -107,7 +107,11 @@ SELECTORS	= {
     
     'dag':	{'stateselector':None,	'userselector': None, },
 
-    'service':	{'stateselector':None,	'userselector': None,	'table': 'ServiceTable', 'serviceselector': True},
+    'service':	{'stateselector':None,	'userselector': None,	'table': 'ServiceTable', 'serviceselector': True,
+     'gUrl':'/monitor/services',
+     'qUrl':'/monitor/services?',
+                 
+    },
 }
 
 
@@ -199,7 +203,12 @@ def data_handler(request, what):
     state	= request.GET.get('state','')
     jobtype	= request.GET.get('jobtype','')
     user	= request.GET.get('user','')
+
+    serviceName	= request.GET.get('service','')
+    
     host	= request.GET.get('host','')
+
+    
     perpage	= request.GET.get('perpage','25')
 
     states = ['all',]
@@ -264,7 +273,7 @@ def data_handler(request, what):
             try:
                 if(selector['serviceselector']):
                     serviceSelector = dropDownGeneric(request.POST, label='Service', choices=SERVICECHOICES, tag='service')
-                    if typeSelector.is_valid(): q += typeSelector.handleDropSelector()
+                    if serviceSelector.is_valid(): q += serviceSelector.handleDropSelector()
             except:
                 pass
 
@@ -321,13 +330,16 @@ def data_handler(request, what):
         # Don't forget to update this filter part as you add functionality!
         kwargs = {}
 
-        for look4 in ('uuid','wfuuid','pk','name','user','jobtype','state'):
+        for look4 in ('uuid','wfuuid','pk','name','user','jobtype','state'): # FIXME state can be a list
             val = eval(look4)
-            print(look4, val)
+#            print(look4, val)
             if(val!=''): kwargs[look4] = val
             
-        if(service != ''): kwargs['name']		= service
-        print(kwargs)
+        if(serviceName != ''): kwargs['name']		= serviceName
+#        print(kwargs)
+
+
+# That's the original code were are tring to rationalize above:        
 #        if(uuid		!= ''): kwargs['uuid']		= uuid
 #        if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
 #        if(pk		!= ''): kwargs['pk']		= pk
