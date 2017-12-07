@@ -219,6 +219,9 @@ def data_handler(request, what):
         
     initJobType=jobtype
     if(jobtype==''): initJobType='All'
+
+    initService=serviceName
+    if(serviceName==''): initService='All'
         
     domain	= request.get_host()
 
@@ -301,18 +304,17 @@ def data_handler(request, what):
             pass
             
         try:
-            if(selector['userselector']): userSelector	= dropDownGeneric(initial={'user':initUser},	label='User',	choices = USERCHOICES, tag='user')
+            if(selector['userselector']):	userSelector	= dropDownGeneric(initial={'user':initUser},		label='User',	choices = USERCHOICES, tag='user')
         except:
             pass
             
         try:
-            if(selector['typeselector']): typeSelector	= dropDownGeneric(initial={'jobtype':initJobType},label='Type',	choices = JOBTYPECHOICES, tag='jobtype')
+            if(selector['typeselector']):	typeSelector	= dropDownGeneric(initial={'jobtype':initJobType},	label='Type',	choices = JOBTYPECHOICES, tag='jobtype')
         except:
             pass
             
         try:
-            if(selector['serviceselector']):
-                serviceSelector	= dropDownGeneric(initial={'service':'All'},	label='Service',choices = SERVICECHOICES, tag='service')
+            if(selector['serviceselector']):	serviceSelector	= dropDownGeneric(initial={'service':initService},	label='Service',choices = SERVICECHOICES, tag='service')
         except:
             pass
             
@@ -323,31 +325,16 @@ def data_handler(request, what):
 
 
         objects = eval(what).objects
-        # there is a catch-all below, so this default is not necessary (I guess)
-        # if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = chosenTable(objects.all())
-        
-
-        # Don't forget to update this filter part as you add functionality!
         kwargs = {}
 
-        for look4 in ('uuid','wfuuid','pk','name','user','jobtype','state'): # FIXME state can be a list
-            val = eval(look4)
-#            print(look4, val)
-            if(val!=''): kwargs[look4] = val
-            
-        if(serviceName != ''): kwargs['name']		= serviceName
-#        print(kwargs)
+        for selectionKey in ('uuid','wfuuid','pk','name','user','jobtype'):
+            val = eval(selectionKey)
+            if(val!=''): kwargs[selectionKey] = val
 
+        # corner cases
+        if(serviceName	!= ''):	kwargs['name']		= serviceName
+        if(state	!= ''):	kwargs['state__in']	= states # notice multiple values
 
-# That's the original code were are tring to rationalize above:        
-#        if(uuid		!= ''): kwargs['uuid']		= uuid
-#        if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
-#        if(pk		!= ''): kwargs['pk']		= pk
-#        if(name		!= ''): kwargs['name']		= name
-#        if(user		!= ''): kwargs['user']		= user
-#        if(jobtype	!= ''): kwargs['jobtype']	= jobtype
-#        if(state	!= ''): kwargs['state__in']	= states # notice multiple values
-        
         try:
             objs = objects.filter(**kwargs)
             Nfilt = objs.count()
@@ -587,4 +574,19 @@ def filesystem(request):
 #     def handleDropSelector(self):
 #         selectedNumber = self.cleaned_data['dropChoicePage']
 #         return 'perpage='+selectedNumber+'&'
+
+
+# snippet of filter code for reference
+#        if(uuid		!= ''): kwargs['uuid']		= uuid
+#        if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
+#        if(pk		!= ''): kwargs['pk']		= pk
+#        if(name		!= ''): kwargs['name']		= name
+#        if(user		!= ''): kwargs['user']		= user
+#        if(jobtype	!= ''): kwargs['jobtype']	= jobtype
+#        if(state	!= ''): kwargs['state__in']	= states # notice multiple values
+        
+
+
+# if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = chosenTable(objects.all())
+        
 
