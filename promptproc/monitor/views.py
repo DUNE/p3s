@@ -95,7 +95,7 @@ SELECTORS	= {
      'stateselector':True,
      'userselector': 'userselector',
      'gUrl':'/monitor/workflows',
-     'qUrl':'/monitor/workflows?state=%s',  # FIXME - we already created a method which works different to form the URL
+     'qUrl':'/monitor/workflows?',
      'table':'WfTable',
     },
     
@@ -105,12 +105,14 @@ SELECTORS	= {
     
     'datatype':	{'stateselector':None,	'userselector': None,	'table': 'DataTypeTable',},
     
-    'dag':	{'stateselector':None,	'userselector': None, },
+    'dag':	{'stateselector':None,	'userselector': None,	'table': 'DagTable',
+     'gUrl':'/monitor/dags',
+     'qUrl':'/monitor/dags?',
+    },
 
     'service':	{'stateselector':None,	'userselector': None,	'table': 'ServiceTable', 'serviceselector': True,
      'gUrl':'/monitor/services',
      'qUrl':'/monitor/services?',
-                 
     },
 }
 
@@ -233,7 +235,7 @@ def data_handler(request, what):
 
     t = None  # placeholder for the main table object
     
-    if(what in ['job', 'pilot', 'workflow', 'service']):
+    if(what in ['job', 'pilot', 'dag', 'workflow', 'service']):
         
         USERCHOICES	= makeTupleList(userlist)
         JOBTYPECHOICES	= makeTupleList(jobtypes)
@@ -246,10 +248,9 @@ def data_handler(request, what):
         chosenTable=eval(selector['table'])
 
         timeselector = 'TBD'
-#----------
 
-        # There may be two types of selectors here: checkbox and dropdown
-        # Find which ones exist by handling exceptions
+        #----------
+
         if request.method == 'POST':
             try:
                 if(selector['stateselector']):
@@ -293,13 +294,12 @@ def data_handler(request, what):
                     
             return makeQuery(what, q) # will go and get the query results...
 
-        #################################################
-        ###### IF NOT RESPONSE TO QUERY, ################
-        ###### BUILD THE DEFAULT PAGE    ################
-        #################################################
+        ###################################################################
+        ###### IF IT'S NOT RESPONSE TO QUERY, BUILD THE INITIAL PAGE ######
+        ###################################################################
 
         try:
-            if(selector['stateselector']):stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
+            if(selector['stateselector']):	stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
         except:
             pass
             
@@ -318,7 +318,7 @@ def data_handler(request, what):
         except:
             pass
             
-        perPageSelector	= dropDownGeneric(initial={'perpage':perpage},	label='# per page',	choices = PAGECHOICES, tag='perpage')
+        perPageSelector	= dropDownGeneric(initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
 
         
 #        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time') # work in progress
@@ -333,7 +333,7 @@ def data_handler(request, what):
 
         # corner cases
         if(serviceName	!= ''):	kwargs['name']		= serviceName
-        if(state	!= ''):	kwargs['state__in']	= states # notice multiple values
+        if(state	!= ''):	kwargs['state__in']	= states # note multiple values
 
         try:
             objs = objects.filter(**kwargs)
@@ -350,14 +350,6 @@ def data_handler(request, what):
         objects = eval(what).objects
         t = chosenTable(objects.all())
 
-    if(what=='dag'):
-        objects = dag.objects
-        if(pk != ''):			objs = objects.filter(pk=pk)
-        if(name != ''):			objs = objects.filter(name=name)
-        if(pk == '' and name == ''):	objs = objects.all()
-        Nfilt = objs.count()
-        t = DagTable(objs)
-        
     t.set_site(domain)
 
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
@@ -590,3 +582,11 @@ def filesystem(request):
 # if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = chosenTable(objects.all())
         
 
+    # if(what=='dag'):
+    #     objects = dag.objects
+    #     if(pk != ''):			objs = objects.filter(pk=pk)
+    #     if(name != ''):			objs = objects.filter(name=name)
+    #     if(pk == '' and name == ''):	objs = objects.all()
+    #     Nfilt = objs.count()
+    #     t = DagTable(objs)
+        
