@@ -14,30 +14,10 @@ import socket
 
 ##########################################################################
 # These two are site-specific and should not be under version control.
-import databases
-# template -
-# DB = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'xxx',
-#         'USER': 'xxx',
-#         'PASSWORD': 'xxx',
-#         'HOST': 'xxx',
-#         'PORT': 'xxx',
-#     }
-# }
 
+from local import SITE, DATABASES
 
-import local
-# template -
-# LOCAL = {
-#     'dirpath': 'xxx',
-#     'dqm_domain': 'xxx:8000',
-#     'dqm_host': 'xxx'
-# }
 ##########################################################################
-
-
 
 
 try:
@@ -123,12 +103,6 @@ WSGI_APPLICATION = 'promptproc.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
-
-
-# Look at the bottom for (previously) working examples
-
-DATABASES = databases.DB
-SITE = local.SITE
 
 try:
     DIRPATH	= SITE['dirpath']
