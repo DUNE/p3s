@@ -33,7 +33,7 @@ then
     export P3S_JOB_UUID=`uuid`
     echo $P3S_JOB_UUID
     export after=">$P3S_DATA/joblog/$P3S_JOB_UUID.out 2>$P3S_DATA/joblog/$P3S_JOB_UUID.err"
-    echo $after
+#    echo $after
 #    exit
 fi
 
@@ -45,8 +45,8 @@ pwd
 cp $P3S_CRT_TXT .
 
 env | grep P3S
-echo '****' lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root $after
-lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root $after
+# echo '****' lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root $after
+lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root
 # -n$P3S_NEVENTS
 cp $P3S_DATA/joblog/$P3S_JOB_UUID.out .
 cp $P3S_DATA/joblog/$P3S_JOB_UUID.err .
