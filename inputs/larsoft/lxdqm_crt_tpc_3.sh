@@ -34,7 +34,7 @@ then
     echo $P3S_JOB_UUID
     export after=">$P3S_DATA/joblog/$P3S_JOB_UUID.out 2>$P3S_DATA/joblog/$P3S_JOB_UUID.err"
     echo $after
-    exit
+#    exit
 fi
 
 tmpdir=$P3S_JOB_UUID
