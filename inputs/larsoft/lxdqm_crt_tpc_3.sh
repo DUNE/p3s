@@ -32,7 +32,9 @@ then
     echo P3S_JOB_UUID undefined, setting new value:
     export P3S_JOB_UUID=`uuid`
     echo $P3S_JOB_UUID
-    after=">$P3S_DATA/joblog/$P3S_JOB_UUID.out 2>$P3S_DATA/joblog/$P3S_JOB_UUID.err"
+    export after=">$P3S_DATA/joblog/$P3S_JOB_UUID.out 2>$P3S_DATA/joblog/$P3S_JOB_UUID.err"
+    echo $after
+    exit
 fi
 
 tmpdir=$P3S_JOB_UUID
