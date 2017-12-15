@@ -17,10 +17,14 @@ except:
 parser = argparse.ArgumentParser()
 
 parser.add_argument("-j", "--json_in", type=str, default='', help="file from which to read the job (must be a list)")
+parser.add_argument("-f", "--file", type=str, default=None, help="input file, overrides the value in json file")
 
 args = parser.parse_args()
 
 j = args.json_in
+f = args.file
+
+if(f): inputOverride=f
 
 if(j==''): exit(-1)
 
