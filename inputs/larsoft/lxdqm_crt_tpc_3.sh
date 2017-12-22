@@ -27,16 +27,6 @@ cd $P3S_OUTPUT_DIR
 
 export after=''
 
-if [ -z ${P3S_JOB_UUID+x} ];
-then
-    echo P3S_JOB_UUID undefined, setting new value:
-    export P3S_JOB_UUID=`uuid`
-    echo $P3S_JOB_UUID
-    export after="1>$P3S_DATA/joblog/$P3S_JOB_UUID.out 2>$P3S_DATA/joblog/$P3S_JOB_UUID.err"
-#    echo $after
-#    exit
-fi
-
 tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
 cd $tmpdir
@@ -45,8 +35,19 @@ pwd
 cp $P3S_CRT_TXT .
 
 env | grep P3S
-echo '****' lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root $after
-(lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root -n $P3S_NEVENTS) 1>out 2>err
+
+
+
+if [ -z ${P3S_JOB_UUID+x} ];
+then
+    echo P3S_JOB_UUID undefined, setting new value:
+    export P3S_JOB_UUID=`uuid`
+    echo $P3S_JOB_UUID
+    (lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root -n $P3S_NEVENTS) 1>$P3S_DATA/joblog/$P3S_JOB_UUID.out 2>$P3S_DATA/joblog/$P3S_JOB_UUID.err
+else
+    lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_DIR/$tmpdir/lxdqm_crt_tpc_1.root -n $P3S_NEVENTS
+fi
+
 cp $P3S_DATA/joblog/$P3S_JOB_UUID.out .
 cp $P3S_DATA/joblog/$P3S_JOB_UUID.err .
 exit
