@@ -33,8 +33,22 @@ For command line options run the pilot with "--help" option.
 * Bulk injection *
 
 Option "-j" allows to inject a collection of jobs based on
-the contents of a JSON file. See the "examples" directory
-for a sample.
+the contents of a JSON file (formatted as a list). See the
+"examples" directory for a sample. In addition, if
+a single job is specified in the list, the user can create
+replicas of this job in the system with the "-N" option.
+In either case, the jobs are registered at the server
+with consecutive HTTP messages. There is a delay
+between the messages which aims to avoid a DOS situation.
+
+* "Test Wrapper"
+
+It may be useful to test the job on an interactive node
+before sending it to the server for bulk execution. If
+this is the case, the "testwrapper.py" script should
+be used. It provides correct setting of the environment
+for the job before its execution commences.
+
 
 * Changing attributes of a job *
 
@@ -53,6 +67,7 @@ If a structured definition of input and/or output data is
 needed, a job must be defined as a part of a workflow. Otherwise
 it's up to the job itself to find its inputs and define its
 outputs
+
 
 '''
 
@@ -84,14 +99,15 @@ parser.add_argument("-D", "--delay",	type=int,	help="delay in serial submission 
 
 parser.add_argument("-u", "--uuid",	type=str,	help="uuid of the job to be adjusted",			default='')
 
-parser.add_argument("-p", "--pk",	type=str,	help="pk of the job to be adjusted",		default='')
+parser.add_argument("-p", "--pk",	type=str,	help="pk of the job to be adjusted",			default='')
 
 
-parser.add_argument("-j", "--json_in",	type=str,	help="JSON file with job templates (list)",			default='')
+parser.add_argument("-j", "--json_in",	type=str,	help="JSON file with job templates (list)",		default='')
 
-parser.add_argument("-f", "--filename",	type=str, help="filename to plug into the template",		default='')
+parser.add_argument("-f", "--filename",	type=str, help="value with which to override P3S_INPUT_FILE in the job template",
+		    default='')
 
-parser.add_argument("-i", "--inputdir",	type=str, help="input directory",				default='')
+parser.add_argument("-i", "--inputdir",	type=str, help="input directory",					default='')
 
 
 parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion",			default='defined',
