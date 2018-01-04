@@ -79,9 +79,11 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-U", "--usage",	action='store_true',	help="print usage notes and exit")
 
-parser.add_argument("-a", "--adjust",	action='store_true',	help="enables state/priority adjustments. Needs uuid.")
+parser.add_argument("-a", "--adjust",	action='store_true',	help="enables state/priority adjustments. Needs these parameters plus uuid.")
 
-parser.add_argument("-d", "--delete",	action='store_true',	help="deletes a job. Needs uuid.")
+parser.add_argument("-d", "--delete",	action='store_true',	help="deletes the DB record job regardless of its state. Needs uuid or id (pk). *SHOULD BE USED WITH CARE*")
+
+# parser.add_argument("-k", "--kill",	action='store_true',	help="kills a running job. Needs uuid or id (pk). *FUTURE DEVELOPMENT*")
 
 parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
 
@@ -97,25 +99,23 @@ parser.add_argument("-N", "--number",	type=int,	help="creates N job replicas (de
 
 parser.add_argument("-D", "--delay",	type=int,	help="delay in serial submission of replicas, ms",	default=1000)
 
-parser.add_argument("-u", "--uuid",	type=str,	help="uuid of the job to be adjusted",			default='')
+parser.add_argument("-u", "--uuid",	type=str,	help="uuid of the job to be manipulated",		default='')
 
-parser.add_argument("-p", "--pk",	type=str,	help="pk of the job to be adjusted",			default='')
+parser.add_argument("-p", "--pk",	type=str,	help="pk of the job to be manipulated",			default='')
 
 
 parser.add_argument("-j", "--json_in",	type=str,	help="JSON file with job templates (list)",		default='')
 
-parser.add_argument("-f", "--filename",	type=str, help="value with which to override P3S_INPUT_FILE in the job template",
+parser.add_argument("-f", "--filename",	type=str,	help="value with which to override P3S_INPUT_FILE in the job template",
 		    default='')
 
-parser.add_argument("-i", "--inputdir",	type=str, help="input directory",					default='')
+# parser.add_argument("-i", "--inputdir",	type=str,	help="input directory *FUTURE DEVELOPMENT",		default='')
 
 
-parser.add_argument("-T", "--timestamp",type=str,	help="type of timestamp for deletion",			default='defined',
-                    choices=['ts_def','ts_sta','ts_sto'])
+# parser.add_argument("-T", "--timestamp",type=str,	help="type of ts for deletion *FUTURE DEVELOPMENT*",	default='defined', choices=['ts_def','ts_sta','ts_sto'])
 
-parser.add_argument("-v", "--verbosity",	type=int, default=envDict['verb'], choices=[0, 1, 2],
-                    help="set output verbosity")
 
+parser.add_argument("-v", "--verbosity",type=int,	help="set output verbosity", default=envDict['verb'], choices=[0, 1, 2])
 
 ########################### Parse all arguments #########################
 args = parser.parse_args()
@@ -125,7 +125,6 @@ usage	= args.usage
 server	= args.server
 state	= args.state
 priority= args.priority
-timestamp= args.timestamp
 j_uuid	= args.uuid
 j_id	= args.pk
 verb	= args.verbosity
@@ -138,7 +137,10 @@ delay	= args.delay
 
 
 filename= args.filename
-inputDir= args.inputdir
+
+# save for later:
+# inputDir= args.inputdir
+# timestamp= args.timestamp
 
 
 # prepare a list which may be used in a variety of operations,
