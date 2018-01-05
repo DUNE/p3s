@@ -10,12 +10,15 @@ and component reuse over most other factors.
 
 ## Content
 More important of the subdirectories are
-- **promptproc** which contains the Web application server code
-- **clients** which contains the client code
-- **inputs** with useful examples of actual job description both for local testing and for the real operating environment
+- **promptproc**: the Web application server code
+- **clients**: the client code
+- **inputs**:  useful examples of actual job description both for local testing and for the real operating environment
 
 ## Documentation
 Please consult the *documents* subdirectory for documentation concerning
 - installation
 - p3s client interface (important for operators and shifters)
 - advanced part of the design such as workflow functionality etc
+
+In addition, don't forget that the p3s clients are fairly well self-documented via
+the use of "-h" option which prints out usefl synopsis for each command.
