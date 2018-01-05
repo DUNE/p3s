@@ -1,4 +1,4 @@
-# ProtoDUNE Prompt Processing System (p3s)
+# Installation of p3s and its software dependencies
 ## Software dependencies
 p3s consists of the server and client components. The code
 is organized in the folders **promptproc** and **client** respectively.
