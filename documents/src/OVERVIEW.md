@@ -32,8 +32,8 @@ interface with minimal coding and integration effort. Second, a full-fledged dat
 handling system would introduce additional complexity, latency and potentially
 failure modes. In summary, data handling capabilities are kept to an absolute minimum.
 
-## Job dispatch
-### Pilots
+# Design Notes
+## The Pilot Framework
 To minimize latency and provide the ability to run transparently on
 a few local resources (e.g. some ad-hoc cluster at CERN, central CERN
 batch facility (Tier-0) and perhaps some other facilities) any reliance on the flavor
@@ -44,7 +44,24 @@ the pilots (agents) contact a central service and only receive jobs in
 case the batch slot is secured and the environment validated. This also
 combats a few failure modes.
 
-### Pilot States
+
+## Client/Server Architecture
+The p3s server is a Web service i.e. its API is based on HTTP requests.
+The user interacts with the system by means of clients which send HTTP requests to
+the server. This is the only way to change the state of the server and the objects it contains it its database.
+
+The p3s server provides the following set of functionality:
+
+* creates objects e.g. job records in its database, according to messages received from clients which may be actuated by the user or run as a part of an automated script
+
+* changes the state of objects - once again, according to messages coming from the clients
+
+* monitoring of the state of various objects such as jobs, pilots, units of data etc
+
+
+
+# Objects
+## Pilot States
 An example of what states a pilot can go through during its lifecycle
 is given below:
 
@@ -61,37 +78,28 @@ is given below:
 * *stopped*: stopped after exhausting all brokerage attempts.
 
 
+## Job
+The "job" is p3s is a record in its database which contains all information necessary to create an actual process on a worker node.
+
+
 ## Workflows
 Workflow model, interface and the corresponding p3s client are described
 in a separate document (*WORKFLOW.pdf*).
 
-## Location of the input raw data
+# Data
 The protoDUNE DAQ writes the data to its own "online buffer" from which it is
 transferred to CERN EOS (centralized distributed high-performance disk storage).
 In order to continue operation in case of a network outage which could make
 EOS inaccessible, the system mush be able to optionally feed from the online buffer
 without putting too much extra I/O load on it.
 
-## Just-in-time job execution
-The near-time nature of prompt processing requires "just-in-time" job submission
-and not be subjected to the often unpredictable latencies found in batch systems. An
-efficient and tried way to achieve this is the pilot-based job submission.
 
-## Components
-* Web service:
+# Clients
 
-   * workflows and their templates (dags)
-   
-   * jobs
-   
-   * data
-   
-   * handling of pilots' requests for registration and payload
-   
-* Clients
+Most important of the p3s clients are:
 
    * The *pilot* - submission and management of pilot data on the server
    
    * The *job* - submission of job definitions to the server and management of job data on the server
-   
-   
+
+Please see the dedicated document ("CLIENTS") for more detail.

@@ -1,12 +1,20 @@
-## Brief summary of the clients' functionality
-### job.py
+# P3S Clients
+## job.py
 
 This client is used to:
+
 * create a job (or a number of jobs) on the server. By default standalone jobs
 are created, which are not associated with a workflow. This can be done by reading a description of
-job(s) contained in a JSON file. An example (with arbitrary names and variables demonstrates
-how JSON is used:
-`[
+job(s) contained in a JSON file.
+
+* adjust job attributes
+* delete a job from the server
+
+
+An example (with arbitrary names and variables demonstrates how JSON is used:
+
+`
+[
     {
         "name":         "p3s_job",
         "timeout":      "100",
@@ -16,10 +24,9 @@ how JSON is used:
         "priority":     "1",
         "state":        "defined"
     }
-]`
+]
+`
 
-* adjust job attributes
-* delete a job from the server
 
 ## pilot.py
 
@@ -44,8 +51,8 @@ Creates and manipulates DAGs and workflows. DAGs serve as templates for actual a
 
 
 
-## Interfaces
-### Server interface
+# P3S Interfaces
+## Server interface
 
 * serverAPI.py: translates calls to methods in scripts to HTTP messages sent to the server
 utilizing *urllib*. It is used by most all clients.
