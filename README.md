@@ -1,10 +1,14 @@
 # ProtoDUNE Prompt Processing System (p3s)
 ## About the system
-**p3s** stands for the ProtoDUNE Prompt Processing System, as it was developed as a
-lightweight and easy-to-deploy tool for managing prompt processing workflows
-in the protoDUNE experiment at CERN. However, p3s does not contain any special logic
-or dependency related to protoDUNE. It is content-agnostic and can be utilized for
-many other purposes. It design is inspired by the pilot-based frameworks such as PanDA and
+**p3s** stands for the ProtoDUNE Prompt Processing System.
+
+It was initially developed as a lightweight and easy-to-deploy tool for
+managing prompt processing workflows in the protoDUNE experiment at CERN.
+However, p3s does not contain any special logic or dependency related specifically
+to protoDUNE. It is content-agnostic and can be utilized for
+many other purposes.
+
+The design of p3s was inspired by pilot-based frameworks such as PanDA and
 Dirac, but p3s is a clean sheet development and prioritizes simplicity
 and component reuse over most other factors.
 
