@@ -4,36 +4,39 @@ Supporting documents and an outline of the design can be found in
 the FNAL DocDB 1861 (authorization required for access).
 
 The p3s is the computing platform for protoDUNE to support Data Quality Management (DQM).
-Its requirements and mode of operation are different from a typical production system
-in the following:
+Its requirements and mode of operation are different from those of a typical Workload Management
+System (such as used in offline production). In particular,
 
-* there are stringent ETA requirements for processing jobs since for DQM purposes
-the results become stale (not actionable) very fast
+* there are specific ETA requirements ranging from minutes to tens of minutes
+for various types of processing jobs since
+for DQM purposes the results become stale (not actionable) rather fast
 
-* only a portion of the data (configurable) needs to be processed
+* only a portion of the data (configurable) needs to be processed; it is assumed
+that the DAQ and its monitoring system provide stable data taking conditions
+so it is not necessary to sample most of the data continuously
 
-* in any stage of processing a portion of the data unknown apriory can be dropped
-in order to optimize throughput
+* if necessary at run time, in any stage of processing a portion of the data
+can be dropped (i.e. excluded from the DQM stream) in order to optimize throughput
+for critical jobs
 
-* there is no retry mechanism since any substantial delay in processing a unit
-of data makes the result less relevant (again, the focus is on ETA)
+* there is no retry/recovery mechanism for failing jobs since any substantial
+delay in processing a unit of data makes the result less relevant. Instead,
+output and error logs are recorded and used to debug jobs
 
-* processing streams are initiated purely automatically and in real time
+* processing jobs/streams are initiated automatically and are triggered
 by the data arriving from DAQ
 
-* there is no distinct data handling system for two reasons. First, the cluster
-which runs p3s is either literally local or can access data through a POSIX-like
-interface with some modest development and deployment effort. Second, a data
+* in p3s there is no distinct data handling system for two reasons. First, it is assumed
+that p3s can access data either locally via a POSIX-like interface, or via XRootD
+interface with minimal coding and integration effort. Second, a full-fledged data
 handling system would introduce additional complexity, latency and potentially
-failure modes. Instead, p3s relies on federated storage such as provided by an
-instance of XRootD. A high-performance NAS could be an alternative. In either case,
-for purposes of access and processing the data is essentially local on the cluster.
+failure modes. In summary, data handling capabilities are kept to an absolute minimum.
 
 ## Job dispatch
 ### Pilots
 To minimize latency and provide the ability to run transparently on
-a few local resources (e.g. the cluster at EHN1, CERN Tier-0 and perhaps
-some other facilities on or around CERN campus) any reliance on the flavor
+a few local resources (e.g. some ad-hoc cluster at CERN, central CERN
+batch facility (Tier-0) and perhaps some other facilities) any reliance on the flavor
 of the underlying batch system needs to be eliminated. In addition,
 latencies inherent in any batch system should be optimally mitigated. Both
 problems are addressed by utilizing a pilot-based job dispatch, where
