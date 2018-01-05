@@ -95,23 +95,38 @@ There is an additional project under the p3s umbrella, contained in the folder *
 It's not a part of the core system and should be ignored until further notice.
 
 
-### DB Connection info
+### DB Connection and other deployment-specific information
 
-Add a file names "databases.py" to same directory as manage.py, the template is as follows:
+The database connection infoparameters are a part of "local configuration" since it may depend
+on deployment. This info is kept in the file named "local.py" which should exist in the same
+directory as manage.py. It is maintained outside of version control (i.e. is not in the
+repo) since it may contain sensitive information.
+
+
+The template is as follows:
 ```
+SITE = {
+    'dirpath': '/eos/experiment/neutplatform/protodune/np04tier0/p3s',
+    'p3s_input': '/eos/experiment/neutplatform/protodune/np04tier0/p3s/input',
+    'p3s_output': '/eos/experiment/neutplatform/protodune/np04tier0/p3s/output',
+    'dqm_domain': 'p3s-content.cern.ch',
+    'dqm_host': 'p3s-content',
+    'p3s_users': 'All,maxim,mxp,dladams',
+    'p3s_services':'All,pcalc,TO,purge,tscan,olddata',
+    'p3s_jobtypes':'purity,evdisp',
+}
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': '',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
+        'NAME': 'p3s',
+        'USER': '********',
+        'PASSWORD': '********',
+        'HOST': '188.185.85.205',
         'PORT': '',
     }
 }
 ```
-
-This file is not stored in the repo for obvious reasons.
 
 ### Initializing the Database
 
@@ -208,12 +223,11 @@ tunneling to get access to this host and port combination.
 
 ## Embedded documentation
 Many directories contain .md files that are easy to read in the browser
-on GitHub by just clicking on a file. Some of the more important instructions
-are converted to PDF format and kept in the "documentation" folder in this
-repo.
+on GitHub by just clicking on a file.
 
-If you want to convert any of the .md files to PDF at will, the following
-utility may be used which is easy to install on Linux - see this example:
+If you want to convert any of the .md files to PDF for better readability
+and a pretty printout, the following utility may be used which is easy to
+install on Linux - see this example:
 
 pandoc -s -o README.pdf README.md
 
