@@ -16,9 +16,12 @@ More important of the subdirectories are
 
 ## Documentation
 Please consult the *documents* subdirectory for documentation concerning
-- installation
+- installation of p3s and its software dependencies
 - p3s client interface (important for operators and shifters)
 - advanced part of the design such as workflow functionality etc
+
+The documents are best viewed and/or printed out in the PDF format. These
+files are kept in *documents/pdf* folder.
 
 In addition, don't forget that the p3s clients are fairly well self-documented via
 the use of "-h" option which prints out usefl synopsis for each command.
