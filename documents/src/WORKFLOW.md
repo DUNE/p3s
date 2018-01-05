@@ -1,7 +1,3 @@
-Written by M.Potekhin
-
-January 2017
-
 # User guide to p3s Workflow Interface and Client
 
 ## Intro
@@ -21,13 +17,12 @@ data, since it is data that defines logic of the workflow and relationship among
 constituent jobs. Vertex and Edge objects have attributes necessary to describe
 properties and behaviors of jobs and data elements.
 
-In p3s a DAG describes the topology
-and general characteristics of edges and vertices of a class of workflows but does not
-correspond to a running process or processes nor does it have enough information
-that would be necessary to create a functional workflow. In fact, workflows are created by
-adding enough parameters to DAGs such that that a proper execution context can be defined
-(i.e. the environment, paths to executable, location and name of files etc). Workflows
-therefore are created based on DAGs serving as templates (abstractions) by adding
+In p3s a DAG describes the topology and general characteristics of edges and vertices of
+a class of workflows but does not correspond to a running process or processes nor does
+it have enough information that would be necessary to create a functional workflow. In fact,
+workflows are created by adding enough parameters to DAGs such that that a proper execution
+context can be defined (i.e. the environment, paths to executable, location and name of files etc).
+Workflows therefore are created based on DAGs serving as templates (abstractions) by adding
 necessary parameters.
 
 ## Describing DAGs

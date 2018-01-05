@@ -1,23 +1,4 @@
-# Brief description of the ProtoDUNE Prompt Processing System (p3s)
-## Purpose of this document
-
-This document contains general information about P3S which does not
-belong to the category of recipes, user manuals etc. It serves
-as the place for various development notes and may be updated
-as needed.
-
-## Embedded documentation
-Many directories contain .md files that are easy to read in the browser
-on GitHub by just clicking on a file. Some of the more important instructions
-are converted to PDF format and kept in the "documentation" folder in this
-repo.
-
-If you want to convert any of the .md files to PDF at will, the following
-utility may be used which is easy to install on Linux - see this example:
-
-pandoc -s -o README.pdf README.md
-
-
+# Overview of the ProtoDUNE Prompt Processing System (p3s)
 ## Design Paper and Motivation
 Supporting documents and an outline of the design can be found in
 the FNAL DocDB 1861 (authorization required for access).
@@ -77,34 +58,9 @@ is given below:
 * *stopped*: stopped after exhausting all brokerage attempts.
 
 
-
-## Workflow
-### Workflow as a DAG
-While workflow in p3s will be simple compared to a typical production system,
-it still includes a few steps and can be modeled as a simple DAG. Different stages
-in the workflow may need to be dynamically prioritized in order to get deliverables
-in a timely manner.
-
-A workflow is instantiated based on a DAG template. DAG templates are persistent
-in the database and can be added or deleted at will. A convenient external
-representation of a DAG is a XML file describing the corresponding graph,
-which can be readily parsed and used for both import and export of DAGs.
-
-### XML Schema
-At the time of writing, the GraphML schema is used as the "input language"
-describing graphs. It's one of standard schemas for describing graphs
-and editors and other tools exist for manipulating data in this format,
-altough it's human readable and can be easily edited by hand
-
-### Pairing Jobs to Data
-Setting the environment variables to supply information about I/O
-is preferred due to flexibility of such method. Dependencies between
-interfaces of jobs in a workflow need to be minimized.
-
-Once a WF is defined (based on a DAG), so are dataset characteristics
-(i.e. file names) in each edge of the graph. At this point the environment
-of each node can be updated to include references to file, via
-environment variables.
+## Workflows
+Workflow model, interface and the corresponding p3s client are described
+in a separate document (*WORKFLOW.pdf*).
 
 ## Location of the input raw data
 The protoDUNE DAQ writes the data to its own "online buffer" from which it is
@@ -135,55 +91,4 @@ efficient and tried way to achieve this is the pilot-based job submission.
    
    * The *job* - submission of job definitions to the server and management of job data on the server
    
-   
-## Software dependencies
-
-* Python3+
-
-* Django 1.10+
-
-* django-tables2
-
-* RDBMS (TBD but most likely PostgreSQL; sqlite used for development puprposes only)
-
-* Apache
-
-* NetworkX (some versions may present compatibility issues)
-
-* GraphML (optional but very helpful, doesn't need to be installed as it's a schema)
-
-
-
-## TODO
-
-### Models
-No outstansing issues
-
-### Time limits
-
-* loss of the pilot heartbeat
-
-* wall clock limit on the job execution
-
-### Brokerage
-* better policy management
-
-## Installation and Integration
-* PosgeSQL
-
-* Apache - issue: different configuration features on Ubuntu and CentOS
-
-* XRootD
-
-## Storage management
-* Cleanup after job execution
-
-* Flushing of obsolete data
-
-* Clearing older DB entries
-
-## Workflow
-* Implement true dag traversal (i.e. for multiple edges coming to a node)
-   * in the job class
-   * in the GraphML source
    
