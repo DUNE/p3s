@@ -1,11 +1,15 @@
 #!/usr/bin/env python3.5
+
+#########################################################
+# This script allows to define a p3s site on the        #
+# server using a JSON-formatted description             #
+#########################################################
+
+
 #########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#
 # so we are using timzone.now() where needed		#
-#########################################################
-# Please disregard bits of code "left for later" - most #
-# will be used for future development                   #
 #########################################################
 
 from django.conf	import settings

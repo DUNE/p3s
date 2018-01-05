@@ -1,4 +1,16 @@
 #!/usr/bin/env python3.5
+
+#########################################################
+# Exceptionally, this is an application-dependent	#
+# script - it parses a comma-separated file with a      #
+# header and creates a dictionaty which can be		#
+# sent to the DQM server for inclusion into a table     #
+#                                                       #
+# FIXME - need to cleanup later as this is not really   #
+# a part of p3s proper                                  #
+#########################################################
+
+
 #########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#
