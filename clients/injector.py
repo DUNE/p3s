@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 #########################################################
+# Work in progress - the script that should automate    #
+# creation of jobs/workflows into p3s when fresh data   #
+# arrives. At this time, a functional equivalent        #
+# (although rough) exists as a shell script             #
+#########################################################
+
+
+#########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#
 # so we are using timzone.now() where needed		#

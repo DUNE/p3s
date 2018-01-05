@@ -13,10 +13,16 @@ Dirac, but p3s is a clean sheet development and prioritizes simplicity
 and component reuse over most other factors.
 
 ## Content
-More important of the subdirectories are
+More important of the subdirectories are:
 - **promptproc**: the Web application server code
 - **clients**: the client code
 - **inputs**:  useful examples of actual job description both for local testing and for the real operating environment
+- **configuration**: templates of the p3s environment, which will likely be site-dependent
+
+Misc:
+- **display**: the Web application which is a companion of p3s, used to display results
+of calculations specific to protoDUNE data quality management
+
 
 ## Documentation
 Please consult the *documents* subdirectory for documentation concerning
