@@ -1,5 +1,9 @@
-# DEPRECATED UNTIL FURTHER NOTICE
 #!/usr/bin/python
+
+# This is a trivial script which checks server
+# response at arbitrary URL, sometimes useful
+# in debugging
+
 
 import argparse
 
