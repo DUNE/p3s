@@ -3,7 +3,7 @@
 	"name":		"CRT:Main",
 	"timeout":	"1000",
         "jobtype":	"crt2tpc",
-        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_4.sh",
+        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/crt/lxdqm_crt_tpc_4.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":	{
@@ -11,7 +11,7 @@
 	    "P3S_LARSOFT_HOME":"/afs/cern.ch/user/d/dostefan/public/v06_57_00/",
 	    "P3S_LARSOFT_RELEASE":"localProducts_larsoft_v06_57_00_e14_prof",
 	    "P3S_NEVENTS":"40",
-	    "P3S_FCL":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/lxdqm_crt_tpc_1.fcl",
+	    "P3S_FCL":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/crt/lxdqm_crt_tpc_1.fcl",
 	    "P3S_CRT_TXT":"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/CRTs.txt",
 	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output",
 	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input",
