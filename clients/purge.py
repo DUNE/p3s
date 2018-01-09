@@ -10,13 +10,18 @@ from clientUtils import takeJson
 
 (user, server, verb, site, pl, jl) = clientenv()
 
-### p3s interface defined here
-API  = serverAPI(server=server, verb=0)
+envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
+
 
 parser = argparse.ArgumentParser()
 
+parser.add_argument("-v", "--verbosity",type=int,	default=envDict['verb'], choices=[0, 1, 2], help="verbosity")
+
 parser.add_argument("-j", "--json_in",	type=str,	default='',
-                    help="required: file or a string from which to read purge policy")
+                    help="*FUTURE DEVELOPMENT* file or a string from which to read purge policy")
+
+parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
+                    help='server URL: defaults to $P3S_SERVER or if unset to '+envDict['server'])
 
 parser.add_argument("-w", "--what",	type=str,	default='pilot',
                     help="what to purge, defaults to pilot")
@@ -33,12 +38,19 @@ parser.add_argument("-d", "--direct",	action='store_true', help="direct logging 
 args	= parser.parse_args()
 json_in	= args.json_in
 tst	= args.test
+server	= args.server
+verb	= args.verbosity
 
 state	= args.state
 what	= args.what
 
 tst	= args.test
 direct	= args.direct
+
+
+
+### p3s interface defined here
+API  = serverAPI(server=server, verb=verb)
 
 d = dict(state=state, what=what)
 if(direct): d['direct']='True'

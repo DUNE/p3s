@@ -55,7 +55,7 @@ verb	= args.verbosity
 jsite	= args.json
 
 ### p3s interface defined here
-API  = serverAPI(server=server)
+API  = serverAPI(server=server, verb=verb)
 
 if(delete!=''):
     resp = API.post2server('site', 'deleteURL', {'site': delete})
