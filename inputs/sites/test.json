@@ -1,0 +1,1 @@
+{"name":"test", "server":"nosuchserver:1234", "pilotcycles":666, "pilotperiod":666, "pilotbeat": 666, "env":{"P3S_SITE":"test", "P3S_SERVER":"nosuchserver:1234","P3S_DIRPATH":"nosuchdir","COMMENT":"For testing only"}}
