@@ -35,19 +35,16 @@ def clientenv(outputDict=False):
     if 'DQM_SERVER'	in e:	dqmserver= os.environ['DQM_SERVER']
 
     
-    if(outputDict):
-        d = {}
-        d['user']	= user
-        d['server']	= server
-        d['dqmserver']	= dqmserver
-        d['verb']	= verb
-        d['site']	= site
-        d['pilotlog']	= pilotlog
-        d['joblog']	= joblog
-        d['dirpath']	= dirpath
+    d = {}
+    d['user']	= user
+    d['server']	= server
+    d['dqmserver']	= dqmserver
+    d['verb']	= verb
+    d['site']	= site
+    d['pilotlog']	= pilotlog
+    d['joblog']	= joblog
+    d['dirpath']	= dirpath
 
-        return d
+    return d
 
-    else:
-        return (user, server, verb, site, pilotlog, joblog)
 
