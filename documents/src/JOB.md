@@ -1,22 +1,25 @@
 # Introduction
-## Preparing to run
+## Purpose of this document
 There is a separate "overview" document which contains a general description of
 how p3s works and what its components are. For the end user a lot of this detail
 won't matter. The user is interested for the most part in just running a number
 of jobs and following their progress, consulting the log files if necessary.
+That's the extent of the instructions found below.
 
-To achive this, the following initial preparations must be done, and it takes
-just two commands:
+## Preparing to run
+To set up for using p3s at CERN one needs to run just two commands:
 
-* If not already done so, install p3s software simply by cloning the content from GitHub
+* If not already done so, install p3s software at the location of your choice
+simply by cloning the content from GitHub
 ```
 git clone https://github.com/DUNE/p3s.git
 ```
-After you run this, you will end up with a directory "p3s" which will contain
-a number of subdirectories. The one which will interest you now is p3s/clients.
+After you run this, your current directory will contain a subdirectory "p3s".
+This subdirectory will in turn contain a number of subdirectories, and the one
+of immediate interest now is **p3s/clients**.
 
-
-* This step is CERN-specific. Activate the "Python virutal environment" by running a command as explained below
+* The next step is CERN-specific. Activate the "Python virtual environment"
+by running this command
 ```
 source ~mxp/public/vp3s/bin/activate
 ```
