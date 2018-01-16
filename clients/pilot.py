@@ -17,7 +17,7 @@ import subprocess
 import signal
 import shlex
 
-from shutil import copyfile
+from shutil import copy
 
 # Django
 from django.conf	import settings
@@ -342,12 +342,12 @@ while(cnt>0 or p.cycles==0):
     pilot_env	= os.environ.copy()
     job_env	= {**pilot_env,**env}
 
-    copy = False
+    copyMode = False
 
     try:
         if(job_env['P3S_MODE']=='COPY'):
             if(verb>0): logger.info('COPY MODE')
-            copy=True
+            copyMode=True
     except:
         pass
 
@@ -362,10 +362,10 @@ while(cnt>0 or p.cycles==0):
 
     cmd=''
     
-    if(copy):
+    if(copyMode):
         allPath=payload.split('/')
         scriptName='/tmp/'+allPath[-1]
-        copyfile(payload, scriptName)
+        copy(payload, scriptName)
         cmd=shlex.split(scriptName)
     else:    
         cmd=shlex.split(payload)
