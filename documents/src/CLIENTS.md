@@ -1,12 +1,32 @@
 # INTRO
+## Preparing to run
 There is a separate "overview" document which contains a general description of
 how p3s works and what its components are. For the end user a lot of this detail
-won't matter. The user is interested for the most part in the following chain of
-actions and events:
+won't matter. The user is interested for the most part in just running a number
+of jobs and following their progress, consulting the log files if necessary.
 
-* If not already done so, install p3s software simply by cloning content from GitHub
-* Activate the "Python virutal environment" by running a command as explained below
-* Describe a job. Job description in p3s is done using a fairly simple JSON format (more on that below)
+To achive this, the following initial preparations must be done, and it takes
+just two commands:
+
+* If not already done so, install p3s software simply by cloning the content from GitHub
+```
+git clone https://github.com/DUNE/p3s.git
+```
+After you run this, you will end up with a directory "p3s" which will contain
+a number of subdirectories. The one which will interest you now is p3s/clients.
+
+
+* This step is CERN-specific. Activate the "Python virutal environment" by running a command as explained below
+```
+source ~mxp/public/vp3s/bin/activate
+```
+Verify that the Python is the right version after this step by running "python -V". It
+shold show 3.5. In addition, it's useful (but not necessary) to try to import "networkx"
+and "django" just to make sure everthing is indeed configured.
+
+# Create a job to run
+* Describe a job. Job description in p3s is done using a fairly simple JSON format (more on that below). It contains a reference
+to an executable and the environment in which to run.
 * Use a dedicated client ("job.py") to submit this job description to the server which will then orchestrate its execution
 * Monitor the progress of jobs using a P3S Web page
 * Browse and use the output files produced by jobs
@@ -15,6 +35,10 @@ In the following we assume that the CERN instance of P3S is used, which entails
 certain conventions and conviences such as sharing files and scripts via AFS and EOS.
 
 # P3S Clients
+# Virtual environment
+Run this to set up correct Python environment:
+
+
 ## job.py
 
 This client can be used for the following:
@@ -58,7 +82,16 @@ be named anything but to correlate with the example above let's call it "my_exec
 # This script is "my_executable.sh" in the JSON example above
 date > $MYFILE
 ```
+It is important that the path /home/p3s/my_executable.sh is readable and executable for other users,
+otherwise the system won't be able to run it.
 
+Now we can submit this job to the server. Assuming the p3s client software is installed, and
+we changed to the "clients" directory, the following command can be used
+```
+./job.py -j ./myjob.json
+```
+
+And that's it.
 
 
 ## pilot.py
