@@ -1,10 +1,10 @@
 [
     {
-	"name":		"sleep1000",
+	"name":		"sleep100",
 	"timeout":	"100",
         "jobtype":	"sleep",
         "payload":	"/home/maxim/projects/p3s/inputs/jobs/sleep100.sh",
-	"env":		{"P3S_TEST":"TRUE"},
+	"env":		{"P3S_TEST":"TRUE","P3S_MODE":"COPY"},
         "priority":	"1",
 	"state":	"defined"
     }

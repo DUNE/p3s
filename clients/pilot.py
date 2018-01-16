@@ -17,6 +17,8 @@ import subprocess
 import signal
 import shlex
 
+from shutil import copyfile
+
 # Django
 from django.conf	import settings
 from django.utils	import timezone
@@ -340,6 +342,15 @@ while(cnt>0 or p.cycles==0):
     pilot_env	= os.environ.copy()
     job_env	= {**pilot_env,**env}
 
+    copy = False
+
+    try:
+        if(job_env['P3S_COPY']=='COPY'):
+            if(verb>0): logger.info('COPY MODE')
+            copy=True
+    except:
+        pass
+
     # Add the UUIDs of the job and the pilot to the environment (mey be needed for logging etc)
     job_env['P3S_JOB_UUID']	= p['job']
     job_env['P3S_PILOT_UUID']	= str(p['uuid'])
@@ -348,9 +359,18 @@ while(cnt>0 or p.cycles==0):
     
     if 'P3S_EXECMODE' in job_env.keys(): # can be forced by -s
         shell = True
+
+    cmd=''
     
-    cmd=shlex.split(payload)
-    if(shell): cmd=payload
+    if(copy):
+        allPath=payload.split('/')
+        scriptName='/tmp/'+allPath[-1]
+        copyfile(payload, scriptName)
+        cmd=shlex.split(scriptName)
+    else:    
+        cmd=shlex.split(payload)
+        if(shell):
+            cmd=payload
         
     logger.info('CMD: %s' % cmd)
     proc = None

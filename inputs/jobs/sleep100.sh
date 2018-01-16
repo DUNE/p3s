@@ -1,5 +1,4 @@
 #!/bin/bash
-/bin/sleep 100
+/bin/sleep 1
 env
 echo 'done'
-
