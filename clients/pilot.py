@@ -77,7 +77,7 @@ parser.add_argument("-S", "--server",	type=str,	default=envDict['server'],
                     help="the server address, defaults to $P3S_SERVER or if unset to http://localhost:8000/")
 
 parser.add_argument("-H", "--host",	type=str,	default='',
-                    help="the worker node where a pilot may nee adjustments")
+                    help="the worker node where a pilot may need adjustments")
 
 parser.add_argument("-s", "--site",	type=str,	default=envDict['site'],
                     help="site name - pilot parameters will be pulled from the server based on that")
