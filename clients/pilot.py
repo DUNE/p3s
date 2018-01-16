@@ -345,7 +345,7 @@ while(cnt>0 or p.cycles==0):
     copy = False
 
     try:
-        if(job_env['P3S_COPY']=='COPY'):
+        if(job_env['P3S_MODE']=='COPY'):
             if(verb>0): logger.info('COPY MODE')
             copy=True
     except:
