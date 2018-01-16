@@ -1,13 +1,29 @@
+# INTRO
+There is a separate "overview" document which contains a general description of
+how p3s works and what its components are. For the end user a lot of this detail
+won't matter. The user is interested for the most part in the following chain of
+actions and events:
+
+* If not already done so, install p3s software simply by cloning content from GitHub
+* Activate the "Python virutal environment" by running a command as explained below
+* Describe a job. Job description in p3s is done using a fairly simple JSON format (more on that below)
+* Use a dedicated client ("job.py") to submit this job description to the server which will then orchestrate its execution
+* Monitor the progress of jobs using a P3S Web page
+* Browse and use the output files produced by jobs
+
+In the following we assume that the CERN instance of P3S is used, which entails
+certain conventions and conviences such as sharing files and scripts via AFS and EOS.
+
 # P3S Clients
 ## job.py
 
-This client is used to:
+This client can be used for the following:
 
-* create a job (or a number of jobs) on the server. By default standalone jobs
-are created, which are not associated with a workflow. This can be done by reading a description of
-job(s) contained in a JSON file.
+* create a job (or a number of jobs) on the serverThis can be done by reading a description
+of job(s) contained in a JSON file.
 
 * adjust job attributes
+
 * delete a job from the server
 
 
