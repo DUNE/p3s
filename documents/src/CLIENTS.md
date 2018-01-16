@@ -1,4 +1,4 @@
-# INTRO
+# Introduction
 ## Preparing to run
 There is a separate "overview" document which contains a general description of
 how p3s works and what its components are. For the end user a lot of this detail
@@ -24,9 +24,9 @@ Verify that the Python is the right version after this step by running "python -
 shold show 3.5. In addition, it's useful (but not necessary) to try to import "networkx"
 and "django" just to make sure everthing is indeed configured.
 
-# Create a job to run
-* Describe a job. Job description in p3s is done using a fairly simple JSON format (more on that below). It contains a reference
-to an executable and the environment in which to run.
+## Running a job
+* Describe a job. Job description in p3s is done using a fairly simple JSON format (more on that below).
+It contains a reference to an executable and the environment in which to run.
 * Use a dedicated client ("job.py") to submit this job description to the server which will then orchestrate its execution
 * Monitor the progress of jobs using a P3S Web page
 * Browse and use the output files produced by jobs
@@ -35,9 +35,6 @@ In the following we assume that the CERN instance of P3S is used, which entails
 certain conventions and conviences such as sharing files and scripts via AFS and EOS.
 
 # P3S Clients
-# Virtual environment
-Run this to set up correct Python environment:
-
 
 ## job.py
 
@@ -68,6 +65,9 @@ contents:
     }
 ]
 ```
+
+Note that this format corresponds to a *list* of objects i.e. such file can easily
+contain a number of jobs; however having just one element in this list is absolutely fine.
 
 Most important attributes are:
 * the payload, since this is the script that will run. It is recommended that this is a shell wrapper.
