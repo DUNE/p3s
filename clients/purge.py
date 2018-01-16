@@ -8,9 +8,6 @@ from serverAPI import serverAPI
 from clientenv import clientenv
 from clientUtils import takeJson
 
-(user, server, verb, site, pl, jl) = clientenv()
-
-# will push to git on Jan 15
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 
 parser = argparse.ArgumentParser()
