@@ -13,7 +13,7 @@ job(s) contained in a JSON file.
 
 An example (with arbitrary names and variables demonstrates how JSON is used:
 
-`
+```
 [
     {
         "name":         "p3s_job",
@@ -25,7 +25,7 @@ An example (with arbitrary names and variables demonstrates how JSON is used:
         "state":        "defined"
     }
 ]
-`
+```
 
 
 ## pilot.py
