@@ -19,29 +19,46 @@ certain conventions and conviences such as sharing files and scripts via AFS and
 
 This client can be used for the following:
 
-* create a job (or a number of jobs) on the serverThis can be done by reading a description
-of job(s) contained in a JSON file.
+* send a job description (or a number of job descriptions) to the P3S server.
+This can be done by reading a description of job(s) contained in a JSON file.
 
-* adjust job attributes
+* if necessary, adjust job attributes
 
 * delete a job from the server
 
 
-An example (with arbitrary names and variables demonstrates how JSON is used:
+The following example (with arbitrary file names and variables) demonstrates how JSON is used
+to describe jobs. Let us assume that we created a file named "myjob.json" with the following
+contents:
 
 ```
 [
     {
-        "name":         "p3s_job",
+        "name":         "p3s_test",
         "timeout":      "100",
-        "jobtype":      "type1",
-        "payload":      "/home/p3s/my_executable.py",
-        "env":          {"P3S":"TRUE","MYVAR":"FALSE"},
+        "jobtype":      "print_date",
+        "payload":      "/home/p3s/my_executable.sh",
+        "env":          {"P3S_MODE":"COPY","MYFILE":"/tmp/myfile.txt"},
         "priority":     "1",
         "state":        "defined"
     }
 ]
 ```
+
+Most important attributes are:
+* the payload, since this is the script that will run. It is recommended that this is a shell wrapper.
+* the "env" attribute which is the job environment. In particular, it can be used to communicate to
+the job the names of input and output files, and this is typically done in the wrapper script itself.
+
+For example, let's create a simple test job, and for that we'll need the payload script - which can
+be named anything but to correlate with the example above let's call it "my_executable.sh".
+
+```
+#!/bin/bash
+# This script is "my_executable.sh" in the JSON example above
+date > $MYFILE
+```
+
 
 
 ## pilot.py
