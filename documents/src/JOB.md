@@ -20,11 +20,15 @@ at CERN. To set up access to p3s on that platform one needs to follow a few simp
 as described below.
 
 ### Get the software
+
 If not already done so, install p3s software at the location of your choice
-simply by cloning the content from GitHub
+simply by cloning the content from GitHub (you must be on an interactive
+node at CERN)
+
 ```
 git clone https://github.com/DUNE/p3s.git
 ```
+
 After you run this, your current directory will contain a subdirectory **p3s**.
 This subdirectory will in turn contain a number of subdirectories, and the one
 of immediate interest now is **p3s/clients**.
@@ -47,7 +51,20 @@ and finally the word "Success".
 
 If anything is amiss, contact the developer.
 
+### Make sure you can access the monitoring server
+
+Currently the server p3s-web.cern.ch is only accessible within
+the confines of the CERN firewall. If you want to access it from an external
+machine, please use a ssh tunnel like in the command below
+```
+ssh -4 -L 8008:p3s-web.cern.ch:80 myCERNaccount@lxplus.cern.ch
+```
+
+In which case pointing your browser to localhost:8008 will result in you seeing
+the p3s server (which is on port 80 at CERN).
+
 ---
+
 # Running a job
 ## Job description
 
@@ -104,10 +121,15 @@ be named anything but to correlate with the JSON example above let's call it "my
 # This script is "my_executable.sh" in the JSON example above
 date > $MYFILE
 ```
+
 It is important that the path /home/p3s/my_executable.sh is readable and executable for other users,
 otherwise the system won't be able to run it. For example, in **lxplus** it is optimally placed
 in the "public" subdirectory in your account which is on AFS and is open to public.
 
+
+---
+
+## WORK IN PROGRESS BELOW
 
 * Use a dedicated client ("job.py") to submit this job description to the server which will then orchestrate its execution
 * Monitor the progress of jobs using a P3S Web page
