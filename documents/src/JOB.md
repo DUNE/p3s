@@ -69,9 +69,11 @@ contents:
 ]
 ```
 
-Note that this format corresponds to a *list* of objects i.e. such file can easily
+Note that this format corresponds to a *list* of objects i.e. such file can naturally
 contain a number of jobs; however having just one element in this list is absolutely fine.
 
+For the purpose of this introduction, let's say that the "state" attribute needs to be
+set to "defined" as showed above.
 Most important attributes are the **payload** and **env**. They are explained below.
 
 ### The payload
@@ -88,13 +90,14 @@ This is typically done in the wrapper script itself, i.e. withing the wrapper we
 foo -i $MYFILE
 ```
 
-The name of the environment variable does not matter as long as it is consistent with what's in the JSON
-file such as shown above.
+In this example, the binary executable _foo_ will read input data from the file whose name is stored
+in the environment variable *MYFILE*. The name of this environment variable does not matter as long as
+it is consistent with what's in the JSON file such as shown above.
 
-## Hello World
+## "Hello, World!"
 
-For example, let's create a simple test job, and for that we'll need the payload script - which can
-be named anything but to correlate with the example above let's call it "my_executable.sh".
+Let's create a simple test job. For that we'll need the payload script - which can
+be named anything but to correlate with the JSON example above let's call it "my_executable.sh".
 
 ```
 #!/bin/bash
@@ -102,13 +105,10 @@ be named anything but to correlate with the example above let's call it "my_exec
 date > $MYFILE
 ```
 It is important that the path /home/p3s/my_executable.sh is readable and executable for other users,
-otherwise the system won't be able to run it.
+otherwise the system won't be able to run it. For example, in **lxplus** it is optimally placed
+in the "public" subdirectory in your account which is on AFS and is open to public.
 
 
-
-
-* Describe a job. Job description in p3s is done using a fairly simple JSON format (more on that below).
-It contains a reference to an executable and the environment in which to run.
 * Use a dedicated client ("job.py") to submit this job description to the server which will then orchestrate its execution
 * Monitor the progress of jobs using a P3S Web page
 * Browse and use the output files produced by jobs
