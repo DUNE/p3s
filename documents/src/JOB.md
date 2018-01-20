@@ -70,8 +70,8 @@ the p3s server (which is on port 80 at CERN).
 
 While you can specify the server address and other parameters
 the p3s clients need on the command line it is often more
-convenient just to set up a few environment variables which
-will be used by default. For example, if running at CERN
+convenient just to run a script which will set a few environment
+variables which to be used by default. For example, if running at CERN
 you would simply use the command
 
 ```
@@ -85,6 +85,7 @@ For example, switch to the "clients" directory and try to run the command:
 ```
 
 If it connects to the server sucessfully, it will print some semi-meaningful stats.
+
 ---
 
 # Running a job
