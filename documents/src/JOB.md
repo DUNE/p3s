@@ -51,7 +51,9 @@ and finally the word "Success".
 
 If anything is amiss, contact the developer.
 
-### Make sure you can access the monitoring server
+### Make sure you can access the p3s server
+Try to access p3s-web.cern.ch in your browser (if you
+are at CERN).
 
 Currently the server p3s-web.cern.ch is only accessible within
 the confines of the CERN firewall. If you want to access it from an external
@@ -63,6 +65,26 @@ ssh -4 -L 8008:p3s-web.cern.ch:80 myCERNaccount@lxplus.cern.ch
 In which case pointing your browser to localhost:8008 will result in you seeing
 the p3s server (which is on port 80 at CERN).
 
+
+### Environment
+
+While you can specify the server address and other parameters
+the p3s clients need on the command line it is often more
+convenient just to set up a few environment variables which
+will be used by default. For example, if running at CERN
+you would simply use the command
+
+```
+source p3s/configuration/lxvm.sh
+```
+
+Then you don't need to worry about the server URL etc.
+For example, switch to the "clients" directory and try to run the command:
+```
+./summary.py -P
+```
+
+If it connects to the server sucessfully, it will print some semi-meaningful stats.
 ---
 
 # Running a job
