@@ -2,12 +2,17 @@ Created by: Maxim Potekhin
 
 January 2018
 
-Version 1.00
+Version 1.01
 
 ---
 
 # Introduction
 ## Purpose of this document
+Please keep track of the version number located on top of this document.
+Once incremental changes become significant the version number will
+be bumped up and it's important to refer to the right set of
+instructions.
+
 There is a separate "overview" document which contains a general description of
 how p3s works and what its components are. For the end user a lot of this detail
 won't matter since they are typically interested in just running a number
@@ -23,18 +28,25 @@ a few simple steps as described below.
 ### Get the p3s client software
 
 You need a client script (which is written in Python) to submit job descriptions
-to p3s for execution. If not already done so, install p3s software at the location
-of your choice by cloning the content from GitHub (you must be on an interactive
-node at CERN)
+to p3s for execution. You will also benefit from looking at job templates
+stored as JSON files in the p3s repository.
+
+If not already done so, install p3s software at the location of your choice by
+cloning the content from GitHub.  For the purposes of this writeup,
+you are assumed to be on an interactive node located at CERN such as
+lxplus.
 
 ```
 git clone https://github.com/DUNE/p3s.git
 ```
 
 After you run this, your current directory will contain a subdirectory **p3s**.
-This subdirectory will in turn contain a number of subdirectories, and the one
-of immediate interest now is **p3s/clients**. Documentation (such as this
-writeup) in in **p3s/documents**.
+This subdirectory will in turn contain a number of subdirectories.
+Of immediate interest to you are the following:
+
+* **p3s/clients** containing multiple client scripts with different functions
+* **p3s/documents** with documentation (such as thiswriteup)
+* **p3s/inputs** and it's subdirectories such as jobs/larsfot with job definition and wrapper script templates
 
 ### Set up and verify the Python environment
 The next step is CERN-specific. Activate the "Python virtual environment"
@@ -90,6 +102,31 @@ the p3s server (which is on port 80 at CERN).
 ---
 
 # Running a job
+## Resources
+
+Keep in mind that when you "submit a job" all you are doing is sending
+a record containing all the info necessary for running a particular
+executable, to the p3s database. The system (p3s) will then match this job
+with a live and available batch slot in CERN Tier-0 facility and deploy the payload
+to it, which means
+
+* typically very low latency of job execution since you are not waiting
+for a HTConfor or other queue; in some cases such as busy HT Condor queues
+gains can be quite substantial
+
+* you don't have to run batch commands yourself
+
+* ease of automation since same template can be used in automated submission
+
+* easy to read tabulated view of all of your jobs in the p3s monitor which
+is a Web application
+
+* the identity under which jobs are executed is not your identity but the
+production identity... This can be helpful or not helpful depending
+on situation, and path permissions need to be thought through. The NP04
+group at CERN has access to various EOS and some AFS directories so
+this can be made to work
+
 ## An example of the job description
 
 The following example (with rather arbitrary attributes, file names and variables) demonstrates
@@ -118,7 +155,7 @@ Other possible states will be discussed later.
 The other two attributes that need t be set are the **payload** and **env**. They are explained below.
 The remaining attributes of the job are less relevant for initial testing.
 
-### The payload and the environment
+## The payload and the environment
 
 The **payload** is the path of the script that will run. It is strongly recommended that this is a
 shell wrapper, and the _bash_ shell is most commonly used. If the `env` attribute contains `"P3S_MODE":"COPY"`
@@ -143,7 +180,7 @@ the **env** attribute JSON file and the script. There are few limits in desingni
 
 # "Hello, World!"
 
-
+## Use the template
 Consider the following example which is in p3s/inputs/jobs directory of the
 repo that you cloned from GitHub. The file name is "simplejob1.json".
 
@@ -166,13 +203,15 @@ repo that you cloned from GitHub. The file name is "simplejob1.json".
 ]
 ```
 
-To use this for testing
+To use this template for testing
 
-* please copy and edit the file to point to the actual location of the script
+* please copy this file and edit your copy so that it points to the actual location of the script (which must be
+readable by the np04-comp group)
 
 * make sure that the input file location is readable to members of _np04-comp_ group at CERN (or just globally readable) and the path to the output file can likewise be used (i.e. must be writeable).
 
-This is the corresponding "payload script":
+This is the corresponding "payload script" named in this case "simpljob1.sh". Note that the
+exact name is unimportant, that's just what it is in the JSON template
 ```
 #!/bin/bash
 
@@ -196,17 +235,43 @@ otherwise the system won't be able to run it. For example, in **lxplus** it is o
 in the "public" subdirectory in your account which is on AFS and is open to public.
 
 
+## Submit the job
+
 Now we can submit this job to the server. Assuming the p3s client software is installed, and
 we changed to the "clients" directory, the following command can be used (assuming the JSON file
 is in the current path)
+
 ```
 ./job.py -j ./simplejob1.json
 ```
 
-And that's it. When looking at the monitoring pages of p3s this job will be marked
+And that's it. The path to the JSON file can be anything, it just has to be readable
+for your user identity. When looking at the monitoring pages of p3s this job will be marked
 with your userID on the system from which you submitted it, e.g. if you work on lxplus
 this will be your lxplus userID.
 
-Finally, there is a dedicated test script which allows the user to test the setup
-of the JSON file and the payload script by running everything on an interactive
-node such as lxplus. Information about this will be added shortly.
+The **job** client script we use here and all clients in p3s suite support the "-h"
+command line option which prints an annotated list of all command line options. Take
+a look, it's helpful.
+
+## "Test Wrapper"
+There is a script which allows the user to test the setup
+of the JSON file and the payload working together by running everything
+on an interactive node such as lxplus as opposed to submitting it to lxbatch,
+which is often more convenient for basic debugging. Similar to the "job" client
+presented above, the test wrapper can be invoked from the p3s/clients directory
+as follows:
+```
+./testwrapper.py -j ./simplejob1.json
+```
+which is quite similar to normal submission. Like in the previous case, the "-h"
+option will output helpful information. For example:
+
+* -p option allows to override the path of the payload script i.e. in principle you can run anything
+* -f and -F respectively overwrite the path defined by the P3S_INPUT_FILE and P3S_OUTPUT_FILE
+
+
+## Note on environment variables
+With rare exceptions such as *P3S_MODE* (likely to change) there is no semantic importance to
+the exact names of the environment variables used in formulating your job. The only thing that
+matters is that the payload script contained correct references to the environment.
