@@ -145,7 +145,7 @@ the **env** attribute JSON file and the script. There are few limits in desingni
 
 
 Consider the following example which is in p3s/inputs/jobs directory of the
-repo that you cloned from GitHub.
+repo that you cloned from GitHub. The file name is "simplejob1.json".
 
 ```
 [
@@ -197,9 +197,10 @@ in the "public" subdirectory in your account which is on AFS and is open to publ
 
 
 Now we can submit this job to the server. Assuming the p3s client software is installed, and
-we changed to the "clients" directory, the following command can be used
+we changed to the "clients" directory, the following command can be used (assuming the JSON file
+is in the current path)
 ```
-./job.py -j ./myjob.json
+./job.py -j ./simplejob1.json
 ```
 
 And that's it. When looking at the monitoring pages of p3s this job will be marked
