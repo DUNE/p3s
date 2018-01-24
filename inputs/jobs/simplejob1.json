@@ -9,6 +9,7 @@
 	"env":		{
 	    "P3S_TEST":"TRUE",
 	    "P3S_MODE":"COPY",
+	    "P3S_INPUT_FILE":"/home/maxim/p3s.in",
 	    "P3S_OUTPUT_FILE":"/home/maxim/p3s.out"
 	}
     }

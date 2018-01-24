@@ -90,7 +90,7 @@ the p3s server (which is on port 80 at CERN).
 ---
 
 # Running a job
-## Job description
+## An example of the job description
 
 The following example (with rather arbitrary attributes, file names and variables) demonstrates
 how JSON is used to describe jobs. Let us assume that we created a file named "myjob.json" with
@@ -139,47 +139,61 @@ it is consistent with what's in the JSON file such as shown above.
 Please note that the user has complete freedom as to how to factor the information between
 the **env** attribute JSON file and the script. There are few limits in desingning job descriptions.
 
-## "Hello, World!"
+---
 
-Let's create a simple test job which will print the current date and time. For that we'll need the payload
-script - which can be named anything but to correlate with the JSON example above let's call it "my_executable.sh".
+# "Hello, World!"
 
+
+Consider the following example which is in p3s/inputs/jobs directory of the
+repo that you cloned from GitHub.
+
+```
+[
+    {
+	"name":		"simple p3s job, type 1",
+	"timeout":	"100",
+        "jobtype":	"type1",
+        "payload":	"/home/maxim/projects/p3s/inputs/jobs/simplejob1.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "P3S_TEST":"TRUE",
+	    "P3S_MODE":"COPY",
+	    "P3S_INPUT_FILE":"/home/maxim/p3s.in",
+	    "P3S_OUTPUT_FILE":"/home/maxim/p3s.out"
+             }
+    }
+]
+```
+
+To use this for testing
+
+* please copy and edit the file to point to the actual location of the script
+
+* make sure that the input file location is readable to members of _np04-comp_ group at CERN (or just globally readable) and the path to the output file can likewise be used (i.e. must be writeable).
+
+This is the corresponding "payload script":
 ```
 #!/bin/bash
-# This script is "my_executable.sh" in the JSON example above
-date > $MYFILE
+
+echo pid, ppid: $$ $PPID
+
+if [ -z ${P3S_INPUT_FILE+x} ];
+then
+    echo No input file specified, entering sleep mode
+    /bin/sleep 10
+    exit
+fi
+
+
+echo Using input file $P3S_INPUT_FILE
+
+wc -l $P3S_INPUT_FILE > $P3S_OUTPUT_FILE
 ```
 
-It is important that the path /home/p3s/my_executable.sh is _readable and executable_ for other users,
+It is important that the path to simplejob1.sh is _readable and executable_ for other users,
 otherwise the system won't be able to run it. For example, in **lxplus** it is optimally placed
 in the "public" subdirectory in your account which is on AFS and is open to public.
-
-
----
-
----
-
-## WORK IN PROGRESS BELOW
-
-* Use a dedicated client ("job.py") to submit this job description to the server which will then orchestrate its execution
-* Monitor the progress of jobs using a P3S Web page
-* Browse and use the output files produced by jobs
-
-In the following we assume that the CERN instance of P3S is used, which entails
-certain conventions and conviences such as sharing files and scripts via AFS and EOS.
-
-# P3S Clients
-
-## job.py
-
-This client can be used for the following:
-
-* send a job description (or a number of job descriptions) to the P3S server.
-This can be done by reading a description of job(s) contained in a JSON file.
-
-* if necessary, adjust job attributes
-
-* delete a job from the server
 
 
 Now we can submit this job to the server. Assuming the p3s client software is installed, and
@@ -188,4 +202,10 @@ we changed to the "clients" directory, the following command can be used
 ./job.py -j ./myjob.json
 ```
 
-And that's it.
+And that's it. When looking at the monitoring pages of p3s this job will be marked
+with your userID on the system from which you submitted it, e.g. if you work on lxplus
+this will be your lxplus userID.
+
+Finally, there is a dedicated test script which allows the user to test the setup
+of the JSON file and the payload script by running everything on an interactive
+node such as lxplus. Information about this will be added shortly.
