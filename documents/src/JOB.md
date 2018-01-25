@@ -203,15 +203,18 @@ repo that you cloned from GitHub. The file name is "simplejob1.json".
 ]
 ```
 
-To use this template for testing
+This won't work out of the box for you since it contains references to particular
+paths which are very likely invalid on your system. So it needs to be tweaked
+a little:
 
-* please copy this file and edit your copy so that it points to the actual location of the script (which must be
+* please copy this file and edit your copy so that it points to the actual location of the _payload_ script (which must be
 readable by the np04-comp group)
 
-* make sure that the input file location is readable to members of _np04-comp_ group at CERN (or just globally readable) and the path to the output file can likewise be used (i.e. must be writeable).
+* likewise, when making edits please make sure that the input file location is readable to members of _np04-comp_ group at CERN (or just globally readable) and the path to the output file can likewise be used (i.e. must be writeable).
 
-This is the corresponding "payload script" named in this case "simpljob1.sh". Note that the
-exact name is unimportant, that's just what it is in the JSON template
+Note: while the "payload script" is named "simplejob1.sh" in this case , the
+exact name is actually unimportant and can be changed, that's just what it is in this
+particular JSON template
 ```
 #!/bin/bash
 
