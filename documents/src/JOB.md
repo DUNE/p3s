@@ -52,7 +52,7 @@ Of immediate interest to you are the following:
 The next step is CERN-specific. Activate the "Python virtual environment"
 by running this command
 ```
-source ~mxp/public/vp3s/bin/activate
+source ~np04dqm/public/vp3s/bin/activate
 ```
 
 Change the directory to **p3s/clients** which is mentioned above. Run the script
