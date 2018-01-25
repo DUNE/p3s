@@ -1,4 +1,4 @@
-Created by: Maxim Potekhin
+Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
 January 2018
 
@@ -270,7 +270,7 @@ as follows:
 which is quite similar to normal submission. Like in the previous case, the "-h"
 option will output helpful information. For example:
 
-* -p option allows to override the path of the payload script i.e. in principle you can run anything
+* -p option allows to override the path of the payload script i.e. in principle you can run anything (i.e. any executable) using the same skeleton template
 * -f and -F respectively overwrite the path defined by the P3S_INPUT_FILE and P3S_OUTPUT_FILE
 
 
