@@ -27,20 +27,23 @@ a few simple steps as described below.
 
 ### Get the p3s client software
 
-You need a client script (which is written in Python) to submit job descriptions
-to p3s for execution. You will also benefit from looking at job templates
-stored as JSON files in the p3s repository.
-
+At a minimum you need a client script (which is written in Python) to
+submit job descriptions to p3s for execution. You will also benefit from
+looking at job templates stored as JSON files in the p3s repository.
 If not already done so, install p3s software at the location of your choice by
 cloning the content from GitHub.  For the purposes of this writeup,
 you are assumed to be on an interactive node located at CERN such as
-lxplus.
+lxplus. This step is done in two cases only (so not often):
+
+* you are justing starting to use the system
+* you are informed that there was an update and you should switch to a newer version
+
 
 ```
 git clone https://github.com/DUNE/p3s.git
 ```
 
-After you run this, your current directory will contain a subdirectory **p3s**.
+After you run this, your current directory will co ntain a subdirectory **p3s**.
 This subdirectory will in turn contain a number of subdirectories.
 Of immediate interest to you are the following:
 
@@ -49,8 +52,12 @@ Of immediate interest to you are the following:
 * **p3s/inputs** and it's subdirectories such as jobs/larsfot with job definition and wrapper script templates
 
 ### Set up and verify the Python environment
-The next step is CERN-specific. Activate the "Python virtual environment"
-by running this command
+The next step is CERN-specific. This needs to be done every time you have a fresh
+interactive shell which you plan to use for p3s interaction. It may be added
+to your log-in profile to save typing one extra line but can also be done
+manually.
+
+Activate the "Python virtual environment" by running this command
 ```
 source ~np04dqm/public/vp3s/bin/activate
 ```
@@ -74,11 +81,13 @@ variables which to be used by default. For example, if running at CERN
 you would simply use the command
 
 ```
-source p3s/configuration/lxvm.sh
+source p3s/configuration/lxvm_np04dqm.sh
 ```
 
-Then you don't need to worry about the server URL etc.
-For example, switch to the "clients" directory and try to run the command:
+Then you don't need to worry about the server URL etc. Other environment
+variables contained in this file will be explained later in this document.
+
+Now, you can switch to the "clients" directory and try to run the command:
 ```
 ./summary.py -P
 ```
@@ -278,3 +287,36 @@ option will output helpful information. For example:
 With rare exceptions such as *P3S_MODE* (likely to change) there is no semantic importance to
 the exact names of the environment variables used in formulating your job. The only thing that
 matters is that the payload script contained correct references to the environment.
+
+---
+
+# Log files
+
+The p3s configuration file mentioned above (such as lxvm_np04dqm.sh) is not
+used just by client scripts, but also by the server. As such, it contains
+other useful info such as pointers to directories to keep log files for
+HTCondor submission of pilot jobs, pilot logs and job logs. The latter
+will be of most interest for the end user. Consider the following
+example:
+
+```
+[np04dqm@lxplus056 src]$ env | grep P3
+P3S_PILOTLOG=/eos/experiment/neutplatform/protodune/np04tier0/p3s/pilotlog
+P3S_JOBLOG=/eos/experiment/neutplatform/protodune/np04tier0/p3s/joblog
+P3S_SERVER=http://p3s-web:80/
+P3S_CONDOR_ERROR=/afs/cern.ch/work/n/np04dqm/condor
+P3S_PILOTS=100
+P3S_CONDOR_LOG=/afs/cern.ch/work/n/np04dqm/condor
+P3S_PILOT_MAXRUNTIME=90000
+P3S_PILOT_TO=1000
+P3S_VERBOSITY=0
+P3S_SITE=lxvm
+P3S_CONDOR_BASE=/afs/cern.ch/work/n/np04dqm/condor
+P3S_DIRPATH=/eos/experiment/neutplatform/protodune/np04tier0/p3s
+P3S_CONDOR_OUTPUT=/afs/cern.ch/work/n/np04dqm/condor
+```
+
+We are taking advantage of availability of distributed
+file systems at CERN with are visible from most nodes, i.e. all
+logs are kept in a single directory structure which can be browsed
+by the user (as opposed to local disks on a few dedicated nodes).
