@@ -1,19 +1,24 @@
 # p3s "inputs"
 ## Overview
-This directory contains a few examples which are useful
-for testing and debugging. Its subdirectories
-contain a number of XML source files (which typically have the .graphml extension).
+The directory **p3s/inputs** contains two types of material:
+* a few simple examples which are useful for testing and debugging
+* realistic templates for running DQM payloads for protoDUNE
 
-These XML files are expected to contain DAG descriptions (workflow templates)
-in GraphML format which is compatible with a number of third-party tools.
+The three main file types to be found here are
+* JSON
+* XML
+* Bash shell scripts
 
-A functional workflow can be formed based on a template. To "dress up"
-a template with useful content, one can use supplemental information
-submitted with the p3s workflow client as JSON file.
-The following information can be provided my means of these JSON files:
-* job description(s) - paths to payload jobs
-* additional file (data) parameters for a workflow
-* additional job parameters for a workflow
+The former containes a _list_ of jobs in JSON format, although
+in most examples there is only one item on that list. Any number
+of jobs can reside within a file and they can be send to the
+server for execution using the _job.py_ client.
+
+The XML source files (which typically have the .graphml extension)
+are expected to contain DAG descriptions (workflow templates)
+in _GraphML_ format. The reason this format was chosen to represent
+DAGs is that it is compatible with a number of third-party tools
+which are useful for parsing and visualization.
 
 ## The "jobs" directory
 p3s supports both workflows (collections of related jobs) as well
@@ -38,14 +43,16 @@ These files are application-specific and are meant to support LArSoft-based
 applications running at CERN and elsewhere
 
 ## Workflows and DAGs: an overview
-A DAG is supposed to serve as a template for an instance
-of workflow. DAGs can be stored in a few formats.
+
+A DAG defined by the user is expected to serve as a template for
+actual instances of workflows. DAGs can be stored in a few formats.
 Most of the time p3s utilizes the GraphML schema (format)
 which is fairly standard and can be parsed by the Networkx package
 as well as a number of other editors and network-oriented packages.
 
 By default edges and nodes in a workflow inherit properties of the DAG the workflow
-is derived from, but they can also be overwritten by supplying a JSON string or
+is derived from. The _workflow.py_ client provides a possibility to
+overwrite values in the template by supplying a JSON string or
 a JSON file in the format
 `
 {"my":{"foo":"bar"}}
