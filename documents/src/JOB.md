@@ -1,17 +1,19 @@
 Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
-January 2018
+February 2018
 
-Version 1.01
+Version 1.02 (release notes: add information on EOS and other access, directory locations etc)
 
 ---
 
 # Introduction
-## Purpose of this document
-Please keep track of the version number located on top of this document.
-Once incremental changes become significant the version number will
-be bumped up and it's important to refer to the right set of
-instructions.
+## Purpose and content of this document
+
+This document explains how to set up and run the job submission
+client. These instructions are not generic. Rather, they are tailored
+to operations of the protoDUNE experiment at CERN in 2018 in the
+sense that certain directory locations, environment variables
+and scripts are application-specific.
 
 There is a separate "overview" document which contains a general description of
 how p3s works and what its components are. For the end user a lot of this detail
@@ -19,6 +21,11 @@ won't matter since they are typically interested in just running a number
 of jobs on resources provided by the system and following their progress,
 consulting the log files if necessary. That's the extent of the instructions found
 below.
+
+Please keep track of the version number located on top of this document.
+Once incremental changes become significant the version number will
+be bumped up. It is important to refer to the right set of instructions
+as p3s is gradually enters operations period and adjustments are made.
 
 ## Preparing to run
 These instructions apply to the **lxplus** interactive Linux facility
@@ -31,7 +38,7 @@ At a minimum you need a client script (which is written in Python) to
 submit job descriptions to p3s for execution. You will also benefit from
 looking at job templates stored as JSON files in the p3s repository.
 If not already done so, install p3s software at the location of your choice by
-cloning the content from GitHub.  For the purposes of this writeup,
+_cloning the content from GitHub_.  For the purposes of this writeup,
 you are assumed to be on an interactive node located at CERN such as
 lxplus. This step is done in two cases only (so not often):
 
@@ -48,11 +55,13 @@ This subdirectory will in turn contain a number of subdirectories.
 Of immediate interest to you are the following:
 
 * **p3s/clients** containing multiple client scripts with different functions
-* **p3s/documents** with documentation (such as thiswriteup)
+* **p3s/documents** with documentation (such as this writeup)
 * **p3s/inputs** and it's subdirectories such as jobs/larsfot with job definition and wrapper script templates
 
 ### Set up and verify the Python environment
-The next step is CERN-specific. This needs to be done every time you have a fresh
+The next step is also CERN-specific and its purpose is to set up
+the Python environment necessary for p3s clients.
+This needs to be done every time you have a fresh
 interactive shell which you plan to use for p3s interaction. It may be added
 to your log-in profile to save typing one extra line but can also be done
 manually.
@@ -77,8 +86,8 @@ If anything is amiss, contact the developer.
 While you can specify the server address and other parameters
 the p3s clients need on the command line it is often more
 convenient just to run a script which will set a few environment
-variables which to be used by default. For example, if running at CERN
-you would simply use the command
+variables to be used by default. For example, if running at CERN
+you could simply use the command
 
 ```
 source p3s/configuration/lxvm_np04dqm.sh
