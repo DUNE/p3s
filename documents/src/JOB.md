@@ -11,21 +11,25 @@ Version 1.02 (release notes: add information on EOS and other access, directory 
 
 This document explains how to set up and run the job submission
 client. These instructions are not generic. Rather, they are tailored
-to operations of the protoDUNE experiment at CERN in 2018 in the
-sense that certain directory locations, environment variables
-and scripts are application-specific.
+to operation of the protoDUNE experiment at CERN in 2018. There are
+references to certain directory locations, environment variables
+and scripts that are application-specific.
 
 There is a separate "overview" document which contains a general description of
 how p3s works and what its components are. For the end user a lot of this detail
 won't matter since they are typically interested in just running a number
 of jobs on resources provided by the system and following their progress,
 consulting the log files if necessary. That's the extent of the instructions found
-below.
+below. These instructions were validated by a few new users. If anything
+does not work as expected, please consult the author of this document.
 
 Please keep track of the version number located on top of this document.
 Once incremental changes become significant the version number will
 be bumped up. It is important to refer to the right set of instructions
 as p3s is gradually enters operations period and adjustments are made.
+This document also exists in PDF format and can be printed out for
+your convenience, in the documents/pdf folder of the p3s repository (as
+explained below).
 
 ## Preparing to run
 These instructions apply to the **lxplus** interactive Linux facility
@@ -50,23 +54,23 @@ lxplus. This step is done in two cases only (so not often):
 git clone https://github.com/DUNE/p3s.git
 ```
 
-After you run this, your current directory will co ntain a subdirectory **p3s**.
+After you run this, your current directory will contain a subdirectory **p3s**.
 This subdirectory will in turn contain a number of subdirectories.
 Of immediate interest to you are the following:
 
 * **p3s/clients** containing multiple client scripts with different functions
-* **p3s/documents** with documentation (such as this writeup)
-* **p3s/inputs** and it's subdirectories such as jobs/larsfot with job definition and wrapper script templates
+* **p3s/documents** with documentation (such as this writeup) in both Markdown (md) and PDF format
+* **p3s/inputs** and its subdirectories such as jobs/larsfot with job definition and wrapper script templates
 
 ### Set up and verify the Python environment
-The next step is also CERN-specific and its purpose is to set up
-the Python environment necessary for p3s clients.
-This needs to be done every time you have a fresh
-interactive shell which you plan to use for p3s interaction. It may be added
-to your log-in profile to save typing one extra line but can also be done
-manually.
 
-Activate the "Python virtual environment" by running this command
+The next step is also CERN-specific and its purpose is to set up
+the Python environment for p3s clients without having to install anything yourself.
+This needs to be done every time you have a fresh interactive shell which you plan
+to use for p3s interaction. It may be added to your log-in profile to save some typing
+line but can also be done manually.
+
+So, please activate the "Python virtual environment" by running this command
 ```
 source ~np04dqm/public/vp3s/bin/activate
 ```
@@ -79,15 +83,16 @@ to verify the environment:
 In the output you should see version of Python which is 3.5+,
 a couple of "OK" messages and finally the word "Success".
 
-If anything is amiss, contact the developer.
+If anything is amiss, contact the author of this document.
 
 ### Verify access to p3s server
 
-While you can specify the server address and other parameters
+While you can specify the server URL and other parameters
 the p3s clients need on the command line it is often more
-convenient just to run a script which will set a few environment
+convenient to just run a script which will set a few environment
 variables to be used by default. For example, if running at CERN
-you could simply use the command
+you could simply use the command (assuming you cloned the p3s
+directory as described above)
 
 ```
 source p3s/configuration/lxvm_np04dqm.sh
@@ -102,7 +107,21 @@ Now, you can switch to the "clients" directory and try to run the command:
 ```
 
 If it connects to the server sucessfully, it will print a few current stats for p3s.
-THe next step is to make sure that you can also see the Web pages served by p3s
+Example of the output:
+```
+Domain: p3s-web:80, hostname p3s-web.cern.ch, uptime 22 days, 14:37:23.850000
+Pilots: total 200, idle 200, running 0, stopped 0, TO 0
+Jobs: total 22, defined 0, running 0, finished 6, pilotTO 16
+Workflows 0
+Datasets 3
+```
+
+If you see a failure, please contact the author of this document.
+
+
+### The Web monitor
+
+The next step is to make sure that you can also see the Web pages served by p3s
 so you have monitoring functionality. Try to access **http://p3s-web.cern.ch**
 in your browser (if you are at CERN).
 
@@ -112,10 +131,8 @@ machine, please use a ssh tunnel like in the command below
 ```
 ssh -4 -L 8008:p3s-web.cern.ch:80 myCERNaccount@lxplus.cern.ch
 ```
-
 ...in which case pointing your browser to localhost:8008 will result in you seeing
 the p3s server (which is on port 80 at CERN).
-
 
 ---
 
@@ -126,11 +143,12 @@ Keep in mind that when you "submit a job" all you are doing is sending
 a record containing all the info necessary for running a particular
 executable, to the p3s database. The system (p3s) will then match this job
 with a live and available batch slot in CERN Tier-0 facility and deploy the payload
-to it, which means
+for execution. This is a typical case of a pilot-based framework
+which entails the following
 
-* typically very low latency of job execution since you are not waiting
-for a HTConfor or other queue; in some cases such as busy HT Condor queues
-gains can be quite substantial
+* typically very low latency of the start of job execution since you are not
+waiting for a HTConfor or other queue; in some cases such as busy HT Condor
+queues gains can be quite substantial
 
 * you don't have to run batch commands yourself
 
@@ -175,8 +193,9 @@ The remaining attributes of the job are less relevant for initial testing.
 
 ## The payload and the environment
 
-The **payload** is the path of the script that will run. It is strongly recommended that this is a
-shell wrapper, and the _bash_ shell is most commonly used. If the `env` attribute contains `"P3S_MODE":"COPY"`
+The **payload** attribute of the job definition (such as in the example above) is the path of the
+script that will run. It is strongly recommended that this is a shell wrapper, and the _bash_ shell
+is most commonly used. If the `env` attribute contains `"P3S_MODE":"COPY"`
 then the script will be copied into a sandbox at execution time. Otherwise an attempt will be made
 to execute it _in situ_ which may or may not work depending on the permissions.
 
