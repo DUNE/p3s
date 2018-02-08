@@ -298,8 +298,22 @@ the exact names of the environment variables used in formulating your job. The o
 matters is that the payload script contained correct references to the environment.
 
 ---
+# Location of the data and log files
+## Directories in EOS
+For storage of data and log files p3s can use _any_ storage
+area (e.g. a directory) which is read/write accessible to its pilots.
+This means the user id of the pilots running in p3s must be a member
+of requisite groups and/or have correct permission for the directory
+used for log and data storage in p3s.
 
-# Log files
+At CERN we are taking advantage of the distributed **EOS** storage
+facility that is accessible from both interactive and worker nodes.
+The top level directory for data has been defined as
+```
+/eos/experiment/neutplatform/protodune/np04tier0/p3s
+```
+
+## Log files
 
 The p3s configuration file mentioned above (such as lxvm_np04dqm.sh) is not
 used just by client scripts, but also by the server. As such, it contains
