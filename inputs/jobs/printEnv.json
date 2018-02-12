@@ -1,0 +1,13 @@
+[
+    {
+	"name":		"printEnv",
+	"timeout":	"100",
+        "jobtype":	"printEnv",
+        "payload":	"/bin/env",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "P3S_COMMENT":"we are not using a wrapper since we are just running the standard env"
+	}
+    }
+]
