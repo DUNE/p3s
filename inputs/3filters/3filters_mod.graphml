@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+
+  <!-- DECLARE ATTRIBUTES -->
+  
+  <!-- ++++++ JOBS ++++++ -->
+  <key attr.name="payload" 	attr.type="string"	for="node" id="payload" />
+  <key attr.name="env" 		attr.type="string"	for="node" id="env" />
+  <key attr.name="jobtype" 	attr.type="string"	for="node" id="jobtype" />
+  <key attr.name="timelimit" 	attr.type="int"		for="node" id="timelimit" />
+  <key attr.name="priority" 	attr.type="int"		for="node" id="priority" />
+  
+  <!-- ++++++ DATA ++++++ -->
+  <key attr.name="name"		attr.type="string"	for="edge" id="name" />
+  <key attr.name="dirpath"	attr.type="string"	for="edge" id="dirpath" />
+  <key attr.name="datatype"	attr.type="string"	for="edge" id="datatype" />
+  <key attr.name="datatag"	attr.type="string"	for="edge" id="datatag" />
+  <key attr.name="comment"	attr.type="string"	for="edge" id="comment" />
+
+  <!-- ++++++++++++++++++ -->
+
+  
+  <graph edgedefault="directed">
+    <!-- ++++++ JOBS ++++++ -->
+    <node id="NOOP1">
+      <data key="payload"></data>
+      <data key="env">{}</data>
+      <data key="jobtype">noop</data>
+      <data key="timelimit">0</data>
+      <data key="priority">0</data>
+    </node>
+
+    <node id="filter1">
+      <data key="payload">grep</data>
+      <data key="env">{"P3S_EXECMODE":"SHELL"}</data>
+      <data key="jobtype">filter</data>
+      <data key="timelimit">7777</data>
+      <data key="priority">4</data>
+    </node>
+
+    <node id="filter2">
+      <data key="payload">grep</data>
+      <data key="env">{"P3S_EXECMODE":"SHELL"}</data>
+      <data key="jobtype">filter</data>
+      <data key="timelimit">7777</data>
+      <data key="priority">4</data>
+    </node>
+
+    <node id="filter3">
+      <data key="payload">grep</data>
+      <data key="env">{"P3S_EXECMODE":"SHELL"}</data>
+      <data key="jobtype">filter</data>
+      <data key="timelimit">7777</data>
+      <data key="priority">4</data>
+    </node>
+
+    <node id="NOOP2">
+      <data key="payload"></data>
+      <data key="env">{}</data>
+      <data key="jobtype">noop</data>
+      <data key="timelimit">0</data>
+      <data key="priority">0</data>
+    </node>
+
+    <!-- ++++++ DATA ++++++ -->
+    <edge source="NOOP1" target="filter1">
+      <data key="name">input.txt</data>
+      <data key="dirpath">/afs/cern.ch/user/m/mxp/</data>
+      <data key="datatype">TXT</data>
+      <data key="datatag">INPTXT</data>
+      <data key="comment">Simulated input</data>
+    </edge>
+    
+    <edge source="NOOP1" target="filter2">
+      <data key="name">input.txt</data>
+      <data key="dirpath">/afs/cern.ch/user/m/mxp/</data>
+      <data key="datatype">TXT</data>
+      <data key="datatag">INPTXT</data>
+      <data key="comment">Simulated input</data>
+    </edge>
+    
+    <edge source="NOOP1" target="filter3">
+      <data key="name">input.txt</data>
+      <data key="dirpath">/afs/cern.ch/user/m/mxp/</data>
+      <data key="datatype">TXT</data>
+      <data key="datatag">INPTXT</data>
+      <data key="comment">Simulated input</data>
+    </edge>
+    
+    <edge source="filter1" target="NOOP2">
+      <data key="name">output.txt</data>
+      <data key="dirpath">/afs/cern.ch/user/m/mxp/</data>
+      <data key="datatype">TXT</data>
+      <data key="datatag">OUTTXT1</data>
+      <data key="comment">Simulated output</data>
+    </edge>
+
+    <edge source="filter2" target="NOOP2">
+      <data key="name">output.txt</data>
+      <data key="dirpath">/afs/cern.ch/user/m/mxp/</data>
+      <data key="datatype">TXT</data>
+      <data key="datatag">OUTTXT2</data>
+      <data key="comment">Simulated output</data>
+    </edge>
+    
+    <edge source="filter3" target="NOOP2">
+      <data key="name">output.txt</data>
+      <data key="dirpath">/afs/cern.ch/user/m/mxp/</data>
+      <data key="datatype">TXT</data>
+      <data key="datatag">OUTTXT3</data>
+      <data key="comment">Simulated output</data>
+    </edge>
+  </graph>
+
+</graphml>
