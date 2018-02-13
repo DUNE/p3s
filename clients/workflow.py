@@ -143,7 +143,7 @@ if(usage):
         s = f.read()
         print(s)
     except:
-        print('Usage file not found')
+        print('Local text file not found, please consult the WORKFLOW document in the documents directory')
         exit(-1)
 
     exit(0)
@@ -246,7 +246,11 @@ if(graphml!=''):
 if(add!=''):
     if(name==''): name=add
 
-    f = None
+    f = None # just a placeholder for a file handle used later
+
+    # Now, if strings contain "json" these will be assumed to be filenames
+    # and if not, the strings will be passed through to the server
+    
     if('.json' in fileinfo):
         try:
             f = open(fileinfo, 'r')
