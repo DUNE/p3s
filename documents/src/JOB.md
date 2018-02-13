@@ -34,7 +34,19 @@ explained below).
 ## Preparing to run
 These instructions apply to the **lxplus** interactive Linux facility
 at CERN. To set up access to p3s on that platform one needs to follow
-a few simple steps as described below.
+a few simple steps as described below. To use p3s for the needs
+of the protoDUNE experiment it is strongly recommended that you
+ensure that your account
+
+* is attributed to **np-comp** Linux group at CERN
+* has membership in the following CERN e-groups:
+  1. eos-experiment-cenf-np04-readers
+  2. eos-experiment-cenf-np04-writers
+
+This will allow you to access, move and delete if necessary
+the data produced by p3s. To get these memberships sorted out you may file
+a ticket on the CERN services pages and/or contact Nectarios Benekos and
+the author of this manual.
 
 ### Get the p3s client software
 
@@ -44,21 +56,19 @@ looking at job templates stored as JSON files in the p3s repository.
 If not already done so, install p3s software at the location of your choice by
 _cloning the content from GitHub_.  For the purposes of this writeup,
 you are assumed to be on an interactive node located at CERN such as
-lxplus. This step is done in two cases only (so not often):
-
-* you are justing starting to use the system
-* you are informed that there was an update and you should switch to a newer version
-
-
+lxplus. Run the command
 ```
 git clone https://github.com/DUNE/p3s.git
 ```
+This step is done in two cases only (so not often):
 
-After you run this, your current directory will contain a subdirectory **p3s**.
-This subdirectory will in turn contain a number of subdirectories.
-Of immediate interest to you are the following:
+* you are just starting to use the system
+* you are informed that there was an update and you should switch to a newer version
 
-* **p3s/clients** containing multiple client scripts with different functions
+After you run "git clone" your current directory will contain a subdirectory **p3s**.
+Of immediate interest to you are the following folders within p3s:
+
+* **p3s/clients** containing multiple client scripts with different functions; of particular interest to you right now is the script **job.py**
 * **p3s/configuration** containing a few bash scripts which simplify setup for individual sites (such as CERN)
 * **p3s/documents** with documentation (such as this writeup) in both Markdown (md) and PDF format
 * **p3s/inputs** and its subdirectories such as jobs/larsfot with job definition and wrapper script templates
@@ -69,9 +79,8 @@ The next step is also CERN-specific and its purpose is to set up
 the Python environment for p3s clients without having to install anything yourself.
 This needs to be done every time you have a fresh shell session which you plan
 to use for p3s interaction. It may be added to your log-in profile to save some typing
-line but can also be done manually.
-
-So, please activate the "Python virtual environment" by running this command
+line but can also be done manually. Either way, please activate the "Python virtual environment"
+by running this command:
 ```
 source ~np04dqm/public/vp3s/bin/activate
 ```
@@ -134,15 +143,16 @@ the p3s server (which is on port 80 at CERN).
 
 ---
 
-# Running a job
+# Submitting a job
 ## Resources
 
 Keep in mind that when you "submit a job" all you are doing is sending
 a record containing all the info necessary for running a particular
 executable, to the p3s database. The system (p3s) will then match this job
-with a live and available batch slot in CERN Tier-0 facility and deploy the payload
-for execution. This is a typical case of a pilot-based framework
-which entails the following
+with a live and available pilot occupying a batch slot in CERN Tier-0 facility
+and deploy the payload for execution in that batch slot (i.e. on one of the Worker Nodes
+at CERN). This is a typical case
+of a pilot-based framework which entails the following
 
 * typically very low latency of the start of job execution since you are not
 waiting for a HTConfor or other queue; in some cases such as busy HT Condor
@@ -247,7 +257,7 @@ Now we can submit this job to the server. Assuming the p3s client software is in
 **we changed the current path to the "p3s/clients" directory**, let's make sure
 we set the correct environment, so unless already done so use the command
 ```
-source p3s/configuration/lxvm_np04dqm.sh
+source ../configuration/lxvm_np04dqm.sh
 ```
 After that the following command can be used
 
@@ -264,8 +274,7 @@ where you can check your jobs will be:
 http://p3s-web.cern.ch/monitor/jobs
 ```
 Entries in the jobs table are clickable and will reveal more infrormation
-if you access the link.  
-Note that while in this example the execution time is negligible it may take a while
+if you access the link. Note that while in this example the execution time is negligible it may take a while
 for the state of the job in the monitor to be displayed as "finished" due to
 the way polling period and hearbeats are set in the pilot. Pay attention to the
 UUID of the job since this will allow you to locate the stdout and stderr of
@@ -273,14 +282,34 @@ the job when it finishes, which will be contained in the directory
 ```
 /eos/experiment/neutplatform/protodune/np04tier0/p3s/joblog
 ```
-It's up to the author of the wrapper script to define the location
-of the output files other than stdout. Please see the "inputs" directory
-for examples.
+
+In this test case, the *.out file will contain a printout of the environment
+found on the worker node. The *.err file should be empty if everything worked well.
+
+Since running a functioning wrapper script (as opposed to Linux built-in commands) is
+a more realistic use case note that it's entirely up to the author of the wrapper script to define the location
+of the output files other than stdout. Please see the "p3s/inputs" directory for examples of
+job descriptions which access different directories. In many cases, ROOT and other files
+produced by the current version of p3s will move the files they produce to
+the following location in EOS:
+```
+/eos/experiment/neutplatform/protodune/np04tier0/p3s/outputs
+```
+...but once again this depends on what's in the wrapper script.
 
 The **job** client script we use here and all clients in p3s suite support the "-h"
 command line option which prints an annotated list of all command line options. Take
 a look, it's helpful. If you need more verbose output, you can add "-v 2" to the command
 line to change the verbosity level.
+
+
+## Creating and editing your wrapper scripts
+It is important to ensure that the wrapper you are testing or using
+is located in a storage area that's accessible to the members of
+the np-comp group (see note on group attribution in the beginning
+of this document). When working in AFS, this also requires that  you
+use a directory under your "public" directory branch otherwise
+the file won't be readable by p3s regardless.
 
 ## "Test Wrapper"
 There is a script which allows the user to test the setup
@@ -305,25 +334,24 @@ the exact names of the environment variables used in formulating your job. The o
 matters is that the payload script contained correct references to the environment.
 
 ---
+
 # Location of the data and log files
 ## Directories in EOS
 For storage of data and log files p3s can use _any_ storage
 area (e.g. a directory) which is read/write accessible to its pilots.
 This means the user id of the pilots running in p3s must be a member
 of requisite groups and/or have correct permission for the directory
-used for log and data storage in p3s.
+used for log and data storage in p3s. At CERN we are taking advantage of
+the distributed **EOS** storage facility that is accessible from both interactive and worker nodes.
+The top level directory for all sorts of p3s data has been defined as
 
-At CERN we are taking advantage of the distributed **EOS** storage
-facility that is accessible from both interactive and worker nodes.
-The top level directory for data has been defined as
 ```
 /eos/experiment/neutplatform/protodune/np04tier0/p3s
 ```
 
 ## Log files
-
-The p3s configuration file mentioned above (such as lxvm_np04dqm.sh) is not
-used just by client scripts, but also by the server. As such, it contains
+The p3s configuration file mentioned above (such as lxvm_np04dqm.sh) is
+not used just by client scripts, but also by the server. As such, it contains
 other useful info such as pointers to directories to keep log files for
 HTCondor submission of pilot jobs, pilot logs and job logs. The latter
 will be of most interest for the end user. Consider the following
@@ -350,3 +378,16 @@ We are taking advantage of availability of distributed
 file systems at CERN with are visible from most nodes, i.e. all
 logs are kept in a single directory structure which can be browsed
 by the user (as opposed to local disks on a few dedicated nodes).
+The reason HTCondor logs are keps in AFS as opposed to EOS is
+a current CERN policy.
+
+---
+
+# Moving on to "real" payloads
+
+Please take a look at examples in p3s/inputs/larsoft for realistic examples.
+JSON files used to submit LArSoft jobs are fairly standard in that they
+typically specify locattion of the FCL file etc. The wrapper script sets up
+the execution environment from CVMFS and/or local AFS build if necessary.
+
+
