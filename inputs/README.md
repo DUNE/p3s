@@ -1,21 +1,25 @@
 # p3s "inputs"
 
-## Documentation
-_Note: for convenience of p3s users, this file has been converted in
-PDF format and added to the directory p3s/documents/pdf in this repository._
-
 ## Overview
 
 The directory **p3s/inputs** contains templates
-and code samples which describe p3s _payloads_ i.e.
-the stuff that gets executed in p3s. As such,
-"input" implies that relevant files are then
-supplied to an appropriate client (e.g. _job.py_)
-which performs parsing and interacts with the p3s
+and code samples which describe a few types of p3s
+objects, for example:
+
+* jobs descriptions to be sent to p3s
+* workflows
+* _data types_ and data
+* p3s sites
+
+These pieces of information are meant to be used
+with appropriate p3s clients e.g. job descriptions in
+JSON format are read and processed by the "job" client,
+workflow descriptions are processed by the "workflow" client etc.
+Each client performs parsing and interacts with the p3s
 server to communicate the user's request.
 
-There are two types of material in this folder:
-* a few simple examples which are useful for testing and debugging
+In general there are two types of material in this folder:
+* a few very simple examples which are useful for testing and debugging
 * realistic templates for running DQM payloads for protoDUNE
 
 The three main file types to be found here are
@@ -37,7 +41,7 @@ Such files are meant to be used with the
 _job.py_ client in the "clients" folder. Example:
 
 `
-prs/clients/job.py -j myJob.json
+p3s/clients/job.py -j myJob.json
 `
 
 The client then interacts with the p3s server and creates a database
@@ -101,5 +105,10 @@ Contains examples of chained jobs
 ## The "larsoft" directory
 
 These files are application-specific and are meant to support LArSoft-based
-applications running at CERN and elsewhere
+applications running at CERN and elsewhere. It contains subdirectories
+
+* **test** for general testing of larsoft
+* **crt** for Cosmic Rate Tagger software
+* **evdisp** for the Event Display
+
 
