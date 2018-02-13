@@ -53,14 +53,15 @@ Any number of job descriptions can reside within a file (including a single job)
 and they can be send to the server for execution using the _job.py_ client.
 
 
-## XML
+## XML (GraphML schema)
 
 ### The client
 The main consumer of these files is the _workflow.py_ client of p3s.
 
-### DAG temlates formatted in GraphML
+### DAG templates formatted in GraphML
 
-The XML source files (which typically have the .graphml extension)
+The XML source files (which typically have the .graphml extension
+but that's not critical)
 are expected to contain DAG descriptions (workflow templates)
 in _GraphML_ format. The reason this format was chosen to represent
 DAGs is that it is compatible with a number of third-party tools
@@ -68,7 +69,7 @@ which are useful for parsing and visualization.
 
 ### Workflows vs DAGs
 
-A DAG defined by the user is expected to serve as a template for
+A DAG defined by the user is expected to serve as a _template_ for
 actual instances of workflows. DAGs can be stored in a few formats.
 Most of the time p3s utilizes the GraphML schema (format)
 which is fairly standard and can be parsed by the Networkx package
@@ -98,9 +99,6 @@ in parallel
 
 #### chain
 Contains examples of chained jobs
-
-
-
 
 ## The "larsoft" directory
 
