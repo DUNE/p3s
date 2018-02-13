@@ -144,15 +144,20 @@ the p3s server (which is on port 80 at CERN).
 ---
 
 # Submitting a job
-## Resources
+## The mechanics of the job submission
 
 Keep in mind that when you "submit a job" all you are doing is sending
 a record containing all the info necessary for running a particular
 executable, to the p3s database. The system (p3s) will then match this job
-with a live and available pilot occupying a batch slot in CERN Tier-0 facility
+with a live and available **pilot** occupying a batch slot in CERN Tier-0 facility
 and deploy the payload for execution in that batch slot (i.e. on one of the Worker Nodes
-at CERN). This is a typical case
-of a pilot-based framework which entails the following
+at CERN). The pilot will monitor the state of the job under its management
+and send periodic "heartbeats" to the server to tell it that it's still alive.
+Once the job completes, the pilot closes logs, optionally performs other
+"close out" functions and resumes querying the p3s server for the next
+job.
+
+This is a typical case of a pilot-based framework which entails the following
 
 * typically very low latency of the start of job execution since you are not
 waiting for a HTConfor or other queue; in some cases such as busy HT Condor
@@ -198,6 +203,11 @@ Other possible states will be discussed later.
 The other two attributes that need t be set are the **payload** and **env**. They are explained below.
 The remaining attributes of the job are less relevant for initial testing.
 
+The script referenced in the **payload** attribute must be readable and executable by members of
+the same computing group as the pilot (in our case that's "np-comp") and if it's located in AFS
+the relevant permissions come on top of that. The "public" directory in your AFS-based directory
+tree is a good choice to place your own scripts.
+
 ## The payload and the environment
 
 The **payload** attribute of the job definition (such as in the example above) is the path of the
@@ -226,6 +236,7 @@ the **env** attribute JSON file and the script. There are few limits in desingni
 
 ## Running your first job
 
+We will use a prefab example for your first run.
 Inspect the **p3s/inputs/jobs** directory of the
 repo that you cloned from GitHub. Find and examine
 the file **printEnv.json**.
@@ -259,8 +270,7 @@ we set the correct environment, so unless already done so use the command
 ```
 source ../configuration/lxvm_np04dqm.sh
 ```
-After that the following command can be used
-
+After that the following command can be used (once again form the "clients" directory)
 ```
 ./job.py -j ../inputs/jobs/printEnv.json
 ```
@@ -310,6 +320,24 @@ the np-comp group (see note on group attribution in the beginning
 of this document). When working in AFS, this also requires that  you
 use a directory under your "public" directory branch otherwise
 the file won't be readable by p3s regardless.
+
+As a simple exercise, you may want to try the following:
+
+* create and rename a copy of the JSON file used in the previous example
+* edit the JSON file by replacing the reference to /bin/env with something like
+`/afs/cern.ch/user/f/foo/public/myTest.sh`
+* put something simple in the bash script myTest.sh located in your public folder,
+like /bin/env or /bin/date
+* submit this job to p3s by specifying the path to your modified JSON file on
+the command line for the "job.py" client
+* watch the job execute and look for the output in the "joblog" directory
+as stated above
+
+In case something is amiss please contact the author of this document. If
+all worked well, you may try to create a more realistic and complex job
+description. Your wrapper script is pretty free form so is you need to
+set up an environment or fetch a piece of input from somewhere, please
+do so. Look at the examples in the "inputs" directory.
 
 ## "Test Wrapper"
 There is a script which allows the user to test the setup
