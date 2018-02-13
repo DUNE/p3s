@@ -168,7 +168,7 @@ def adddag(request):
     description	= post['description']
 
     x = deldag(name)
-
+    
     # FIXME - this path needs to be accessible
     tmpdir = '/tmp/p3s/'
     if(not os.path.exists(tmpdir)):
@@ -181,8 +181,6 @@ def adddag(request):
     f = open(fn, "w") # FXIME: this has yet to work: f = io.StringIO()
     f.write(graphml)
     f.close()
-
-    
     f = open(fn, "r")
     g = nx.read_graphml(f)
 
