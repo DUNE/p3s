@@ -48,7 +48,7 @@ class Dag(dict):
     def __str__(self):
         myStr=''
         for k in self.keys():
-            if(k=='graphml'): continue
+#            if(k=='graphml'): continue
             myStr+=k+':'+self[k]+'\n'
         return myStr
 
@@ -233,7 +233,7 @@ if(graphml!=''):
     s = '\n'.join(nx.generate_graphml(g))
 
     d = Dag(name=name, description=description, graphml=s)
-    if(verb>1): print(d)
+    if(verb>1): print('DAG:\n----------------------\n', d,'\n-------------\n')
     if(tst): exit(0)
     
     resp = API.post2server('workflow', 'adddagURL', d)
