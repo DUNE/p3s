@@ -7,9 +7,9 @@ At the time of writing, the "workflow client" in p3s exists
 in the form of a Python script appropriately named *workflow.py*.
 For brief summary of command line options run the script with "-h" option.
 
-The function of the client is to create, manage, adjust and delete workflows
-in p3s. The client does not provide much of monitoring functionality, which
-instead mainly exists in the Web interface of the p3s system.
+The function of this client is to create, manage, adjust and delete workflows
+(and their templates) in p3s. The client does not provide much of monitoring functionality,
+which instead mainly exists in the Web interface of the p3s system.
 
 In p3s --- just like in many workflow management systems --- the Directed Acyclic Graph (DAG)
 is an abstraction of a workflow. In the graph, vertices represent jobs and edges represent
@@ -50,6 +50,11 @@ and that property is enforced in the database by making the name attribute
 the primary key. Example of creating a DAG:
 
 `workflow.py -g myDAG.graphml`
+
+Unless an explicit name is provided on the command line (see the -h option
+for a list of possible options) the name of the resulting DAG (template
+of a future workflow) will default to the root name of the file e.g. _myDAG_
+in the example above.
 
 For a few examples of GraphML files written for p3s please see the directory
 p3s/inputs. In addition to text editors that can be used for editing
@@ -159,3 +164,16 @@ Until serious testing has been completed, please consult the experts
 about using the delete function - especially if the system is in production.
 
 
+## A working example
+Assuming you are working at CERN and are in the "clients" directory of
+the p3s repo the following commands will produce a simple but working
+example of a workflow with an origin, three payloads in the middle and
+one sync job on the output.
+
+The first command defined the template for p3s while the second instantiates
+a workflow based on the template with a few modifications
+
+```
+./workflow.py -g ../inputs/3filters/3filters.graphml 
+./workflow.py -a 3filters -f ../inputs/3filters/fileinfo_3filters_mod.json -s defined
+```
