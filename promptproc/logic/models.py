@@ -5,6 +5,14 @@ from data.models	import dataset, datatype
 from jobs.models	import job
 
 
+
+class user(models.Model):
+    name	= models.CharField(max_length=64, primary_key = True, default='')
+
+    def __str__(self):
+        return self.name
+
+
 class service(models.Model):
     name	= models.CharField(max_length=32, default='')
     ts		= models.DateTimeField('ts',  blank=True, null=True)
