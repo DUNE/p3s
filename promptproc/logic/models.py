@@ -17,7 +17,7 @@ class user(models.Model):
         allUsers=[]
         for u in user.objects.all():
             allUsers.append(u.name)
-        return ", ".join(allUsers)
+        return ",".join(allUsers)
 
 class service(models.Model):
     name	= models.CharField(max_length=32, default='')
