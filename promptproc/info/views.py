@@ -16,7 +16,7 @@ from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow
 from monitor.monitorTables		import *
-
+from logic.models			import user
 
 
 from utils.timeUtils import uptime
@@ -121,6 +121,7 @@ def index(request):
     
     tSystem = DetailTable(systemData)
 
+    users = "user1, user2"
     return render(request, 'index.html',
                   {
                       'domain':		domain,
@@ -133,6 +134,7 @@ def index(request):
                       'jobs':		tJobs,
                       'system':		tSystem,
                       'time':		timeString,
+                      'users':		users,
                   }
     )
 
