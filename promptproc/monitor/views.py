@@ -36,7 +36,8 @@ from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow
 
-from logic.models			import service
+from logic.models			import service, user
+from logic.models			import user as p3sUser
 
 # tables2 machinery
 import	django_tables2 as tables
@@ -190,6 +191,7 @@ def data_handler(request, what):
     except:
         return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_users,p3s_jobtypes, p3s_services")
 
+    p3s_users	= 'All,'+p3sUser.all()
     
     userlist	= p3s_users.split(',')
     jobtypes	= p3s_jobtypes.split(',')
