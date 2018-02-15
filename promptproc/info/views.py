@@ -121,7 +121,7 @@ def index(request):
     
     tSystem = DetailTable(systemData)
 
-    users = "user1, user2"
+    users = user.all()
     return render(request, 'index.html',
                   {
                       'domain':		domain,

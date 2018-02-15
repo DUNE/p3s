@@ -12,6 +12,12 @@ class user(models.Model):
     def __str__(self):
         return self.name
 
+    @classmethod
+    def all(self):
+        allUsers=[]
+        for u in user.objects.all():
+            allUsers.append(u.name)
+        return ", ".join(allUsers)
 
 class service(models.Model):
     name	= models.CharField(max_length=32, default='')
