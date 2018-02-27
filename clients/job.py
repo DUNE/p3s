@@ -233,17 +233,29 @@ if(json_in!=''):
 
     for jj in data:
         for jN in range(Njobs):
+            pld=jj['payload']
+            isGood = os.access(pld, os.R_OK) and os.access(pld, os.X_OK)
+            
+            if(not isGood):
+                print('FAIL: The payload is not readable or executable for members of your group, plese check the path.')
+                print('Also make sure any I/O files you specify in the "env" attribute are READ/WRITE accessible to members of your group.')
+                exit(-1)
             if(inputFile!=''): jj['env']['P3S_INPUT_FILE'] = inputFile
             jobList.append(Job(jj))
     
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
 
     for j in jobList:# Contact the server, register the job(s)
+        
         if(verb>1): print(j)
+        
         if(tst): continue # just testing
+        
         resp = API.post2server('job', 'add', j)
+        
         if(verb>0): print(resp)
-        time.sleep(delay/1000.0) # prevent self-inflicted DOS
+        
+        time.sleep(delay/1000.0) # delay to prevent a self-inflicted DOS attack
 
 
 ###################### GRAND FINALE ####################################
