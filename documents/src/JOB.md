@@ -2,9 +2,36 @@ Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
 February 2018
 
-Version 1.02 (release notes: added information on EOS and other access, directory locations etc)
+Version 1.03 (release notes: added information on EOS and other access, directory locations etc)
 
 ---
+
+# Pre-introduction
+
+When starting work with p3s it is crucial to keep in mind the following facts:
+
+* your jobs will not run under your identity but under the p3s identity
+* accordingly, if the script or other kind of executable you intend to run
+is not both *readable and executable* by p3s (which is in your Linux group at CERN)
+your submission will fail. So you need to make sure to use either the "public"
+sector of your AFS directory tree or an area in EOS readable by the group "np-comp"
+to host your scipt/executable.
+
+Same consideration applies to storage of input and output data. If your script
+tries to create a file in an area which is write-accessible only to you it
+will obviously fail. If your script tries to read a file which is stored
+in a path that is only readable by it will also obviously fail.
+Setting things correctly is fairly easy however, for example one might
+follow these steps:
+
+* create the script you wish to run in the ~/public area of your AFS
+home directory at CERN
+* make sure it's "chmod +x"
+* references to input and output files will work at CERN if
+they all are in the EOS storage area assigned to the "np-comp" group
+and you have persmissions as described in the text below in detail.
+
+
 
 # Introduction
 ## Purpose and content of this document
@@ -50,7 +77,7 @@ the author of this manual.
 
 ### Get the p3s client software
 
-At a minimum you need a client script (which is written in Python) to
+At a minimum you need the p3s client script (which is written in Python) to
 submit job descriptions to p3s for execution. You will also benefit from
 looking at job templates stored as JSON files in the p3s repository.
 If not already done so, install p3s software at the location of your choice by
@@ -203,10 +230,10 @@ Other possible states will be discussed later.
 The other two attributes that need t be set are the **payload** and **env**. They are explained below.
 The remaining attributes of the job are less relevant for initial testing.
 
-The script referenced in the **payload** attribute must be readable and executable by members of
+**The script referenced in the "payload" attribute must be readable and executable by members of
 the same computing group as the pilot (in our case that's "np-comp") and if it's located in AFS
 the relevant permissions come on top of that. The "public" directory in your AFS-based directory
-tree is a good choice to place your own scripts.
+tree is a good choice to place your own scripts.**
 
 ## The payload and the environment
 
@@ -231,6 +258,20 @@ it is consistent with what's in the JSON file such as shown above.
 
 Please note that the user has complete freedom as to how to factor the information between
 the **env** attribute JSON file and the script. There are few limits in desingning job descriptions.
+For example, the "P3S_MODE" will need to be set to "COPY" in most cases, and the variable "P3S_INPUT_FILE"
+has a special meaning if you decided to use it (although you don't have to) - if there is a corresponding
+variable set in your shell it will override the content of P3S_INPUT_FILE found in the JSON file. This is
+done to facilitate testing with a number of different input files without having to edit JSON each time.
+If you don't want this behavior, simply unset the variable in your interactive shell. Note that you will
+achieve same effect (override of the input file name) by using the "-f" option of the job.py client if you
+so desire. So if there is "P3S_INPUT_FILE":"foo" in the "env" attribute in JSON, and you run the job.py
+client with an additional option:
+```
+-f foobar
+```
+
+then at runtime your payload job will see the value "foobar" in the contnet of the P3S_INPUT_FILE variable
+instead of the original "foo".
 
 ---
 
@@ -357,7 +398,8 @@ option will output helpful information. For example:
 
 
 ## Note on environment variables
-With rare exceptions such as *P3S_MODE* (which may change in future versions) there is no semantic importance to
+With rare exceptions such as *P3S_MODE* and *P3S_INPUT_FILE (which may change in future versions)
+there is no semantic importance to
 the exact names of the environment variables used in formulating your job. The only thing that
 matters is that the payload script contained correct references to the environment.
 
