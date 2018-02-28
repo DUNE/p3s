@@ -9,7 +9,32 @@ February 2018
 
 ---
 
-# Pre-introduction
+# Introduction
+## Purpose and content of this document
+
+This document explains how to set up and run the job submission
+client. These instructions are not generic as they are tailored
+to operation of the protoDUNE experiment at CERN in 2018. There are
+references to certain directory locations, environment variables
+and scripts that are application-specific.
+
+There is a separate "overview" document which contains a general description of
+how p3s works and what its components are. For the end user a lot of this detail
+won't matter since they are typically interested in just running a number
+of jobs on resources provided by the system and following their progress,
+consulting the log files if necessary. That's the extent of the instructions found
+below. These instructions were validated by a few new users. If anything
+does not work as expected, please consult the author of this document.
+
+Please keep track of the version number located on top of this document.
+Once incremental changes become significant the version number will
+be bumped up. It is important to refer to the right set of instructions
+as p3s is gradually enters operations period and adjustments are made.
+This document also exists in PDF format and can be printed out for
+your convenience, in the documents/pdf folder of the p3s repository (as
+explained below).
+
+## PLEASE READ THIS
 
 When starting work with p3s it is crucial to keep in mind that your
 jobs will not run under your identity but under the p3s identity.
@@ -42,30 +67,6 @@ One can also elect to run from the production account which means
 that most of these requirements are met automatically. There are
 certain disadvantes to that though.
 
-# Introduction
-## Purpose and content of this document
-
-This document explains how to set up and run the job submission
-client. These instructions are not generic as they are tailored
-to operation of the protoDUNE experiment at CERN in 2018. There are
-references to certain directory locations, environment variables
-and scripts that are application-specific.
-
-There is a separate "overview" document which contains a general description of
-how p3s works and what its components are. For the end user a lot of this detail
-won't matter since they are typically interested in just running a number
-of jobs on resources provided by the system and following their progress,
-consulting the log files if necessary. That's the extent of the instructions found
-below. These instructions were validated by a few new users. If anything
-does not work as expected, please consult the author of this document.
-
-Please keep track of the version number located on top of this document.
-Once incremental changes become significant the version number will
-be bumped up. It is important to refer to the right set of instructions
-as p3s is gradually enters operations period and adjustments are made.
-This document also exists in PDF format and can be printed out for
-your convenience, in the documents/pdf folder of the p3s repository (as
-explained below).
 
 ## Preparing to run
 These instructions apply to the **lxplus** interactive Linux facility
