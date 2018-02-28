@@ -2,27 +2,34 @@ Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
 February 2018
 
-Version 1.03 (release notes: added information on EOS and other access, directory locations etc)
+# Release Notes
+
+* Version 1.03 (more verbose info on permissions)
+* Version 1.02 (added information on EOS and other access, directory locations etc)
 
 ---
 
 # Pre-introduction
 
-When starting work with p3s it is crucial to keep in mind the following facts:
-
-* your jobs will not run under your identity but under the p3s identity
-* accordingly, if the script or other kind of executable you intend to run
+When starting work with p3s it is crucial to keep in mind that your
+jobs will not run under your identity but under the p3s identity.
+This is similar to a situation where your colleague wants to run your
+software. If this software, configuration files, I/O etc are located
+in your private directory tree i.e. do not
+have the right permissions (e.g. files are not readable for others)
+this will fail. So adjustments need to be made, just
+like in any kind of collaborative computing. For example, 
+if the script or other kind of executable you intend to run
 is not both *readable and executable* by p3s (which is in your Linux group at CERN)
-your submission will fail. So you need to make sure to use either the "public"
+your submission won't work. So you need to make sure to use either the "public"
 sector of your AFS directory tree or an area in EOS readable by the group "np-comp"
-to host your scipt/executable.
+to host your scipt/executable. More information is provided in the text below.
 
 Same consideration applies to storage of input and output data. If your script
 tries to create a file in an area which is write-accessible only to you it
-will obviously fail. If your script tries to read a file which is stored
-in a path that is only readable by it will also obviously fail.
-Setting things correctly is fairly easy however, for example one might
-follow these steps:
+won't work. Likewise, if your script tries to read a file which is only readable
+by a different user will also fail. However, making things work
+is fairly easy, for example one might follow these steps:
 
 * create the script you wish to run in the ~/public area of your AFS
 home directory at CERN
@@ -31,7 +38,9 @@ home directory at CERN
 they all are in the EOS storage area assigned to the "np-comp" group
 and you have persmissions as described in the text below in detail.
 
-
+One can also elect to run from the production account which means
+that most of these requirements are met automatically. There are
+certain disadvantes to that though.
 
 # Introduction
 ## Purpose and content of this document
