@@ -25,8 +25,9 @@ import argparse
 
 #####
 
-inputOverride = None
-outputOverride = None
+inputOverride	= None
+outputOverride	= None
+fclOverride	= None
 
 try:
     inputOverride = os.environ['P3S_INPUT_FILE']
@@ -38,24 +39,32 @@ try:
 except:
     pass
 
+try:
+    fclOverride = os.environ['P3S_FCL']
+except:
+    pass
+
 #####
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-j", "--json_in",	type=str, default='',	help="file from which to read the job (must be a list)")
-parser.add_argument("-f", "--file",	type=str, default=None,	help="input file, overrides the value in json file")
-parser.add_argument("-F", "--File",	type=str, default=None,	help="output file, overrides the value in json file")
-parser.add_argument("-p", "--payload",	type=str, default=None,	help="payload, overrides the value in json file")
+parser.add_argument("-j", "--json_in",	type=str, default='',	help="JSON file from which to read the job description (must be a list)")
+parser.add_argument("-i", "--infile",	type=str, default=None,	help="overrides the value of P3S_INPUT_FILE in json file")
+parser.add_argument("-o", "--outfile",	type=str, default=None,	help="overrides the value of P3S_OUTPUT_FILE in json file")
+parser.add_argument("-p", "--payload",	type=str, default=None,	help="overrides the value of payload in JSON file")
+
+parser.add_argument("-f", "--fcl",	type=str, default=None,	help="FCL, overrides the value of P3S_FCL in json file")
 
 args = parser.parse_args()
 
-j = args.json_in
-f = args.file
-F = args.File
-p = args.payload
+j	= args.json_in
+ifile	= args.infile
+ofile	= args.outfile
+pay	= args.payload
+fcl	= args.fcl
 
-if(f): inputOverride=f
-if(F): outputOverride=F
+if(ifile):	inputOverride=ifile
+if(ofile):	outputOverride=ofile
 
 if(j==''):
     print('JSON input not defined, exiting... Use -h option for help')
@@ -81,11 +90,15 @@ if(outputOverride):
     os.environ['P3S_OUTPUT_FILE']=outputOverride
     print('Output Override:',os.environ['P3S_OUTPUT_FILE'])
 
+if(fclOverride):
+    os.environ['P3S_FCL']=fclOverride
+    print('Fcl Override:',os.environ['P3S_FCL'])
+
 
 print("--------------------------")
     
 pl=data['payload']
-if(p): pl=p
+if(pay): pl=pay
 
 
 print("PAYLOAD\n--------------------------")
