@@ -1,10 +1,10 @@
 [
     {
-	"name":		"EOS access test",
+	"name":		"HitDump",
 	"timeout":	"1000",
-        "jobtype":	"testJob",
+        "jobtype":	"hitdumptest",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/test/runDumpHits.sh",
-	"env":		{"DUNETPCVER":"v06_62_00","DUNETPCQUAL":"e14:prof","NUMEVENTS":"1","INPUTFILE":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testinput/ProtoDUNE_beam_-7GeV_cosmics_3ms_sce_99_20170719T222727_merged0_25712_1510288920487.root","OUTPUTDIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testoutput/"},
+	"env":		{"DUNETPCVER":"v06_69_00","DUNETPCQUAL":"e15:prof","NUMEVENTS":"1","INPUTFILE":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testinput/ProtoDUNE_beam_-7GeV_cosmics_3ms_sce_99_20170719T222727_merged0_25712_1510288920487.root","OUTPUTDIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testoutput/"},
         "priority":	"1",
 	"state":	"defined"
     }
