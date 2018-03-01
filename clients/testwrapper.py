@@ -65,6 +65,7 @@ fcl	= args.fcl
 
 if(ifile):	inputOverride=ifile
 if(ofile):	outputOverride=ofile
+if(fcl):	fclOverride=fcl
 
 if(j==''):
     print('JSON input not defined, exiting... Use -h option for help')
