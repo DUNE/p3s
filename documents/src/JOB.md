@@ -1,32 +1,30 @@
 Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
-February 2018
-
 # Release Notes
 
-* Version 1.03 (more verbose info on permissions)
-* Version 1.02 (added information on EOS and other access, directory locations etc)
-
+* Version 1.04 20180301
+* Version 1.03 20180228 more verbose info on file permissions
+* Version 1.02 20180226 added information on EOS, directory locations etc
+* Version 1.01 20180120 first official version
 ---
 
 # Introduction
 ## Purpose and content of this document
 
-This document explains how to set up and run the job submission
+* This document explains how to set up and run the job submission
 client. These instructions are not generic as they are tailored
-to operation of the protoDUNE experiment at CERN in 2018. There are
-references to certain directory locations, environment variables
-and scripts that are application-specific.
-
-There is a separate "overview" document which contains a general description of
-how p3s works and what its components are. For the end user a lot of this detail
-won't matter since they are typically interested in just running a number
-of jobs on resources provided by the system and following their progress,
-consulting the log files if necessary. That's the extent of the instructions found
-below. These instructions were validated by a few new users. If anything
+to operation of the protoDUNE experiment at CERN in 2018. There
+are references to certain directory locations, environment
+variables and scripts that are application-specific.
+* There is a separate "overview" document which contains a general
+description of how p3s works and what its components are. For the
+end user a lot of this detail won't matter since they are typically
+interested in just running a number of jobs on resources provided
+by the system and following their progress, consulting the log files
+if necessary. That's the extent of the instructions found below.
+These instructions were validated by a few new users. If anything
 does not work as expected, please consult the author of this document.
-
-Please keep track of the version number located on top of this document.
+* Please keep track of the version number located on top of this document.
 Once incremental changes become significant the version number will
 be bumped up. It is important to refer to the right set of instructions
 as p3s is gradually enters operations period and adjustments are made.
@@ -37,7 +35,8 @@ explained below).
 ## PLEASE READ THIS
 
 When starting work with p3s it is crucial to keep in mind that your
-jobs will not run under your identity but under the p3s identity.
+jobs will not run under your identity but under the **p3s** identity
+which currently correponds to the user **np04dqm**.
 This is similar to a situation where your colleague wants to run your
 software. If this software, configuration files, I/O etc are located
 in your private directory tree i.e. do not
@@ -45,16 +44,17 @@ have the right permissions (e.g. files are not readable for others)
 this will fail. So adjustments need to be made, just
 like in any kind of collaborative computing. For example, 
 if the script or other kind of executable you intend to run
-is not both *readable and executable* by p3s (which is in your Linux group at CERN)
-your submission won't work. So you need to make sure to use either the "public"
-sector of your AFS directory tree or an area in EOS readable by the group "np-comp"
-to host your scipt/executable. More information is provided in the text below.
+is not both *readable and executable* by p3s (which is in your Linux
+group at CERN) your submission won't work. So you need to make sure to
+use either the "public" sector of your AFS directory tree or an area in
+EOS readable by the group "np-comp" to host your scipt/executable. More
+information is provided in the text below.
 
-Same consideration applies to storage of input and output data. If your script
-tries to create a file in an area which is write-accessible only to you it
-won't work. Likewise, if your script tries to read a file which is only readable
-by a different user will also fail. However, making things work
-is fairly easy, for example one might follow these steps:
+Same consideration applies to storage of input and output data. If your
+script tries to create a file in an area which is write-accessible only
+to you it won't work. Likewise, if your script tries to read a file which
+is only readable by a different user will also fail. However, making things
+work is fairly easy, for example one might follow these steps:
 
 * create the script you wish to run in the ~/public area of your AFS
 home directory at CERN
@@ -105,10 +105,14 @@ This step is done in two cases only (so not often):
 After you run "git clone" your current directory will contain a subdirectory **p3s**.
 Of immediate interest to you are the following folders within p3s:
 
-* **p3s/clients** containing multiple client scripts with different functions; of particular interest to you right now is the script **job.py**
-* **p3s/configuration** containing a few bash scripts which simplify setup for individual sites (such as CERN)
-* **p3s/documents** with documentation (such as this writeup) in both Markdown (md) and PDF format
-* **p3s/inputs** and its subdirectories such as jobs/larsfot with job definition and wrapper script templates
+* **p3s/clients** containing multiple client scripts with different functions;
+of particular interest to you right now is the script **job.py**
+* **p3s/configuration** containing a few bash scripts which simplify setup for
+individual sites (such as CERN)
+* **p3s/documents** with documentation (such as this writeup) in both Markdown
+(md) and PDF format
+* **p3s/inputs** and its subdirectories such as jobs/larsfot with job definition
+and wrapper script templates
 
 ### Set up and verify the Python environment
 
@@ -121,8 +125,8 @@ by running this command:
 ```
 source ~np04dqm/public/vp3s/bin/activate
 ```
-To verify that this actually worked, please change the directory to **p3s/clients**
-which is mentioned above. Run the script:
+To verify that this actually worked, please change the directory
+to **p3s/clients** which is mentioned above. Run the script:
 ```
 ./verifyImport.py
 ```
@@ -143,9 +147,10 @@ directory as described above)
 source p3s/configuration/lxvm_np04dqm.sh
 ```
 
-Then you don't need to worry about the server URL etc. Other environment
-variables contained in this file will be explained later in this document where necessary.
-Now, you can switch to the "clients" directory and try to run the command:
+Then you don't need to worry about the server URL etc. Other
+environment variables contained in this file will be explained
+later in this document where necessary. Now, you can switch to the
+"clients" directory and try to run the command:
 ```
 ./summary.py -P
 ```
@@ -167,11 +172,9 @@ If you see a failure, please contact the author of this document.
 
 The next step is to make sure that you can also see the Web pages served by p3s
 so you have monitoring functionality. Try to access **http://p3s-web.cern.ch**
-in your browser (if you are at CERN).
-
-Currently the server **p3s-web.cern.ch** is only accessible within
-the confines of the CERN firewall. If you want to access it from an external
-machine, please use a ssh tunnel like in the command below
+in your browser (if you are at CERN). Currently the server **p3s-web.cern.ch** is
+only accessible within the confines of the CERN firewall. If you want to access it
+from an external machine, please use a ssh tunnel like in the command below
 ```
 ssh -4 -L 8008:p3s-web.cern.ch:80 myCERNaccount@lxplus.cern.ch
 ```
@@ -187,22 +190,24 @@ Keep in mind that when you "submit a job" all you are doing is sending
 a record containing all the info necessary for running a particular
 executable, to the p3s database. The system (p3s) will then match this job
 with a live and available **pilot** occupying a batch slot in CERN Tier-0 facility
-and deploy the payload for execution in that batch slot (i.e. on one of the Worker Nodes
-at CERN). The pilot will monitor the state of the job under its management
+and deploy the payload for execution in that batch slot (i.e. on one of the Worker
+Nodes at CERN). The pilot will monitor the state of the job under its management
 and send periodic "heartbeats" to the server to tell it that it's still alive.
 Once the job completes, the pilot closes logs, optionally performs other
-"close out" functions and resumes querying the p3s server for the next
-job.
+"close out" functions and resumes querying the p3s server for the next job.
 
-This is a typical case of a pilot-based framework which entails the following
+This is a typical case of a pilot-based framework with the following
+features:
 
-* typically very low latency of the start of job execution since you are not
-waiting for a HTConfor or other queue; in some cases such as busy HT Condor
-queues gains can be quite substantial
+* low latency between submission and the start of job execution since you are
+not waiting for a HTConfor or other queue; in some cases such as busy HT Condor
+queues speed gains can be quite substantial
 
-* you don't have to run batch commands yourself
+* you don't have to run batch commands yourself and you don't have to manage
+HTCOndor JDL files
 
-* ease of automation since same template can be used in automated submission
+* ease of automation (e.g. creating automatic scripts) since same tested job
+template can be used in automated submission
 
 * easy to read tabulated view of all of your jobs in the p3s monitor which
 is a Web application
@@ -215,9 +220,9 @@ this can be made to work
 
 ## An example of the job description
 
-The following dummy example (with rather arbitrary attributes, file names and variables) demonstrates
-how JSON is used to describe jobs. Let us assume that we created a file named "myjob.json" with
-the following contents:
+The purpose of the following dummy example (with rather arbitrary attributes, file
+names and variables) is to demonstrate how JSON is used to describe jobs in p3s. Let
+us assume that we created a file named "myjob.json" with the following contents:
 
 ```
 [
@@ -235,17 +240,19 @@ the following contents:
 Note that this format corresponds to a *list* of objects i.e. such file can naturally
 contain a number of jobs; however having just one element in this list is absolutely fine.
 
-For the job to be eligible for execution the "state" attribute needs to be set to "defined" as showed above.
-Other possible states will be discussed later.
-The other two attributes that need t be set are the **payload** and **env**. They are explained below.
-The remaining attributes of the job are less relevant for initial testing.
+For the job to be eligible for execution the "state" attribute needs to be set to "defined"
+as showm above. Other possible states will be discussed later.
 
-**The script referenced in the "payload" attribute must be readable and executable by members of
+The other two attributes that need to be set are the **payload** and **env**. They are explained
+in one of the sections below. The remaining attributes of the job are less relevant for initial testing
+so we'll skip them for now.
+
+**N.B.** *The script referenced in the "payload" attribute must be readable and executable by members of
 the same computing group as the pilot (in our case that's "np-comp") and if it's located in AFS
 the relevant permissions come on top of that. The "public" directory in your AFS-based directory
-tree is a good choice to place your own scripts.**
+tree is a good choice to place your own scripts.*
 
-## The payload and the environment
+## The payload
 
 The **payload** attribute of the job definition (such as in the example above) is the path of the
 script that will run. It is strongly recommended that this is a shell wrapper, and the _bash_ shell
@@ -254,10 +261,14 @@ then the script will be copied into a sandbox _by the pilot_ at execution time. 
 to execute it _in situ_ which may or may not work depending on the permissions (including both AFS permissions
 if that's what you are using, and also Linux flags which should be at least +rx).
 
-The **env** attribute in the JSON snippet above defines the job environment in the Linux sense. It can be used
-for most anything but in particular, it can be used to communicate to the running job the names of input and output files.
-This is typically done in the wrapper script itself, i.e. within the wrapper ("my_executable.sh" in the
-current example) we may find:
+
+## The environment
+The **env** attribute in the JSON snippet above defines the job environment in the Linux sense.
+It can be used to desctibe the complete environment required by your job so you can keep the
+configuration in one place. The author of the job has complete freedom in how the environmnet is used.
+*In particular, it can be used as a clean way to communicate to the running job the names of input, output
+and configuration files, path to directories etc.* This is typically implemented in the wrapper script itself.
+For example, in the dummy example above (within the "my_executable.sh" payload script) we may find:
 ```
 foo -i $MYFILE
 ```
@@ -465,9 +476,69 @@ a current CERN policy.
 
 # Moving on to "real" payloads
 
+## Software provisioning and production account
+
+At the time of writing, LArSoft is provisioned to the CERN interactive
+and worker nodes via CVMFS. This is reflected in the wrapper scripts
+for most LArSoft jobs run in p3s.
+
+The protoDUNE-SP production account **np04dqm** is used to place
+standard wrapper scripts, job definitions etc. For example, when you want
+to run a "standard" job you may want to refer to a wrapper script
+contained in a public directory of the np04dqm account, in your JSON
+job definition. Take a look at
+```
+/afs/cern.ch/user/n/np04dqm/public/p3s/scripts
+```
+
+## Hello, World!
+
 Please take a look at examples in p3s/inputs/larsoft for realistic examples.
 JSON files used to submit LArSoft jobs are fairly standard in that they
-typically specify locattion of the FCL file etc. The wrapper script sets up
-the execution environment from CVMFS and/or local AFS build if necessary.
+typically specify locattion of the FCL file etc.
+
+Please read the notes in the beginning of this document regarding what
+Linux and e-groups you need to belong at CERN to make your work efficient
+and your experience positive. Look at the following directory
+```
+/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/test
+```
+Try to run *testAccess.sh* from that directory. You should see "OK" printed to
+your screen, this just verifies that you have access to that folder. If this does
+not happen, contact the author of this document. Now, switch to the
+directory **p3s/clients** (as per installation documented above). In case you
+have not already done so, please set up the required Python environment by
+running the command:
+```
+source ~np04dqm/public/vp3s/bin/activate
+```
+Now submit a prefab LArSoft test job (which jumps hits obtained from a prestaged
+ROOT file) by running the command:
+```
+./job.py -v 2 -j  /afs/cern.ch/user/n/np04dqm/public/p3s/scripts/test/hitdumptest.json
+```
+If all works well, you will see a UUID of the job just submitted printed on screen, and it
+will also be displayed in the p3s monitor at p3s-web.cern.ch, the "jobs" section.
+Upon completion (e.g. when you refresh the monitor page and the sate of the job switches from
+"running" to "finished") you may examine the output directory
+```
+ls -ltr /eos/experiment/neutplatform/protodune/np04tier0/p3s/testoutput
+```
+You will see a number of files, and one of the lates will contain the UUID of your job in its name.
+The content of the file chould be a list of the hits read from the input.
+
+You can now copy hitdumptest.json, hitdumptest.sh and requisite FCL files to your public AFS directory
+(so they can be accessed by p3s) and start doing useful work of your own. Congratulations!
 
 
+## Remote access to data
+If you want to pull data produced by p3s to your local machine (including your laptop) it's pretty easy provided that you have installed XRootD on that target machine. For example, to obtain a directory listing run a command similar to
+
+```
+xrdfs root://eospublic.cern.ch/ ls -ltr /eos/experiment/neutplatform/protodune/np04tier0/p3s/output/myDirectory/
+```
+
+To copy a file from CERN EOS to your machine use a command similar to this one:
+```
+xrdcp xroot://eospublic.cern.ch//eos/experiment/neutplatform/protodune/np04tier0/p3s/output/myDirectory/myFIle.root .
+```
