@@ -12,6 +12,6 @@
 	    "INPUTFILE":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testinput/ProtoDUNE_beam_-7GeV_cosmics_3ms_sce_99_20170719T222727_merged0_25712_1510288920487.root",
 	    "OUTPUTDIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testoutput/"},
 	    "priority":		"1",
-	    "state":		"defined"
-    }
+	"state":		"defined"
+    	}
 ]
