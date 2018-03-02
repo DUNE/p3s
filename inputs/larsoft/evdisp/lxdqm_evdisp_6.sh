@@ -16,8 +16,9 @@ setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
 
 cd $P3S_OUTPUT_DIR
 
-# job uuid is set by the pilot
-# if not, default to local uuid - for testing!
+# UUID is set by the pilot,
+# and if it is not present at this point,
+# we default to a locally generated UUID (mainly the test wrapper case)
 
 if [ -z ${P3S_JOB_UUID+x} ];
 then
@@ -30,9 +31,10 @@ tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
 cd $tmpdir
 pwd
-# cp $P3S_FCL .
+cp $P3S_FCL .
+export P3S_FCL_LOCAL=$(basename $P3S_FCL)
 env | grep P3S
-lar -c $P3S_FCL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
+lar -c $P3S_FCL_LOCAL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 
 dest=$P3S_EVDISP_DIR/$P3S_JOB_UUID
 
