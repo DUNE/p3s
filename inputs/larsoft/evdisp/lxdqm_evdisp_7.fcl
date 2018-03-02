@@ -3,6 +3,7 @@
 physics.reco: ["caldata"]
 
 services.RawDigitPrepService.DisplayTools: ["rawAdcPlotter", "preparedAdcPlotter"]
+process_name: "Reco2"
 
 tools.rawAdcPlotter.LogLevel:  2
 tools.rawAdcPlotter.FirstTick: 3000
