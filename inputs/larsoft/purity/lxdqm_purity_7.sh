@@ -11,6 +11,6 @@ source ${P3S_LAR_SETUP}
 
 lar -c $P3S_FCL_LOCAL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 ls -l Lifetime_Run1.txt
-#source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
-#/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/purity.py -f Lifetime_Run1.txt
+source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
+/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/clients/purity.py -f Lifetime_Run1.txt
 exit
