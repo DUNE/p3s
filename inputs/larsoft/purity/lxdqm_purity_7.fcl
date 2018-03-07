@@ -91,7 +91,7 @@ physics.producers.tjcosmic.TrajClusterAlg.MultHitSep:   5
 physics.producers.tjcosmic.TrajClusterAlg.JTMaxHitSep:   0 # turn off FindJunkTraj
 physics.producers.tjcosmic.TrajClusterAlg.DeltaRayTag:   [ -1, 0, 0]
 physics.producers.tjcosmic.TrajClusterAlg.Vertex3DChiCut: 0
-physics.producers.tjcosmic.TrajClusterAlg.Vertex2DCuts: [ -1, 0, 0, 0, 0, 0, 0]
+physics.producers.tjcosmic.TrajClusterAlg.Vertex2DCuts: [ -1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 physics.producers.tjcosmic.TrajClusterAlg.MuonTag:  [ -1, 0, 0, 0]
 physics.producers.tjcosmic.TrajClusterAlg.Match3DCuts:  [ -1, 0, 0, 0]
 physics.producers.tjcosmic.TrajClusterAlg.MatchTruth:  [ -2, 0, 0.5, 10]
