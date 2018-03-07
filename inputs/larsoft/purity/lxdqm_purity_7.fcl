@@ -68,7 +68,7 @@ outputs:
  out1:
  {
    module_type: RootOutput
-   fileName:    "/eos/experiment/neutplatform/protodune/scratchdisk/dqm/expbbreco.root"
+   fileName:    "expbbreco.root"
    dataTier:    "full-reconstructed"
    compressionLevel: 1
  }
