@@ -3,7 +3,7 @@
 	"name":		"Purity:Main",
 	"timeout":	"1000",
         "jobtype":	"purity",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/purity/lxdqm_evdisp_7.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/purity/lxdqm_purity_7.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
