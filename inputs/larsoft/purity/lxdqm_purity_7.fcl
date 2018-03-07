@@ -108,17 +108,3 @@ physics.analyzers.lifetime.ClusterModuleLabel: "tjcosmic"
 physics.analyzers.lifetime.ChgCuts: [ 0.5, 1.3 ]
 physics.analyzers.lifetime.ChiCut:      3
 physics.analyzers.lifetime.DebugCluster:    -1
-
-services.message.destinations.LogDebugFile.filename: "debug.txt"
-services.message.debugModules: ["TrajCluster"]
-services.message.destinations.debugmsg.categories.default: {limit: 1}
-services.message.destinations.debugmsg.categories.StandardRawDigitPrepService.limit: 0
-services.message.destinations.debugmsg.categories.BackTracker.limit: 0
-services.message.destinations.debugmsg.categories.LArSeedService.limit: 0
-services.message.destinations.debugmsg.categories.ArtState.limit: 0
-services.message.destinations.debugmsg.categories.TC.limit: -1
-services.message.destinations.warningmsg.categories.TC.limit: -1
-services.message.destinations.errormsg.categories.TC.limit: -1
-services.message.destinations.debugmsg.categories.default.reportEvery: 1
-
-
