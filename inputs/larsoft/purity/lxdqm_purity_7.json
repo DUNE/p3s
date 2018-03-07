@@ -1,0 +1,18 @@
+[
+    {
+	"name":		"Purity:Main",
+	"timeout":	"1000",
+        "jobtype":	"purity",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/purity/lxdqm_evdisp_7.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "DUNETPCVER":"v06_69_00",
+	    "DUNETPCQUAL":"e15:prof",
+	    "P3S_NEVENTS":"10",
+	    "P3S_FCL":"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/purity/lxdqm_purity_1.fcl",
+	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input",
+	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
+	    "P3S_OUTPUT_FILE":"PurityOutput.root"}
+    }
+]
