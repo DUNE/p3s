@@ -2,7 +2,8 @@ Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
 # Release Notes
 
-* Version 1.04 20180301
+* Version 1.05 20180307 setup is now available from the np04dqm directory
+* Version 1.04 20180301 added info about a working LARSoft example
 * Version 1.03 20180228 more verbose info on file permissions
 * Version 1.02 20180226 added information on EOS, directory locations etc
 * Version 1.01 20180120 first official version
@@ -15,7 +16,7 @@ Created by: Maxim Potekhin        _potekhin@bnl.gov_
 client. These instructions are not generic as they are tailored
 to operation of the protoDUNE experiment at CERN in 2018. There
 are references to certain directory locations, environment
-variables and scripts that are application-specific.
+variables and scripts that are site and application-specific.
 * There is a separate "overview" document which contains a general
 description of how p3s works and what its components are. For the
 end user a lot of this detail won't matter since they are typically
@@ -69,6 +70,7 @@ certain disadvantes to that though.
 
 
 ## Preparing to run
+### Group memberships
 These instructions apply to the **lxplus** interactive Linux facility
 at CERN. To set up access to p3s on that platform one needs to follow
 a few simple steps as described below. To use p3s for the needs
@@ -85,7 +87,16 @@ the data produced by p3s. To get these memberships sorted out you may file
 a ticket on the CERN services pages and/or contact Nectarios Benekos and
 the author of this manual.
 
-### Get the p3s client software
+### Getting access to the p3s client software
+
+This can be accomplished in two ways:
+
+* A. install (clone) from the p3s repo - recommended, as it allows you to play with the code
+* B. use a pre-installed instance of software in the np04dqm account (in a folder available to the public). It's less flexible and you can't add your files in the same directory tree, but it's prefab so easier to start.
+
+Both methods are documented below.
+
+### A. Install the p3s client software from the repo
 
 At a minimum you need the p3s client script (which is written in Python) to
 submit job descriptions to p3s for execution. You will also benefit from
@@ -114,6 +125,17 @@ individual sites (such as CERN)
 * **p3s/inputs** and its subdirectories such as jobs/larsfot with job definition
 and wrapper script templates
 
+### B. Use the **np04dqm installation** (quite easy, really)
+
+Access the follwoing directory:
+```
+/afs/cern.ch/user/n/np04dqm/public/p3s/
+```
+
+In it, you will find same subdirectories as described above, so you can just use
+the client scripts and other files located there right away, provided that you
+set up the Python and Linux environment as described directly below.
+
 ### Set up and verify the Python environment
 
 The next step is also CERN-specific and its purpose is to set up
@@ -134,23 +156,19 @@ In the output you should see version of Python which is 3.5+,
 a couple of "OK" messages and finally the word "Success".
 If anything is amiss, contact the author of this document.
 
-### Verify access to p3s server
+### Set up and verify the Linux environment
 
-While you can specify the server URL and other parameters
-the p3s clients need on the command line it is often more
-convenient to just run a script which will set a few environment
-variables to be used by default. For example, if running at CERN
-you could simply use the command (assuming you cloned the p3s
-directory as described above)
+While you can specify the server URL and various other parameters
+the p3s clients need on the command line it is a lot more
+convenient to just set a few environment variables to be used by
+default. If running at CERN you could simply use the command (assuming you
+have the p3s directory as described above)
 
 ```
 source p3s/configuration/lxvm_np04dqm.sh
 ```
 
-Then you don't need to worry about the server URL etc. Other
-environment variables contained in this file will be explained
-later in this document where necessary. Now, you can switch to the
-"clients" directory and try to run the command:
+Now, you can switch to the "clients" directory and try to run the command:
 ```
 ./summary.py -P
 ```
@@ -166,7 +184,6 @@ Datasets 3
 ```
 
 If you see a failure, please contact the author of this document.
-
 
 ### The Web monitor
 
@@ -517,6 +534,11 @@ ROOT file) by running the command:
 ```
 ./job.py -v 2 -j  /afs/cern.ch/user/n/np04dqm/public/p3s/scripts/test/hitdumptest.json
 ```
+
+In the command line above, "-v" stands for the verbosity level (which is 2 in this case)
+and the "-j" option allows the user to supply a job description in the JSON format, stored
+in a previously prepared JSON file.
+
 If all works well, you will see a UUID of the job just submitted printed on screen, and it
 will also be displayed in the p3s monitor at p3s-web.cern.ch, the "jobs" section.
 Upon completion (e.g. when you refresh the monitor page and the sate of the job switches from
@@ -532,7 +554,9 @@ You can now copy hitdumptest.json, hitdumptest.sh and requisite FCL files to you
 
 
 ## Remote access to data
-If you want to pull data produced by p3s to your local machine (including your laptop) it's pretty easy provided that you have installed XRootD on that target machine. For example, to obtain a directory listing run a command similar to
+If you want to pull data produced by p3s to your local machine (including your laptop) it's
+pretty easy provided that you have installed XRootD on that target machine. For example, to obtain a
+irectory listing run a command similar to the following:
 
 ```
 xrdfs root://eospublic.cern.ch/ ls -ltr /eos/experiment/neutplatform/protodune/np04tier0/p3s/output/myDirectory/
