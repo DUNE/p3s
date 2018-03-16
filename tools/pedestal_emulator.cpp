@@ -40,22 +40,22 @@ int main(int argc, char** argv)
   TRandom3 randomNum;
   Float_t px, py;
   
-  TFile * hfile = new TFile(thefilename.Data(),"RECREATE","Demo ROOT file with histograms");
+  TFile * hfile = new TFile(thefilename.Data(),"RECREATE","protoDUNE pedestal emulator for testing");
   
   for(Int_t nch=0; nch<Nchannels; nch++) {
-    TString numString = TString(Form ("%d", nch));
-    // std::cout << numString << std::endl;
-    TString title = TString("Channel ")+numString;
+    TString numString	= TString(Form("p%d", nch));
+    TString title	= TString(Form("Pedestal %d;Channel;Count", nch));
+    
     peds[nch] = new TH1F(numString, title, pedBins, pedLow, pedHi);
     peds[nch]->SetFillColor(48);
     peds[nch]->Sumw2();
     
     for (Int_t i = 0; i < Entries; i++) {
       randomNum.Rannor(px,py);
-      peds[nch]->Fill(px*pedBins, py);
+      peds[nch]->Fill((0.2*px)*pedBins, 1.0);
     }
     
-    peds[nch]->Scale(double(pedBins)/double(Entries));
+    //    peds[nch]->Scale(double(pedBins)/double(Entries));
     //    peds[nch]->SetMinimum(0.);
   }
 
