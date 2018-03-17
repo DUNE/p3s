@@ -40,7 +40,7 @@ int main(int argc, char** argv)
   TRandom3 randomNum;
   Float_t px, py;
   
-  TFile * hfile = new TFile(thefilename.Data(),"RECREATE","protoDUNE pedestal emulator for testing");
+  TFile* hfile = new TFile(thefilename.Data(),"RECREATE","protoDUNE pedestal emulator for testing");
   
   for(Int_t nch=0; nch<Nchannels; nch++) {
     TString numString	= TString(Form("p%d", nch));
