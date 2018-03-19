@@ -40,7 +40,7 @@ int main(int argc, char** argv)
     TString accumulatorFileName(argv[2]);
     std::cout << "init mode for file " << accumulatorFileName.Data()  << std::endl;
 
-    const int Nchannels	= std::stoi(argv[3]); // 15360 in the real TPC
+    const int Nchannels	= std::atoi(argv[3]); // 15360 in the real TPC
     TH1F* peds[Nchannels];
 
     TFile * hfile = new TFile(accumulatorFileName.Data(),"CREATE","histogram accumulator");
