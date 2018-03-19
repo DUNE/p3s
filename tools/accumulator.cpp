@@ -1,5 +1,7 @@
-// Loosely based on the ROOT tutorial
-// Generate histograms - with configurable statistics and number as channels in protoDUNE TPC
+// This tool adds histograms and keeps them in a dedicated "accumulator file"
+//
+// "init mode": Initialize a file which will serve as the accumulator for histograms
+// "add mode": add another file to the accumulator
 
 #include <TFile.h>
 #include <TNtuple.h>
@@ -16,11 +18,6 @@
 
 
 
-// Arguments:
-// 1 root file name for output
-// 2 number of TPC channels
-// 3 number of entries in each histogram
-
 int main(int argc, char** argv)
 {
   const double pedLow	= 0.;
@@ -29,6 +26,16 @@ int main(int argc, char** argv)
   
   std::string mode(argv[1]);
 
+  if(mode.compare("-h") == 0 || mode.compare("help") == 0 || mode.compare("--help") == 0 ) {
+    std::cout << "Usage:\n"
+	      << "1st argument is always the mode - 'help', 'init', or 'add'\n\n"
+	      << "In the init mode, the second argument is the name of the file\n"
+	      << "to be initialized, and the third is the number of channels.\n\n"
+	      << "In the add mode, the arguments are the name of the accumulator file and\n"
+	      << "the file to be added."
+	      << std::endl;
+  }
+  
   if(mode.compare("init") == 0) {
     TString accumulatorFileName(argv[2]);
     std::cout << "init mode for file " << accumulatorFileName.Data()  << std::endl;
@@ -57,6 +64,7 @@ int main(int argc, char** argv)
   if(mode.compare("add") == 0) {
     TString accumulatorFileName(argv[2]);
     TString addFileName(argv[3]);
+    
     std::cout << "add mode for file " << accumulatorFileName.Data() << ", adding file "<< addFileName.Data() << std::endl;
 
     TFile* accFile	= new TFile(accumulatorFileName.Data(), "UPDATE");
@@ -84,7 +92,6 @@ int main(int argc, char** argv)
       TH1F* addHist	= (TH1F*) addFile->Get(TString(Form("p%d", nch)));
 
       accHist->Add(addHist);
-      //      accHist->Write("",TObject::kOverwrite);
     }
 
     accFile->cd();

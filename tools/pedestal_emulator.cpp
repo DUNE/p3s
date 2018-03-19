@@ -1,5 +1,6 @@
-// Loosely based on the ROOT tutorial
-// Generate histograms - with configurable statistics and number as channels in protoDUNE TPC
+// This is a tool for generation of mockup histograms to test p3s.
+//
+// Configurable statistics and number of channels.
 
 #include <TFile.h>
 #include <TNtuple.h>
@@ -18,8 +19,8 @@
 
 // Arguments:
 // 1 root file name for output
-// 2 number of TPC channels
-// 3 number of entries in each histogram
+// 2 number of entries in each histogram
+// 3 number of TPC channels
 
 int main(int argc, char** argv)
 {
