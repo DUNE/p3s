@@ -29,8 +29,8 @@ int main(int argc, char** argv)
   const int pedBins	= 100;
   
   TString thefilename(argv[1]);
-  const int Entries	= std::stoi(argv[2]);
-  const int Nchannels	= std::stoi(argv[3]); // 15360 in the real TPC
+  const int Entries	= std::atoi(argv[2]);
+  const int Nchannels	= std::atoi(argv[3]); // 15360 in the real TPC
   
   // std::cout << thefilename << std::endl;
   // std::cout << Entries << std::endl;
