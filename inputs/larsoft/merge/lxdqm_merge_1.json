@@ -1,0 +1,22 @@
+[
+    {
+	"name":		"Merge:Main",
+	"timeout":	"1000",
+        "jobtype":	"merge",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/merge/lxdqm_merge_1.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "DUNETPCVER":"v06_69_00",
+	    "DUNETPCQUAL":"e15:prof",
+	    "P3S_NEVENTS":"1",
+	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/lar_setup_1.sh",
+	    "P3S_FCL":"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/evdisp/lxdqm_evdisp_4.fcl",
+	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testinput/",
+	    "P3S_INPUT_FILE":"ProtoDUNE_beam_-7GeV_cosmics_3ms_sce_99_20170719T222727_merged0_25712_1510288920487.root",
+	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
+	    "P3S_EVDISP_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/evdisp/",
+	    "P3S_USED_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/used/",
+	    "P3S_OUTPUT_FILE":"evdisp.root"}
+    }
+]
