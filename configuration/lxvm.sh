@@ -27,6 +27,9 @@ export DQM_SERVER="http://p3s-content:80/"
 
 env | grep DQM
 
+# Set DISPLAY to a dummy value so that ROOT does not print warnings at CERN.
+export DISPLAY="0:0"
+
 ##########################################################
 # Decided to keep all condor output in a single directory
 # - see above for new settings -
