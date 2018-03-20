@@ -201,11 +201,12 @@ if(regData):
     if(json_in==''): exit(0)
     
     data		= takeJson(json_in, verb)
-    data['uuid']	= uuid.uuid1() # note we create a fresh UUID here
-    data['dirpath']	= envDict['dirpath']
+    data['uuid']	= uuid.uuid1()		# note we create a fresh UUID here
+    if(envDict['dirpath'] is not Null and envDict['dirpath'] !=''):
+        data['dirpath']	= envDict['dirpath']
     
     resp = API.post2server('data', 'register', data)
-    print(resp)
+    if(verb>0): print(resp)
     
     exit(0)
         
@@ -234,7 +235,7 @@ if(adjust!=''):
     print(data)
 
     resp = API.post2server('data', 'adjust', data)
-    print(resp)
+    if(verb>0): print(resp)
 
     exit(0)
         
@@ -257,6 +258,7 @@ if(generateJob): #
     except:
         pass
 
+    # if it was specified on the command line, it wins:
     if(filename!=''): inputFile = filename
 
 
@@ -274,9 +276,8 @@ if(generateJob): #
     except:
         pass
     
-
-    if(inputDir!=''):
-        theDir = inputDir
+    # if it was specified on the command line, it wins:
+    if(inputDir!=''): theDir = inputDir
 
     for job in data:
         job['env']['P3S_INPUT_FILE'] = inputFile
@@ -306,4 +307,4 @@ if(generateJob): #
     resp = API.post2server('data', 'register', dataSet)
     if(verb>0): print(resp)
     delay = 5
-    time.sleep(delay/1000.0) # prevent self-inflicted DOS
+    time.sleep(delay/1000.0) # prevent a self-inflicted DOS

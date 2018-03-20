@@ -34,6 +34,7 @@ int main(int argc, char** argv)
 	      << "In the add mode, the arguments are the name of the accumulator file and\n"
 	      << "the file to be added."
 	      << std::endl;
+    return 0;
   }
   
   if(mode.compare("init") == 0) {

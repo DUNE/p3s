@@ -28,7 +28,22 @@ int main(int argc, char** argv)
   const double pedHi	= 100.;
   const int pedBins	= 100;
   
-  TString thefilename(argv[1]);
+  std::string mode(argv[1]);
+
+  if(mode.compare("-h") == 0 || mode.compare("help") == 0 || mode.compare("--help") == 0 ) {
+    std::cout << "Arguments:\n"
+	      << "1st argument can be - 'help', which prints this message\n"
+	      << "Otherwise, it's the name of the output file\n\n"
+	      <<"2nd argument: entries in the histogram (statistics)\n\n"
+	      << "3rd is the number of channels."
+	      << std::endl;
+    return 0;
+  }
+  
+  TString thefilename(mode);
+
+
+  
   const int Entries	= std::atoi(argv[2]);
   const int Nchannels	= std::atoi(argv[3]); // 15360 in the real TPC
   
