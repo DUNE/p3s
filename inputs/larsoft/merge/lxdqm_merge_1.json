@@ -3,7 +3,7 @@
 	"name":		"Merge:Main",
 	"timeout":	"1000",
         "jobtype":	"merge",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/merge/lxdqm_merge_1.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/merge/lxdqm_merge_1.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
