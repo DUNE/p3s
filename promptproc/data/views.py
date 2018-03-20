@@ -88,7 +88,7 @@ def delete(request):
 
 
     if(d_pk):
-        pklist = parseCommaDash(s_pk)
+        pklist = parseCommaDash(d_pk)
         ddeleted = []
         for pk in pklist:
             try:
