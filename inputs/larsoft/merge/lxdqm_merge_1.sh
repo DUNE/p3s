@@ -13,3 +13,5 @@ if [ ! -d "$P3S_INPUT_DIR" ]; then
     $P3S_HOME/clients/service.py -n merge -m "Problem with directory $P3S_INPUT_DIR"
     exit 1
 fi
+
+env | grep P3
