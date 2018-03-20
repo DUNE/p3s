@@ -18,7 +18,7 @@ env | grep P3
 cd $P3S_INPUT_DIR
 d=`pwd`
 echo Directory: $d
-files=`find . -maxdepth 1 -mindepth 1 -mmin 100 -size +1 -name "moo*" | sed 's/\.\///'`
+files=`find . -maxdepth 1 -mindepth 1 -mmin -100 -size +1 -name "moo*" | sed 's/\.\///'`
 echo $files
 for f in $files
 do
