@@ -24,5 +24,5 @@ for f in $files
 do
     echo ! $f
 
-    $P3S_HOME/p3s/tools/accumulator.exe add foo.root $f
+    $P3S_HOME/tools/accumulator.exe add foo.root $f
 done
