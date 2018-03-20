@@ -110,7 +110,7 @@ parser.add_argument("-N", "--noreg",		  help="no registration of input data",			
 parser.add_argument("-v", "--verbosity", type=int,help="output verbosity (0-4)",choices=[0, 1, 2, 3, 4],default=envDict['verb'])
 
 parser.add_argument("-p", "--pk",	type=str, help="pk for deletion",				default='')
-parser.add_argument("-t", "--type",	type=str, help="data type (if used in job generation)",		default='')
+parser.add_argument("-T", "--type",	type=str, help="data type (if used in job generation)",		default='')
 
 parser.add_argument("-c", "--cycles",	type=int, help="number of cycles to stay alive",		default=1)
 
