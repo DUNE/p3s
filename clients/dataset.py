@@ -95,6 +95,8 @@ parser.add_argument("-u", "--uuid",	type=str, help="uuid of the data to be modif
 parser.add_argument("-i", "--inputdir",	type=str, help="input directory",				default='')
 
 
+parser.add_argument("-G", "--getinfo", help="get dataset info (by name)",				action='store_true')
+
 parser.add_argument("-r", "--registerdata",	  help="register dataset",				action='store_true')
 parser.add_argument("-g", "--generateJob",	  help="generate job (needs -J)",			action='store_true')
 parser.add_argument("-R", "--registertype",	  help="register data type (see Usage for details)",	action='store_true')
@@ -141,6 +143,7 @@ adjust	= args.adjust
 
 allow	= args.allow
 noreg	= args.noreg
+getinfo	= args.getinfo
 
 generateJob = args.generateJob
 
@@ -238,6 +241,12 @@ if(adjust!=''):
 
     exit(0)
         
+#########################################################################
+if(getinfo):
+    resp = API.get2server('data', 'getdata', filename)
+    print(resp)
+    exit(0)
+            
 #########################################################################
 if(generateJob): #
     if(JSON_in==''): exit(-1)
