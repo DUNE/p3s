@@ -41,7 +41,7 @@ For command line options run the script with "--help" option.
 
 * Registering data *
 JSON string submitted on the command line needs to be enclosed in single
-quotes and is ecpeted to have:
+quotes and is expected to have:
 - name
 - state
 - datatype
