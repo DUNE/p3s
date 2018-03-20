@@ -20,6 +20,7 @@ from django.conf			import settings
 
 # Local models
 from .models import dataset, datatype
+from utils.miscUtils import parseCommaDash
 
 #########################################################
 # Register data with the server:
@@ -56,9 +57,13 @@ def register(request):
 @csrf_exempt
 def delete(request):
     post	= request.POST
-    d_uuid	= post['uuid']
+    d_uuid	= post.get('uuid', None)
+    d_pk	= post.get('pk', None)
+
+    if( d_uuid is None and d_pk is None):
+        return HttpResponse("No keys for deletion provided")
     
-    d		= None
+    d = None
     
     if(d_uuid=='ALL'):
         try:
@@ -68,6 +73,21 @@ def delete(request):
 
         return HttpResponse("DELETE ALL: SUCCESS")
 
+    if(d_uuid):
+
+        uulist = parseCommaDash(d_uuid)
+        ddeleted = []
+        for uu in uulist:
+            try:
+                d = dataset.objects.get(uuid=uu)
+                d.delete()
+                ddeleted.append(uu)
+            except:
+                pass
+            
+        return HttpResponse("Entries %s deleted" % ddeleted )
+
+        
     try:
         print(d_uuid)
         d = dataset.objects.get(uuid=d_uuid)
