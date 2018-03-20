@@ -20,12 +20,13 @@ export P3S_CONDOR_ERROR=$P3S_CONDOR_BASE
 export P3S_CONDOR_LOG=$P3S_CONDOR_BASE
 
 
-# 4. P3S logs
+# 4. Data location
+export P3S_DIRPATH=/eos/experiment/neutplatform/protodune/np04tier0/p3s
+
+# 5. P3S logs
 export P3S_PILOTLOG=$P3S_DIRPATH/pilotlog
 export P3S_JOBLOG=$P3S_DIRPATH/joblog
 
-# 5. Data location
-export P3S_DIRPATH=/eos/experiment/neutplatform/protodune/np04tier0/p3s
 
 env | grep P3S
 
