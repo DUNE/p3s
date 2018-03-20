@@ -74,8 +74,7 @@ def delete(request):
         return HttpResponse("DELETE ALL: SUCCESS")
 
     if(d_uuid):
-
-        uulist = parseCommaDash(d_uuid)
+        uulist = d_uuid.split(',')
         ddeleted = []
         for uu in uulist:
             try:

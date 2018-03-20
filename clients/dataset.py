@@ -109,7 +109,7 @@ parser.add_argument("-N", "--noreg",		  help="no registration of input data",			
 
 parser.add_argument("-v", "--verbosity", type=int,help="output verbosity (0-4)",choices=[0, 1, 2, 3, 4],default=envDict['verb'])
 
-parser.add_argument("-p", "--period",	type=int, help="polling period, in seconds",			default=5)
+parser.add_argument("-p", "--pk",	type=str, help="pk for deletion",				default='')
 parser.add_argument("-c", "--cycles",	type=int, help="number of cycles to stay alive",		default=1)
 
 
@@ -132,7 +132,7 @@ verb	= args.verbosity
 usage	= args.usage
 tst	= args.test
 # scheduling
-period	= args.period
+pk	= args.pk
 cycles	= args.cycles
 
 
@@ -161,15 +161,17 @@ if(dlt):
     if(d_uuid==''): exit(-2) # check if we have the key
 
     dList = []    # Normal delete, by key(s)
-    if ',' in d_uuid: # assume we have a CSV list
-        dList = d_uuid.split(',')
-    else:
-        dList.append(d_uuid)
+    
+#    if ',' in d_uuid: # assume we have a CSV list
+#        dList = d_uuid.split(',')
+#    else:
+#        dList.append(d_uuid)
 
-    for d_id in dList:
-        resp = API.post2server('data', 'delete', dict(uuid=d_id))
+#    for d_id in dList:
 
-        if(verb>0): print (resp)
+    resp = API.post2server('data', 'delete', dict(uuid=d_uuid))
+
+    if(verb>0): print (resp)
 
     exit(0)
     
