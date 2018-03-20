@@ -82,19 +82,23 @@ def delete(request):
                 d.delete()
                 ddeleted.append(uu)
             except:
-                pass
+                return HttpResponse("%s not found" % uu )
             
         return HttpResponse("Entries %s deleted" % ddeleted )
 
-        
-    try:
-        print(d_uuid)
-        d = dataset.objects.get(uuid=d_uuid)
-    except:
-        return HttpResponse("%s not found" % d_uuid )
 
-    d.delete()
-    return HttpResponse("%s deleted" % d_uuid )
+    if(d_pk):
+        pklist = parseCommaDash(s_pk)
+        ddeleted = []
+        for pk in pklist:
+            try:
+                d = dataset.objects.get(pk=pk)
+                d.delete()
+                ddeleted.append(pk)
+            except:
+                pass
+            
+        return HttpResponse("Entries %s deleted" % ddeleted )
 
 
 #########################################################

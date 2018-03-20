@@ -158,20 +158,15 @@ if(usage):
 ################# DATA RECORD DELETE AND EXIT ##########################
 if(dlt):
     response = None
-    if(d_uuid==''): exit(-2) # check if we have the key
+    if(d_uuid=='' and pk==''): exit(-2) # we don't have the key!
 
-    dList = []    # Normal delete, by key(s)
-    
-#    if ',' in d_uuid: # assume we have a CSV list
-#        dList = d_uuid.split(',')
-#    else:
-#        dList.append(d_uuid)
+    if(d_uuid!='') :
+        resp = API.post2server('data', 'delete', dict(uuid=d_uuid))
+        if(verb>0): print (resp)
 
-#    for d_id in dList:
-
-    resp = API.post2server('data', 'delete', dict(uuid=d_uuid))
-
-    if(verb>0): print (resp)
+    if(pk!='') :
+        resp = API.post2server('data', 'delete', dict(pk=pk))
+        if(verb>0): print (resp)
 
     exit(0)
     
