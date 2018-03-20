@@ -1,15 +1,16 @@
 [
     {
-	"name":		"Merge:Init",
+	"name":		"Ped:Gen",
 	"timeout":	"1000",
-        "jobtype":	"merge",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/merge/lxdqm_acc_init_1.sh",
+        "jobtype":	"pedestal",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/merge/lxdqm_ped_gen_1.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
 	    "P3S_INPUT_DIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
 	    "P3S_INPUT_FILE":	"dummy_to_be_replaced.root",
-	    "NCHAN":		"100"
+	    "NCHAN":		"100",
+	    "ENTRIES":		"1000"
 	}
     }
 ]
