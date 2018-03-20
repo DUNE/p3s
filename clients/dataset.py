@@ -110,6 +110,8 @@ parser.add_argument("-N", "--noreg",		  help="no registration of input data",			
 parser.add_argument("-v", "--verbosity", type=int,help="output verbosity (0-4)",choices=[0, 1, 2, 3, 4],default=envDict['verb'])
 
 parser.add_argument("-p", "--pk",	type=str, help="pk for deletion",				default='')
+parser.add_argument("-t", "--type",	type=str, help="data type (if used in job generation)",		default='')
+
 parser.add_argument("-c", "--cycles",	type=int, help="number of cycles to stay alive",		default=1)
 
 
@@ -126,6 +128,8 @@ deltype	= args.deltype
 dlt	= args.delete
 d_uuid	= args.uuid
 inputDir= args.inputdir
+dataType= args.type
+
 
 # misc
 verb	= args.verbosity
@@ -299,8 +303,10 @@ if(generateJob): #
     dataSet['state']	= 'defined'
 
     dataSet['targetuuid']	= j_uuid
-    dataSet['uuid']		= uuid.uuid1() # note we create a fresh UUID here
+    
+    dataSet['uuid']	= uuid.uuid1() # note we create a fresh UUID here
     dataSet['dirpath']	= theDir
+    dataSet['datatype']	= dataType
 
     if(verb>0): print(dataSet)
     
