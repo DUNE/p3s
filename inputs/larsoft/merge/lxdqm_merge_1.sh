@@ -15,3 +15,14 @@ if [ ! -d "$P3S_INPUT_DIR" ]; then
 fi
 
 env | grep P3
+cd $P3S_INPUT_DIR
+d=`pwd`
+echo Directory: $d
+files=`find . -maxdepth 1 -mindepth 1 -mmin $1 -size +1 -name "moo*" | sed 's/\.\///'`
+echo $files
+for f in $files
+do
+    echo ! $f
+
+    $P3S_HOME/p3s/tools/accumulator.exe add foo.root $f
+done
