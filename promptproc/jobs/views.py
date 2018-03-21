@@ -127,7 +127,7 @@ def delete(request):
         pklist = parseCommaDash(j_pk)
         for pk in pklist:
             try:
-                j = j.objects.get(pk=pk)
+                j = job.objects.get(pk=pk)
                 j.delete()
                 jdeleted.append(pk)
             except:
