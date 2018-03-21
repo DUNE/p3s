@@ -326,7 +326,7 @@ def data_handler(request, what):
 #        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time') # work in progress
 
 
-        objects = eval(what).objects
+        objects = eval(what).objects.order_by('-pk')
         kwargs = {}
 
         for selectionKey in ('uuid','wfuuid','pk','name','user','jobtype'):
