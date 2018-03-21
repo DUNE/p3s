@@ -27,6 +27,7 @@ while [ $COUNTER -lt 150 ]; do
     do
 	echo $f
 	echo $P3S_HOME/tools/accumulator.exe add merge.root $f
+	let COUNTER+=1
 	if [ $COUNTER -ge 150 ]; then
 	    break
 	fi
