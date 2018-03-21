@@ -18,5 +18,9 @@ env | grep P3
 cd $P3S_INPUT_DIR
 d=`pwd`
 echo Directory: $d
-$P3S_HOME/tools/accumulator.exe init $P3S_INPUT_FILE $NCHAN
+if [ -f $MERGE_FILE ]; then
+    exit
+fi
+
+$P3S_HOME/tools/accumulator.exe init $MERGE_FILE $NCHAN
 
