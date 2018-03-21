@@ -16,11 +16,14 @@ fi
 
 cd $P3S_INPUT_DIR
 d=`pwd`
-merge_file=`find . -maxdepth 1 -mindepth 1 -size +1 -name "merge_*" | sed 's/\.\///'`
+files=`find . -maxdepth 1 -mindepth 1 -size +1 -name "ped*" | sed 's/\.\///'`
 
-echo $merge_file
+for f in $files
+do
+    echo $f
+    echo $P3S_HOME/tools/accumulator.exe add $MERGE_FILE $f
+done
 
-# $P3S_HOME/tools/accumulator.exe add $MERGE_FILE $P3S_INPUT_FILE
 
 # $P3S_HOME/clients/service.py -n acc_init -m "Merge file created"
 

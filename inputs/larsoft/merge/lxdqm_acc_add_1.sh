@@ -16,7 +16,7 @@ fi
 
 cd $P3S_INPUT_DIR
 d=`pwd`
-merge_file=`find . -maxdepth 1 -mindepth 1 -size +1 -name "merge_*" | sed 's/\.\///'`
+merge_file=`find . -maxdepth 1 -mindepth 1 -size +1 -name "merge*" | sed 's/\.\///'`
 
 echo $merge_file
 
