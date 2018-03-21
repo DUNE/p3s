@@ -4,7 +4,7 @@
 
 p3s_dirpath=/home/maxim/p3sdata
 
-export P3S_SERVER="http://serenity.local:8000/"
+export P3S_SERVER="http://serenity.local:80/"
 export P3S_SITE='sagebrush'
 export P3S_PILOTS=12
 export P3S_VERBOSITY=0
