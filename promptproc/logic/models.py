@@ -15,7 +15,7 @@ class user(models.Model):
     @classmethod
     def all(self):
         allUsers=[]
-        for u in user.objects.all():
+        for u in user.objects.order_by('name'):
             allUsers.append(u.name)
         return ",".join(allUsers)
 
