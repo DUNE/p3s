@@ -15,13 +15,15 @@ if [ ! -d "$P3S_INPUT_DIR" ]; then
 fi
 
 cd $P3S_INPUT_DIR
+echo $P3S_INPUT_DIR
 d=`pwd`
+echo $d
 files=`find . -maxdepth 1 -mindepth 1 -size +1 -name "ped*" | sed 's/\.\///'`
 
 for f in $files
 do
-    echo $f
-    echo $P3S_HOME/tools/accumulator.exe add $MERGE_FILE $f
+#    echo $f
+#    echo $P3S_HOME/tools/accumulator.exe add merge.root $f
 done
 
 
