@@ -14,10 +14,9 @@ if [ ! -d "$P3S_INPUT_DIR" ]; then
     exit 1
 fi
 
-# env | grep P3
+
 cd $P3S_INPUT_DIR
 d=`pwd`
-# echo Directory: $d
 
 if [ -z ${MERGE_FILE+x} ];
 then
@@ -29,13 +28,13 @@ then
     export NCHAN=100
 fi
 
-
-if [ -f $MERGE_FILE ]; then
-    $P3S_HOME/clients/service.py -n acc_init -m "Merge file $MERGE_FILE already exists"
+mf=`find . -name "merge_*" 2>/dev/null`
+if [ -f $mf ]; then
+    $P3S_HOME/clients/service.py -n acc_init -m "Merge file $mf exists"
     exit
 fi
 
-echo Parameters:$MERGE_FILE $NCHAN
+echo Parameters: $MERGE_FILE $NCHAN
 
 $P3S_HOME/tools/accumulator.exe init $MERGE_FILE $NCHAN
 $P3S_HOME/clients/service.py -n acc_init -m "Merge file $MERGE_FILE created"
