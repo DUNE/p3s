@@ -37,4 +37,5 @@ while [ $COUNTER -lt 150 ]; do
     fi
 done
 echo $COUNTER
-
+ts=`date -d "today" +"%Y%m%d%H%M"`
+mv merge.root ../merge/merge$ts.root

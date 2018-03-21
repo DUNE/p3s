@@ -20,7 +20,7 @@ d=`pwd`
 
 if [ -z ${MERGE_FILE+x} ];
 then
-    export MERGE_FILE="merge_0.root"
+    export MERGE_FILE="merge.root"
 fi
 
 if [ -z ${NCHAN+x} ];
@@ -28,7 +28,7 @@ then
     export NCHAN=100
 fi
 
-mf=`find . -name "merge_*" 2>/dev/null`
+mf=`find . -name "$MERGE_FILE" 2>/dev/null`
 if [ -f "$mf" ]; then
     f=`basename $mf`
     $P3S_HOME/clients/service.py -n acc_init -m "$f exists"
