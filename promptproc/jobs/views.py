@@ -25,6 +25,7 @@ from django.db		import transaction
 from .models import job
 
 from utils.timeUtils import dt
+from utils.miscUtils import parseCommaDash
 
 def index(request):
     return HttpResponse("Placeholder")
@@ -92,18 +93,9 @@ def adjust(request):
 ###################################################
 @csrf_exempt
 def delete(request):
-    post		= request.POST
-    j_uuid, j_pk	= None, None
-
-    try:
-        j_uuid = post['uuid']
-    except:
-        pass
-
-    try:
-        j_pk = post['pk']
-    except:
-        pass
+    post	= request.POST
+    j_uuid	= post.get('uuid',	None)
+    j_pk	= post.get('pk',	None)
 
     if(j_uuid is None and j_pk is None):
         return HttpResponse("Missing key for deletion")
@@ -115,23 +107,33 @@ def delete(request):
             return HttpResponse("DELETE ALL: FAILED")
         return HttpResponse("DELETE ALL: SUCCESS")
 
-    if(j_uuid):
-        try:
-            j = job.objects.get(uuid=j_uuid)
-        except:
-            return HttpResponse("%s not found" % j_uuid )
 
-        j.delete()
-        return HttpResponse("%s deleted" % j_uuid )
+    jdeleted = []
+
+    if(j_uuid):
+        uulist = j_uuid.split(',')
+        for uu in uulist:
+            try:
+                j = job.objects.get(uuid=uu)
+                j.delete()
+                jdeleted.append(uu)
+            except:
+                return HttpResponse("%s not found" % uu )
+            
+        return HttpResponse("Entries %s deleted" % jdeleted )
+
 
     if(j_pk):
-        try:
-            j = job.objects.get(pk=j_pk)
-        except:
-            return HttpResponse("%s not found" % j_pk )
-
-        j.delete()
-        return HttpResponse("%s deleted" % j_pk )
+        pklist = parseCommaDash(j_pk)
+        for pk in pklist:
+            try:
+                j = j.objects.get(pk=pk)
+                j.delete()
+                jdeleted.append(pk)
+            except:
+                pass
+            
+        return HttpResponse("Entries %s deleted" % jdeleted )
     
     return HttpResponse("Inconsistent state in job deletion view")
 
