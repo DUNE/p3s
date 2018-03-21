@@ -191,7 +191,7 @@ def data_handler(request, what):
     except:
         return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_users,p3s_jobtypes, p3s_services")
 
-    p3s_users	= 'All,'+p3sUser.all()
+    p3s_users	= 'All,'+p3sUser.objects.order_by('name')
     
     userlist	= p3s_users.split(',')
     jobtypes	= p3s_jobtypes.split(',')
