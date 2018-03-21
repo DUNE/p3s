@@ -18,11 +18,25 @@ fi
 cd $P3S_INPUT_DIR
 d=`pwd`
 # echo Directory: $d
+
+if [ -z ${MERGE_FILE+x} ];
+then
+    export MERGE_FILE="merge_0.root"
+fi
+
+if [ -z ${NCHAN+x} ];
+then
+    export NCHAN=100
+fi
+
+
 if [ -f $MERGE_FILE ]; then
-    $P3S_HOME/clients/service.py -n acc_init -m "Merge file already exists"
+    $P3S_HOME/clients/service.py -n acc_init -m "Merge file $MERGE_FILE already exists"
     exit
 fi
 
+echo Parameters:$MERGE_FILE $NCHAN
+
 $P3S_HOME/tools/accumulator.exe init $MERGE_FILE $NCHAN
-$P3S_HOME/clients/service.py -n acc_init -m "Merge file created"
+$P3S_HOME/clients/service.py -n acc_init -m "Merge file $MERGE_FILE created"
 
