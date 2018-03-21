@@ -30,7 +30,7 @@ fi
 
 mf=`find . -name "merge_*" 2>/dev/null`
 if [ -f "$mf" ]; then
-    f=basename $mf
+    f=`basename $mf`
     $P3S_HOME/clients/service.py -n acc_init -m "$f exists"
     exit
 fi
