@@ -14,10 +14,10 @@ if [ ! -d "$P3S_INPUT_DIR" ]; then
     exit 1
 fi
 
-env | grep P3
+# env | grep P3
 cd $P3S_INPUT_DIR
 d=`pwd`
-echo Directory: $d
+# echo Directory: $d
 if [ -f $MERGE_FILE ]; then
     $P3S_HOME/clients/service.py -n acc_init -m "Merge file already exists"
     exit
