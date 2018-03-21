@@ -30,12 +30,10 @@ fi
 
 mf=`find . -name "merge_*" 2>/dev/null`
 if [ -f "$mf" ]; then
-    $P3S_HOME/clients/service.py -n acc_init -m "Merge file $mf exists"
+    $P3S_HOME/clients/service.py -n acc_init -m "$mf exists"
     exit
 fi
 
-echo Parameters: $MERGE_FILE $NCHAN
-
 $P3S_HOME/tools/accumulator.exe init $MERGE_FILE $NCHAN
-$P3S_HOME/clients/service.py -n acc_init -m "Merge file $MERGE_FILE created"
+$P3S_HOME/clients/service.py -n acc_init -m "$MERGE_FILE created with $NCHAN channels"
 
