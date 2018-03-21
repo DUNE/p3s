@@ -326,7 +326,7 @@ def data_handler(request, what):
 #        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time') # work in progress
 
 
-        objects = eval(what).objects.order_by('-pk')
+        objects = eval(what).objects.order_by('-pk') # newest on top
         kwargs = {}
 
         for selectionKey in ('uuid','wfuuid','pk','name','user','jobtype'):
@@ -349,7 +349,7 @@ def data_handler(request, what):
     if(what in ['dataset', 'site', 'datatype']):
         selector = SELECTORS[what]               # IMPORTANT
         chosenTable=eval(selector['table'])
-        objects = eval(what).objects
+        objects = eval(what).objects.order_by('-pk') # newest on top
         t = chosenTable(objects.all())
 
     t.set_site(domain)
