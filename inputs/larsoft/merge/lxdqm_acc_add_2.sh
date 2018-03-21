@@ -20,6 +20,7 @@ d=`pwd`
 
 files=`find . -maxdepth 1 -mindepth 1 -size +1 -name "ped*" | sed 's/\.\///'`
 
+COUNTER=0
 while [ $COUNTER -lt 150 ]; do
     files=`find . -maxdepth 1 -mindepth 1 -size +1 -name "ped*" | sed 's/\.\///'`
     for f in $files
