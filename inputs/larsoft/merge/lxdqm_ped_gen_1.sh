@@ -18,6 +18,6 @@ env | grep P3
 cd $P3S_INPUT_DIR
 d=`pwd`
 echo Directory: $d
-num=`uuid`
-$P3S_HOME/tools/pedestal_emulator.exe ped$num.root $ENTRIES $NCHAN
+
+$P3S_HOME/tools/pedestal_emulator.exe ped${P3S_JOB_UUID}.root $ENTRIES $NCHAN
 
