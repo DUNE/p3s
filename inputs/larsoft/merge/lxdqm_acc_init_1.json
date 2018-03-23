@@ -8,7 +8,7 @@
 	"state":	"defined",
 	"env":		{
 	    "P3S_INPUT_DIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
-	    "MERGE_FILE":	"merge_0.root",
+	    "MERGE_FILE":	"merge.root",
 	    "NCHAN":		"100"
 	}
     }
