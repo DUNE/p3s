@@ -24,15 +24,14 @@ while [ $COUNTER -lt 150 ]; do
     files=`find . -maxdepth 1 -mindepth 1 -size +1 -name "ped*" | sed 's/\.\///'`
     for f in $files
     do
-	echo $f
-	# $P3S_HOME/clients/dataset.py -v 0 -g -i $d -f $f -J $P3S_HOME/inputs/larsoft/merge/lxdqm_acc_add_2.json
-	argument='{"name":"'$f'","state":"defined","comment":"testing","datatype":"TXT","dirpath":"'$P3S_INPUT_DIR'"}'
+	echo merging $f in $d
+	argument='{"name":"'$f'","state":"defined","comment":"testing","datatype":"MERGEINPUT","dirpath":"'$P3S_INPUT_DIR'"}'
+	# register this file with the appropriate client:
 	$P3S_HOME/clients/dataset.py -r -j $argument
+	# do the merge:
 	$P3S_HOME/tools/accumulator.exe add merge.root $f
 	let COUNTER+=1
-	if [ $COUNTER -ge $MERGE_FACTOR ]; then
-	    break
-	fi
+	if [ $COUNTER -ge $MERGE_FACTOR ]; then break fi
     done
     if [ $COUNTER -ge $MERGE_FACTOR ]; then
 	break
@@ -41,3 +40,10 @@ done
 echo $COUNTER
 ts=`date -d "today" +"%Y%m%d%H%M"`
 mv merge.root ../merge/merge$ts.root
+
+# Dev notes:
+# If we used this to run jobs, it would result in an asynchronous operation of these jobs in p3s
+# so the merge file could be in an inconsistent state.
+# $P3S_HOME/clients/dataset.py -v 0 -g -i $d -f $f -J $P3S_HOME/inputs/larsoft/merge/lxdqm_acc_add_2.json
+# For this reason we revert to a synchronous loop.
+
