@@ -4,6 +4,7 @@ export P3S_HOME=/afs/cern.ch/user/n/np04dqm/public/p3s/p3s
 source $P3S_HOME/inputs/larsoft/setup_env_np04dqm.sh
 
 export P3S_INPUT_DIR=$P3S_DIRPATH/input
+export P3S_MERGE_DIR=$P3S_DIRPATH/merge
 
 if [ ! -d "$P3S_INPUT_DIR" ]; then
     $P3S_HOME/clients/service.py -n acc_init -m "Problem with the directory $P3S_INPUT_DIR"
@@ -31,8 +32,8 @@ while [ $COUNTER -lt 150 ]; do
 	
 	echo merging $f in $d
 	    
-	# register this file with the appropriate client:
-	argument='{"name":"'$f'","state":"defined","comment":"testing","datatype":"MERGEINPUT","dirpath":"'$P3S_INPUT_DIR'"}'
+	# register this file with p3s using the appropriate client:
+	argument='{"name":"'$f'","state":"defined","comment":"histograms","datatype":"MERGEINPUT","dirpath":"'$P3S_INPUT_DIR'"}'
 	$P3S_HOME/clients/dataset.py -r -j $argument
 	
 	# do the merge:
@@ -51,9 +52,22 @@ while [ $COUNTER -lt 150 ]; do
     fi
 done
 
-echo $COUNTER
+echo number of files merged - $COUNTER
+
+# create a timestamp-based filename for the merge file
 ts=`date -d "today" +"%Y%m%d%H%M"`
-mv merge.root ../merge/merge$ts.root
+mergefile=merge$ts.root
+# move the merge to the final location
+mv merge.root ../merge/$mergefile
+
+# register the merged file with p3s using the appropriate client:
+argument='{"name":"'$mergefile'","state":"defined","comment":"merged_histograms","datatype":"MERGE","dirpath":"'$P3S_MERGE_DIR'"}'
+$P3S_HOME/clients/dataset.py -r -j $argument
+
+exit
+
+# ta-dah!
+
 
 # Dev notes:
 # If we used the line below  to run jobs, it would result in an asynchronous operation of these jobs in p3s
