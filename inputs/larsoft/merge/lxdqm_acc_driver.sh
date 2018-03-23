@@ -26,7 +26,8 @@ while [ $COUNTER -lt 150 ]; do
     do
 	echo $f
 	# $P3S_HOME/clients/dataset.py -v 0 -g -i $d -f $f -J $P3S_HOME/inputs/larsoft/merge/lxdqm_acc_add_2.json
-	$P3S_HOME/clients/dataset.py -r -j '{"name":"$f","state":"defined","comment":"testing with text files", "datatype":"TXT","dirpath":"/tmp"}'
+	argument="'"'{"name":"'$f'","state":"defined","comment":"testing with text files", "datatype":"TXT","dirpath":"/tmp"}'"'"
+	$P3S_HOME/clients/dataset.py -r -j $argument
 	$P3S_HOME/tools/accumulator.exe add merge.root $f
 	let COUNTER+=1
 	if [ $COUNTER -ge $MERGE_FACTOR ]; then
