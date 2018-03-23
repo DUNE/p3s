@@ -28,8 +28,6 @@ def takeJson(json_in, verb):
             if(verb>0): print('Failed to open or parse JSON')
             exit(-3)
     else:
-        print("debug----------------------------------")
-        print(json_in)
         data = json.loads(json_in)
     return data
 ###################################################################
