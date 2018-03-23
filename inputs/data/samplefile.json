@@ -1,1 +1,1 @@
-{"name":"output.txt","state":"defined","comment":"testing with text files", "datatype":"TXT"}
+{"name":"output.txt","state":"defined","comment":"testing with text files", "datatype":"TXT", "dirpath":"/tmp"}
