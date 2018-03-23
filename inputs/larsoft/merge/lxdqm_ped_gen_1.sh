@@ -5,7 +5,7 @@
 #source $P3S_HOME/configuration/lxvm_np04dqm.sh > /dev/null
 #source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
 
-$P3S_HOME/inputs/larsoft/setup_env_np04dqm.sh
+source $P3S_HOME/inputs/larsoft/setup_env_np04dqm.sh
 
 export P3S_INPUT_DIR=$P3S_DIRPATH/input
 
