@@ -206,7 +206,7 @@ if(regData):
     
     data		= takeJson(json_in, verb)
     data['uuid']	= uuid.uuid1()		# note we create a fresh UUID here
-    if(envDict['dirpath'] is not Null and envDict['dirpath'] !=''):
+    if(envDict['dirpath'] is not None and envDict['dirpath'] !=''):
         data['dirpath']	= envDict['dirpath']
     
     resp = API.post2server('data', 'register', data)

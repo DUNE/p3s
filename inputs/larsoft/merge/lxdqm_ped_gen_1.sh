@@ -1,10 +1,5 @@
 #!/bin/sh
 
-#export P3S_HOME=/afs/cern.ch/user/n/np04dqm/public/p3s/p3s
-#export DQM_HOME=/afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig
-#source $P3S_HOME/configuration/lxvm_np04dqm.sh > /dev/null
-#source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
-
 export P3S_HOME=/afs/cern.ch/user/n/np04dqm/public/p3s/p3s
 source $P3S_HOME/inputs/larsoft/setup_env_np04dqm.sh
 
