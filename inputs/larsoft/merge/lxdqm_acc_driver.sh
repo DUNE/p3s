@@ -8,8 +8,10 @@ export P3S_MERGE_DIR=$P3S_DIRPATH/merge
 
 
 # declare this once!
-export MERGE_FILE="merge.root"
+# AND fix the ugly later
 
+export MERGE_FILE="merge.root"
+export NCHAN=100
 
 if [ ! -d "$P3S_INPUT_DIR" ]; then
     $P3S_HOME/clients/service.py -n acc_init -m "Problem with the directory $P3S_INPUT_DIR"
@@ -22,6 +24,7 @@ d=`pwd`
 
 # check if we have the merge file
 if [ ! -f "$MERGE_FILE" ]; then
+    echo NO MERGE FILE
     $P3S_HOME/tools/accumulator.exe init $MERGE_FILE $NCHAN
     $P3S_HOME/clients/service.py -n acc_init -m "$MERGE_FILE created with $NCHAN channels"
 fi
