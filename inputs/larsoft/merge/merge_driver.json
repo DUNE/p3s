@@ -3,7 +3,7 @@
 	"name":		"Merge:Add",
 	"timeout":	"1000",
         "jobtype":	"merge",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/merge/lxdqm_acc_driver.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/merge/merge_driver.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
