@@ -76,7 +76,7 @@ while [ $COUNTER -lt $MERGE_FACTOR ]; do
 	    mv $f P3S_PED_DIR
 	fi
 
-	mv $f P3S_PED_DIR
+	mv $f $P3S_PED_DIR
 	
 	# check if merged enough files
 	let COUNTER+=1
