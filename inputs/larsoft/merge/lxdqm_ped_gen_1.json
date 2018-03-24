@@ -9,7 +9,7 @@
 	"env":		{
 	    "P3S_INPUT_DIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
 	    "P3S_INPUT_FILE":	"dummy_to_be_replaced.root",
-	    "NCHAN":		"100",
+	    "NCHAN":		"200",
 	    "ENTRIES":		"1000"
 	}
     }

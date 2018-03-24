@@ -8,7 +8,11 @@
 	"state":	"defined",
 	"env":		{
 	    "P3S_INPUT_DIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
-	    "P3S_INPUT_FILE":	"dummy"
+	    "NCHAN":		"200",
+	    "MERGE_FILE":	"merge.root",
+	    "MERGE_FACTOR":	"4",
+	    "SLEEP":		"5",
+	    "P3S_INPUT_FILE":	"dummy_to_be_replaced"
 	}
     }
 ]
