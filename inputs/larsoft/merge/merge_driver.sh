@@ -43,7 +43,7 @@ d=`pwd`
 
 # check if we have the merge file
 if [ ! -f "$MERGE_FILE" ]; then
-    echo $MERGE_FILE not detected, will be created
+    echo $MERGE_FILE not detected, will be created with $NCHAN channels
     $P3S_HOME/tools/accumulator.exe init $MERGE_FILE $NCHAN
     $P3S_HOME/clients/service.py -n merge_init -m "$MERGE_FILE created with $NCHAN channels"
 fi
@@ -73,7 +73,7 @@ while [ $COUNTER -lt $MERGE_FACTOR ]; do
 	$P3S_HOME/tools/accumulator.exe add $MERGE_FILE $f
 	if [ $? -ne 0 ]; then
 	    $P3S_HOME/clients/service.py -n merge_add -m "problem merging $f"
-	    mv $f P3S_PED_DIR
+	    mv $f $P3S_PED_DIR
 	fi
 
 	mv $f $P3S_PED_DIR
@@ -104,7 +104,7 @@ mv $MERGE_FILE ../merge/$mergefile
 argument='{"name":"'$mergefile'","state":"defined","comment":"merged_histograms","datatype":"MERGE","dirpath":"'$P3S_MERGE_DIR'"}'
 $P3S_HOME/clients/dataset.py -r -j $argument
 
-$P3S_HOME/clients/service.py -n merge_add -m "Merge file created: $mergefile in $P3S_MERGE_DIR"
+$P3S_HOME/clients/service.py -n merge_add -m "Merge file finalized: $mergefile in $P3S_MERGE_DIR"
 
 
 exit
