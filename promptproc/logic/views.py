@@ -125,16 +125,20 @@ def pilotTO(request):
         #### FIXME - Improve the update of the state of wf and job
         try:
             j = job.objects.filter(uuid=p.j_uuid)
-            j.update(state='pilotTO', ts_sto=timezone.now())
-            if(j.wfuuid!=''):
-                try:
-                    wf = workflow.objects.get(uuid=j.wfuuid)
-                    wf.state = "pilotTO"
+            if(j.state != 'finished'):
+                j.update(state='pilotTO', ts_sto=timezone.now())
+                
+                # Updating the whole WF with TO may not me necessary
+                # if(j.wfuuid!=''):
+                # try:
+                #     wf = workflow.objects.get(uuid=j.wfuuid)
+                #     wf.state = "pilotTO"
 
-                    j = job.objects.filter(wfuuid=wf.uuid)
-                    j.update(state='pilotTO', ts_sto=timezone.now())
-                except:
-                    pass
+                #     j = job.objects.filter(wfuuid=wf.uuid)
+                #     if(j.state != 'finished'):
+                #         j.update(state='pilotTO', ts_sto=timezone.now())
+                # except:
+                #     pass
 
         except:
             pass
