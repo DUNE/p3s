@@ -115,7 +115,7 @@ exit
 # If we used the line below  to run jobs, it would result in an asynchronous operation of these jobs in p3s
 # so the merge file could be in an inconsistent state.
 #
-# $P3S_HOME/clients/dataset.py -v 0 -g -i $d -f $f -J $P3S_HOME/inputs/larsoft/merge/lxdqm_acc_add_2.json
+# $P3S_HOME/clients/dataset.py -v 0 -g -i $d -f $f -J $P3S_HOME/inputs/larsoft/merge/merge_add_2.json
 #
 # For this reason we revert to a synchronous loop.
 
