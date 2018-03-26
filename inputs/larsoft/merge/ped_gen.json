@@ -3,7 +3,7 @@
 	"name":		"Ped:Gen",
 	"timeout":	"1000",
         "jobtype":	"pedestal",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/merge/ped_gen_1.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/merge/ped_gen.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
