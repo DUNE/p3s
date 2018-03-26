@@ -54,13 +54,16 @@ files=`find . -maxdepth 1 -mindepth 1 -size +1 -name "ped*" | sed 's/\.\///'`
 # a counter for the files that were merged
 COUNTER=0
 
+# count how many times we had to wait for valid input
+TRIES=0
+
 while [ $COUNTER -lt $MERGE_FACTOR ]; do
     files=`find . -maxdepth 1 -mindepth 1 -size +1 -name "ped*" | sed 's/\.\///'`
     for f in $files
     do
 	q=`$P3S_HOME/clients/dataset.py -G -f $f`
 
-	# check if this file was already accounted for, skip it then
+	# check if this file was already accounted for, skip it then ("files loop")
 	if [ $q != "[]" ]; then continue; fi
 	
 	echo merging $f in $d
@@ -90,6 +93,13 @@ while [ $COUNTER -lt $MERGE_FACTOR ]; do
 	break
     fi
     # if we came here, this means more statistics are needed. Wait and re-enter the loop
+    let TRIES+=1
+    if [ $TRIES -ge $MAX_TRIES ]; then
+	$P3S_HOME/clients/service.py -n merge_add -m "abandoned merge after $MAX_TRIES tries"
+	rm $MERGE_FILE
+	exit
+    fi
+    
     sleep $SLEEP
 done
 
