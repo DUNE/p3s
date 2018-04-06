@@ -37,6 +37,6 @@ then
     export P3S_FCL_LOCAL=$(basename $P3S_FCL)
 else
     export P3S_FCL_LOCAL=$P3S_FCL
-
+fi
     
 env | grep P3S
