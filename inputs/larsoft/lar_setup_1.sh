@@ -31,6 +31,12 @@ tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
 cd $tmpdir
 pwd
-cp $P3S_FCL .
-export P3S_FCL_LOCAL=$(basename $P3S_FCL)
+if [ -f $P3S_FCL ];
+then
+    cp $P3S_FCL .
+    export P3S_FCL_LOCAL=$(basename $P3S_FCL)
+else
+    export P3S_FCL_LOCAL=$P3S_FCL
+
+    
 env | grep P3S
