@@ -2,7 +2,7 @@
     {
 	"name":		"Monitor:Main",
 	"timeout":	"1000",
-        "jobtype":	"evdisp",
+        "jobtype":	"monitor",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/monitor_1.sh",
         "priority":	"1",
 	"state":	"defined",
