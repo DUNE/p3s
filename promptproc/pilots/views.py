@@ -101,7 +101,7 @@ def kill(request): # the client signals that the pulot be killed
     post	= request.POST
     kwargs = None
 
-    for what in ('uuid','host','site'):
+    for what in ('uuid','host','site','state'):
         try:
             kwargs	= {what:post[what]}
         except:

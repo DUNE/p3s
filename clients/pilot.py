@@ -115,6 +115,9 @@ parser.add_argument("-k", "--kill",	action='store_true',
 parser.add_argument("-u", "--uuid",	type=str,	default='',
                     help="uuid of the pilot to be modified")
 
+parser.add_argument("-A", "--state",	type=str,	default='',
+                    help="state of the pilots to be killed")
+
 parser.add_argument("-x", "--execute",	action='store_true',
                     help="force the payloads to run in shell (for experts)")
 
@@ -129,12 +132,13 @@ args = parser.parse_args()
 (
     server,	host,	site,	logdir,	joblogdir,
     verb,	dlt,	kill,	p_uuid,	usage,
-    shell,	period,	cycles, beat,	tst,
+    shell,	period,	cycles, beat,	tst, state,
     extra
 ) = (
     args.server,	args.host,	args.site,	args.logdir,	args.joblogdir,
     args.verbosity,	args.delete,	args.kill,	args.uuid,	args.usage,
     args.execute,	args.period,	args.cycles,	args.beat,	args.test,
+    args.state,
     args.extra
 )
 
@@ -179,6 +183,7 @@ if(kill):
     if(p_uuid!=''):			d = dict(uuid=p_uuid)
     if(p_uuid=='' and host!=''):	d = dict(host=host)
     if(p_uuid=='' and site!=''):	d = dict(site=site)
+    if(state!=''):			d = dict(state=state)
 
     if(verb>0): print(d)
     resp = API.post2server('pilot', 'kill', d)
