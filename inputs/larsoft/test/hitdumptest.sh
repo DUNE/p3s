@@ -1,18 +1,16 @@
 #!/bin/sh
 
-source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
-setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
-
-lar -n ${NUMEVENTS} -c dump_hits.fcl ${INPUTFILE}
-
-if [ -z ${P3S_JOB_UUID+x} ];
+if [ -z ${P3S_LAR_SETUP+x} ];
 then
-    echo P3S_JOB_UUID undefined, setting new value:
-    export P3S_JOB_UUID=`uuid`
-    echo $P3S_JOB_UUID
+    echo P3S_LAR_SETUP undefined, exiting
+    exit
 fi
 
-ofn=`basename ${INPUTFILE}`_DumpHits_${P3S_JOB_UUID}.log
+source ${P3S_LAR_SETUP}
+
+lar -n ${P3S_NEVENTS} -c dump_hits.fcl ${P3S_INPUT_FILE}
+
+ofn=`basename ${P3S_INPUT_FILE}`_DumpHits_${P3S_JOB_UUID}.log
 
 mv DumpHits.log ${OUTPUTDIR}/${ofn}
 

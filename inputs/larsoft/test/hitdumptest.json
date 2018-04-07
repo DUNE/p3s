@@ -3,13 +3,14 @@
 	"name":		"HitDump",
 	"timeout":	"1000",
         "jobtype":	"hitdumptest",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/test/hitdumptest.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/test/hitdumptest.sh",
 	"env":
 	{
+	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_1.sh",
 	    "DUNETPCVER":	"v06_69_00",
 	    "DUNETPCQUAL":	"e15:prof",
-	    "NUMEVENTS":	"1",
-	    "INPUTFILE":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testinput/ProtoDUNE_beam_-7GeV_cosmics_3ms_sce_99_20170719T222727_merged0_25712_1510288920487.root",
+	    "P3S_NEVENTS":	"1",
+	    "P3S_INPUT_FILE":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testinput/ProtoDUNE_beam_-7GeV_cosmics_3ms_sce_99_20170719T222727_merged0_25712_1510288920487.root",
 	    "OUTPUTDIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testoutput/"},
 	    "priority":		"1",
 	"state":		"defined"
