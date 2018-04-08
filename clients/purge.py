@@ -26,6 +26,9 @@ parser.add_argument("-w", "--what",	type=str,	default='pilot',
 parser.add_argument("-s", "--state",	type=str,	default='stopped',
                     help="state of objects to purge, defaults to stopped")
 
+parser.add_argument("-z", "--zero",	type=str,	default='',
+                    help="if not blank will prevent writing trivial entries to DB (with zero deletions)")
+
 
 parser.add_argument("-t", "--test",	action='store_true', help="parse input but do not contact the server")
 
@@ -43,13 +46,14 @@ what	= args.what
 
 tst	= args.test
 direct	= args.direct
+zero	= args.zero
 
 
 
 ### p3s interface defined here
 API  = serverAPI(server=server, verb=verb)
 
-d = dict(state=state, what=what)
+d = dict(state=state, what=what, skip0=zero)
 if(direct): d['direct']='True'
 resp = API.post2server('logic', 'purge', d)
         

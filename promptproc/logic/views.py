@@ -58,10 +58,11 @@ def purge(request):
     post	= request.POST
     
     # interval	= post['interval'] # measured in seconds
+    
     state	= post.get('state','')
     what	= post.get('what','')
     direct	= post.get('direct', '')
-
+    skip0	= post.get('skip0', '')
     # cutoff = timezone.now() - timedelta(seconds=interval)# prior use: dt(interval) 
 
     logger.info('purge request for %s, state %s', what, state)
@@ -88,6 +89,9 @@ def purge(request):
 
     ret = 'purge object:"'+what+'" in state:"'+state+'" deletions:'+str(nDeleted)
     if(direct!=''): # just write the message to the DB and exit with empty string
+        # But if desired skip records with zero deleted objects so as to not clog the DB
+        if(skip0!='' and nDeleted==0): return HttpResponse('')
+        
         t0		= timezone.now()
         s = service(name='purge', ts=t0, info=ret)
         s.save()
