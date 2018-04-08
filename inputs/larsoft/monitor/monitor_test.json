@@ -3,7 +3,7 @@
 	"name":		"Monitor:Main",
 	"timeout":	"1000",
         "jobtype":	"monitor",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/monitor_1.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/monitor_main.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
