@@ -15,7 +15,7 @@
 	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
 	    "P3S_INPUT_FILE":"dummy_to_be_replaced",
 	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
-	    "P3S_EVDISP_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/evdisp/",
+	    "P3S_MONITOR_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/monitor/",
 	    "P3S_USED_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/used/",
 	    "P3S_OUTPUT_FILE":"monitor.root"}
     }
