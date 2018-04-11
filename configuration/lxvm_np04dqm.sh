@@ -8,7 +8,7 @@ export P3S_VENV='/afs/cern.ch/user/n/np04dqm/public/vp3s'
 # 2. Service-related parameters
 export P3S_SERVER="http://p3s-web:80/"
 export P3S_SITE='lxvm'
-export P3S_PILOTS=400 # 00
+export P3S_PILOTS=600 # 00
 export P3S_PILOT_TO=1000
 export P3S_PILOT_MAXRUNTIME=90000
 export P3S_VERBOSITY=0
