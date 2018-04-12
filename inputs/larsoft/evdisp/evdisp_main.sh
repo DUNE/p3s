@@ -15,6 +15,12 @@ dest=$P3S_EVDISP_DIR/$P3S_JOB_UUID
 
 echo making $dest
 mkdir $dest
-cp *.png $dest
+
+pngs=`ls *.png`
+
+for f in $pngs
+do
+    [ -s $f ] && cp $f $dest
+done
 
 exit

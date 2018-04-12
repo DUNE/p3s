@@ -21,3 +21,7 @@ tools.preparedAdcPlotter.LogLevel:  @local::tools.rawAdcPlotter.LogLevel
 tools.preparedAdcPlotter.FirstTick: @local::tools.rawAdcPlotter.FirstTick
 tools.preparedAdcPlotter.LastTick:  @local::tools.rawAdcPlotter.LastTick
 tools.preparedAdcPlotter.MaxSignal: @local::tools.rawAdcPlotter.MaxSignal
+# this was recommended by David to stop producing root files in order
+# to keep spurious I/O under control
+tools.rawAdcPlotter.RootFileName: ""
+tools.preparedAdcPlotter.RootFileName: "" 
