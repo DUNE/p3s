@@ -14,7 +14,8 @@ echo Using input file $P3S_INPUT_FILE
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
 setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
 
-cd $P3S_OUTPUT_DIR
+# This is in EOS and we'll try to swithc to temp space: cd $P3S_OUTPUT_DIR
+cd /tmp
 
 # UUID is set by the pilot,
 # and if it is not present at this point,
@@ -31,6 +32,9 @@ tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
 cd $tmpdir
 pwd
+
+# note we should be under /tmp now
+
 if [ -f $P3S_FCL ];
 then
     cp $P3S_FCL .
