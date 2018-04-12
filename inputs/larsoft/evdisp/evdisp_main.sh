@@ -18,9 +18,11 @@ mkdir $dest
 
 pngs=`ls *.png`
 
+ls -l *.png
+
 for f in $pngs
 do
     [ -s $f ] && cp $f $dest
 done
 
-exit
+exit 0
