@@ -450,6 +450,7 @@ while(cnt>0 or p.cycles==0):
         time.sleep(beat)
         
         timecount=timecount+beat
+        print('beat', beat, '   timecount', timecount)
         if(timecount>timelimit): break
 
     # Ended loop, assume job done (FIXME error handling)
