@@ -56,7 +56,13 @@ class job(models.Model):
         cutoff = timezone.now() - timedelta(seconds=seconds)
         kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),}
         if(state):
-            return self.objects.filter(**kwargs).filter(state=state).count()
+            if(state=='error'):
+                cnt=0
+                for o in self.objects.filter(**kwargs):
+                    if(o.error!='' and int(o.error)!=0): cnt+=1
+                return cnt
+            else:
+                return self.objects.filter(**kwargs).filter(state=state).count()
         else:
             return self.objects.filter(**kwargs).count()
 
