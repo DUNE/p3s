@@ -99,7 +99,8 @@ def index(request):
         ('Defined','ts_def',None),
         ('Started','ts_sta',None),
         ('Stopped','ts_sto',None),
-        ('pilotTO','ts_sto','pilotTO')
+        ('pilotTO','ts_sto','pilotTO'),
+        ('over Tlimit','ts_sto','timelimit'),
     )
     
     for s in states:
