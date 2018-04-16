@@ -189,9 +189,13 @@ def request(request): # Pilot's request for a job:
                     p.ts_lhb	= timezone.now()
                     p.save()
                 
-                    to_pilot = {'status':	'OK', # job information in JSON format
-                                'state':	'dispatched',	'job':	j.uuid,
-                                'payload':	j.payload,	'env':	j.env}
+                    to_pilot = {'status':	'OK',
+                                'timelimit':	j.timelimit,
+                                'state':	'dispatched',
+                                'job':		j.uuid,
+                                'payload':	j.payload,
+                                'env':		j.env}
+                    
                     j = None # reset for next iteration
                     return HttpResponse(json.dumps(to_pilot))
                 else:
@@ -287,6 +291,20 @@ def report(request):
                         with transaction.atomic():
                             wf.save()
 
+            if(event=='timelimit'): # don't toggle children in the WF
+                doneJobs = p.jobs_done
+                if(doneJobs==''):
+                    doneJobs = j.uuid
+                else:
+                    doneJobs+=','+j.uuid
+
+                p.jobs_done = doneJobs
+                
+                j.ts_sto = timezone.now()
+                j.errcode= errcode
+                with transaction.atomic():
+                    j.save()
+                    
             if(event=='jobstop'): # timestamp and toggle children
                 doneJobs = p.jobs_done
                 if(doneJobs==''):

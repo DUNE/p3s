@@ -4,7 +4,7 @@
 	"timeout":	"100",
         "jobtype":	"sleep",
         "payload":	"/home/maxim/projects/p3s/inputs/jobs/sleep100.sh",
-	"env":		{"P3S_TEST":"TRUE","P3S_MODE":"COPY"},
+	"env":		{"P3S_TEST":"TRUE"},
         "priority":	"1",
 	"state":	"defined"
     }

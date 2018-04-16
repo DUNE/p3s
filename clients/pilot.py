@@ -316,11 +316,13 @@ while(cnt>0 or p.cycles==0):
 ######################### GOT A JOB TO DO ###############################
     payload	= ''
     env		= {}
+    timelimit	= 0
     
     if(p['state']=='dispatched'): # means pilot was matched with a job
         try:
-            p['job']	= msg['job']	# uuid of the job
-            payload	= msg['payload']# executable (e.g. a script)
+            p['job']	= msg['job']		# uuid of the job
+            payload	= msg['payload']	# executable (e.g. a script)
+            timelimit	= msg['timelimit']
             
             if(len(msg['env'])):
                 try:
@@ -335,6 +337,8 @@ while(cnt>0 or p.cycles==0):
         logger.info('ENV received: %s' % str(env))
     
 
+    if(verb>0): print('timelimit', timelimit)
+    
     p['state']='running'
     p['event']='jobstart'
 
@@ -406,6 +410,8 @@ while(cnt>0 or p.cycles==0):
     jobPID = proc.pid
     errCode = None
 
+    timecount=0
+    
     while True:
         msg = {}
         errCode = proc.poll()
@@ -442,11 +448,22 @@ while(cnt>0 or p.cycles==0):
 
         # continue the process polling loop, sleep a little
         time.sleep(beat)
+        
+        timecount=timecount+beat
+        if(timecount>timelimit): break
 
     # Ended loop, assume job done (FIXME error handling)
+    if(timecount>timelimit):
+        os.kill(jobPID, signal.SIGTERM)
+        p['event']	= 'timelimit'
+        p['errcode']	= 77
+
+    else:
+        p['event']	= 'jobstop'
+        p['errcode']	= errCode
+
+    
     p['state']	= 'finished'
-    p['event']	= 'jobstop'
-    p['errcode']= errCode
     p['jobcount']  += 1
     p['jpid']	= jobPID
         
