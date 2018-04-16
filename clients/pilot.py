@@ -457,7 +457,7 @@ while(cnt>0 or p.cycles==0):
         os.kill(jobPID, signal.SIGTERM)
         p['event']	= 'timelimit'
         p['errcode']	= 77
-
+        if(verb>0): print('timelimit reached')
     else:
         p['event']	= 'jobstop'
         p['errcode']	= errCode
