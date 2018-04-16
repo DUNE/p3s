@@ -76,7 +76,7 @@ SELECTORS	= {
     {'stateLabel':'Job States',
      'states':[
          ('all',	'All'),		('template',	'Template'),	('defined',	'Defined'),	('running',	'Running'),
-         ('finished','Finished'),	('pilotTO','Pilot Timed Out'),
+         ('finished','Finished'),	('pilotTO','Pilot Timed Out'),	('timelimit',	'Time Limit'),
      ],
      'stateselector':True,
      'userselector': True,

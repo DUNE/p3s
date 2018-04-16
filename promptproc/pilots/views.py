@@ -300,8 +300,10 @@ def report(request):
 
                 p.jobs_done = doneJobs
                 
-                j.ts_sto = timezone.now()
-                j.errcode= errcode
+                j.ts_sto	= timezone.now()
+                j.errcode	= errcode
+                j.state		= 'timelimit'
+                
                 with transaction.atomic():
                     j.save()
                     
