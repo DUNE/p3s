@@ -424,9 +424,11 @@ while(cnt>0 or p.cycles==0):
             try:
                 msg = json.loads(data)
                 p['status'], p['state']	= msg['status'], msg['state']
+                print(msg)
             except:
                 logger.error('exiting, failed to parse the server message at report: %s' % data)
                 time.sleep(period)
+                print('failed to parse')
                 continue # will try again...
                 # exit(3)
 
