@@ -59,7 +59,7 @@ class job(models.Model):
             if(state=='error'):
                 cnt=0
                 for o in self.objects.filter(**kwargs):
-                    if(o.error!='' and int(o.error)!=0): cnt+=1
+                    if(o.errcode!='' and int(o.errcode)!=0): cnt+=1
                 return cnt
             else:
                 return self.objects.filter(**kwargs).filter(state=state).count()
