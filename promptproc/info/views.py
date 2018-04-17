@@ -96,9 +96,9 @@ def index(request):
 
     times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
     states	= (
-        ('Defined','ts_def',None),
-        ('Started','ts_sta',None),
-        ('Stopped','ts_sto',None),
+        ('defined','ts_def',None),
+        ('started','ts_sta',None),
+        ('stopped','ts_sto',None),
         ('pilotTO','ts_sto','pilotTO'),
         ('over time limit','ts_sto','timelimit'),
         ('errors','ts_sto','error'),
