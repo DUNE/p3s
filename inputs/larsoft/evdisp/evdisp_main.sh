@@ -49,9 +49,7 @@ then
     echo '-----------------'
     rm -fr $P3S_JOB_UUID
     echo ls after
-    ls
-    echo du after
-    du .
+    ls $P3S_JOB_UUID
     echo '-----------------'
 fi
 
