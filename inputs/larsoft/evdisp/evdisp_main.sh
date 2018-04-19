@@ -31,7 +31,7 @@ mkdir $DESTINATION
 
 pngs=`ls *.png`
 
-ls -l *.png
+# ls -l *.png
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -56,8 +56,4 @@ echo du before
 du $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
-echo ls after
-ls $P3S_JOB_UUID
-echo '-----------------'
-
 exit 0

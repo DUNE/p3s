@@ -14,12 +14,8 @@ echo Using input file $P3S_INPUT_FILE
 source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
 setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
 
-# This is in EOS and we'll try to swithc to temp space: cd $P3S_OUTPUT_DIR
-cd /tmp
-
-# UUID is set by the pilot,
-# and if it is not present at this point,
-# we default to a locally generated UUID (mainly the test wrapper case)
+# UUID should be set by the pilot, and if it is not present at this point,
+# we create a locally generated UUID (mainly the test wrapper case)
 
 if [ -z ${P3S_JOB_UUID+x} ];
 then
@@ -28,12 +24,18 @@ then
     echo $P3S_JOB_UUID
 fi
 
+# localize the output to make it easier
+# to clean up later.
+
 tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
 cd $tmpdir
+echo Created a working directory:
 pwd
 
-# note we should be under /tmp now
+# If the FCL file does not have a valid path,
+# we just assume that's a part of duneTPC
+# and will be found anyhow
 
 if [ -f $P3S_FCL ];
 then
