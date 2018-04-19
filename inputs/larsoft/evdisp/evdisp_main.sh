@@ -41,12 +41,13 @@ done
 if [ ! -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI defined, clean up all files
+    cd ..
     echo ls before
-    ls
+    ls $P3S_JOB_UUID
     echo du before
-    du .
+    du $P3S_JOB_UUID
     echo '-----------------'
-    rm ./*
+    rm -fr $P3S_JOB_UUID
     echo ls after
     ls
     echo du after
