@@ -42,7 +42,10 @@ then
     done
 else
     echo P3S_XRD_URI defined, using xrdcp
-    time xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION
+    for f in $pngs
+    do
+	[ -s $f ] && time xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION
+    done
 fi
 
 
