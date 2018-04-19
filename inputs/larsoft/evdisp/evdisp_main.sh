@@ -9,7 +9,18 @@ fi
 
 source ${P3S_LAR_SETUP}
 
-lar -c $P3S_FCL_LOCAL $P3S_INPUT_DIR/$P3S_INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
+
+if [ -z ${P3S_XRD_URI+x} ];
+then
+    echo P3S_XRD_URI undefined, using FUSE
+    export INPUT_FILE=$P3S_INPUT_DIR/$P3S_INPUT_FILE
+elif
+    time xrdcp --tpc first $P3S_XRD_URI/input/$P3S_INPUT_FILE .
+    export INPUT_FILE=./$P3S_INPUT_FILE
+fi
+
+
+lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 
 dest=$P3S_EVDISP_DIR/$P3S_JOB_UUID
 

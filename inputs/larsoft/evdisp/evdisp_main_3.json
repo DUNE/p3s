@@ -1,0 +1,24 @@
+[
+    {
+	"name":		"EvDisp:Main",
+	"timeout":	"1000",
+        "jobtype":	"evdisp",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/evdisp/evdisp_main.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "P3S_COMMENT":"Adding xrdcp stage-in",
+	    "P3S_XRD_URI":"xroot://eospublic.cern.ch//eos/experiment/neutplatform/protodune/np04tier0/p3s",
+	    "DUNETPCVER":"v06_69_00",
+	    "DUNETPCQUAL":"e15:prof",
+	    "P3S_NEVENTS":"5",
+	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_2.sh",
+	    "P3S_FCL":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/evdisp/evdisp_current.fcl",
+	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input/",
+	    "P3S_INPUT_FILE":"dummy_to_be_replaced",
+	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
+	    "P3S_EVDISP_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/evdisp/",
+	    "P3S_USED_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/used/",
+	    "P3S_OUTPUT_FILE":"evdisp.root"}
+    }
+]
