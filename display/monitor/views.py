@@ -71,15 +71,28 @@ def data_handler(request, what):
 def data_handler2(request, what):
     domain	= request.get_host()
 
-    forChart = pur.objects.order_by('-pk').filter(tpc=10)
+    #-----------
+    # for the charts
 
-    purStr=''
-    for i in range(40):
-        try:
-            purStr += ("[[%s], %s],") % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
-        except:
-            break
-            
+    purSeries = []
+    for tpcNum in (1,2,5,6,9,10):
+        purDict = {}
+        forChart = pur.objects.order_by('-pk').filter(tpc=tpcNum)
+
+        purStr=''
+        for i in range(40):
+            try:
+                purStr += ("[[%s], %s],") % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
+            except:
+                break
+    
+        purDict["panel"] = 'tpc'+str(tpcNum)
+        purDict["timeseries"]=purStr
+    
+        purSeries.append(purDict)
+        
+    #-----------
+    # for the table
     d = {}
     
     objs = pur.objects.order_by('-pk').all()
@@ -92,7 +105,8 @@ def data_handler2(request, what):
     d['domain']	= domain
     
     d['pageName']	= ': Purity Monitor'
-    d['val']		= purStr
+    d['val']		= purSeries
+    print(purSeries)
     
     
     return render(request, 'unitable2.html', d)
