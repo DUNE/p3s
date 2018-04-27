@@ -25,18 +25,19 @@ function drawStuff() {
     var options = {
 	title: '{{ p.panel }}',
 	legend: {position:'none'},
-	height: 350,
+	height: 300,
 	width: 400,
 	timeZone:-5,
-	axes: {
-            y: {
-		lifetime: {label: 'ms'},
-	    }
+	vAxis: {
+          title: 'Electron Lifetime (ms)'
+        },
+	hAxis: {
+	    title: 'Time (UTC)'
 	}
     };
       
-      
-    var chart = new google.charts.Bar(document.getElementById('{{ p.panel }}'));
+    var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
+//    var chart = new google.charts.Bar(document.getElementById('{{ p.panel }}'));
     chart.draw(data, google.charts.Bar.convertOptions(options));
 
     {% endfor %}
