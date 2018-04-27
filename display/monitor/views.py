@@ -50,7 +50,7 @@ def data_handler(request, what):
     domain	= request.get_host()
 
     # testing only
-    objs = pur.objects.all()
+    objs = pur.objects.order_by('-pk').all()
 
     d = {}
     
