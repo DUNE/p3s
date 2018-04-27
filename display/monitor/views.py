@@ -74,7 +74,7 @@ def data_handler2(request, what):
     forChart = pur.objects.order_by('-pk').filter(tpc=10)
 
     purStr=''
-    for i in range(100):
+    for i in range(40):
         try:
             purStr += ("[[%s], %s],") % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
         except:
