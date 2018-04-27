@@ -13,9 +13,9 @@
       google.charts.setOnLoadCallback(drawStuff);
 
 function drawStuff() {
-    {% for p in val %}
+    {% for p in purS %}
     var data = new google.visualization.DataTable();
-    data.addColumn('timeofday', 'Time of Day');
+    data.addColumn('timeofday', 'Time (UTC)');
     data.addColumn('number', 'Lifetime');
 
     data.addRows([
@@ -25,8 +25,14 @@ function drawStuff() {
     var options = {
 	title: '{{ p.panel }}',
 	legend: {position:'none'},
-	height: 150,
-	timeZone:-5
+	height: 350,
+	width: 400,
+	timeZone:-5,
+	axes: {
+            y: {
+		lifetime: {label: 'ms'},
+	    }
+	}
     };
       
       
@@ -51,10 +57,20 @@ function drawStuff() {
         {% block content1 %}{% endblock %}
       </div>
     </td>
+    <td align="right">
+    <table>
+    <tr>
+    {% for p in purS %}
     <td>
-    {% for p in val %}
-      <div id="{{ p.panel }}"></div>
+    <div id="{{ p.panel }}"></div>
+    </td>
+    {% if p.panel == "tpc5" %}
+</tr>
+    <tr>
+    {% endif %}
     {% endfor %}
+</tr>
+    </table>
     </td>
   </tr>
 </table>

@@ -82,7 +82,7 @@ def data_handler2(request, what):
         purStr=''
         for i in range(40):
             try:
-                purStr += ("[[%s], %s],") % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
+                purStr += ('[[%s], %s],') % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
             except:
                 break
     
@@ -105,8 +105,7 @@ def data_handler2(request, what):
     d['domain']	= domain
     
     d['pageName']	= ': Purity Monitor'
-    d['val']		= purSeries
-    print(purSeries)
+    d['purS']		= purSeries
     
     
     return render(request, 'unitable2.html', d)
