@@ -24,6 +24,7 @@ def parseCommaDash(inp):
         
     return outlist
 #########################################################    
+# count how many distinct runs there were
 @csrf_exempt
 def indpurity(request):
     maxnum = 0
@@ -37,6 +38,8 @@ def indpurity(request):
     return HttpResponse(str(maxnum))
 
 ###################################################
+# deletes either individual purity entry by key,
+# or all entries
 @csrf_exempt
 def delpurity(request):
     post	= request.POST

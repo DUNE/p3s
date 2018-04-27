@@ -66,6 +66,39 @@ def data_handler(request, what):
     
     return render(request, 'unitable.html', d)
 
+#########################################################    
+# general request handler for summary type of a table
+def data_handler2(request, what):
+    domain	= request.get_host()
+
+    forChart = pur.objects.order_by('-pk').filter(tpc=10)
+
+    purStr=''
+    for i in range(10):
+        try:
+            purStr += ("[[%s], %s],") % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
+        except:
+            break
+            
+    print(purStr)
+
+    d = {}
+    
+    objs = pur.objects.order_by('-pk').all()
+    t = PurityTable(objs)
+    t.set_site(domain)
+    RequestConfig(request).configure(t)
+
+    d['table']	= t
+    d['N']	= str(len(objs))
+    d['domain']	= domain
+    
+    d['pageName']	= ': Purity Monitor'
+    d['val']		= purStr
+    
+    
+    return render(request, 'unitable2.html', d)
+
 
 #########################################################    
 @csrf_exempt
