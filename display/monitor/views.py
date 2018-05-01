@@ -118,7 +118,6 @@ def data_handler2(request, what):
         for i in range(40):
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
                 purStr += ('[new Date(%s), %s],') % (forChart[i].ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart[i].lifetime)
-                print(forChart[i].ts.strftime("%Y, %m, %d, %H, %M, %S"))
 #                purStr += ('[[%s], %s],') % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
             except:
                 break
