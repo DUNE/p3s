@@ -2,7 +2,10 @@ import django.db.models
 from django.db.models	import Max
 
 from django.shortcuts	import render
+
+from django.http	import HttpResponseRedirect
 from django.http	import HttpResponse
+
 from django.views.decorators.csrf import csrf_exempt
 
 import  django_tables2 as tables
@@ -16,8 +19,27 @@ from django import forms
 class EvdispForm(forms.Form):
     run		= forms.CharField(required=False, initial='')
     event	= forms.CharField(required=False, initial='')
-    
 
+PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
+
+######################
+class dropDownGeneric(forms.Form):
+    def __init__(self, *args, **kwargs):
+       self.label	= kwargs.pop('label')
+       self.choices	= kwargs.pop('choices')
+       self.tag		= kwargs.pop('tag')
+       self.fieldname	= self.tag # 'choice'
+       
+       super(dropDownGeneric, self).__init__(*args, **kwargs)
+       
+       self.fields[self.fieldname] = forms.ChoiceField(choices = self.choices, label = self.label)
+
+    def handleDropSelector(self):
+        selection = self.cleaned_data[self.fieldname]
+        if(selection=='All'):
+            return ''
+        else:
+            return self.tag+'='+selection+'&'
 #########################################################    
 class MonitorTable(tables.Table):
     def set_site(self, site=''):
@@ -66,11 +88,24 @@ def data_handler(request, what):
     
     return render(request, 'unitable.html', d)
 
+
+#########################################################    
+def makeQuery(what, q=''):
+    gUrl= '/monitor/purity'
+    qUrl= '/monitor/purity?'
+
+    if(q==''):
+        return HttpResponseRedirect(gUrl)
+    
+    return HttpResponseRedirect(qUrl+q)
+
 #########################################################    
 # general request handler for summary type of a table
 def data_handler2(request, what):
     domain	= request.get_host()
 
+    q=''
+    
     #-----------
     # for the charts
 
@@ -81,8 +116,9 @@ def data_handler2(request, what):
 
         purStr=''
         for i in range(40):
-            try:
-                purStr += ('[[%s], %s],') % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
+            try: # template: [new Date(2014, 10, 15, 7, 30), 1],
+                purStr += ('[new Date(%s), %s],') % (forChart[i].ts.strftime("%Y, %m, %d, %H, %M, %S"), forChart[i].lifetime)
+#                purStr += ('[[%s], %s],') % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
             except:
                 break
     
@@ -107,7 +143,18 @@ def data_handler2(request, what):
     d['pageName']	= ': Purity Monitor'
     d['purS']		= purSeries
     
+
+    if request.method == 'POST':
+        perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
+        if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
+        return makeQuery(what, q) # will go and get the query results...
+
+    perPageSelector	= dropDownGeneric(initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
     
+    selectors = []
+    selectors.append(perPageSelector)
+    d['selectors'] = selectors
+
     return render(request, 'unitable2.html', d)
 
 

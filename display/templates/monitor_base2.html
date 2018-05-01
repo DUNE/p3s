@@ -15,7 +15,8 @@
 function drawStuff() {
     {% for p in purS %}
     var data = new google.visualization.DataTable();
-    data.addColumn('timeofday', 'Time (UTC)');
+    data.addColumn('datetime', 'Date/Time');
+//    data.addColumn('timeofday', 'Date/Time');
     data.addColumn('number', 'Lifetime');
 
     data.addRows([
@@ -32,7 +33,7 @@ function drawStuff() {
           title: 'Electron Lifetime (ms)'
         },
 	hAxis: {
-	    title: 'Time (UTC)'
+	    title: 'Date/Time'
 	}
     };
       
@@ -50,6 +51,30 @@ function drawStuff() {
         {% include "topnavbar.html" %}
     <h2>protoDUNE DQM{{ pageName }}</h2>
 
+
+
+	    <!-- div -->
+	      {% block frm %}
+	      <form action="" method="post">
+		{% csrf_token %}
+		<table>
+		  <tr>
+		    {% for sel in selectors %}
+		    <td>
+		      <table>
+			{{ sel }}
+		      </table>
+		    </td>
+		    {% endfor %}
+		    <td>
+		      <input type="submit" value="Submit" />
+		    </td>
+		  </tr>
+		</table>
+		
+	      </form>
+	      {% endblock %}
+	      <!-- /div -->
 
 <table>
   <tr>
