@@ -56,4 +56,16 @@ echo du before
 du $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
+
+# check basic validity of files w/o going into detail
+cd $DESTINATION
+copies=`find . -name "*.png" -exec ls {} \;`
+# -size 0
+
+for copy in $copies
+do
+    ls -l $copy
+done
+    
+
 exit 0
