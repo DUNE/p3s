@@ -7,43 +7,6 @@
     <!-- THIS IS TEMP, until we plant it on Apache -->
     <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
     <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart', 'bar']});
-      google.charts.setOnLoadCallback(drawStuff);
-
-function drawStuff() {
-    {% for p in purS %}
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Date/Time');
-//    data.addColumn('timeofday', 'Date/Time');
-    data.addColumn('number', 'Lifetime');
-
-    data.addRows([
-	{{ p.timeseries }}
-    ]);
-
-    var options = {
-	title: '{{ p.panel }}',
-	legend: {position:'none'},
-	height: 300,
-	width: 400,
-	timeZone:-5,
-	vAxis: {
-          title: 'Electron Lifetime (ms)'
-        },
-	hAxis: {
-	    title: 'Date/Time'
-	}
-    };
-      
-    var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
-//    var chart = new google.charts.Bar(document.getElementById('{{ p.panel }}'));
-    chart.draw(data, google.charts.Bar.convertOptions(options));
-
-    {% endfor %}
-      };
-    </script>
   </head>
 
   
@@ -76,30 +39,9 @@ function drawStuff() {
 	      {% endblock %}
 	      <!-- /div -->
 
-<table>
-  <tr>
-    <td align="top">
       <div id="content1">
         {% block content1 %}{% endblock %}
       </div>
-    </td>
-    <td align="right">
-    <table>
-    <tr>
-    {% for p in purS %}
-    <td>
-    <div id="{{ p.panel }}"></div>
-    </td>
-    {% if p.panel == "tpc5" %}
-</tr>
-    <tr>
-    {% endif %}
-    {% endfor %}
-</tr>
-    </table>
-    </td>
-  </tr>
-</table>
 
     <hr/>  
   </body>

@@ -91,8 +91,8 @@ def data_handler(request, what):
 
 #########################################################    
 def makeQuery(what, q=''):
-    gUrl= '/monitor/purity'
-    qUrl= '/monitor/purity?'
+    gUrl= '/monitor/puritytable'
+    qUrl= '/monitor/puritytable?'
 
     if(q==''):
         return HttpResponseRedirect(gUrl)
@@ -101,8 +101,40 @@ def makeQuery(what, q=''):
 
 #########################################################    
 # general request handler for summary type of a table
+def puritychart(request, what):
+    domain	= request.get_host()
+    #-----------
+    # for the charts
+
+    purSeries = []
+    for tpcNum in (1,2,5,6,9,10):
+        purDict = {}
+
+        # FIXME - improve and/or move the charts
+        forChart = pur.objects.order_by('-pk').filter(tpc=tpcNum)
+
+        purStr=''
+        for i in range(40):
+            try: # template: [new Date(2014, 10, 15, 7, 30), 1],
+                purStr += ('[new Date(%s), %s],') % (forChart[i].ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart[i].lifetime)
+            except:
+                break
+    
+        purDict["panel"] = 'tpc'+str(tpcNum)
+        purDict["timeseries"]=purStr
+    
+        purSeries.append(purDict)
+
+    d = {}
+    d['purS']		= purSeries
+
+    return render(request, 'purity_chart.html', d)
+
+#########################################################    
+# general request handler for summary type of a table
 def data_handler2(request, what):
     domain	= request.get_host()
+    perpage	= request.GET.get('perpage','25')
 
     q=''
     
@@ -112,6 +144,8 @@ def data_handler2(request, what):
     purSeries = []
     for tpcNum in (1,2,5,6,9,10):
         purDict = {}
+
+        # FIXME - improve and/or move the charts
         forChart = pur.objects.order_by('-pk').filter(tpc=tpcNum)
 
         purStr=''
@@ -134,7 +168,8 @@ def data_handler2(request, what):
     objs = pur.objects.order_by('-pk').all()
     t = PurityTable(objs)
     t.set_site(domain)
-    RequestConfig(request).configure(t)
+
+    RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
 
     d['table']	= t
     d['N']	= str(len(objs))
