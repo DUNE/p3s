@@ -126,7 +126,8 @@ def puritychart(request, what):
         purSeries.append(purDict)
 
     d = {}
-    d['purS']		= purSeries
+    d['purS']	= purSeries
+    d['domain']	= domain
 
     return render(request, 'purity_chart.html', d)
 
