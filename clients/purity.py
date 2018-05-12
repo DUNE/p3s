@@ -48,10 +48,13 @@ parser.add_argument("-f", "--file",	type=str,	help="input file", default='')
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number.")
 
 parser.add_argument("-i", "--id",	type=str,	default='',
-                    help="id of the entry to be adjusted or delted (pk)")
+                    help="id of the entry to be adjusted or deleted (pk)")
 
 parser.add_argument("-r", "--run",	type=str,	default='',
                     help="run number of the entries to be added, adjusted or deleted")
+
+parser.add_argument("-T", "--timestamp",type=str,	default='',
+                    help="override the clock when generating a timestamp")
 
 
 parser.add_argument("-S", "--server",	type=str,
@@ -66,7 +69,7 @@ server		= args.server
 delete		= args.delete
 p_id		= args.id
 run		= args.run
-
+timestamp	= args.timestamp
 
 f = None
 
@@ -121,8 +124,13 @@ for row in myreader:    # print(row)
         # print(cnt)
 
     d['run']	= run
-    d['ts']	= str(timezone.now())
-    
+
+    if(timestamp==''):
+        d['ts']	= str(timezone.now())
+    else:
+        d['ts']	= timestamp
+
+    print(d['ts'])
     resp = API.post2server('purity', 'add', d)
 
     
