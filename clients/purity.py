@@ -61,6 +61,7 @@ parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $DQM_SERVER or if unset to http://localhost:8000/",
                     default=envDict['dqmserver'])
 
+parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], help="output verbosity, defaults to P3S default")
 
 args = parser.parse_args()
 
@@ -70,6 +71,7 @@ delete		= args.delete
 p_id		= args.id
 run		= args.run
 timestamp	= args.timestamp
+verb		= args.verbosity
 
 f = None
 
@@ -89,7 +91,7 @@ if(delete):
     if(run != ''):
         resp = API.post2server('purity', 'del', dict(run=run))
         
-    print(resp)
+    if(verb>0): print(resp)
 
     exit(0)
 
@@ -106,7 +108,7 @@ frst = True
 
 if(run==''):
     run = API.get2server('purity', 'ind', '')
-    print('Assigning run number based on DB: '+run)
+    if(verb>0): print('Assigning run number based on DB: '+run)
 
 items = ('run','tpc', 'lifetime', 'error', 'count')
 
@@ -130,8 +132,9 @@ for row in myreader:    # print(row)
     else:
         d['ts']	= timestamp
 
-    print(d['ts'])
+    if(verb>0): print('Using timestamp:', d['ts'])
+    
     resp = API.post2server('purity', 'add', d)
 
     
-    print(resp)
+    if(verb>0): print(resp)
