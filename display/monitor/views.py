@@ -21,11 +21,14 @@ class EvdispForm(forms.Form):
     event	= forms.CharField(required=False, initial='')
 
 class TsForm(forms.Form):
-    ts_min	= forms.CharField(required=False, initial='')
-    ts_max	= forms.CharField(required=False, initial='')
+    ts_min	= forms.CharField(required=False, initial='', label="min. date (YYYY-MM-DD)")
+    ts_max	= forms.CharField(required=False, initial='', label="max. date (YYYY-MM-DD)")
 
     def tsmin(self):
         return self.cleaned_data["ts_min"]
+    
+    def tsmax(self):
+        return self.cleaned_data["ts_max"]
 
 
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
@@ -111,6 +114,9 @@ def makeQuery(what, q=''):
 # general request handler for summary type of a table
 def puritychart(request, what):
     domain	= request.get_host()
+    tsmin	= request.GET.get('tsmin','')
+    tsmax	= request.GET.get('tsmax','')
+    
     #-----------
     # for the charts
 
@@ -119,12 +125,20 @@ def puritychart(request, what):
         purDict = {}
 
         # FIXME - improve and/or move the charts
-        forChart = pur.objects.order_by('-pk').filter(tpc=tpcNum)
+        objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
+
+        if(tsmin!=''):
+            objs = objs.filter(ts__gte=tsmin)
+            
+        if(tsmax!=''):
+            objs = objs.filter(ts__lte=tsmax)
+        
 
         purStr=''
-        for i in range(40):
+
+        for forChart in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
-                purStr += ('[new Date(%s), %s],') % (forChart[i].ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart[i].lifetime)
+                purStr += ('[new Date(%s), %s],') % (forChart.ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
             except:
                 break
     
@@ -144,15 +158,24 @@ def puritychart(request, what):
 def data_handler2(request, what):
     domain	= request.get_host()
     perpage	= request.GET.get('perpage','25')
+    tsmin	= request.GET.get('tsmin','')
+    tsmax	= request.GET.get('tsmax','')
+    
 
     q=''
     
     #-----------
     # for the table
     d = {}
-    
-    objs = pur.objects.order_by('-pk').filter(ts__lte="2018-03-01")
-#    objs = pur.objects.order_by('-pk').all()
+
+    objs = pur.objects.order_by('-pk').all()
+
+    if(tsmin!=''):
+            objs = pur.objects.order_by('-pk').filter(ts__gte=tsmin)
+            
+    if(tsmax!=''):
+            objs = pur.objects.order_by('-pk').filter(ts__lte=tsmax)
+
     t = PurityTable(objs)
     t.set_site(domain)
 
@@ -171,8 +194,21 @@ def data_handler2(request, what):
         tsSelector = TsForm(request.POST)
 
         if tsSelector.is_valid():
-            #pass
-            print('ts',tsSelector.tsmin())
+            
+            tsmin=tsSelector.tsmin()
+            tsmax=tsSelector.tsmax()
+            
+            if(tsmin!=''):
+                print(tsmin)
+                q+= 'tsmin='+tsmin+'&'
+
+                
+            if(tsmax!=''):
+                print(tsmax)
+                q+= 'tsmax='+tsmax+'&'
+
+            
+            
         return makeQuery(what, q) # will go and get the query results...
 
     perPageSelector	= dropDownGeneric(initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')

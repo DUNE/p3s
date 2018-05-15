@@ -80,22 +80,22 @@ function drawStuff() {
 	      {% endblock %}
 	      <!-- /div -->
 
-              {% block content1 %}
+              {% block content %}
 
-    <table>
-      <tr>
-	{% for p in purS %}
-	<td>
-	  <div id="{{ p.panel }}"></div>
-	</td>
-	{% if p.panel == "tpc5" %}
-      </tr>
-      <tr>
-	{% endif %}
-	{% endfor %}
-      </tr>
-    </table>
-{% endblock %}
+	      <table>
+		<tr>
+		  {% for p in purS %}
+		  <td>
+		    <div id="{{ p.panel }}"></div>
+		  </td>
+		  {% if p.panel == "tpc5" %}
+		</tr>
+		<tr>
+		  {% endif %}
+		  {% endfor %}
+		</tr>
+	      </table>
+	      {% endblock %}
     <hr/>  
   </body>
 </html>
