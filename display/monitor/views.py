@@ -20,6 +20,14 @@ class EvdispForm(forms.Form):
     run		= forms.CharField(required=False, initial='')
     event	= forms.CharField(required=False, initial='')
 
+class TsForm(forms.Form):
+    ts_min	= forms.CharField(required=False, initial='')
+    ts_max	= forms.CharField(required=False, initial='')
+
+    def tsmin(self):
+        return self.cleaned_data["ts_min"]
+
+
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
 ######################
@@ -143,7 +151,8 @@ def data_handler2(request, what):
     # for the table
     d = {}
     
-    objs = pur.objects.order_by('-pk').all()
+    objs = pur.objects.order_by('-pk').filter(ts__lte="2018-03-01")
+#    objs = pur.objects.order_by('-pk').all()
     t = PurityTable(objs)
     t.set_site(domain)
 
@@ -158,13 +167,23 @@ def data_handler2(request, what):
     if request.method == 'POST':
         perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
         if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
+
+        tsSelector = TsForm(request.POST)
+
+        if tsSelector.is_valid():
+            #pass
+            print('ts',tsSelector.tsmin())
         return makeQuery(what, q) # will go and get the query results...
 
     perPageSelector	= dropDownGeneric(initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
     
+    tsSelector = TsForm(request.POST)
+    
     selectors = []
     selectors.append(perPageSelector)
+    selectors.append(tsSelector)
     d['selectors'] = selectors
+
 
     return render(request, 'unitable2.html', d)
 
