@@ -1,5 +1,3 @@
-{% extends "chart_base.html" %}
-
 {% load render_table from django_tables2 %}
 {% load static from staticfiles%}
 <!doctype html>
@@ -80,22 +78,8 @@ function drawStuff() {
 	      {% endblock %}
 	      <!-- /div -->
 
-              {% block content1 %}
+              {% block content1 %}{% endblock %}
 
-    <table>
-      <tr>
-	{% for p in purS %}
-	<td>
-	  <div id="{{ p.panel }}"></div>
-	</td>
-	{% if p.panel == "tpc5" %}
-      </tr>
-      <tr>
-	{% endif %}
-	{% endfor %}
-      </tr>
-    </table>
-{% endblock %}
     <hr/>  
   </body>
 </html>
