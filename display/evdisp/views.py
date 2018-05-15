@@ -12,7 +12,7 @@ from utils.miscUtils import parseCommaDash
 
 # count how many distinct runs there were
 @csrf_exempt
-def evdisp(request):
+def test(request):
     
     return HttpResponse("test")
 

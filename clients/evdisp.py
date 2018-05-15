@@ -1,11 +1,8 @@
 #!/usr/bin/env python3.5
 
 #########################################################
-# Exceptionally, this is an application-dependent	#
-# script - it parses a comma-separated file with a      #
-# header and creates a dictionaty which can be		#
-# sent to the DQM server for inclusion into a table     #
-#                                                       #
+# This is an application-dependent script - it sends    #
+# information about a graphics file to the server       #
 # FIXME - need to cleanup later as this is not really   #
 # a part of p3s proper                                  #
 #########################################################
@@ -39,11 +36,11 @@ from clientenv import clientenv
 #########################################################
 settings.configure()
 
-user		= os.environ['USER']
+user = os.environ['USER']
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-f", "--file",	type=str,	help="input file", default='')
+parser.add_argument("-f", "--file",	type=str,	help="image file", default='')
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number.")
 
@@ -78,6 +75,9 @@ f = None
 
 ### dqm interface defined here
 API  = serverAPI(server=server)
+
+exit(0)
+
 
 
 if(delete):

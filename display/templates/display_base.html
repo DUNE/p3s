@@ -1,0 +1,24 @@
+{% load render_table from django_tables2 %}
+{% load static from staticfiles%}
+<!doctype html>
+<html>
+  <head>
+    <title>protoDUNE DQM{{ pageName }}</title>
+    <!-- THIS IS TEMP, until we plant it on Apache -->
+    <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
+    <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
+  </head>
+
+  
+  <body>
+        {% include "topnavbar.html" %}
+    <h2>protoDUNE DQM{{ pageName }}</h2>
+
+
+      <div id="content1">
+        {% block content1 %}{% endblock %}
+      </div>
+
+    <hr/>  
+  </body>
+</html>
