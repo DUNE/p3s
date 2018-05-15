@@ -140,29 +140,6 @@ def data_handler2(request, what):
     q=''
     
     #-----------
-    # for the charts
-
-    purSeries = []
-    for tpcNum in (1,2,5,6,9,10):
-        purDict = {}
-
-        # FIXME - improve and/or move the charts
-        forChart = pur.objects.order_by('-pk').filter(tpc=tpcNum)
-
-        purStr=''
-        for i in range(40):
-            try: # template: [new Date(2014, 10, 15, 7, 30), 1],
-                purStr += ('[new Date(%s), %s],') % (forChart[i].ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart[i].lifetime)
-#                purStr += ('[[%s], %s],') % (forChart[i].ts.strftime("%H, %M, %S"), forChart[i].lifetime)
-            except:
-                break
-    
-        purDict["panel"] = 'tpc'+str(tpcNum)
-        purDict["timeseries"]=purStr
-    
-        purSeries.append(purDict)
-        
-    #-----------
     # for the table
     d = {}
     
@@ -177,8 +154,6 @@ def data_handler2(request, what):
     d['domain']	= domain
     
     d['pageName']	= ': Purity Monitor'
-    d['purS']		= purSeries
-    
 
     if request.method == 'POST':
         perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
@@ -196,7 +171,7 @@ def data_handler2(request, what):
 
 #########################################################    
 @csrf_exempt
-def evdisp(request):
+def display(request):
 #    if request.method == 'POST':
 #        f = EvdispForm(request.POST)
 #        return("!")
@@ -224,5 +199,5 @@ def evdisp(request):
     
     d['form'] = f.as_table()
     
-    return render(request, 'evdisp.html', d)
+    return render(request, 'display.html', d)
 
