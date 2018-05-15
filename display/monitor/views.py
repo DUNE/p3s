@@ -21,8 +21,8 @@ class EvdispForm(forms.Form):
     event	= forms.CharField(required=False, initial='')
 
 class TsForm(forms.Form):
-    ts_min	= forms.CharField(required=False, initial='', label="min. date (YYYY-MM-DD)")
-    ts_max	= forms.CharField(required=False, initial='', label="max. date (YYYY-MM-DD)")
+    ts_min	= forms.CharField(required=False, initial='', label="min. (YYYY-MM-DD HH:MM:SS)")
+    ts_max	= forms.CharField(required=False, initial='', label="max. (YYYY-MM-DD HH:MM:SS)")
 
     def tsmin(self):
         return self.cleaned_data["ts_min"]
@@ -102,8 +102,8 @@ def data_handler(request, what):
 
 #########################################################    
 def makeQuery(what, q=''):
-    gUrl= '/monitor/puritytable'
-    qUrl= '/monitor/puritytable?'
+    gUrl= '/monitor/'+what
+    qUrl= '/monitor/'+what+"?"
 
     if(q==''):
         return HttpResponseRedirect(gUrl)
@@ -116,6 +116,21 @@ def puritychart(request, what):
     domain	= request.get_host()
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
+
+    print('tsmin', tsmin)
+    print('tsmax', tsmax)
+
+    q=''
+
+    if request.method == 'POST':
+        tsSelector = TsForm(request.POST)
+        if tsSelector.is_valid():
+            tsmin=tsSelector.tsmin()
+            tsmax=tsSelector.tsmax()
+            if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
+            if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
+
+        return makeQuery('puritychart', q) # will go and get the query results...
     
     #-----------
     # for the charts
@@ -150,6 +165,13 @@ def puritychart(request, what):
     d = {}
     d['purS']	= purSeries
     d['domain']	= domain
+    
+    tsSelector = TsForm(request.POST)
+    
+    selectors = []
+    selectors.append(tsSelector)
+    d['selectors'] = selectors
+    d['pageName'] = ': purity timeline'
 
     return render(request, 'purity_chart.html', d)
 
@@ -209,7 +231,7 @@ def data_handler2(request, what):
 
             
             
-        return makeQuery(what, q) # will go and get the query results...
+        return makeQuery('puritytable', q) # will go and get the query results...
 
     perPageSelector	= dropDownGeneric(initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
     
