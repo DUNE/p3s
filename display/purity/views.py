@@ -11,19 +11,6 @@ from .models import pur
 from utils.miscUtils import parseCommaDash
 
 #########################################################    
-# def parseCommaDash(inp):
-#     outlist = []
-#     if('-' in inp):
-#         left_right = inp.split('-')
-#         for x in range(int(left_right[0]), int(left_right[1])+1):
-#             outlist.append(x)
-#     elif(',' in inp):
-#         outlist=inp.split(',')
-#     else:
-#         outlist.append(int(inp))
-        
-#     return outlist
-#########################################################    
 # count how many distinct runs there were
 @csrf_exempt
 def indpurity(request):
@@ -98,7 +85,6 @@ def delpurity(request):
 def addpurity(request):
     post	= request.POST
 
-    print()
     p=pur()
     p.run	= post['run']
     p.tpc	= post['tpc']
