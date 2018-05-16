@@ -22,6 +22,7 @@ class evdisp(models.Model):
     datatype	= models.CharField(max_length=16, default='') # "raw" or "prep"
     ts		= models.DateTimeField('ts', blank=True, null=True)
     path	= models.CharField(max_length=256,default='') # path to the image file
+    j_uuid	= models.CharField(max_length=36, default='') # job uuid
 
     def __str__(self):
         return serializers.serialize("json", [self, ])

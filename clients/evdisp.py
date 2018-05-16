@@ -40,7 +40,7 @@ user = os.environ['USER']
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-f", "--file",	type=str,	help="image file", default='')
+parser.add_argument("-j", "--json_in",	type=str,	help="image file descriptor", default='')
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number.")
 
@@ -62,7 +62,7 @@ parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], help
 
 args = parser.parse_args()
 
-filename	= args.file
+json_in		= args.json_in
 server		= args.server
 delete		= args.delete
 p_id		= args.id
@@ -75,6 +75,9 @@ f = None
 
 ### dqm interface defined here
 API  = serverAPI(server=server)
+
+
+print(json_in)
 
 exit(0)
 
