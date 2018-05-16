@@ -29,8 +29,9 @@ import os
 
 from collections import OrderedDict
 
-from serverAPI import serverAPI
-from clientenv import clientenv
+from serverAPI		import serverAPI
+from clientenv		import clientenv
+from clientUtils	import takeJson
 
 
 #########################################################
@@ -76,8 +77,23 @@ f = None
 ### dqm interface defined here
 API  = serverAPI(server=server)
 
-
 print(json_in)
+
+data = takeJson(json_in, verb)
+
+# print(data)
+
+d = {}
+
+d['json'] = json.dumps(data)
+
+# print(d)
+
+resp = API.post2server('evdisp', 'add', d)
+
+print(resp)
+
+
 
 exit(0)
 

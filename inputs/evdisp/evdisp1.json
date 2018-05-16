@@ -1,0 +1,7 @@
+[
+    {"run":1,"subrun":1, "evnum":111, "changroup":1,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt111_ch0-2559.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    }
+]

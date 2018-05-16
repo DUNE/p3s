@@ -5,11 +5,11 @@ from django.shortcuts	import render
 from django.http	import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-# from . import models
-# from .models import evdisp
+from .models import evdisp
 
 from utils.miscUtils import parseCommaDash
 
+import json
 
 #########################################################    
 def test(request):
@@ -34,6 +34,14 @@ def ind(request):
 @csrf_exempt
 def add(request):
     post	= request.POST
+    json_data	= post.get('json', '')
 
-    
+    data = json.loads(json_data)
+    print(data)
+
+    for d in data:
+        e=evdisp()
+        for k in d.keys(): e.__dict__[k]=d[k]
+        e.save()
+        
     return HttpResponse('Adding evdisp')

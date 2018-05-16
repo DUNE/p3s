@@ -77,15 +77,15 @@ class serverAPI(dict):
         ### DQM purity
         self['purity']	= {
             'add':	server+'purity/add',
-            'del':	server+'purity/delete',
-            'ind':	server+'purity/index/%s',
+            'delete':	server+'purity/delete',
+            'index':	server+'purity/index/%s',
         }
 
         ### DQM evdisp
         self['evdisp']	= {
             'add':	server+'evdisp/add',
-            'del':	server+'evdisp/delete',
-            'ind':	server+'evdisp/index/%s',
+            'delete':	server+'evdisp/delete',
+            'index':	server+'evdisp/index/%s',
         }
 
 

@@ -87,9 +87,9 @@ if(delete):
 
     resp = ''
     if(p_id != ''):
-        resp = API.post2server('purity', 'del', dict(pk=p_id))
+        resp = API.post2server('purity', 'delete', dict(pk=p_id))
     if(run != ''):
-        resp = API.post2server('purity', 'del', dict(run=run))
+        resp = API.post2server('purity', 'delete', dict(run=run))
         
     if(verb>0): print(resp)
 
@@ -107,7 +107,7 @@ myreader = csv.reader(f, delimiter=' ', quotechar='|')
 frst = True
 
 if(run==''):
-    run = API.get2server('purity', 'ind', '')
+    run = API.get2server('purity', 'index', '')
     if(verb>0): print('Assigning run number based on DB: '+run)
 
 items = ('run','tpc', 'lifetime', 'error', 'count')
