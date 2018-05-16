@@ -13,7 +13,7 @@ from utils.miscUtils import parseCommaDash
 #########################################################    
 # count how many distinct runs there were
 @csrf_exempt
-def indpurity(request):
+def index(request):
     maxnum = 0
 
     try:
@@ -28,7 +28,7 @@ def indpurity(request):
 # deletes either individual purity entry by key,
 # or all entries
 @csrf_exempt
-def delpurity(request):
+def delete(request):
     post	= request.POST
     p_pk	= None
     run		= None
@@ -82,7 +82,7 @@ def delpurity(request):
         return HttpResponse("Runs deleted: %s" % rdeleted )
 #########################################################    
 @csrf_exempt
-def addpurity(request):
+def add(request):
     post	= request.POST
 
     p=pur()

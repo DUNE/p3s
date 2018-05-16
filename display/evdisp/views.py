@@ -6,7 +6,7 @@ from django.http	import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 # from . import models
-# from .models import pur
+# from .models import evdisp
 
 from utils.miscUtils import parseCommaDash
 
@@ -19,11 +19,11 @@ def test(request):
 #########################################################    
 # count how many distinct runs there were
 @csrf_exempt
-def indevdisp(request):
+def ind(request):
     maxnum = 0
 
     try:
-        maxdict = pur.objects.all().aggregate(Max('run'))
+        maxdict = evdisp.objects.all().aggregate(Max('run'))
         maxnum = maxdict['run__max'] + 1
     except:
         pass
@@ -32,7 +32,7 @@ def indevdisp(request):
 
 #########################################################    
 @csrf_exempt
-def addevdisp(request):
+def add(request):
     post	= request.POST
 
     

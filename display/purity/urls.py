@@ -3,8 +3,8 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^addpurity',	views.addpurity,	name='addpurity'),
-    url(r'^delpurity',	views.delpurity,	name='delpurity'),
-    url(r'^indpurity',	views.indpurity, 	name='indpurity'),
+    url(r'^add',	views.add,	name='add'),
+    url(r'^delete',	views.delete,	name='delete'),
+    url(r'^index',	views.index, 	name='index'),
 ]
 
