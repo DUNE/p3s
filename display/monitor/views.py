@@ -66,22 +66,13 @@ class MonitorTable(tables.Table):
 
 #########################################################    
 class PurityTable(MonitorTable):
-    # just an example:
-    # error = tables.Column(verbose_name='Error')
-
-
-    # for future development:
-    #    def __init__(self, *args, **kwargs):
-    #       self.obj	= kwargs.pop('obj')
-    #       print(self.obj)
-
-    #       setattr(PurityTable.Meta, 'model', eval(self.obj))
-    #       setattr(PurityTable.Meta, 'attrs', {'class': 'paleblue'})
-       
-    #       super(PurityTable, self).__init__(*args, **kwargs)
-
     class Meta:
         model = pur
+        attrs = {'class': 'paleblue'}
+#########################################################    
+class EvdispTable(MonitorTable):
+    class Meta:
+        model = evdisp
         attrs = {'class': 'paleblue'}
 #########################################################    
 def makeQuery(page, q=''):
@@ -189,8 +180,8 @@ def data_handler2(request, what, tbl, url):
 
     objs = eval(what).objects.order_by('-pk').all()
 
-    if(tsmin!=''): objs = eval(what).objects.order_by('-pk').filter(ts__gte=tsmin)
-    if(tsmax!=''): objs = eval(what).objects.order_by('-pk').filter(ts__lte=tsmax)
+    if(tsmin!=''): objs = eval(what).objects.filter(ts__gte=tsmin).order_by('-pk')
+    if(tsmax!=''): objs = eval(what).objects.filter(ts__lte=tsmax).order_by('-pk')
 
     t = eval(tbl)(objs)
     t.set_site(domain)
@@ -270,4 +261,19 @@ def eventdisplay(request):
     
 #     return render(request, 'unitable.html', d)
 
+
+# ------------------------------------
+# Table classes -  just an example:
+# error = tables.Column(verbose_name='Error')
+
+
+# for future development:
+#    def __init__(self, *args, **kwargs):
+#       self.obj	= kwargs.pop('obj')
+#       print(self.obj)
+
+#       setattr(PurityTable.Meta, 'model', eval(self.obj))
+#       setattr(PurityTable.Meta, 'attrs', {'class': 'paleblue'})
+
+#       super(PurityTable, self).__init__(*args, **kwargs)
 
