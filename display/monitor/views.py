@@ -13,6 +13,7 @@ from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
 from purity.models import pur
+from evdisp.models import evdisp
 
 from django import forms
 
@@ -67,33 +68,21 @@ class MonitorTable(tables.Table):
 class PurityTable(MonitorTable):
     # just an example:
     # error = tables.Column(verbose_name='Error')
-    
+
+
+    # for future development:
+    #    def __init__(self, *args, **kwargs):
+    #       self.obj	= kwargs.pop('obj')
+    #       print(self.obj)
+
+    #       setattr(PurityTable.Meta, 'model', eval(self.obj))
+    #       setattr(PurityTable.Meta, 'attrs', {'class': 'paleblue'})
+       
+    #       super(PurityTable, self).__init__(*args, **kwargs)
+
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
-#########################################################    
-# general request handler for summary type of a table
-def data_handler(request, what):
-    domain	= request.get_host()
-
-    # testing only
-    objs = pur.objects.order_by('-pk').all()
-
-    d = {}
-    
-    t = PurityTable(objs)
-    t.set_site(domain)
-    RequestConfig(request).configure(t)
-
-    d['table']	= t
-    d['N']	= str(len(objs))
-    d['domain']	= domain
-    
-    d['pageName']	= ': Purity Monitor'
-    
-    return render(request, 'unitable.html', d)
-
-
 #########################################################    
 def makeQuery(page, q=''):
     gUrl= '/monitor/'+page
@@ -165,7 +154,7 @@ def puritychart(request, what):
 
 #########################################################    
 # general request handler for summary type of a table
-def data_handler2(request, what, tbl):
+def data_handler2(request, what, tbl, url):
     domain	= request.get_host()
     perpage	= request.GET.get('perpage','25')
     tsmin	= request.GET.get('tsmin','')
@@ -190,7 +179,7 @@ def data_handler2(request, what, tbl):
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
-        return makeQuery('puritytable', q)
+        return makeQuery(url, q)
     # We built a query and come to same page with the query parameters
     # -------------------------------------------------------------------------
 
@@ -200,22 +189,25 @@ def data_handler2(request, what, tbl):
 
     objs = eval(what).objects.order_by('-pk').all()
 
-    if(tsmin!=''): objs = pur.objects.order_by('-pk').filter(ts__gte=tsmin)
-    if(tsmax!=''): objs = pur.objects.order_by('-pk').filter(ts__lte=tsmax)
+    if(tsmin!=''): objs = eval(what).objects.order_by('-pk').filter(ts__gte=tsmin)
+    if(tsmax!=''): objs = eval(what).objects.order_by('-pk').filter(ts__lte=tsmax)
 
     t = eval(tbl)(objs)
     t.set_site(domain)
-
+    
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
 
     d['table']	= t
     d['N']	= str(len(objs))
     d['domain']	= domain
     
-    d['pageName']	= ': Purity Monitor'
+    d['pageName']	= ': '+tbl
 
 
-    perPageSelector	= dropDownGeneric(initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
+    perPageSelector = dropDownGeneric(initial={'perpage':25},
+                                      label='# per page',
+                                      choices = PAGECHOICES,
+                                      tag='perpage')
     
     tsSelector = TsForm(request.POST)
     
@@ -227,13 +219,9 @@ def data_handler2(request, what, tbl):
 
     return render(request, 'unitable2.html', d)
 
-
 #########################################################    
 @csrf_exempt
-def display(request):
-#    if request.method == 'POST':
-#        f = EvdispForm(request.POST)
-#        return("!")
+def eventdisplay(request):
     
     domain	= request.get_host()
     run		= request.GET.get('run','')
@@ -259,4 +247,27 @@ def display(request):
     d['form'] = f.as_table()
     
     return render(request, 'display.html', d)
+
+#########################################################    
+# general request handler for summary type of a table
+# def data_handler(request, what):
+#     domain	= request.get_host()
+
+#     # testing only
+#     objs = pur.objects.order_by('-pk').all()
+
+#     d = {}
+    
+#     t = PurityTable(objs)
+#     t.set_site(domain)
+#     RequestConfig(request).configure(t)
+
+#     d['table']	= t
+#     d['N']	= str(len(objs))
+#     d['domain']	= domain
+    
+#     d['pageName']	= ': Purity Monitor'
+    
+#     return render(request, 'unitable.html', d)
+
 

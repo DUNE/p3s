@@ -49,7 +49,7 @@ parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the entry to be adjusted or deleted (pk)")
 
 parser.add_argument("-r", "--run",	type=str,	default='',
-                    help="run number to be deleted, or to override the entry with")
+                    help="run number to be deleted, or to override the entry with; NEXT has a special meaning")
 
 parser.add_argument("-T", "--timestamp",type=str,	default='',
                     help="override the timestamp with user value like 2018-05-16, NOW has a special meaning")
@@ -82,7 +82,9 @@ print(json_in)
 data = takeJson(json_in, verb)
 
 for entry in data:
-    if(run!=''):	entry['run']=run
+    if(run!=''):
+        if(run=='NEXT'): run=API.get2server('evdisp', 'index', '')
+        entry['run']=run
     if(timestamp!=''):
         if(timestamp=='NOW'): timestamp=str(timezone.now())
         entry['ts']=timestamp
