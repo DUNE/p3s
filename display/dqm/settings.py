@@ -62,6 +62,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'purity.apps.PurityConfig',
+    'evdisp.apps.EvdispConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

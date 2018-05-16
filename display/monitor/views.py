@@ -65,12 +65,8 @@ class MonitorTable(tables.Table):
 
 #########################################################    
 class PurityTable(MonitorTable):
-    run		= tables.Column(verbose_name='Run')
-    tpc		= tables.Column(verbose_name='TPC')
-    ts		= tables.Column(verbose_name='Timestamp')
-    lifetime	= tables.Column(verbose_name='LifeTime')
-    error	= tables.Column(verbose_name='Error')
-    count	= tables.Column(verbose_name='Count')
+    # just an example:
+    # error = tables.Column(verbose_name='Error')
     
     class Meta:
         model = pur
@@ -111,9 +107,6 @@ def puritychart(request, what):
     domain	= request.get_host()
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
-
-    print('tsmin', tsmin)
-    print('tsmax', tsmax)
 
     q=''
 

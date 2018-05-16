@@ -76,9 +76,9 @@ class serverAPI(dict):
 
         ### DQM purity
         self['purity']	= {
-            'add':	server+'monitor/addpurity',
-            'del':	server+'monitor/delpurity',
-            'ind':	server+'monitor/indpurity/%s',
+            'add':	server+'purity/addpurity',
+            'del':	server+'purity/delpurity',
+            'ind':	server+'purity/indpurity/%s',
         }
 
 
