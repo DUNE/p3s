@@ -64,10 +64,10 @@ class MonitorTable(tables.Table):
         return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
 
 #########################################################    
-   
 class PurityTable(MonitorTable):
     run		= tables.Column(verbose_name='Run')
     tpc		= tables.Column(verbose_name='TPC')
+    ts		= tables.Column(verbose_name='Timestamp')
     lifetime	= tables.Column(verbose_name='LifeTime')
     error	= tables.Column(verbose_name='Error')
     count	= tables.Column(verbose_name='Count')
@@ -75,8 +75,6 @@ class PurityTable(MonitorTable):
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
-
-
 #########################################################    
 # general request handler for summary type of a table
 def data_handler(request, what):
@@ -101,15 +99,12 @@ def data_handler(request, what):
 
 
 #########################################################    
-def makeQuery(what, q=''):
-    gUrl= '/monitor/'+what
-    qUrl= '/monitor/'+what+"?"
+def makeQuery(page, q=''):
+    gUrl= '/monitor/'+page
+    qUrl= '/monitor/'+page+"?"
 
-    if(q==''):
-        return HttpResponseRedirect(gUrl)
-    
+    if(q==''): return HttpResponseRedirect(gUrl)
     return HttpResponseRedirect(qUrl+q)
-
 #########################################################    
 # general request handler for summary type of a table
 def puritychart(request, what):
@@ -177,28 +172,45 @@ def puritychart(request, what):
 
 #########################################################    
 # general request handler for summary type of a table
-def data_handler2(request, what):
+def data_handler2(request, what, tbl):
     domain	= request.get_host()
     perpage	= request.GET.get('perpage','25')
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
     
 
-    q=''
-    
-    #-----------
-    # for the table
-    d = {}
+    q=''	# stub for a query that may be built
+    if request.method == 'POST':
+        perPageSelector	= dropDownGeneric(request.POST,
+                                          initial={'perpage':25},
+                                          label='# per page',
+                                          choices = PAGECHOICES,
+                                          tag='perpage')
+        
+        if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
 
-    objs = pur.objects.order_by('-pk').all()
-
-    if(tsmin!=''):
-            objs = pur.objects.order_by('-pk').filter(ts__gte=tsmin)
+        tsSelector = TsForm(request.POST)
+        if tsSelector.is_valid():
+            tsmin=tsSelector.tsmin()
+            tsmax=tsSelector.tsmax()
             
-    if(tsmax!=''):
-            objs = pur.objects.order_by('-pk').filter(ts__lte=tsmax)
+            if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
+            if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
-    t = PurityTable(objs)
+        return makeQuery('puritytable', q)
+    # We built a query and come to same page with the query parameters
+    # -------------------------------------------------------------------------
+
+
+    
+    d = {}	# stub for a dictionaty to feed the template
+
+    objs = eval(what).objects.order_by('-pk').all()
+
+    if(tsmin!=''): objs = pur.objects.order_by('-pk').filter(ts__gte=tsmin)
+    if(tsmax!=''): objs = pur.objects.order_by('-pk').filter(ts__lte=tsmax)
+
+    t = eval(tbl)(objs)
     t.set_site(domain)
 
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
@@ -209,29 +221,6 @@ def data_handler2(request, what):
     
     d['pageName']	= ': Purity Monitor'
 
-    if request.method == 'POST':
-        perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
-        if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
-
-        tsSelector = TsForm(request.POST)
-
-        if tsSelector.is_valid():
-            
-            tsmin=tsSelector.tsmin()
-            tsmax=tsSelector.tsmax()
-            
-            if(tsmin!=''):
-                print(tsmin)
-                q+= 'tsmin='+tsmin+'&'
-
-                
-            if(tsmax!=''):
-                print(tsmax)
-                q+= 'tsmax='+tsmax+'&'
-
-            
-            
-        return makeQuery('puritytable', q) # will go and get the query results...
 
     perPageSelector	= dropDownGeneric(initial={'perpage':25}, label='# per page', choices = PAGECHOICES, tag='perpage')
     
