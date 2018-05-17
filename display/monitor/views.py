@@ -34,9 +34,26 @@ class TsForm(forms.Form):
 #---
 class JuuidForm(forms.Form):
     j_uuid = forms.CharField(required=False, initial='', label="Job UUID")
+    d_type = forms.CharField(required=False, initial='', label="Data Type")
 
     def job_identifier(self):
         return self.cleaned_data["j_uuid"]
+    
+    def data_type(self):
+        return self.cleaned_data["d_type"]
+#---
+class RunForm(forms.Form):
+    run		= forms.CharField(required=False, initial='', label="Run")
+    event	= forms.CharField(required=False, initial='', label="Event")
+
+    def getval(self, what):
+        return self.cleaned_data[what]
+    
+#    def run(self):
+#        return self.cleaned_data["run"]
+    
+#    def event(self):
+#        return self.cleaned_data["event"]
 #---
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
@@ -78,6 +95,7 @@ class PurityTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #########################################################    
 class EvdispTable(MonitorTable):
+    changroup = tables.Column(verbose_name='Grp')
     class Meta:
         model = evdisp
         attrs = {'class': 'paleblue'}
@@ -114,15 +132,9 @@ def puritychart(request, what):
     for tpcNum in (1,2,5,6,9,10):
         purDict = {}
 
-        # FIXME - improve and/or move the charts
         objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
-
-        if(tsmin!=''):
-            objs = objs.filter(ts__gte=tsmin)
-            
-        if(tsmax!=''):
-            objs = objs.filter(ts__lte=tsmax)
-        
+        if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
+        if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
         purStr=''
 
@@ -158,12 +170,15 @@ def data_handler2(request, what, tbl, url):
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
     j_uuid	= request.GET.get('j_uuid','')
+    d_type	= request.GET.get('d_type','')
+    run		= request.GET.get('run','')
+    evnum	= request.GET.get('evnum','')
 
 
     q=''	# stub for a query that may be built
     if request.method == 'POST':
         perPageSelector	= dropDownGeneric(request.POST,
-                                          initial={'perpage':25},
+                                          initial={'perpage':perpage},
                                           label='# per page',
                                           choices = PAGECHOICES,
                                           tag='perpage')
@@ -178,11 +193,25 @@ def data_handler2(request, what, tbl, url):
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
-        juuidSelector = JuuidForm(request.POST)
-        if juuidSelector.is_valid():
-            j_uuid=juuidSelector.job_identifier()
-            
-            if(j_uuid!=''): q+= 'j_uuid='+j_uuid+'&'
+        if(what=='evdisp'):
+            juuidSelector = JuuidForm(request.POST)
+            if juuidSelector.is_valid():
+                
+                j_uuid=juuidSelector.job_identifier()
+                if(j_uuid!=''): q+= 'j_uuid='+j_uuid+'&'
+                
+                d_type=juuidSelector.data_type()
+                if(d_type!=''): q+= 'd_type='+d_type+'&'
+
+            runSelector = RunForm(request.POST)
+            if runSelector.is_valid():
+                
+                run=runSelector.getval("run")
+                if(run!=''): q+= 'run='+run+'&'
+                
+                event=runSelector.getval("event")
+                if(event!=''): q+= 'evnum='+event+'&'
+                
 
         return makeQuery(url, q)
     # We built a query and come to same page with the query parameters
@@ -194,9 +223,12 @@ def data_handler2(request, what, tbl, url):
 
     objs = eval(what).objects.order_by('-pk').all()
 
-    if(tsmin!=''): objs = eval(what).objects.filter(ts__gte=tsmin).order_by('-pk')
-    if(tsmax!=''): objs = objs.filter(ts__lte=tsmax)# .order_by('-pk')
-    if(j_uuid!=''):objs = objs.filter(j_uuid=j_uuid)# .order_by('-pk')
+    if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin).order_by('-pk')
+    if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)	# .order_by('-pk')
+    if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
+    if(d_type!=''):	objs = objs.filter(datatype=d_type)
+    if(run!=''):	objs = objs.filter(run=run)
+    if(evnum!=''):	objs = objs.filter(evnum=evnum)
 
     t = eval(tbl)(objs)
     t.set_site(domain)
@@ -210,18 +242,26 @@ def data_handler2(request, what, tbl, url):
     d['pageName']	= ': '+tbl
 
 
-    perPageSelector = dropDownGeneric(initial={'perpage':25},
+    perPageSelector = dropDownGeneric(initial={'perpage':perpage},
                                       label='# per page',
                                       choices = PAGECHOICES,
                                       tag='perpage')
     
-    tsSelector		= TsForm(request.POST)
-    juuidSelector	= JuuidForm(request.POST)
     
     selectors = []
+    
     selectors.append(perPageSelector)
+    
+    tsSelector= TsForm(request.POST)
     selectors.append(tsSelector)
-    selectors.append(juuidSelector)
+
+    if(what=='evdisp'):
+        juuidSelector = JuuidForm(request.POST)
+        selectors.append(juuidSelector)
+        
+        runSelector = RunForm(request.POST)
+        selectors.append(runSelector)
+        print('!', runSelector)
     
     d['selectors'] = selectors
 

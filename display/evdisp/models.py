@@ -12,12 +12,12 @@ class evdisp(models.Model):
     changroup	= models.PositiveIntegerField(default=0, verbose_name='Channel Group')
     
     # There are six Channel Groups:
-    # 0-2559
-    # 2560-4639
-    # 5120-7679
-    # 7680-9759
-    # 10240-12799
-    # 12800-14879
+    # 1. 0-2559
+    # 2. 2560-4639
+    # 3. 5120-7679
+    # 4. 7680-9759
+    # 5. 10240-12799
+    # 6. 12800-14879
     
     datatype	= models.CharField(max_length=16, default='', verbose_name='Data Type') # "raw" or "prep"
     ts		= models.DateTimeField(blank=True, null=True, verbose_name='Timestamp')

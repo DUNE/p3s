@@ -1,0 +1,123 @@
+[
+    {"run":1,"subrun":1, "evnum":111, "changroup":1,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt111_ch0-2559.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":2,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt111_ch2560-4639.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":3,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt111_ch5120-7679.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":4,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt111_ch7680-9759.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":5,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt111_ch10240-12799.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":6,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt111_ch12800-14879.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":1,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt111_ch0-2559.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":2,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt111_ch2560-4639.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":3,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt111_ch5120-7679.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":4,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt111_ch7680-9759.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":5,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt111_ch10240-12799.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":111, "changroup":6,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt111_ch12800-14879.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":1,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt112_ch0-2559.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":2,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt112_ch2560-4639.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":3,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt112_ch5120-7679.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":4,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt112_ch7680-9759.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":5,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt112_ch10240-12799.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":6,
+     "datatype":"raw", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcraw_evt112_ch12800-14879.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":1,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt112_ch0-2559.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":2,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt112_ch2560-4639.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":3,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt112_ch5120-7679.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":4,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt112_ch7680-9759.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":5,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt112_ch10240-12799.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    },
+    {"run":1,"subrun":1, "evnum":112, "changroup":6,
+     "datatype":"prep", "ts":"2018-05-16",
+     "path":"/home/maxim/70724430-562c-11e8-958c-ffa00f412dde/adcprep_evt112_ch12800-14879.png",
+     "j_uuid":"70724430-562c-11e8-958c-ffa00f412dde"
+    }
+    
+]
