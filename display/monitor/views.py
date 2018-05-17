@@ -17,10 +17,11 @@ from evdisp.models import evdisp
 
 from django import forms
 
+###################################################################
 class EvdispForm(forms.Form):
     run		= forms.CharField(required=False, initial='')
     event	= forms.CharField(required=False, initial='')
-
+#---
 class TsForm(forms.Form):
     ts_min	= forms.CharField(required=False, initial='', label="min. (YYYY-MM-DD HH:MM:SS)")
     ts_max	= forms.CharField(required=False, initial='', label="max. (YYYY-MM-DD HH:MM:SS)")
@@ -30,11 +31,17 @@ class TsForm(forms.Form):
     
     def tsmax(self):
         return self.cleaned_data["ts_max"]
+#---
+class JuuidForm(forms.Form):
+    j_uuid = forms.CharField(required=False, initial='', label="Job UUID")
 
-
+    def job_identifier(self):
+        return self.cleaned_data["j_uuid"]
+#---
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
-######################
+#####################################################################
+
 class dropDownGeneric(forms.Form):
     def __init__(self, *args, **kwargs):
        self.label	= kwargs.pop('label')
@@ -150,7 +157,8 @@ def data_handler2(request, what, tbl, url):
     perpage	= request.GET.get('perpage','25')
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
-    
+    j_uuid	= request.GET.get('j_uuid','')
+
 
     q=''	# stub for a query that may be built
     if request.method == 'POST':
@@ -170,6 +178,12 @@ def data_handler2(request, what, tbl, url):
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
+        juuidSelector = JuuidForm(request.POST)
+        if juuidSelector.is_valid():
+            j_uuid=juuidSelector.job_identifier()
+            
+            if(j_uuid!=''): q+= 'j_uuid='+j_uuid+'&'
+
         return makeQuery(url, q)
     # We built a query and come to same page with the query parameters
     # -------------------------------------------------------------------------
@@ -181,7 +195,8 @@ def data_handler2(request, what, tbl, url):
     objs = eval(what).objects.order_by('-pk').all()
 
     if(tsmin!=''): objs = eval(what).objects.filter(ts__gte=tsmin).order_by('-pk')
-    if(tsmax!=''): objs = eval(what).objects.filter(ts__lte=tsmax).order_by('-pk')
+    if(tsmax!=''): objs = objs.filter(ts__lte=tsmax)# .order_by('-pk')
+    if(j_uuid!=''):objs = objs.filter(j_uuid=j_uuid)# .order_by('-pk')
 
     t = eval(tbl)(objs)
     t.set_site(domain)
@@ -200,11 +215,14 @@ def data_handler2(request, what, tbl, url):
                                       choices = PAGECHOICES,
                                       tag='perpage')
     
-    tsSelector = TsForm(request.POST)
+    tsSelector		= TsForm(request.POST)
+    juuidSelector	= JuuidForm(request.POST)
     
     selectors = []
     selectors.append(perPageSelector)
     selectors.append(tsSelector)
+    selectors.append(juuidSelector)
+    
     d['selectors'] = selectors
 
 
@@ -217,7 +235,6 @@ def eventdisplay(request):
     domain	= request.get_host()
     run		= request.GET.get('run','')
     event	= request.GET.get('event','')
-
 
     d = {}
 

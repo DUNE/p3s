@@ -67,7 +67,6 @@ def delete(request):
         runlist = parseCommaDash(run)
         rdeleted = []
         for r in runlist:
-            print('run', r)
             try:
                 p = pur.objects.filter(run=r)
                 if(p is None or len(p)==0):

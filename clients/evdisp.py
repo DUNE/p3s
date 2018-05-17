@@ -43,7 +43,9 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-j", "--json_in",	type=str,	help="image file descriptor", default='')
 
-parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number.")
+parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete", default='')
+
+parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number, or job uuid")
 
 parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the entry to be adjusted or deleted (pk)")
@@ -64,6 +66,7 @@ parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], help
 args = parser.parse_args()
 
 json_in		= args.json_in
+job		= args.job
 server		= args.server
 delete		= args.delete
 p_id		= args.id
@@ -76,6 +79,25 @@ f = None
 
 ### dqm interface defined here
 API  = serverAPI(server=server)
+
+#########################################################
+
+if(delete):
+    if(p_id == '' and run == '' and job == ''):
+        print('ID/run/job for deletion not specified, exiting')
+        exit(-1)
+
+    resp = ''
+    if(p_id != ''):	resp = API.post2server('evdisp', 'delete', dict(pk=p_id))
+    if(run != ''):	resp = API.post2server('evdisp', 'delete', dict(run=run))
+    if(job != ''):	resp = API.post2server('evdisp', 'delete', dict(j_uuid=job))
+        
+    if(verb>0): print(resp)
+
+    exit(0)
+
+
+#########################################################
 
 print(json_in)
 
@@ -106,23 +128,7 @@ print(resp)
 
 exit(0)
 
-
-
-if(delete):
-    if(p_id == '' and run == ''):
-        print('ID/run for deletion not specified, exiting')
-        exit(-1)
-
-    resp = ''
-    if(p_id != ''):
-        resp = API.post2server('purity', 'del', dict(pk=p_id))
-    if(run != ''):
-        resp = API.post2server('purity', 'del', dict(run=run))
-        
-    if(verb>0): print(resp)
-
-    exit(0)
-
+#########################################################
 
 try:
     f = open(filename,"r")
