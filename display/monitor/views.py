@@ -96,6 +96,8 @@ class PurityTable(MonitorTable):
 #########################################################    
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
+
+    def render_path(self, value):	return '!'+value+'!'
     class Meta:
         model = evdisp
         attrs = {'class': 'paleblue'}
@@ -261,7 +263,6 @@ def data_handler2(request, what, tbl, url):
         
         runSelector = RunForm(request.POST)
         selectors.append(runSelector)
-        print('!', runSelector)
     
     d['selectors'] = selectors
 
