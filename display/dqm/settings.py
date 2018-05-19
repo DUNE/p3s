@@ -11,15 +11,13 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 """
 
 import os
-
-
-# -mxp-
 import socket
 
-# till later - import databases # from same dir as "manage"
+
+from local import SITE, DATABASES
 
 
-import local
+
 # template -
 # LOCAL = {
 #     'dirpath': 'xxx',
@@ -27,13 +25,9 @@ import local
 #     'dqm_host': 'xxx'
 # }
 
-
-
-LCL = local.LOCAL
-
-DIRPATH		= LCL['dirpath']
-DQM_DOMAIN	= LCL['dqm_domain']
-DQM_HOST	= LCL['dqm_host']
+DIRPATH		= SITE['dirpath']
+DQM_DOMAIN	= SITE['dqm_domain']
+DQM_HOST	= SITE['dqm_host']
 
 
 
@@ -45,6 +39,8 @@ except:
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if(DATABASES['default']['NAME']=='sqlite3'):
+    DATABASES['default']['NAME']=os.path.join(BASE_DIR, 'db.sqlite3')
 
 
 # Quick-start development settings - unsuitable for production
@@ -109,12 +105,12 @@ WSGI_APPLICATION = 'dqm.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Password validation
