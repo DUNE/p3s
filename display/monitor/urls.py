@@ -15,5 +15,9 @@ urlpatterns = [
 
     url(r'^puritychart',views.puritychart,{'what':'purity'},name='puritychart'),
     
+    url(r'^display1',
+	views.display1,
+        name='display1'),
+
 ]
 

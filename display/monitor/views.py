@@ -21,9 +21,6 @@ from evdisp.models import evdisp
 from django import forms
 
 ###################################################################
-class EvdispForm(forms.Form):
-    run		= forms.CharField(required=False, initial='')
-    event	= forms.CharField(required=False, initial='')
 #---
 class TsForm(forms.Form):
     ts_min	= forms.CharField(required=False, initial='', label="min. (YYYY-MM-DD HH:MM:SS)")
@@ -51,12 +48,7 @@ class RunForm(forms.Form):
 
     def getval(self, what):
         return self.cleaned_data[what]
-    
-#    def run(self):
-#        return self.cleaned_data["run"]
-    
-#    def event(self):
-#        return self.cleaned_data["event"]
+   
 #---
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
@@ -302,15 +294,36 @@ def eventdisplay(request):
     
     d['pageName']	= ': Event Display'
 
-
-    f = EvdispForm({'run':run, 'event':event})
-
     
-    d['form'] = f.as_table()
     
     return render(request, 'display.html', d)
 
 #########################################################    
+@csrf_exempt
+def display1(request):
+    
+    url		= request.GET.get('url','')
+    run		= request.GET.get('run','')
+    event	= request.GET.get('event','')
+    changroup	= request.GET.get('changroup','')
+    datatype	= request.GET.get('datatype','')
+
+    d = {}
+    for item in ('url', 'run', 'event', 'changroup', 'datatype'):
+        stuff = request.GET.get(item,'')
+        if(item=='changroup'):
+            d[item] = stuff+' ('+evdisp.group2string(int(stuff))+')'
+        else:
+            d[item]	= stuff
+    
+    d['pageName']	= ': Event Display'
+    d['message']	= evdisp.message()
+    
+    return render(request, 'display1.html', d)
+
+#########################################################    
+#    d['form'] = f.as_table()
+#
 # general request handler for summary type of a table
 # def data_handler(request, what):
 #     domain	= request.get_host()
