@@ -1,6 +1,9 @@
 import django.db.models
 from django.db.models	import Max
 
+from django.conf	import settings
+from django.utils.safestring		import mark_safe
+from django_tables2 import A
 from django.shortcuts	import render
 
 from django.http	import HttpResponseRedirect
@@ -97,10 +100,20 @@ class PurityTable(MonitorTable):
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
 
-    def render_path(self, value):	return '!'+value+'!'
+    def render_changroup(self, value, record):
+        image_url = ('<a href="http://%s/%s/%s/%s">%s</a>'
+                         % (self.site,
+                            settings.SITE['dqm_evdisp_url'],
+                            record.j_uuid,
+                            evdisp.makename(record.evnum, record.datatype, value),
+                            value
+                         ))
+
+        return mark_safe(image_url)
     class Meta:
         model = evdisp
         attrs = {'class': 'paleblue'}
+        exclude = ('path',)
 #########################################################    
 def makeQuery(page, q=''):
     gUrl= '/monitor/'+page
@@ -242,7 +255,7 @@ def data_handler2(request, what, tbl, url):
     d['domain']	= domain
     
     d['pageName']	= ': '+tbl
-
+    d['message']	= eval(what).message()
 
     perPageSelector = dropDownGeneric(initial={'perpage':perpage},
                                       label='# per page',
