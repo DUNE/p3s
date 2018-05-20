@@ -19,5 +19,9 @@ urlpatterns = [
 	views.display1,
         name='display1'),
 
+    url(r'^display6',
+	views.display6,
+        name='display6'),
+
 ]
 

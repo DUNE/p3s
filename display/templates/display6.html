@@ -4,18 +4,28 @@
 {% load static %}
 
 {% block content1 %}
-
 <hr/>
 <center>
-  <h2> Run {{ run }}, Event {{ event }}"</h2>
+  <h2> Run: {{ run }}, Event: {{ event }}, Images Produced: {{ ts }}</h2>
   <h3>{{ message }}</h3>
+
   <table>
+    {% for raw,prep in rows %}
     <tr>
       <td>
+      	<h2>Channel Group {{ forloop.counter }}</h2>
       </td>
     </tr>
+    <tr>
+      <td>
+	<img src="{{ raw }}" alt="NOT FOUND"/>
+	<img src="{{ prep }}" alt="NOT FOUND"/>
+      </td>
+    </tr>
+    {% endfor %}
   </table>
-  <img src="{{ url }}" alt="NOT FOUND">
+  
+  <!-- img src="{{ url }}" alt="NOT FOUND" -->
 </center>
 
 {% endblock %}

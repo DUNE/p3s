@@ -91,6 +91,7 @@ class PurityTable(MonitorTable):
 #########################################################    
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
+#    ts = tables.Column(attrs={'td': {'bgcolor': 'red'}})
 
     def render_changroup(self, value, record):
         # image_url = ('<a href="http://%s/%s/%s/%s">%s</a>'
@@ -120,6 +121,7 @@ class EvdispTable(MonitorTable):
         model = evdisp
         attrs = {'class': 'paleblue'}
         exclude = ('path',)
+        template_name = 'django_tables2/bootstrap4.html'
 #########################################################    
 def makeQuery(page, q=''):
     gUrl= '/monitor/'+page
@@ -337,6 +339,50 @@ def display1(request):
     d['message']	= evdisp.message()
     
     return render(request, 'display1.html', d)
+#########################################################    
+@csrf_exempt
+def display6(request):
+    
+    domain	= request.get_host()
+    run		= request.GET.get('run','')
+    event	= request.GET.get('event','')
+
+
+    objs = evdisp.objects.filter(run=run).filter(evnum=event)
+    
+    d = {}
+    d['domain']		= domain
+    d['changroups']	= [1,2,3,4,5,6]
+
+    ts = None
+    d['rows'] = []
+    for N in d['changroups']:
+        raw	= objs.filter(changroup=N).filter(datatype='raw')[0]
+        prep	= objs.filter(changroup=N).filter(datatype='prep')[0]
+
+        ts = raw.ts
+        rawUrl = ('http://%s/%s/%s/%s'
+                         % (domain, # this needs to point to the image, also below
+                            settings.SITE['dqm_evdisp_url'],
+                            raw.j_uuid,
+                            evdisp.makename(event, 'raw', N)
+                         ))
+
+        prepUrl = ('http://%s/%s/%s/%s'
+                         % (domain, # this needs to point to the image, also below
+                            settings.SITE['dqm_evdisp_url'],
+                            raw.j_uuid,
+                            evdisp.makename(event, 'prep', N)
+                         ))
+        d['rows'].append([rawUrl,prepUrl])
+
+    d['run']		= run
+    d['event']		= event
+    d['ts']		= ts
+    d['pageName']	= ': Event Display'
+    d['message']	= evdisp.message()
+    
+    return render(request, 'display6.html', d)
 
 #########################################################    
 #    d['form'] = f.as_table()
