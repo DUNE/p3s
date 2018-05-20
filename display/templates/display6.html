@@ -1,0 +1,21 @@
+{% extends "display_base.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load static %}
+
+{% block content1 %}
+
+<hr/>
+<center>
+  <h2> Run {{ run }}, Event {{ event }}"</h2>
+  <h3>{{ message }}</h3>
+  <table>
+    <tr>
+      <td>
+      </td>
+    </tr>
+  </table>
+  <img src="{{ url }}" alt="NOT FOUND">
+</center>
+
+{% endblock %}

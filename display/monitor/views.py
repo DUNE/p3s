@@ -93,13 +93,27 @@ class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
 
     def render_changroup(self, value, record):
-        image_url = ('<a href="http://%s/%s/%s/%s">%s</a>'
+        # image_url = ('<a href="http://%s/%s/%s/%s">%s</a>'
+        #                  % (self.site,
+        #                     settings.SITE['dqm_evdisp_url'],
+        #                     record.j_uuid,
+        #                     evdisp.makename(record.evnum, record.datatype, value),
+        #                     value
+        #                  ))
+        
+        image_url = ('<a href="http://%s/monitor/display1?url=http://%s/%s/%s/%s&run=%s&event=%s&changroup=%s&datatype=%s">%s</a>'
                          % (self.site,
+                            self.site, # this needs to point to the image, also below
                             settings.SITE['dqm_evdisp_url'],
                             record.j_uuid,
                             evdisp.makename(record.evnum, record.datatype, value),
+                            record.run,
+                            record.evnum,
+                            record.changroup,
+                            record.datatype,
                             value
                          ))
+
 
         return mark_safe(image_url)
     class Meta:
@@ -302,6 +316,7 @@ def eventdisplay(request):
 @csrf_exempt
 def display1(request):
     
+    domain	= request.get_host()
     url		= request.GET.get('url','')
     run		= request.GET.get('run','')
     event	= request.GET.get('event','')
@@ -309,6 +324,8 @@ def display1(request):
     datatype	= request.GET.get('datatype','')
 
     d = {}
+    d['domain']		= domain
+
     for item in ('url', 'run', 'event', 'changroup', 'datatype'):
         stuff = request.GET.get(item,'')
         if(item=='changroup'):

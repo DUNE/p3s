@@ -1,0 +1,15 @@
+{% extends "display_base.html" %}
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+{% load static %}
+
+{% block content1 %}
+
+<hr/>
+<center>
+  <h2> Run {{ run }}, Event {{ event }}, Channel group {{ changroup }}, Data Type "{{ datatype }}"</h2>
+  <h3>{{ message }}</h3>
+  <img src="{{ url }}" alt="NOT FOUND">
+</center>
+
+{% endblock %}
