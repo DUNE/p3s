@@ -13,3 +13,7 @@ class pur(models.Model):
 
     def __str__(self):
         return serializers.serialize("json", [self, ])
+
+    @classmethod
+    def message(self):
+        return ''

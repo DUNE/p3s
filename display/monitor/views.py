@@ -22,34 +22,27 @@ from django import forms
 
 ###################################################################
 #---
-class TsForm(forms.Form):
-    ts_min	= forms.CharField(required=False, initial='', label="min. (YYYY-MM-DD HH:MM:SS)")
-    ts_max	= forms.CharField(required=False, initial='', label="max. (YYYY-MM-DD HH:MM:SS)")
+class twoFieldGeneric(forms.Form):
+    def __init__(self, *args, **kwargs):
+       self.label1	= kwargs.pop('label1')
+       self.label2	= kwargs.pop('label2')
+       
+       self.field1	= kwargs.pop('field1')
+       self.field2	= kwargs.pop('field2')
+       
+       self.init1	= kwargs.pop('init1')
+       self.init2	= kwargs.pop('init2')
 
-    def tsmin(self):
-        return self.cleaned_data["ts_min"]
-    
-    def tsmax(self):
-        return self.cleaned_data["ts_max"]
-#---
-class JuuidForm(forms.Form):
-    j_uuid = forms.CharField(required=False, initial='', label="Job UUID")
-    d_type = forms.CharField(required=False, initial='', label="Data Type")
-
-    def job_identifier(self):
-        return self.cleaned_data["j_uuid"]
-    
-    def data_type(self):
-        return self.cleaned_data["d_type"]
-#---
-class RunForm(forms.Form):
-    run		= forms.CharField(required=False, initial='', label="Run")
-    event	= forms.CharField(required=False, initial='', label="Event")
+       super(twoFieldGeneric, self).__init__(*args, **kwargs)
+       
+       self.fields[self.field1] = forms.CharField(required=False, initial=self.init1, label=self.label1)
+       self.fields[self.field2] = forms.CharField(required=False, initial=self.init2, label=self.label2)
 
     def getval(self, what):
         return self.cleaned_data[what]
    
 #---
+
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
 #####################################################################
@@ -94,14 +87,6 @@ class EvdispTable(MonitorTable):
 #    ts = tables.Column(attrs={'td': {'bgcolor': 'red'}})
 
     def render_changroup(self, value, record):
-        # image_url = ('<a href="http://%s/%s/%s/%s">%s</a>'
-        #                  % (self.site,
-        #                     settings.SITE['dqm_evdisp_url'],
-        #                     record.j_uuid,
-        #                     evdisp.makename(record.evnum, record.datatype, value),
-        #                     value
-        #                  ))
-        
         image_url = ('<a href="http://%s/monitor/display1?url=http://%s/%s/%s/%s&run=%s&event=%s&changroup=%s&datatype=%s">%s</a>'
                          % (self.site,
                             self.site, # this needs to point to the image, also below
@@ -114,9 +99,18 @@ class EvdispTable(MonitorTable):
                             record.datatype,
                             value
                          ))
-
-
         return mark_safe(image_url)
+
+    def render_evnum(self, value, record):
+        event_url = ('<a href="http://%s/monitor/display6?run=%s&event=%s">%s</a>'
+                         % (self.site,
+                            record.run,
+                            record.evnum,
+                            str(value)
+                         ))
+#        event_url='<a href="">'+str(record.evnum)+'</a>'
+        return mark_safe(event_url)
+    
     class Meta:
         model = evdisp
         attrs = {'class': 'paleblue'}
@@ -139,10 +133,16 @@ def puritychart(request, what):
     q=''
 
     if request.method == 'POST':
-        tsSelector = TsForm(request.POST)
+        tsSelector = twoFieldGeneric(request.POST,
+                                     label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                     field1="tsmin",
+                                     init1=tsmin,
+                                     label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                     field2="tsmax",
+                                     init2=tsmax)
         if tsSelector.is_valid():
-            tsmin=tsSelector.tsmin()
-            tsmax=tsSelector.tsmax()
+            tsmin=tsSelector.getval("tsmin")
+            tsmax=tsSelector.getval("tsmax")
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
@@ -176,7 +176,12 @@ def puritychart(request, what):
     d['purS']	= purSeries
     d['domain']	= domain
     
-    tsSelector = TsForm(request.POST)
+    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                 field1="tsmin",
+                                 init1=tsmin,
+                                 label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                 field2="tsmax",
+                                 init2=tsmax)
     
     selectors = []
     selectors.append(tsSelector)
@@ -208,27 +213,45 @@ def data_handler2(request, what, tbl, url):
         
         if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
 
-        tsSelector = TsForm(request.POST)
+        tsSelector = twoFieldGeneric(request.POST,
+                                            label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                            field1="tsmin",
+                                            init1=tsmin,
+                                            label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                            field2="tsmax",
+                                            init2=tsmax)
         if tsSelector.is_valid():
-            tsmin=tsSelector.tsmin()
-            tsmax=tsSelector.tsmax()
+            tsmin=tsSelector.getval("tsmin")
+            tsmax=tsSelector.getval("tsmax")
             
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
         if(what=='evdisp'):
-            juuidSelector = JuuidForm(request.POST)
+            juuidSelector = twoFieldGeneric(request.POST,
+                                            label1="Job UUID",
+                                            field1="j_uuid",
+                                            init1=j_uuid,
+                                            label2="Data Type",
+                                            field2="d_type",
+                                            init2=d_type)
             if juuidSelector.is_valid():
                 
-                j_uuid=juuidSelector.job_identifier()
+                j_uuid=juuidSelector.getval("j_uuid")
                 if(j_uuid!=''): q+= 'j_uuid='+j_uuid+'&'
                 
-                d_type=juuidSelector.data_type()
+                d_type=juuidSelector.getval("d_type")
                 if(d_type!=''): q+= 'd_type='+d_type+'&'
-
-            runSelector = RunForm(request.POST)
-            if runSelector.is_valid():
                 
+            runSelector =  twoFieldGeneric(request.POST,
+                                           label1="Run",
+                                           field1="run",
+                                           init1=run,
+                                           label2="Event",
+                                           field2="event",
+                                           init2=evnum)
+            
+            if runSelector.is_valid():
                 run=runSelector.getval("run")
                 if(run!=''): q+= 'run='+run+'&'
                 
@@ -275,19 +298,32 @@ def data_handler2(request, what, tbl, url):
     
     selectors.append(perPageSelector)
     
-    tsSelector= TsForm(request.POST)
+    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                 field1="tsmin",
+                                 init1=tsmin,
+                                 label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                 field2="tsmax",
+                                 init2=tsmax)
     selectors.append(tsSelector)
 
     if(what=='evdisp'):
-        juuidSelector = JuuidForm(request.POST)
+        juuidSelector = twoFieldGeneric(label1="Job UUID",
+                                        field1="j_uuid",
+                                        init1=j_uuid,
+                                        label2="Data Type",
+                                        field2="d_type",
+                                        init2=d_type)
         selectors.append(juuidSelector)
         
-        runSelector = RunForm(request.POST)
+        runSelector =  twoFieldGeneric(label1="Run",
+                                       field1="run",
+                                       init1=run,
+                                       label2="Event",
+                                       field2="event",
+                                       init2=evnum)
         selectors.append(runSelector)
-    
+
     d['selectors'] = selectors
-
-
     return render(request, 'unitable2.html', d)
 
 #########################################################    
