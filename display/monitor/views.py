@@ -64,7 +64,21 @@ class dropDownGeneric(forms.Form):
             return ''
         else:
             return self.tag+'='+selection+'&'
+        
 #########################################################    
+###################  TABLES #############################    
+#########################################################
+
+class RunTable(tables.Table):
+    Run	= tables.Column()
+    ts	= tables.Column()
+    
+    def set_site(self, site=''):
+        self.site=site
+    class Meta:
+        attrs	= {'class': 'paleblue'}
+
+#---
 class MonitorTable(tables.Table):
     def set_site(self, site=''):
         self.site=site
@@ -76,12 +90,12 @@ class MonitorTable(tables.Table):
     def renderDateTime(self, dt): # common format defined here.
         return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
 
-#########################################################    
+#---
 class PurityTable(MonitorTable):
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
-#########################################################    
+#---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
 #    ts = tables.Column(attrs={'td': {'bgcolor': 'red'}})
@@ -214,10 +228,10 @@ def data_handler2(request, what, tbl, url):
         if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
 
         tsSelector = twoFieldGeneric(request.POST,
-                                            label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                            label1="min. time",
                                             field1="tsmin",
                                             init1=tsmin,
-                                            label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                            label2="max. time",
                                             field2="tsmax",
                                             init2=tsmax)
         if tsSelector.is_valid():
@@ -298,15 +312,23 @@ def data_handler2(request, what, tbl, url):
     
     selectors.append(perPageSelector)
     
-    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
+    tsSelector = twoFieldGeneric(label1="min. time",
                                  field1="tsmin",
                                  init1=tsmin,
-                                 label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                 label2="max. time",
                                  field2="tsmax",
                                  init2=tsmax)
     selectors.append(tsSelector)
 
     if(what=='evdisp'):
+#        RunData = []
+#        distinct_evd = evdisp.objects.distinct("run").all()
+#        for e in distinct_evd:
+#            RunData.append({'Run': e.run, 'ts': e.ts })
+
+
+#        d['table_aux']	= RunTable(RunData)
+        
         juuidSelector = twoFieldGeneric(label1="Job UUID",
                                         field1="j_uuid",
                                         init1=j_uuid,
@@ -324,6 +346,8 @@ def data_handler2(request, what, tbl, url):
         selectors.append(runSelector)
 
     d['selectors'] = selectors
+
+
     return render(request, 'unitable2.html', d)
 
 #########################################################    

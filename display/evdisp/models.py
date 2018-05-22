@@ -21,7 +21,6 @@ class evdisp(models.Model):
     
     datatype	= models.CharField(max_length=16, default='', verbose_name='Data Type') # "raw" or "prep"
     ts		= models.DateTimeField(blank=True, null=True, verbose_name='Timestamp')
-    path	= models.CharField(max_length=256,default='', verbose_name='Path')
     j_uuid	= models.CharField(max_length=36, default='', verbose_name='Produced by job')
 
     def __str__(self):
@@ -29,7 +28,7 @@ class evdisp(models.Model):
 
     @classmethod
     def message(self):
-        return "Channel Groups - 1:0-2559, 2:2560-4639, 3:5120-7679, 4:7680-9759, 5:10240-12799, 6:12800-14879"
+        return "Channel Groups - 1:0-2559, 2:2560-4639, 3:5120-7679, 4:7680-9759, 5:10240-12799, 6:12800-14879.   Time format - YYYY-MM-DD [HH:MM:SS]"
 
     @classmethod
     def group2string(self, N=None):

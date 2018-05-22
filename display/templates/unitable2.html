@@ -1,6 +1,30 @@
 {% extends "monitor_base2.html" %}
 {% load render_table from django_tables2 %}
 {% load static %}
-      {% block content1 %}{% render_table table %}{% endblock %}
+{% block content1 %}
+<table>
+  <tr>
+    <th>
+      Image Catalog
+    </th>
+    {% if table_aux %}
+    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+    <th>
+      Run Catalog
+    </th>
+    {% endif %}
+  </tr>
+  <tr>
+    <td>
+      {% render_table table %}
+    </td>
+    {% if table_aux %}
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="top">
+      {% render_table table_aux %}
+    </td>
+    {% endif %}
+  </tr>
+{% endblock %}    
 
 
