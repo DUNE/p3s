@@ -121,7 +121,7 @@ if(auto):
                     
             print(f, json.dumps(d),'\n')
 
-  
+    exit(0)
 #########################################################
 
 data = takeJson(json_in, verb)
