@@ -43,7 +43,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-j", "--json_in",	type=str,	help="image file descriptor", default='')
 
-parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete or to register", default='')
+parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete or to register (override)", default='')
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number, or job uuid")
 
@@ -110,9 +110,10 @@ if(delete):
 
 #########################################################
 if(auto):
-    if(job==''): exit(-1) # we need the job uuid to proceed
-    entries = []
-    timestamp = str(timezone.now())
+    if(job==''): job=os.path.basename(os.getcwd())
+
+    entries	= []
+    timestamp	= str(timezone.now())
     
     for f in os.listdir("."):
         d = {}
