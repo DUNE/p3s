@@ -107,13 +107,15 @@ if(delete):
 
     exit(0)
 
+#########################################################
 
+d = {}    
 #########################################################
 if(auto):
     if(job==''): job=os.path.basename(os.getcwd())
 
-    entries	= []
     timestamp	= str(timezone.now())
+    entries	= []
     
     for f in os.listdir("."):
         filedict = {}
@@ -127,34 +129,29 @@ if(auto):
             entries.append(filedict)
 
             
-    print(json.dumps(entries))
-
-    exit(0)
+    d = json.dumps(entries)
 #########################################################
 
-data = takeJson(json_in, verb)
+if(json_in!=''):
+    data = takeJson(json_in, verb)
 
-for entry in data:
-    if(run!=''):
-        if(run=='NEXT'): run=API.get2server('evdisp', 'index', '')
-        entry['run']=run
-    if(timestamp!=''):
-        if(timestamp=='NOW'): timestamp=str(timezone.now())
-        entry['ts']=timestamp
+    for entry in data:
+        if(run!=''):
+            if(run=='NEXT'): run=API.get2server('evdisp', 'index', '')
+            entry['run']=run
+        if(timestamp!=''):
+            if(timestamp=='NOW'): timestamp=str(timezone.now())
+            entry['ts']=timestamp
+        else:
+            timestamp=str(timezone.now())
 
-# print(data)
+    d['json'] = json.dumps(data)
 
-d = {}
+print(d)
 
-d['json'] = json.dumps(data)
+#resp = API.post2server('evdisp', 'add', d)
 
-# print(d)
-
-
-resp = API.post2server('evdisp', 'add', d)
-
-print(resp)
-
+#print(resp)
 
 
 exit(0)

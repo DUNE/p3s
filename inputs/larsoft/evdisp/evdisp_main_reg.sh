@@ -11,7 +11,6 @@ fi
 
 source ${P3S_LAR_SETUP}
 
-
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage the data
@@ -35,9 +34,10 @@ if [ ! -d "$DESTINATION" ]; then
     $P3S_HOME/clients/service.py -n evdisp -m "Failed to create $DESTINATION"
     exit -1
 fi
+
 pngs=`ls *.png`
 
-# ls -l *.png
+ls -l *.png
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -63,15 +63,8 @@ du $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
 
-# check basic validity of files w/o going into detail
 cd $DESTINATION
-copies=`find . -name "*.png" -exec ls {} \;`
-# -size 0
+$P3S_HOME/clients/evdisp.py -a
 
-for copy in $copies
-do
-    ls -l $copy
-done
-    
-
+echo 'done reg'
 exit 0
