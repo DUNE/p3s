@@ -1,7 +1,7 @@
 [
     {
 	"name":		"EvDisp:Main",
-	"timeout":	"1000",
+	"timeout":	"3000",
         "jobtype":	"evdisp",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/evdisp/evdisp_main.sh",
         "priority":	"1",
