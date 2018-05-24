@@ -124,7 +124,7 @@ if(auto):
                     if(cg in f): filedict['changroup'] = cgdict[cg]
             filedict['ts'] = timestamp
             filedict['j_uuid'] = job
-            entries.append(d)
+            entries.append(filedict)
 
             
     print(json.dumps(entries))
