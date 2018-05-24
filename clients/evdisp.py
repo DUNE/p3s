@@ -116,14 +116,14 @@ if(auto):
     timestamp	= str(timezone.now())
     
     for f in os.listdir("."):
-        d = {}
+        filedict = {}
         if f.endswith(".png"):
             for t in ('raw','prep'):
-                if(t in f): d['datatype'] = t
+                if(t in f): filedict['datatype'] = t
                 for cg in cgdict.keys():
-                    if(cg in f): d['changroup'] = cgdict[cg]
-            d['ts'] = timestamp
-            d['j_uuid'] = job
+                    if(cg in f): filedict['changroup'] = cgdict[cg]
+            filedict['ts'] = timestamp
+            filedict['j_uuid'] = job
             entries.append(d)
 
             
