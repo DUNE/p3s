@@ -47,6 +47,8 @@ parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete", default=
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number, or job uuid")
 
+parser.add_argument("-a", "--auto",	action='store_true',	help="parse the current directory automatically")
+
 parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the entry to be adjusted or deleted (pk)")
 
@@ -68,13 +70,22 @@ args = parser.parse_args()
 json_in		= args.json_in
 job		= args.job
 server		= args.server
+
 delete		= args.delete
+auto		= args.auto
 p_id		= args.id
 run		= args.run
 timestamp	= args.timestamp
 verb		= args.verbosity
 
-f = None
+cgdict = {
+    '0-2559':1,
+    '2560-4639':2,
+    '5120-7679':3,
+    '7680-9759':4,
+    '10240-12799':5,
+    '12800-14879':6
+}
 
 
 ### dqm interface defined here
@@ -98,8 +109,20 @@ if(delete):
 
 
 #########################################################
+if(auto):
+    for f in os.listdir("."):
+        d = {}
+        if f.endswith(".png"):
+            for t in ('raw','prep'):
+                if(t in f): d['datatype']=t
 
-print(json_in)
+                for cg in cgdict.keys():
+                    if(cg in f): d['changroup']=cgdict[cg]
+                    
+            print(f, json.dumps(d),'\n')
+
+  
+#########################################################
 
 data = takeJson(json_in, verb)
 
@@ -129,46 +152,3 @@ print(resp)
 exit(0)
 
 #########################################################
-
-try:
-    f = open(filename,"r")
-except:
-    print("file '%s' not found." % filename)
-    exit(-1)
-    
-myreader = csv.reader(f, delimiter=' ', quotechar='|')
-
-frst = True
-
-if(run==''):
-    run = API.get2server('purity', 'ind', '')
-    if(verb>0): print('Assigning run number based on DB: '+run)
-
-items = ('run','tpc', 'lifetime', 'error', 'count')
-
-for row in myreader:    # print(row)
-    if(frst):
-        frst = False
-        continue # skip Bruce's header
-    
-    cnt=0
-    d = OrderedDict.fromkeys(items)
-    for e in row:
-        e = e.replace(',', '')
-        d[items[cnt]] = e
-        cnt+=1
-        # print(cnt)
-
-    d['run']	= run
-
-    if(timestamp==''):
-        d['ts']	= str(timezone.now())
-    else:
-        d['ts']	= timestamp
-
-    if(verb>0): print('Using timestamp:', d['ts'])
-    
-    resp = API.post2server('purity', 'add', d)
-
-    
-    if(verb>0): print(resp)
