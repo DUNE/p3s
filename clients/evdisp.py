@@ -110,16 +110,21 @@ if(delete):
 
 #########################################################
 if(auto):
+    entries = []
+    timestamp=str(timezone.now())
+    
     for f in os.listdir("."):
         d = {}
         if f.endswith(".png"):
             for t in ('raw','prep'):
                 if(t in f): d['datatype']=t
-
                 for cg in cgdict.keys():
                     if(cg in f): d['changroup']=cgdict[cg]
-                    
-            print(f, json.dumps(d),'\n')
+            d['ts']=timestamp
+            entries.append(d)
+
+            
+    print(json.dumps(entries))
 
     exit(0)
 #########################################################
