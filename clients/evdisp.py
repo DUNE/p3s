@@ -147,11 +147,10 @@ if(json_in!=''):
 
     d['json'] = json.dumps(data)
 
-print(d)
+# print(d)
 
-#resp = API.post2server('evdisp', 'add', d)
-
-#print(resp)
+resp = API.post2server('evdisp', 'add', d)
+print(resp)
 
 
 exit(0)
