@@ -43,7 +43,7 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument("-j", "--json_in",	type=str,	help="image file descriptor", default='')
 
-parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete", default='')
+parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete or to register", default='')
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number, or job uuid")
 
@@ -110,17 +110,19 @@ if(delete):
 
 #########################################################
 if(auto):
+    if(job==''): exit(-1) # we need the job uuid to proceed
     entries = []
-    timestamp=str(timezone.now())
+    timestamp = str(timezone.now())
     
     for f in os.listdir("."):
         d = {}
         if f.endswith(".png"):
             for t in ('raw','prep'):
-                if(t in f): d['datatype']=t
+                if(t in f): d['datatype'] = t
                 for cg in cgdict.keys():
-                    if(cg in f): d['changroup']=cgdict[cg]
-            d['ts']=timestamp
+                    if(cg in f): d['changroup'] = cgdict[cg]
+            d['ts'] = timestamp
+            d['j_uuid'] = job
             entries.append(d)
 
             
