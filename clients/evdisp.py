@@ -129,7 +129,7 @@ if(auto):
             entries.append(filedict)
 
             
-    d = json.dumps(entries)
+    d['json'] = json.dumps(entries)
 #########################################################
 
 if(json_in!=''):
@@ -146,10 +146,6 @@ if(json_in!=''):
             timestamp=str(timezone.now())
 
     d['json'] = json.dumps(data)
-
-print(d)
-
-exit(0)
 
 resp = API.post2server('evdisp', 'add', d)
 print(resp)
