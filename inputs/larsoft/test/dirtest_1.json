@@ -3,7 +3,7 @@
 	"name":		"p3s virt env  test",
 	"timeout":	"1000",
         "jobtype":	"testVENV",
-        "payload":	"/afs/cern.ch/user/m/mxp/projects/p3s/inputs/larsoft/dirtest_1.sh",
+        "payload":	" /afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/dirtest_1.sh",
 	"env":		{"P3S_INPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testInput/","P3S_OUTPUT":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testOutput/"},
         "priority":	"1",
 	"state":	"defined"
