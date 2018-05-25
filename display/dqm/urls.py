@@ -20,6 +20,6 @@ urlpatterns = [
     url(r'^',		include('info.urls')),
     url(r'^monitor/',	include('monitor.urls')),
     url(r'^purity/',	include('purity.urls')),
-    url(r'^evdisp/',	include('evdisp.urls')),
+    url(r'^evd/',	include('evdisp.urls')),
     url(r'^admin/',	admin.site.urls),
 ]
