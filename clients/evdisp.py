@@ -120,18 +120,27 @@ if(auto):
     for f in os.listdir("."):
         filedict = {}
         if f.endswith(".png"):
+            if(verb>0): print(f)
             for t in ('raw','prep'):
+                
                 filedict['evnum']	= f.split('_')[1][3:] # will correct later
                 filedict['run']		= API.get2server('evdisp', 'index', '')
+                
+                if(verb>0): print('Will use the run:', filedict['run'])
+                
                 if(t in f): filedict['datatype'] = t
+                
                 for cg in cgdict.keys():
                     if(cg in f): filedict['changroup'] = cgdict[cg]
+                    
             filedict['ts'] = timestamp
             filedict['j_uuid'] = job
+            
             entries.append(filedict)
 
-            
+    if(verb>0): print(entries)
     d['json'] = json.dumps(entries)
+    
 #########################################################
 
 if(json_in!=''):
