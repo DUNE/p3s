@@ -19,7 +19,7 @@ def test(request):
 #########################################################    
 # count how many distinct runs there were
 @csrf_exempt
-def index(request):
+def maxrun(request):
     maxnum = 0
 
     try:
