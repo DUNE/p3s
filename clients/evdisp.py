@@ -148,7 +148,7 @@ if(json_in!=''):
 
     for entry in data:
         if(run!=''):
-            if(run=='NEXT'): run=API.get2server('evdisp', 'index', '')
+            if(run=='NEXT'): run=API.get2server('evd', 'maxrun', '')
             entry['run']=run
         if(timestamp!=''):
             if(timestamp=='NOW'): timestamp=str(timezone.now())

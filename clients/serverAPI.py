@@ -82,10 +82,10 @@ class serverAPI(dict):
         }
 
         ### DQM evdisp
-        self['evdisp']	= {
-            'add':	server+'evdisp/add',
-            'delete':	server+'evdisp/delete',
-            'index':	server+'evdisp/index/%s',
+        self['evd']	= {
+            'add':	server+'evd/add',
+            'delete':	server+'evd/delete',
+            'maxrun':	server+'evd/maxrun/%s',
         }
 
 
