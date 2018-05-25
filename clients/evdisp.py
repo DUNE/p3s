@@ -99,9 +99,9 @@ if(delete):
         exit(-1)
 
     resp = ''
-    if(p_id != ''):	resp = API.post2server('evdisp', 'delete', dict(pk=p_id))
-    if(run != ''):	resp = API.post2server('evdisp', 'delete', dict(run=run))
-    if(job != ''):	resp = API.post2server('evdisp', 'delete', dict(j_uuid=job))
+    if(p_id != ''):	resp = API.post2server('evd', 'delete', dict(pk=p_id))
+    if(run != ''):	resp = API.post2server('evd', 'delete', dict(run=run))
+    if(job != ''):	resp = API.post2server('evd', 'delete', dict(j_uuid=job))
         
     if(verb>0): print(resp)
 
@@ -158,7 +158,7 @@ if(json_in!=''):
 
     d['json'] = json.dumps(data)
 
-resp = API.post2server('evdisp', 'add', d)
+resp = API.post2server('evd', 'add', d)
 print(resp)
 
 
