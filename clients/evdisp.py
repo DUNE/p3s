@@ -121,6 +121,8 @@ if(auto):
         filedict = {}
         if f.endswith(".png"):
             for t in ('raw','prep'):
+                filedict['evnum']	= f.split('_')[1][3:] # will correct later
+                filedict['run']		= API.get2server('evdisp', 'index', '')
                 if(t in f): filedict['datatype'] = t
                 for cg in cgdict.keys():
                     if(cg in f): filedict['changroup'] = cgdict[cg]
