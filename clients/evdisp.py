@@ -124,7 +124,7 @@ if(auto):
             for t in ('raw','prep'):
                 
                 filedict['evnum']	= f.split('_')[1][3:] # will correct later
-                filedict['run']		= API.get2server('evdisp', 'index', '')
+                filedict['run']		= API.get2server('evd', 'maxrun', '')
                 
                 if(verb>0): print('Will use the run:', filedict['run'])
                 
