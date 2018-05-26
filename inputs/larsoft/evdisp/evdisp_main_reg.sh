@@ -9,6 +9,7 @@ env
 
 source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
 
+echo MSG finished general setup
 
 if [ -z ${P3S_LAR_SETUP+x} ];
 then
@@ -18,6 +19,9 @@ fi
 
 
 source ${P3S_LAR_SETUP}
+
+echo MSG finished larsoft setup
+
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -31,6 +35,8 @@ fi
 
 
 lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
+
+echo MSG larsoft completed
 
 
 export DESTINATION=$P3S_DATA/$P3S_EVDISP_DIR/$P3S_JOB_UUID
