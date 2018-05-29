@@ -41,7 +41,10 @@ else
 fi
 
 
-lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
+# lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
+
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch0-2559.png
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch2560-4639.png
 
 echo MSG larsoft completed
 
