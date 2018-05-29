@@ -5,7 +5,7 @@ export DQM_HOME=/afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig
 echo Sourcing
 source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
 python -V
-python3.5 -V
+
 #source /afs/cern.ch/user/m/mxp/projects/p3s/configuration/p3s_setup.sh
 
 hostname
@@ -15,6 +15,13 @@ env | grep DQM
 #ls $P3S_INPUT
 #ls $P3S_OUTPUT
 
-$P3S_HOME/clients/evdisp.py -h
+echo Activating the script
+ls -l $P3S_HOME/clients/evdisp.py
+
+echo 'test test test test test test test test test test test test' > ./foo.png
+
+cat foo.png
+
+$P3S_HOME/clients/evdisp.py -a
 
 exit
