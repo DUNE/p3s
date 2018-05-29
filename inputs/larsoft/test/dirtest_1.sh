@@ -18,9 +18,11 @@ env | grep DQM
 echo Activating the script
 ls -l $P3S_HOME/clients/evdisp.py
 
-echo 'test test test test test test test test test test test test' > ./foo.png
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch0-2559.png
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch2560-4639.png
 
-cat foo.png
+cat adcprep_evt111_ch0-2559.png
+cat adcprep_evt111_ch2560-4639.png
 
 $P3S_HOME/clients/evdisp.py -a
 
