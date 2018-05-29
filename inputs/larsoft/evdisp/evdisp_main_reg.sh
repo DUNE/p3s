@@ -68,9 +68,13 @@ else
     done
 fi
 
+echo MSG finished copying image files
+
+echo MSG will run $P3S_HOME/clients/evdisp.py
+
 $P3S_HOME/clients/evdisp.py -a
 
-echo 'done reg'
+echo MSG finished registration
 
 cd ..
 echo ls before
