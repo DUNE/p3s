@@ -24,6 +24,6 @@ echo 'test test test test test test test test test test test test' > ./adcprep_e
 cat adcprep_evt111_ch0-2559.png
 cat adcprep_evt111_ch2560-4639.png
 
-$P3S_HOME/clients/evdisp.py -a
+$P3S_HOME/clients/evdisp.py -a -J $P3S_JOB_UUID
 
 exit
