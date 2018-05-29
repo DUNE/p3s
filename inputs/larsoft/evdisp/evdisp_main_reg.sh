@@ -15,6 +15,12 @@ echo MSG check PYTHONPATH
 echo $PYTHONPATH
 echo ---
 
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch0-2559.png
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch2560-4639.png
+
+$P3S_HOME/clients/evdisp.py -a -J $P3S_JOB_UUID
+
+
 
 echo MSG finished general setup
 
@@ -29,6 +35,15 @@ source ${P3S_LAR_SETUP}
 
 echo MSG finished larsoft setup
 
+echo MSG check Python
+python -V
+echo ---
+echo MSG check PYTHONPATH
+echo $PYTHONPATH
+echo ---
+
+
+exit
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -41,7 +56,7 @@ else
 fi
 
 
-# lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
+lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 
 echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch0-2559.png
 echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch2560-4639.png
