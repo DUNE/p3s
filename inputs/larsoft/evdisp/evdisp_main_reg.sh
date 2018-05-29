@@ -5,9 +5,16 @@ export DQM_HOME=/afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig
 
 source $P3S_HOME/configuration/lxvm_np04dqm.sh > /dev/null
 
-env
+# env
 
 source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
+echo MSG check Python
+python -V
+echo ---
+echo MSG check PYTHONPATH
+echo $PYTHONPATH
+echo ---
+
 
 echo MSG finished general setup
 
