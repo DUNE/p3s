@@ -7,23 +7,6 @@ source $P3S_HOME/configuration/lxvm_np04dqm.sh > /dev/null
 
 # env
 
-source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
-echo MSG check Python
-python -V
-echo ---
-echo MSG check PYTHONPATH
-echo $PYTHONPATH
-echo ---
-
-echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch0-2559.png
-echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch2560-4639.png
-
-$P3S_HOME/clients/evdisp.py -a -J $P3S_JOB_UUID
-
-
-
-echo MSG finished general setup
-
 if [ -z ${P3S_LAR_SETUP+x} ];
 then
     echo P3S_LAR_SETUP undefined, exiting
@@ -35,12 +18,22 @@ source ${P3S_LAR_SETUP}
 
 echo MSG finished larsoft setup
 
+echo MSG initializing virtual environment
+source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
 echo MSG check Python
 python -V
 echo ---
 echo MSG check PYTHONPATH
 echo $PYTHONPATH
 echo ---
+
+echo MSG finished python setup
+
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch0-2559.png
+echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch2560-4639.png
+
+$P3S_HOME/clients/evdisp.py -a -J $P3S_JOB_UUID
+
 
 
 exit
