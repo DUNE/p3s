@@ -18,26 +18,6 @@ source ${P3S_LAR_SETUP}
 
 echo MSG finished larsoft setup
 
-echo MSG initializing virtual environment
-source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
-echo MSG check Python
-python -V
-echo ---
-echo MSG check PYTHONPATH
-echo $PYTHONPATH
-echo ---
-
-echo MSG finished python setup
-
-echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch0-2559.png
-echo 'test test test test test test test test test test test test' > ./adcprep_evt111_ch2560-4639.png
-
-$P3S_HOME/clients/evdisp.py -a -J $P3S_JOB_UUID
-
-
-
-exit
-
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage in the data
@@ -87,6 +67,17 @@ else
 fi
 
 echo MSG finished copying image files
+
+unset PYTHONPATH # just in case
+echo MSG initializing virtual environment
+source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
+echo MSG check Python: `python -V`
+echo ---
+echo MSG check PYTHONPATH: $PYTHONPATH
+echo ---
+
+echo MSG finished python setup
+
 
 echo MSG will run $P3S_HOME/clients/evdisp.py
 
