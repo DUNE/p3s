@@ -508,63 +508,6 @@ def filesystem(request):
     l = os.listdir(settings.SITE['p3s_input'])
     return HttpResponse(l)
     
-#########################################################    
+#################################### THE END ######################################
 
-# if selector.is_valid():
-#     selectedStates = selector.cleaned_data['stateChoice']
-#     if len(selectedStates):
-#         state = selectedStates[0]
-#         if(state=='all'): return HttpResponseRedirect('/monitor/pilots')
-#         return HttpResponseRedirect('/monitor/pilots?state=%s' % state)
-#     else:
-#         return HttpResponseRedirect('/monitor/pilots')
-######################
-# class dropDown(forms.Form):
-#     def __init__(self, *args, **kwargs):
-#        self.label = kwargs.pop('label')
-#        super(dropDown, self).__init__(*args, **kwargs)
-       
-#        self.fields['dropChoice'] = forms.ChoiceField(choices = CHOICES, label = self.label)
-
-#     def handleDropSelector(self):
-#         selectedUser = self.cleaned_data['dropChoice']
-#         if(selectedUser=='All'):
-#             return ''
-#         else:
-#             return 'user='+selectedUser+'&'
-
-# ######################
-# class dropDownPage(forms.Form):
-#     def __init__(self, *args, **kwargs):
-#        self.label = kwargs.pop('label')
-#        super(dropDownPage, self).__init__(*args, **kwargs)
-       
-#        self.fields['dropChoicePage'] = forms.ChoiceField(choices = PAGECHOICES, label = self.label)
-
-#     def handleDropSelector(self):
-#         selectedNumber = self.cleaned_data['dropChoicePage']
-#         return 'perpage='+selectedNumber+'&'
-
-
-# snippet of filter code for reference
-#        if(uuid		!= ''): kwargs['uuid']		= uuid
-#        if(wfuuid	!= ''):	kwargs['wfuuid']	= wfuuid
-#        if(pk		!= ''): kwargs['pk']		= pk
-#        if(name		!= ''): kwargs['name']		= name
-#        if(user		!= ''): kwargs['user']		= user
-#        if(jobtype	!= ''): kwargs['jobtype']	= jobtype
-#        if(state	!= ''): kwargs['state__in']	= states # notice multiple values
-        
-
-
-# if(uuid == '' and pk == '' and wfuuid == '' and state == '' and user == ''): t = chosenTable(objects.all())
-        
-
-    # if(what=='dag'):
-    #     objects = dag.objects
-    #     if(pk != ''):			objs = objects.filter(pk=pk)
-    #     if(name != ''):			objs = objects.filter(name=name)
-    #     if(pk == '' and name == ''):	objs = objects.all()
-    #     Nfilt = objs.count()
-    #     t = DagTable(objs)
         
