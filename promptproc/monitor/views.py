@@ -49,6 +49,9 @@ from	django_tables2.utils		import A
 # The tables are defined separately
 from .monitorTables import *
 
+from utils.selectorUtils 		import dropDownGeneric, boxSelector
+from utils.miscUtils			import makeTupleList
+
 from django import forms
 
 # For choice fields, first element is value, second is the label in the dropdown list
@@ -127,54 +130,6 @@ def makeQuery(what, q=''):
         return HttpResponseRedirect(gUrl)
     
     return HttpResponseRedirect(qUrl+q)
-
-#########################################################    
-def makeTupleList(listOfStuff):
-    theList = []
-    for stuff in listOfStuff: theList.append((stuff,stuff))
-    return theList
-
-#########################################################    
-class boxSelector(forms.Form):
-
-    def __init__(self, *args, **kwargs):
-       self.what = kwargs.pop('what')
-
-       super(boxSelector, self).__init__(*args, **kwargs)
-       self.fields['stateChoice'].choices	= SELECTORS[self.what]['states']
-       self.fields['stateChoice'].label		= SELECTORS[self.what]['stateLabel']
-
-    def handleBoxSelector(self):
-        selectedStates = self.cleaned_data['stateChoice']
-        if len(selectedStates):
-            if('all' in selectedStates):
-                return ''
-            else:
-                return 'state='+",".join(selectedStates)+'&'
-        return ''
-
-    stateChoice = forms.MultipleChoiceField(label='DUMMY',
-                                            required=False,
-                                            widget=forms.CheckboxSelectMultiple,
-                                            choices=[('place', 'holder'),])
-######################
-class dropDownGeneric(forms.Form):
-    def __init__(self, *args, **kwargs):
-       self.label	= kwargs.pop('label')
-       self.choices	= kwargs.pop('choices')
-       self.tag		= kwargs.pop('tag')
-       self.fieldname	= self.tag # 'choice'
-       
-       super(dropDownGeneric, self).__init__(*args, **kwargs)
-       
-       self.fields[self.fieldname] = forms.ChoiceField(choices = self.choices, label = self.label)
-
-    def handleDropSelector(self):
-        selection = self.cleaned_data[self.fieldname]
-        if(selection=='All'):
-            return ''
-        else:
-            return self.tag+'='+selection+'&'
 
 #########################################################    
 # general request handler for summary type of a table
@@ -256,7 +211,12 @@ def data_handler(request, what):
         if request.method == 'POST':
             try:
                 if(selector['stateselector']):
-                    stateSelector = boxSelector(request.POST, what=what)
+                    stateSelector = boxSelector(request.POST,
+                                                what=what,
+                                                states=SELECTORS[what]['states'],
+                                                label=SELECTORS[what]['stateLabel'])
+                
+                    
                     if stateSelector.is_valid():q += stateSelector.handleBoxSelector()
             except:
                 pass
@@ -301,22 +261,38 @@ def data_handler(request, what):
         ###################################################################
 
         try:
-            if(selector['stateselector']):	stateSelector	= boxSelector(initial={'stateChoice': states}, what=what)
+            if(selector['stateselector']):
+                stateSelector	= boxSelector(request.POST,
+                                            what=what,
+                                            states=SELECTORS[what]['states'],
+                                            label=SELECTORS[what]['stateLabel'])
         except:
             pass
             
         try:
-            if(selector['userselector']):	userSelector	= dropDownGeneric(initial={'user':initUser},		label='User',	choices = USERCHOICES, tag='user')
+            if(selector['userselector']):
+                userSelector	= dropDownGeneric(initial={'user':initUser},
+                                                  label='User',
+                                                  choices = USERCHOICES,
+                                                  tag='user')
         except:
             pass
             
         try:
-            if(selector['typeselector']):	typeSelector	= dropDownGeneric(initial={'jobtype':initJobType},	label='Type',	choices = JOBTYPECHOICES, tag='jobtype')
+            if(selector['typeselector']):
+                typeSelector	= dropDownGeneric(initial={'jobtype':initJobType},
+	                                          label='Type',
+	                                          choices = JOBTYPECHOICES,
+                                                  tag='jobtype')
         except:
             pass
             
         try:
-            if(selector['serviceselector']):	serviceSelector	= dropDownGeneric(initial={'service':initService},	label='Service',choices = SERVICECHOICES, tag='service')
+            if(selector['serviceselector']):
+                serviceSelector	= dropDownGeneric(initial={'service':initService},
+	                                          label='Service',
+                                                  choices = SERVICECHOICES,
+                                                  tag='service')
         except:
             pass
             

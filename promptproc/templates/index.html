@@ -13,7 +13,9 @@
       font-family: 'Ubuntu', sans-serif;
       }
     </style>
-    
+
+    <meta http-equiv="refresh" content="10" />
+
   </head>
 
   
@@ -23,7 +25,7 @@
     <!-- include "topnavbar.html" Moved to linkbar-->
     <center>
     <!-- h1>&#2384;</h1 -->
-    <h3>p3s running on server "{{ host }}" at {{ time }}</h3>
+    <h3>p3s running on server "{{ host }}". Page updated at {{ time }}</h3>
     <table border="1">
       <tr>
 	<th>Summary</th>
@@ -47,6 +49,30 @@
     <hr/>
     Users: {{ users }}
     <hr/>
+
+    {% block frm %}
+    {% if sel %}
+	      <form action="" method="post">
+		{% csrf_token %}
+		<table>
+		  <tr>
+		    {% for sel in selectors %}
+		    <td>
+		      <table>
+			{{ sel }}
+		      </table>
+		    </td>
+		    {% endfor %}
+		    <td>
+		      <input type="submit" value="Submit" />
+		    </td>
+		  </tr>
+		</table>
+		
+	      </form>
+	      {% endif %}
+	      {% endblock %}
+
     </center>
   </body>
 </html>

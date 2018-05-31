@@ -11,3 +11,9 @@ def parseCommaDash(inp):
         outlist.append(int(inp))
         
     return outlist
+#########################################################    
+def makeTupleList(listOfStuff):
+    theList = []
+    for stuff in listOfStuff: theList.append((stuff,stuff))
+    return theList
+
