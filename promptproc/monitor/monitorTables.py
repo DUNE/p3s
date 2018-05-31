@@ -95,7 +95,8 @@ class JobTable(MonitorTable):
     ts_sto	= tables.Column(verbose_name='stopped')
     jobtype	= tables.Column(verbose_name='type')
     priority	= tables.Column(verbose_name='Pri.')
-    timelimit	= tables.Column(verbose_name='limit(sec)')
+    timelimit	= tables.Column(verbose_name='maxSec')
+    errcode	= tables.Column(verbose_name='err')
     exectime	= tables.Column(empty_values=(), verbose_name='exec.time')
 
     def render_id(self,value):		return self.makelink('jobdetail',	'pk',	value)
@@ -119,7 +120,7 @@ class JobTable(MonitorTable):
     class Meta:
         model = job
         attrs = {'class': 'paleblue'}
-        exclude = ('p_uuid', 'params', 'env', 'ts_dis', 'directive', )
+        exclude = ('p_uuid', 'params', 'env', 'ts_dis', 'directive', 'pid',)
 #--------------------------------------------------------
 class DataTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('datadetail',	'uuid',	value)
