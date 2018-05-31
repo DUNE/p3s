@@ -14,7 +14,9 @@
       }
     </style>
 
-    <meta http-equiv="refresh" content="10" />
+    {% if refresh %}
+    <meta http-equiv="refresh" content="{{ refresh }}" />
+    {% endif %}
 
   </head>
 
@@ -51,7 +53,7 @@
     <hr/>
 
     {% block frm %}
-    {% if sel %}
+    {% if selectors %}
 	      <form action="" method="post">
 		{% csrf_token %}
 		<table>

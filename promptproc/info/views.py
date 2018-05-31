@@ -18,11 +18,46 @@ from workflows.models			import workflow
 from monitor.monitorTables		import *
 from logic.models			import user
 
-
+from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.timeUtils import uptime
 from utils.timeUtils import loadavg
 
+
+refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
+
+#######################
 def index(request):
+    if request.method == 'POST':
+        q = '?'
+        try:
+            refreshSelector = dropDownGeneric(request.POST,
+                                              label='Refresh',
+                                              choices=refreshChoices,
+                                              tag='refresh')
+            
+            if refreshSelector.is_valid():
+                a = refreshSelector.handleDropSelector()
+                if(a!=''): q+=a
+        except:
+            pass
+
+        return HttpResponseRedirect(q)
+
+
+    # ---
+
+    refresh		= request.GET.get('refresh', None)
+    refreshSelector	= None
+    try:
+        refreshSelector = dropDownGeneric(label='Refresh',
+                                          initial={'refresh': refresh},
+                                          choices=refreshChoices,
+                                          tag='refresh')
+            
+    except:
+        pass
+
+
     summaryData = []
     jobsData = []
     
@@ -124,6 +159,10 @@ def index(request):
     tSystem = DetailTable(systemData)
 
     users = user.all()
+
+    selectors = []
+    selectors.append(refreshSelector)
+    
     return render(request, 'index.html',
                   {
                       'domain':		domain,
@@ -137,6 +176,8 @@ def index(request):
                       'system':		tSystem,
                       'time':		timeString,
                       'users':		users,
+                      'selectors':	selectors,
+                      'refresh':	refresh,
                   }
     )
 

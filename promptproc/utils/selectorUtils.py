@@ -36,7 +36,7 @@ class dropDownGeneric(forms.Form):
        
        super(dropDownGeneric, self).__init__(*args, **kwargs)
        
-       self.fields[self.fieldname] = forms.ChoiceField(choices = self.choices, label = self.label)
+       self.fields[self.fieldname] = forms.ChoiceField(choices = self.choices, label = self.label, required=False)
 
     def handleDropSelector(self):
         selection = self.cleaned_data[self.fieldname]
