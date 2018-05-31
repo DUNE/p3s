@@ -173,6 +173,7 @@ class PilotTable(MonitorTable):
     ts_reg	= tables.Column(verbose_name='registered')
     ts_lhb	= tables.Column(verbose_name='last heartbeat')
     jobcount	= tables.Column(verbose_name='jobs')
+    life	= tables.Column(empty_values=(), verbose_name='Life')
     
     def render_uuid(self,value):	return self.makelink('pilots',		'uuid',	value)
     def render_j_uuid(self,value):	return self.makelink('jobs',		'uuid',	value)
@@ -182,6 +183,13 @@ class PilotTable(MonitorTable):
     def render_ts_reg(self, value):	return self.renderDateTime(value)
     def render_ts_lhb(self, value):	return self.renderDateTime(value)
 
+    def render_life(self, record):
+
+        if(record.ts_lhb is None): return ''
+        if(record.ts_reg is None): return ''
+        
+        duration = record.ts_lhb - record.ts_reg
+        return str(duration).split('.')[0]
     class Meta:
         model	= pilot
         attrs	= {'class': 'paleblue'}
