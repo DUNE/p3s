@@ -15,6 +15,13 @@ import  django_tables2 as tables
 from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
+
+import datetime
+from django.utils			import timezone
+from django.utils.timezone		import utc
+from django.utils.timezone		import activate
+
+
 from purity.models import pur
 from evdisp.models import evdisp
 
@@ -104,6 +111,9 @@ def makeQuery(page, q=''):
 #########################################################    
 # general request handler for summary type of a table
 def puritychart(request, what):
+    
+    host	= request.GET.get('host','')
+    
     domain	= request.get_host()
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
@@ -172,6 +182,9 @@ def puritychart(request, what):
 # general request handler for summary type of a table
 def data_handler2(request, what, tbl, url):
     domain	= request.get_host()
+
+    host	= request.GET.get('host','')
+    
     perpage	= request.GET.get('perpage','25')
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
@@ -249,9 +262,9 @@ def data_handler2(request, what, tbl, url):
     # We built a query and come to same page with the query parameters
     # -------------------------------------------------------------------------
 
+    now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
 
-    
-    d = {}	# stub for a dictionaty to feed the template
+    d		= dict(domain=domain, time=str(now))
 
     objs = eval(what).objects.order_by('-pk').all()
 
@@ -325,6 +338,7 @@ def data_handler2(request, what, tbl, url):
 
     d['selectors']	= selectors
     d['refresh']	= refresh
+    d['host']		= domain
 
 
     return render(request, 'unitable2.html', d)
