@@ -7,6 +7,11 @@
     <!-- THIS IS TEMP, until we plant it on Apache -->
     <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
     <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
+
+    {% if refresh %}
+    <meta http-equiv="refresh" content="{{ refresh }}" />
+    {% endif %}
+    
   </head>
 
   

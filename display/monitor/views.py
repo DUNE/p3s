@@ -20,51 +20,15 @@ from evdisp.models import evdisp
 
 from django import forms
 
+from utils.selectorUtils import dropDownGeneric, boxSelector, twoFieldGeneric
+
+refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
+
+
 ###################################################################
-#---
-class twoFieldGeneric(forms.Form):
-    def __init__(self, *args, **kwargs):
-       self.label1	= kwargs.pop('label1')
-       self.label2	= kwargs.pop('label2')
-       
-       self.field1	= kwargs.pop('field1')
-       self.field2	= kwargs.pop('field2')
-       
-       self.init1	= kwargs.pop('init1')
-       self.init2	= kwargs.pop('init2')
-
-       super(twoFieldGeneric, self).__init__(*args, **kwargs)
-       
-       self.fields[self.field1] = forms.CharField(required=False, initial=self.init1, label=self.label1)
-       self.fields[self.field2] = forms.CharField(required=False, initial=self.init2, label=self.label2)
-
-    def getval(self, what):
-        return self.cleaned_data[what]
-   
-#---
 
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
-#####################################################################
-
-class dropDownGeneric(forms.Form):
-    def __init__(self, *args, **kwargs):
-       self.label	= kwargs.pop('label')
-       self.choices	= kwargs.pop('choices')
-       self.tag		= kwargs.pop('tag')
-       self.fieldname	= self.tag # 'choice'
-       
-       super(dropDownGeneric, self).__init__(*args, **kwargs)
-       
-       self.fields[self.fieldname] = forms.ChoiceField(choices = self.choices, label = self.label)
-
-    def handleDropSelector(self):
-        selection = self.cleaned_data[self.fieldname]
-        if(selection=='All'):
-            return ''
-        else:
-            return self.tag+'='+selection+'&'
-        
 #########################################################    
 ###################  TABLES #############################    
 #########################################################
@@ -215,10 +179,18 @@ def data_handler2(request, what, tbl, url):
     d_type	= request.GET.get('d_type','')
     run		= request.GET.get('run','')
     evnum	= request.GET.get('evnum','')
+    refresh	= request.GET.get('refresh',None)
 
 
     q=''	# stub for a query that may be built
     if request.method == 'POST':
+        refreshSelector = dropDownGeneric(request.POST,
+                                          label='Refresh',
+                                          choices=refreshChoices,
+                                          tag='refresh')
+            
+        if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
+
         perPageSelector	= dropDownGeneric(request.POST,
                                           initial={'perpage':perpage},
                                           label='# per page',
@@ -302,6 +274,11 @@ def data_handler2(request, what, tbl, url):
     d['pageName']	= ': '+tbl
     d['message']	= eval(what).message()
 
+    refreshSelector = dropDownGeneric(label='Refresh',
+                                      initial={'refresh': refresh},
+                                      choices=refreshChoices,
+                                      tag='refresh')
+            
     perPageSelector = dropDownGeneric(initial={'perpage':perpage},
                                       label='# per page',
                                       choices = PAGECHOICES,
@@ -310,6 +287,7 @@ def data_handler2(request, what, tbl, url):
     
     selectors = []
     
+    selectors.append(refreshSelector)
     selectors.append(perPageSelector)
     
     tsSelector = twoFieldGeneric(label1="min. time",
@@ -345,7 +323,8 @@ def data_handler2(request, what, tbl, url):
                                        init2=evnum)
         selectors.append(runSelector)
 
-    d['selectors'] = selectors
+    d['selectors']	= selectors
+    d['refresh']	= refresh
 
 
     return render(request, 'unitable2.html', d)
