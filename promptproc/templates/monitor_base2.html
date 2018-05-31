@@ -13,6 +13,10 @@
       }
     </style>
 
+    {% if refresh %}
+    <meta http-equiv="refresh" content="{{ refresh }}" />
+    {% endif %}
+    
     </head>
   <body>
     {% include "linkbar.html" %}

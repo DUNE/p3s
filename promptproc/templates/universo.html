@@ -4,5 +4,5 @@
 
 {% block title %}p3s {{ title }} page on server "{{ host }}"{% endblock %}
 {% block headline %}{{ title }}{% endblock %}
-{% block stats %}: Total in DB:{{ N }}, selected:{{ Nfilt }} on server "{{ host }}"{% endblock %}
+{% block stats %}: Total in DB:{{ N }}, selected:{{ Nfilt }} on server "{{ host }}, updated at {{ time }}"{% endblock %}
 {% block table %}{% render_table table %}{% endblock %}

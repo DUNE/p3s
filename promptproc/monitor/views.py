@@ -61,6 +61,8 @@ JOBTYPECHOICES	= [] # ditto
 
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
+refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
+
 SELECTORS	= {
     'pilot':
     {'stateLabel':'Pilot States',
@@ -162,6 +164,7 @@ def data_handler(request, what):
     state	= request.GET.get('state','')
     jobtype	= request.GET.get('jobtype','')
     user	= request.GET.get('user','')
+    refresh	= request.GET.get('refresh', None)
 
     serviceName	= request.GET.get('service','')
     
@@ -251,21 +254,30 @@ def data_handler(request, what):
             #     pass
 
 
+            try:
+                refreshSelector = dropDownGeneric(request.POST,
+                                                  label='Refresh',
+                                                  choices=refreshChoices,
+                                                  tag='refresh')
+            
+                if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
+            except:
+                pass
+        
             perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
             if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
                     
             return makeQuery(what, q) # will go and get the query results...
 
         ###################################################################
-        ###### IF IT'S NOT RESPONSE TO QUERY, BUILD THE INITIAL PAGE ######
+        ##### IF IT'S NOT RESPONSE TO a "POST", BUILD THE INITIAL PAGE ####
         ###################################################################
-
+        refresh		= request.GET.get('refresh', None)
         try:
             if(selector['stateselector']):
-                stateSelector	= boxSelector(request.POST,
-                                            what=what,
-                                            states=SELECTORS[what]['states'],
-                                            label=SELECTORS[what]['stateLabel'])
+                stateSelector	= boxSelector(what=what,
+                                              states=SELECTORS[what]['states'],
+                                              label=SELECTORS[what]['stateLabel'])
         except:
             pass
             
@@ -295,7 +307,13 @@ def data_handler(request, what):
                                                   tag='service')
         except:
             pass
-            
+
+
+        refreshSelector = dropDownGeneric(label='Refresh',
+                                          initial={'refresh': refresh},
+                                          choices=refreshChoices,
+                                          tag='refresh')
+        
         perPageSelector	= dropDownGeneric(initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
 
         
@@ -344,10 +362,11 @@ def data_handler(request, what):
 
     selectors = []
 
-    for s in (stateSelector, userSelector, typeSelector, serviceSelector, perPageSelector):
+    for s in (stateSelector, userSelector, typeSelector, serviceSelector, refreshSelector, perPageSelector):
         if(s):	selectors.append(s)
 
-    d['selectors'] = selectors
+    d['selectors']	= selectors
+    d['refresh']	= refresh
 
     return render(request, template, d)
 
