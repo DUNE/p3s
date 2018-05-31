@@ -4,6 +4,8 @@ from django.utils			import timezone
 from django.utils.timezone		import utc
 from django.conf			import settings
 
+from django.db.models import F
+
 import	django_tables2 as tables
 
 from sites.models			import site
@@ -117,6 +119,10 @@ class JobTable(MonitorTable):
         duration = record.ts_sto - record.ts_sta
         return str(duration).split('.')[0]
     
+    def order_exectime(self, queryset, is_descending):
+        queryset = queryset.annotate(l=F('ts_sto')-F('ts_sta')).order_by(('-' if is_descending else '') + 'l')
+        return (queryset, True)
+    
     class Meta:
         model = job
         attrs = {'class': 'paleblue'}
@@ -191,7 +197,8 @@ class PilotTable(MonitorTable):
         duration = record.ts_lhb - record.ts_reg
         return str(duration).split('.')[0]
 
-    def order_life(self, queryset):
+    def order_life(self, queryset, is_descending):
+        queryset = queryset.annotate(l=F('ts_lhb')-F('ts_reg')).order_by(('-' if is_descending else '') + 'l')
         return (queryset, True)
     
     class Meta:
