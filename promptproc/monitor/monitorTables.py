@@ -190,6 +190,10 @@ class PilotTable(MonitorTable):
         
         duration = record.ts_lhb - record.ts_reg
         return str(duration).split('.')[0]
+
+    def order_life(self, queryset):
+        return (queryset, True)
+    
     class Meta:
         model	= pilot
         attrs	= {'class': 'paleblue'}
