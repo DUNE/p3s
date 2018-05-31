@@ -120,7 +120,7 @@ class JobTable(MonitorTable):
     class Meta:
         model = job
         attrs = {'class': 'paleblue'}
-        exclude = ('p_uuid', 'params', 'env', 'ts_dis', 'directive', 'pid',)
+        exclude = ('p_uuid', 'params', 'env', 'ts_dis', 'directive', 'pid', 'host', 'wfuuid',)
 #--------------------------------------------------------
 class DataTable(MonitorTable):
     def render_uuid(self,value):	return self.makelink('datadetail',	'uuid',	value)
