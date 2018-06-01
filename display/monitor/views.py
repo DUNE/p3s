@@ -204,8 +204,8 @@ def data_handler2(request, what, tbl, url):
     evnum	= request.GET.get('evnum','')
     refresh	= request.GET.get('refresh',None)
 
-
     q=''	# stub for a query that may be built
+
     if request.method == 'POST':
         refreshSelector = dropDownGeneric(request.POST,
                                           label='Refresh',
@@ -322,14 +322,6 @@ def data_handler2(request, what, tbl, url):
     selectors.append(tsSelector)
 
     if(what=='evdisp'):
-#        RunData = []
-#        distinct_evd = evdisp.objects.distinct("run").all()
-#        for e in distinct_evd:
-#            RunData.append({'Run': e.run, 'ts': e.ts })
-
-
-#        d['table_aux']	= RunTable(RunData)
-        
         juuidSelector = twoFieldGeneric(label1="Job UUID",
                                         field1="j_uuid",
                                         init1=j_uuid,
@@ -346,9 +338,14 @@ def data_handler2(request, what, tbl, url):
                                        init2=evnum)
         selectors.append(runSelector)
 
+    u = makeImageLink(domain, settings.SITE['dqm_evdisp_url'],
+                      '70724430-562c-11e8-958c-ffa00f412dde', 1, 111, 'prep', 1)
+    print(u)
+        
     d['selectors']	= selectors
     d['refresh']	= refresh
     d['host']		= domain
+    d['img_url']	= u 
 
 
     return render(request, 'unitable2.html', d)
@@ -487,3 +484,12 @@ def display6(request):
 
 #       super(PurityTable, self).__init__(*args, **kwargs)
 
+
+##############################
+#        RunData = []
+#        distinct_evd = evdisp.objects.distinct("run").all()
+#        for e in distinct_evd:
+#            RunData.append({'Run': e.run, 'ts': e.ts })
+
+
+#        d['table_aux']	= RunTable(RunData)
