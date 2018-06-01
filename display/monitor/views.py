@@ -33,6 +33,16 @@ from utils.selectorUtils import dropDownGeneric, boxSelector, twoFieldGeneric
 REFRESHCHOICES	= [('', 'Never'), ('10', '10s'), ('30', '30s'), ('60','1min'), ('120', '2min'),  ]
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'), ('400','400'),]
 
+
+
+def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
+    filename =  evdisp.makename(evnum, datatype, group)
+    return "http://"+site+"/"+evdispURL+"/"+j_uuid+"/"+filename
+
+
+#+"&run="+str(run)+"&event="+str(evnum)+"&changroup="+str(group)+"&datatype="+datatype
+    
+    
 #########################################################    
 ###################  TABLES #############################    
 #########################################################
@@ -69,18 +79,21 @@ class EvdispTable(MonitorTable):
 #    ts = tables.Column(attrs={'td': {'bgcolor': 'red'}})
 
     def render_changroup(self, value, record):
-        image_url = ('<a href="http://%s/monitor/display1?url=http://%s/%s/%s/%s&run=%s&event=%s&changroup=%s&datatype=%s">%s</a>'
+
+        u = makeImageLink(self.site,
+                          settings.SITE['dqm_evdisp_url'],
+                          record.j_uuid, record.run, record.evnum, record.datatype, record.changroup)
+        
+        image_url = ('<a href="http://%s/monitor/display1?url=%s&run=%s&event=%s&changroup=%s&datatype=%s">%s</a>'
                          % (self.site,
-                            self.site, # this needs to point to the image, also below
-                            settings.SITE['dqm_evdisp_url'],
-                            record.j_uuid,
-                            evdisp.makename(record.evnum, record.datatype, value),
+                            u,
                             record.run,
                             record.evnum,
                             record.changroup,
                             record.datatype,
                             value
                          ))
+
         return mark_safe(image_url)
 
     def render_evnum(self, value, record):
