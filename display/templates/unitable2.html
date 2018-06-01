@@ -18,11 +18,20 @@
     <td>
       {% render_table table %}
     </td>
+    
     {% if table_aux %}
     <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
     <td align="top">
       {% render_table table_aux %}
     </td>
     {% endif %}
+
+    {% if img_url %}
+    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td align="top">
+    <img src="{{ img_url }}" alt="NOT FOUND">
+    </td>
+    {% endif %}
+    
   </tr>
 {% endblock %}    

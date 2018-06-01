@@ -29,12 +29,9 @@ from django import forms
 
 from utils.selectorUtils import dropDownGeneric, boxSelector, twoFieldGeneric
 
-refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
-
-
-###################################################################
-
-PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
+#########################################################
+REFRESHCHOICES	= [('', 'Never'), ('10', '10s'), ('30', '30s'), ('60','1min'), ('120', '2min'),  ]
+PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'), ('400','400'),]
 
 #########################################################    
 ###################  TABLES #############################    
@@ -199,7 +196,7 @@ def data_handler2(request, what, tbl, url):
     if request.method == 'POST':
         refreshSelector = dropDownGeneric(request.POST,
                                           label='Refresh',
-                                          choices=refreshChoices,
+                                          choices=REFRESHCHOICES,
                                           tag='refresh')
             
         if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
@@ -289,7 +286,7 @@ def data_handler2(request, what, tbl, url):
 
     refreshSelector = dropDownGeneric(label='Refresh',
                                       initial={'refresh': refresh},
-                                      choices=refreshChoices,
+                                      choices=REFRESHCHOICES,
                                       tag='refresh')
             
     perPageSelector = dropDownGeneric(initial={'perpage':perpage},
