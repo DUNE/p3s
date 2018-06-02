@@ -27,6 +27,9 @@ from evdisp.models import evdisp
 
 from django import forms
 
+
+import random
+
 from utils.selectorUtils import dropDownGeneric, boxSelector, twoFieldGeneric
 
 #########################################################
@@ -322,6 +325,7 @@ def data_handler2(request, what, tbl, url):
     selectors.append(tsSelector)
 
     if(what=='evdisp'):
+
         juuidSelector = twoFieldGeneric(label1="Job UUID",
                                         field1="j_uuid",
                                         init1=j_uuid,
@@ -337,15 +341,28 @@ def data_handler2(request, what, tbl, url):
                                        field2="event",
                                        init2=evnum)
         selectors.append(runSelector)
+        
+    last_image = evdisp.objects.last()
+    
+    r = last_image.run
+    e = last_image.evnum
+    g = random.randint(1,6)
+    
+    u1 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'],
+                       '70724430-562c-11e8-958c-ffa00f412dde', r, e, 'raw', g)
+    
+    u2 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'],
+                       '70724430-562c-11e8-958c-ffa00f412dde', r, e, 'prep', g)
 
-    u = makeImageLink(domain, settings.SITE['dqm_evdisp_url'],
-                      '70724430-562c-11e8-958c-ffa00f412dde', 1, 111, 'prep', 1)
-    print(u)
         
     d['selectors']	= selectors
     d['refresh']	= refresh
     d['host']		= domain
-    d['img_url']	= u 
+    d['img_url1']	= u1
+    d['img_url2']	= u2
+    d['run']		= r
+    d['event']		= e
+    d['group']		= g
 
 
     return render(request, 'unitable2.html', d)

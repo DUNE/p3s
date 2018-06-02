@@ -8,9 +8,17 @@
       Image Catalog
     </th>
     {% if table_aux %}
-    <th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+    <!-- th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th -->
     <th>
       Run Catalog
+    </th>
+    {% endif %}
+
+    
+    {% if img_url1 %}
+    <!-- th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th -->
+    <th align="center">
+      Recent event: run {{ run }}, event {{ event }}, channel group {{ group }}
     </th>
     {% endif %}
   </tr>
@@ -20,16 +28,17 @@
     </td>
     
     {% if table_aux %}
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td align="top">
+    <!--td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td -->
+    <td align="center">
       {% render_table table_aux %}
     </td>
     {% endif %}
 
-    {% if img_url %}
-    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-    <td align="top">
-    <img src="{{ img_url }}" alt="NOT FOUND">
+    {% if img_url1 %}
+    <!-- td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td -->
+    <td align="center">
+    <img width="70%" src="{{ img_url1 }}" alt="NOT FOUND"><br/>
+    <img width="70%" src="{{ img_url2 }}" alt="NOT FOUND">
     </td>
     {% endif %}
     
