@@ -346,13 +346,12 @@ def data_handler2(request, what, tbl, url):
     
     r = last_image.run
     e = last_image.evnum
+    j = last_image.j_uuid
+    
     g = random.randint(1,6)
     
-    u1 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'],
-                       '70724430-562c-11e8-958c-ffa00f412dde', r, e, 'raw', g)
-    
-    u2 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'],
-                       '70724430-562c-11e8-958c-ffa00f412dde', r, e, 'prep', g)
+    u1 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'], j, r, e, 'raw', g)
+    u2 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'], j, r, e, 'prep', g)
 
         
     d['selectors']	= selectors

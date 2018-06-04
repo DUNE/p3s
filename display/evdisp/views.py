@@ -54,7 +54,7 @@ def delete(request):
                 return HttpResponse("Deletion of all evdisp entries failed")
 
         evdlist = parseCommaDash(evd_pk)
-        pdeleted = []
+        e_deleted = []
         for pk in evdlist:
             try:
                 evd = evdisp.objects.get(pk=pk)
