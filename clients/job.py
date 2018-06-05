@@ -252,7 +252,7 @@ if(json_in!=''):
                 jj['env']['P3S_INPUT_FILE'] = inputFile
                 if(verb>1): print('Overriding input file with: '+inputFile)
             if(version!=''):
-	        jj['env']['DUNETPCVER'] = version
+                jj['env']['DUNETPCVER'] = version
                 if(verb>1): print('Overriding DUNETPCVER with: '+version)
             
             jobList.append(Job(jj))
