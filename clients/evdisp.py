@@ -123,7 +123,9 @@ if(auto):
             if(verb>0): print(f)
             for t in ('raw','prep'):
                 
-                filedict['evnum']	= f.split('_')[1][3:] # will correct later
+                # important - this will change, this is a hack
+                # based on the current convention re: filenames
+                filedict['evnum']	= f.split('_')[2][3:] # will correct later
                 filedict['run']		= API.get2server('evd', 'maxrun', '')
                 
                 if(verb>0): print('Will use the run:', filedict['run'])
