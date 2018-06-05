@@ -40,6 +40,9 @@ PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'), ('400','4
 
 def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
     filename =  evdisp.makename(evnum, datatype, group)
+    print(evnum, datatype, group)
+    # debug only
+    print("filename", filename)
     return "http://"+site+"/"+evdispURL+"/"+j_uuid+"/"+filename
 
 
@@ -341,9 +344,15 @@ def data_handler2(request, what, tbl, url):
                                        field2="event",
                                        init2=evnum)
         selectors.append(runSelector)
+
+    last_image = None
+    try:
+        last_image = evdisp.objects.last()
+    except: # fail or empty - bail
+        pass
+
+    if(last_image is None): return render(request, 'unitable2.html', d)
         
-    last_image = evdisp.objects.last()
-    
     r = last_image.run
     e = last_image.evnum
     j = last_image.j_uuid
@@ -441,14 +450,14 @@ def display6(request):
                          % (domain, # this needs to point to the image, also below
                             settings.SITE['dqm_evdisp_url'],
                             raw.j_uuid,
-                            evdisp.makename(event, 'raw', N)
+                            evdisp.makename(int(event), 'raw', N)
                          ))
 
         prepUrl = ('http://%s/%s/%s/%s'
                          % (domain, # this needs to point to the image, also below
                             settings.SITE['dqm_evdisp_url'],
                             raw.j_uuid,
-                            evdisp.makename(event, 'prep', N)
+                            evdisp.makename(int(event), 'prep', N)
                          ))
         d['rows'].append([rawUrl,prepUrl])
 

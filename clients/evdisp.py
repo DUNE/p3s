@@ -79,10 +79,10 @@ timestamp	= args.timestamp
 verb		= args.verbosity
 
 cgdict = {
-    '0-2559':1,
-    '2560-4639':2,
-    '5120-7679':3,
-    '7680-9759':4,
+    '00000-02559':1,
+    '02560-04639':2,
+    '05120-07679':3,
+    '07680-09759':4,
     '10240-12799':5,
     '12800-14879':6
 }
@@ -123,10 +123,14 @@ if(auto):
             if(verb>0): print(f)
             for t in ('raw','prep'):
                 
-                # important - this will change, this is a hack
+                # important - this will change, this is a necessary stop-gap hack
                 # based on the current convention re: filenames
+                
                 filedict['evnum']	= f.split('_')[2][3:] # will correct later
                 filedict['run']		= API.get2server('evd', 'maxrun', '')
+
+                # in MCC the runs are now fixed at 1 so we need to run a counter
+                # we do ignore the constant "1" here in the filename
                 
                 if(verb>0): print('Will use the run:', filedict['run'])
                 
