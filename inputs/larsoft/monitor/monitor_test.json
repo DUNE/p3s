@@ -1,22 +1,25 @@
 [
     {
 	"name":		"Monitor:Main",
-	"timeout":	"1000",
+	"timeout":	"3000",
         "jobtype":	"monitor",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/monitor_main.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/monitor_main_2.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "DUNETPCVER":"v06_72_00",
+	    "P3S_COMMENT":"Testing 6_80, 79 had trouble, 78 had broken filenames",
+	    "P3S_XRD_URI":"xroot://eospublic.cern.ch/",
+	    "P3S_DATA":"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
+	    "DUNETPCVER":"v06_80_00",
 	    "DUNETPCQUAL":"e15:prof",
-	    "P3S_NEVENTS":"10",
-	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/lar_setup_1.sh",
+	    "P3S_NEVENTS":"5",
+	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/lar_setup_2.sh",
 	    "P3S_FCL":"pdsp_decode_rawtpcmonitor.fcl",
-	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/testinput/",
+	    "P3S_INPUT_DIR":"testinput",
 	    "P3S_INPUT_FILE":"np04_raw_run000985_1_dl3.root",
-	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
-	    "P3S_EVDISP_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/evdisp/",
-	    "P3S_USED_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/used/",
+	    "P3S_OUTPUT_DIR":"output",
+	    "P3S_MONITOR_DIR":"monitor",
+	    "P3S_USED_DIR":"used",
 	    "P3S_OUTPUT_FILE":"monitor.root"}
     }
 ]

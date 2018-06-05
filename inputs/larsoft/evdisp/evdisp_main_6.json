@@ -7,7 +7,7 @@
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "P3S_COMMENT":"Testing 6_79, 78 had broken filenames",
+	    "P3S_COMMENT":"Testing 6_80, 79 had trouble, 78 had broken filenames",
 	    "P3S_XRD_URI":"xroot://eospublic.cern.ch/",
 	    "P3S_DATA":"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
 	    "DUNETPCVER":"v06_80_00",
