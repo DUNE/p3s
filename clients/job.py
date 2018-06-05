@@ -117,6 +117,8 @@ parser.add_argument("-f", "--filename",	type=str,	help="value with which to over
 
 parser.add_argument("-v", "--verbosity",type=int,	help="set output verbosity", default=envDict['verb'], choices=[0, 1, 2])
 
+parser.add_argument("-V", "--version",	type=str,	help="value with which to override DUNETPCVER in the job template",
+		    default='')
 ########################### Parse all arguments #########################
 args = parser.parse_args()
 
@@ -134,6 +136,7 @@ delete	= args.delete
 json_in	= args.json_in
 Njobs	= args.number
 delay	= args.delay
+version	= args.version
 
 
 filename= args.filename
@@ -220,14 +223,19 @@ if(j_uuid!=''): exit(-1)
 # Check if we want to read a json file with job templates and register
 
 if(json_in!=''):
-    inputFile = ''
+    inputFile	= ''
 
     try:
         inputFile = os.environ['P3S_INPUT_FILE']
     except:
         pass
 
-    if(filename!=''): inputFile = filename
+    try:
+        version = os.environ['DUNETPCVER']
+    except:
+        pass
+
+    if(filename!=''):	inputFile = filename
 
     data = takeJson(json_in, verb)
 
@@ -240,7 +248,13 @@ if(json_in!=''):
                 print('FAIL: The payload is not readable or executable for members of your group, plese check the path.')
                 print('Also make sure any I/O files you specify in the "env" attribute are READ/WRITE accessible to members of your group.')
                 exit(-1)
-            if(inputFile!=''): jj['env']['P3S_INPUT_FILE'] = inputFile
+            if(inputFile!=''):
+                jj['env']['P3S_INPUT_FILE'] = inputFile
+                if(verb>1): print('Overriding input file with: '+inputFile)
+            if(version!=''):
+	        jj['env']['DUNETPCVER'] = version
+                if(verb>1): print('Overriding DUNETPCVER with: '+version)
+            
             jobList.append(Job(jj))
     
     if(verb>0): print("Number of jobs to be submitted: %s" % len(jobList))
