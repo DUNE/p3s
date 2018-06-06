@@ -13,7 +13,7 @@
 	    "DUNETPCVER":"v06_80_00",
 	    "DUNETPCQUAL":"e15:prof",
 	    "P3S_NEVENTS":"5",
-	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/lar_setup_2.sh",
+	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_2.sh",
 	    "P3S_FCL":"pdsp_decode_rawtpcmonitor.fcl",
 	    "P3S_INPUT_DIR":"testinput",
 	    "P3S_INPUT_FILE":"np04_raw_run000985_1_dl3.root",
