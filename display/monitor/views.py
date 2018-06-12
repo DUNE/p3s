@@ -40,9 +40,8 @@ PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'), ('400','4
 
 def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
     filename =  evdisp.makename(evnum, datatype, group)
-    print(evnum, datatype, group)
-    # debug only
-    print("filename", filename)
+    # debug only:  print(evnum, datatype, group)
+    # debug only:  print("filename", filename)
     return "http://"+site+"/"+evdispURL+"/"+j_uuid+"/"+filename
 
 
@@ -55,7 +54,7 @@ def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
 
 class RunTable(tables.Table):
     Run	= tables.Column()
-    ts	= tables.Column()
+    ts	= tables.Column(verbose_name='Time Added to DB')
     
     def set_site(self, site=''):
         self.site=site
@@ -196,7 +195,7 @@ def puritychart(request, what):
 
 #########################################################    
 # general request handler for summary type of a table
-def data_handler2(request, what, tbl, url):
+def data_handler2(request, what, tbl, tblHeader, url):
     domain	= request.get_host()
 
     host	= request.GET.get('host','')
@@ -274,15 +273,12 @@ def data_handler2(request, what, tbl, url):
                 if(event!=''): q+= 'evnum='+event+'&'
                 
 
-        return makeQuery(url, q)
-    # We built a query and come to same page with the query parameters
+        return makeQuery(url, q) # We built a query and will come to same page/view with the query parameters
     # -------------------------------------------------------------------------
 
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
-
     d		= dict(domain=domain, time=str(now))
-
-    objs = eval(what).objects.order_by('-pk').all()
+    objs	= eval(what).objects.order_by('-pk').all()
 
     if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin).order_by('-pk')
     if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)	# .order_by('-pk')
@@ -291,7 +287,20 @@ def data_handler2(request, what, tbl, url):
     if(run!=''):	objs = objs.filter(run=run)
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
 
-    t = eval(tbl)(objs)
+    ##############################
+
+    t = None
+    print('!', tbl)
+    if(tbl=='RunTable'):
+        print(tbl)
+        RunData = []
+        distinct_evd = evdisp.objects.distinct("run").all()
+        for e in distinct_evd:
+            RunData.append({'Run': e.run, 'ts': e.ts })
+            t = RunTable(RunData)
+    else:
+        t = eval(tbl)(objs)
+    
     t.set_site(domain)
     
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
@@ -375,7 +384,8 @@ def data_handler2(request, what, tbl, url):
     d['event']		= e
     d['group']		= g
 
-
+    d['tblHeader']	= tblHeader
+    
     return render(request, 'unitable2.html', d)
 
 #########################################################    
@@ -513,11 +523,3 @@ def display6(request):
 #       super(PurityTable, self).__init__(*args, **kwargs)
 
 
-##############################
-#        RunData = []
-#        distinct_evd = evdisp.objects.distinct("run").all()
-#        for e in distinct_evd:
-#            RunData.append({'Run': e.run, 'ts': e.ts })
-
-
-#        d['table_aux']	= RunTable(RunData)

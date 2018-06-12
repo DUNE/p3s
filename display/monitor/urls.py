@@ -5,12 +5,17 @@ from . import views
 urlpatterns = [
     url(r'^puritytable',
 	views.data_handler2,
-        {'what':'pur','tbl':'PurityTable','url':'puritytable'},
+        {'what':'pur','tbl':'PurityTable','tblHeader':'Purity Table','url':'puritytable'},
         name='puritytable'),
     
     url(r'^eventdisplay',
 	views.data_handler2,
-        {'what':'evdisp','tbl':'EvdispTable','url':'eventdisplay'},
+        {'what':'evdisp','tbl':'EvdispTable','tblHeader':'Image Catalog','url':'eventdisplay'},
+        name='evdisptable'),
+
+    url(r'^runeventdisplay',
+	views.data_handler2,
+        {'what':'evdisp','tbl':'RunTable','tblHeader':'Available Runs','url':'runeventdisplay'},
         name='evdisptable'),
 
     url(r'^puritychart',views.puritychart,{'what':'purity'},name='puritychart'),

@@ -1,12 +1,16 @@
 {% load static %}
 <hr/>
-<table width="80%">
+    <img src="{% static 'images/dune_logo.png' %}">
+<table width="30%" border="0">
   <tr>
-    <td><img src="{% static 'images/dune_logo.png' %}"> </td>
-    <td><a href="http://{{ domain }}">			Home			</a><br/> </td>
-    <td><a href="http://{{ domain }}/monitor/puritytable">	Purity Table		</a><br/></td>
-    <td><a href="http://{{ domain }}/monitor/puritychart">	Purity Chart		</a><br/></td>
-    <td><a href="http://{{ domain }}/monitor/eventdisplay">	Event Display </a><br/></td>
+    <td><a href="http://{{ domain }}">DQM Home</a><br/> </td>
+    <td align="center"><a href="http://{{ domain }}/monitor/puritytable">	Purity Table		</a><br/></td>
+    <td align="center"><a href="http://{{ domain }}/monitor/runeventdisplay">	Event Display by Run</a><br/></td>
+  </tr>
+  <tr>
+    <td> </td>
+    <td align="center"><a href="http://{{ domain }}/monitor/puritychart">	Purity Chart		</a><br/></td>
+    <td align="center"><a href="http://{{ domain }}/monitor/eventdisplay">Event Display Image Reference</a><br/></td>
   </tr>
 </table>
 

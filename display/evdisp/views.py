@@ -102,7 +102,7 @@ def add(request):
     json_data	= post.get('json', '')
 
     data = json.loads(json_data)
-    print(data)
+    # print(data)
 
     for d in data:
         e=evdisp()
