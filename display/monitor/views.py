@@ -345,22 +345,25 @@ def data_handler2(request, what, tbl, url):
                                        init2=evnum)
         selectors.append(runSelector)
 
-    last_image = None
-    try:
-        last_image = evdisp.objects.last()
-    except: # fail or empty - bail
-        pass
 
-    if(last_image is None): return render(request, 'unitable2.html', d)
+
+
         
-    r = last_image.run
-    e = last_image.evnum
-    j = last_image.j_uuid
+    u1, u2, r, e, g = None, None, None, None, None
     
-    g = random.randint(1,6)
+    if(what=='evdisp'):
+        last_image = None
+        try:
+            last_image = evdisp.objects.last()
+            r, e, j	= last_image.run, last_image.evnum, last_image.j_uuid
+            g =	random.randint(1,6)
     
-    u1 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'], j, r, e, 'raw', g)
-    u2 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'], j, r, e, 'prep', g)
+            u1 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'], j, r, e, 'raw', g)
+            u2 = makeImageLink(domain, settings.SITE['dqm_evdisp_url'], j, r, e, 'prep', g)
+
+        except: # fail or empty - bail
+            pass   #   if(last_image is None): return render(request, 'unitable2.html', d)
+
 
         
     d['selectors']	= selectors
