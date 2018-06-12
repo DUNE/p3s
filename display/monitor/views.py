@@ -47,7 +47,9 @@ def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
 
 #+"&run="+str(run)+"&event="+str(evnum)+"&changroup="+str(group)+"&datatype="+datatype
     
-    
+def makeEvLink(site, run, evnum):
+    return mark_safe('<a href="http://%s/monitor/display6?run=%s&event=%s">%s</a>' % (site, run, evnum, evnum))
+
 #########################################################    
 ###################  TABLES #############################    
 #########################################################
@@ -299,11 +301,9 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
         for e in distinct_run:
             selected = []
-            for e in objs.filter(run=e.run).distinct("evnum"):
-                # print(e.run, e.evnum)
-                selected.append(str(e.evnum))
+            for e in objs.filter(run=e.run).distinct("evnum"): selected.append(makeEvLink(domain, e.run, e.evnum))
                 
-            RunData.append({'Run': e.run, 'ts': e.ts, 'evs': ','.join(selected) })
+            RunData.append({'Run': e.run, 'ts': e.ts, 'evs': mark_safe(','.join(selected)) })
             t = RunTable(RunData)
     else:
         t = eval(tbl)(objs.order_by('-pk'))

@@ -1,18 +1,20 @@
 {% load static %}
 <hr/>
-    <img src="{% static 'images/dune_logo.png' %}">
+<img src="{% static 'images/dune_logo.png' %}">
+<center>
 <table width="30%" border="0">
   <tr>
     <td><a href="http://{{ domain }}">DQM Home</a><br/> </td>
-    <td align="center"><a href="http://{{ domain }}/monitor/puritytable">	Purity Table		</a><br/></td>
-    <td align="center"><a href="http://{{ domain }}/monitor/runeventdisplay">	Event Display by Run</a><br/></td>
+    <td align="center"><a href="http://{{ domain }}/monitor/puritytable">Purity Table</a><br/></td>
+    <td align="center"><a href="http://{{ domain }}/monitor/runeventdisplay">Event Display by Run and Event</a><br/></td>
   </tr>
   <tr>
     <td> </td>
-    <td align="center"><a href="http://{{ domain }}/monitor/puritychart">	Purity Chart		</a><br/></td>
-    <td align="center"><a href="http://{{ domain }}/monitor/eventdisplay">Event Display Image Reference</a><br/></td>
+    <td align="center"><a href="http://{{ domain }}/monitor/puritychart">Purity Chart</a><br/></td>
+    <td align="center"><a href="http://{{ domain }}/monitor/eventdisplay">Event Display Image Catalog</a><br/></td>
   </tr>
 </table>
+</center>
 
 <!-- the following was in the top nav bar before but we need to move to a prod quality
 management of ev displ images -->
