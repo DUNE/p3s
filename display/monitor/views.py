@@ -55,6 +55,7 @@ def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
 class RunTable(tables.Table):
     Run	= tables.Column()
     ts	= tables.Column(verbose_name='Time Added to DB')
+    evs	= tables.Column(verbose_name='Event Numbers')
     
     def set_site(self, site=''):
         self.site=site
@@ -278,9 +279,10 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
     d		= dict(domain=domain, time=str(now))
-    objs	= eval(what).objects.order_by('-pk').all()
+#    objs	= eval(what).objects.order_by('-pk').all()
+    objs	= eval(what).objects.all()
 
-    if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin).order_by('-pk')
+    if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin)# .order_by('-pk')
     if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)	# .order_by('-pk')
     if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
     if(d_type!=''):	objs = objs.filter(datatype=d_type)
@@ -290,16 +292,21 @@ def data_handler2(request, what, tbl, tblHeader, url):
     ##############################
 
     t = None
-    print('!', tbl)
     if(tbl=='RunTable'):
-        print(tbl)
         RunData = []
-        distinct_evd = evdisp.objects.distinct("run").all()
-        for e in distinct_evd:
-            RunData.append({'Run': e.run, 'ts': e.ts })
+        distinct_run = objs.order_by('-run').distinct("run").all()
+        if(run!=''): distinct_run = objs.filter(run=run).distinct("run").all()
+
+        for e in distinct_run:
+            selected = []
+            for e in objs.filter(run=e.run).distinct("evnum"):
+                # print(e.run, e.evnum)
+                selected.append(str(e.evnum))
+                
+            RunData.append({'Run': e.run, 'ts': e.ts, 'evs': ','.join(selected) })
             t = RunTable(RunData)
     else:
-        t = eval(tbl)(objs)
+        t = eval(tbl)(objs.order_by('-pk'))
     
     t.set_site(domain)
     
@@ -360,7 +367,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
         
     u1, u2, r, e, g = None, None, None, None, None
     
-    if(what=='evdisp'):
+    if(tbl=='EvdispTable'):
         last_image = None
         try:
             last_image = evdisp.objects.last()
