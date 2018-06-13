@@ -35,7 +35,7 @@ from utils.selectorUtils import dropDownGeneric, boxSelector, twoFieldGeneric
 #########################################################
 REFRESHCHOICES	= [('', 'Never'), ('10', '10s'), ('30', '30s'), ('60','1min'), ('120', '2min'),  ]
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'), ('400','400'),]
-
+TPCCHOICES	= [('', 'All'), ('1', '1'), ('2','2'), ('5','5'), ('6','6'), ('9','9'), ('10','10'), ]
 
 
 def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
@@ -211,6 +211,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     run		= request.GET.get('run','')
     evnum	= request.GET.get('evnum','')
     refresh	= request.GET.get('refresh',None)
+    tpc		= request.GET.get('tpc','')
 
     q=''	# stub for a query that may be built
 
@@ -230,6 +231,14 @@ def data_handler2(request, what, tbl, tblHeader, url):
         
         if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
 
+        if(what=='pur'):
+            tpcSelector = dropDownGeneric(request.POST,
+                                          initial={'tpc':tpc},
+                                          label='tpc',
+                                          choices = TPCCHOICES,
+                                          tag='tpc')
+            if tpcSelector.is_valid(): q += tpcSelector.handleDropSelector()
+        
         tsSelector = twoFieldGeneric(request.POST,
                                             label1="min. time",
                                             field1="tsmin",
@@ -290,6 +299,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(d_type!=''):	objs = objs.filter(datatype=d_type)
     if(run!=''):	objs = objs.filter(run=run)
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
+    if(tpc!=''):	objs = objs.filter(tpc=tpc)
 
     ##############################
 
@@ -319,30 +329,30 @@ def data_handler2(request, what, tbl, tblHeader, url):
     d['pageName']	= ': '+tbl
     d['message']	= eval(what).message()
 
+    selectors = []
     refreshSelector = dropDownGeneric(label='Refresh',
                                       initial={'refresh': refresh},
                                       choices=REFRESHCHOICES,
                                       tag='refresh')
+    selectors.append(refreshSelector)
             
     perPageSelector = dropDownGeneric(initial={'perpage':perpage},
                                       label='# per page',
                                       choices = PAGECHOICES,
                                       tag='perpage')
-    
-    
-    selectors = []
-    
-    selectors.append(refreshSelector)
     selectors.append(perPageSelector)
     
-    tsSelector = twoFieldGeneric(label1="min. time",
-                                 field1="tsmin",
-                                 init1=tsmin,
-                                 label2="max. time",
-                                 field2="tsmax",
+    tsSelector = twoFieldGeneric(label1="min. time", field1="tsmin", init1=tsmin, label2="max. time", field2="tsmax",
                                  init2=tsmax)
     selectors.append(tsSelector)
 
+    if(what=='pur'):
+        tpcSelector = dropDownGeneric(initial={'tpc':tpc},
+                                      label='tpc',
+                                      choices = TPCCHOICES,
+                                      tag='tpc')
+        selectors.append(tpcSelector)
+        
     if(what=='evdisp'):
 
         juuidSelector = twoFieldGeneric(label1="Job UUID",
