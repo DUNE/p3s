@@ -30,7 +30,8 @@ from django import forms
 
 import random
 
-from utils.selectorUtils import dropDownGeneric, boxSelector, twoFieldGeneric
+from utils.selectorUtils	import dropDownGeneric, boxSelector, twoFieldGeneric
+from utils.navbar		import TopTable
 
 #########################################################
 REFRESHCHOICES	= [('', 'Never'), ('10', '10s'), ('30', '30s'), ('60','1min'), ('120', '2min'),  ]
@@ -126,8 +127,13 @@ def makeQuery(page, q=''):
 
     if(q==''): return HttpResponseRedirect(gUrl)
     return HttpResponseRedirect(qUrl+q)
+
+
+
+
 #########################################################    
-# general request handler for summary type of a table
+####################  VIEWS #############################    
+#########################################################
 def puritychart(request, what):
     
     host	= request.GET.get('host','')
@@ -191,8 +197,10 @@ def puritychart(request, what):
     
     selectors = []
     selectors.append(tsSelector)
-    d['selectors'] = selectors
-    d['pageName'] = ': purity timeline'
+    
+    d['selectors']	= selectors
+    d['pageName']	= ': purity timeline'
+    d['navtable']	= TopTable(domain)
 
     return render(request, 'purity_chart.html', d)
 
@@ -402,6 +410,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     d['group']		= g
 
     d['tblHeader']	= tblHeader
+    d['navtable']	= TopTable(domain)
     
     return render(request, 'unitable2.html', d)
 
@@ -424,6 +433,7 @@ def eventdisplay(request):
     d['event']		= event
     
     d['pageName']	= ': Event Display'
+    d['navtable']	= TopTable(domain)
 
     
     
@@ -452,6 +462,7 @@ def display1(request):
     
     d['pageName']	= ': Event Display'
     d['message']	= evdisp.message()
+    d['navtable']	= TopTable(domain)
     
     return render(request, 'display1.html', d)
 #########################################################    
@@ -496,6 +507,7 @@ def display6(request):
     d['ts']		= ts
     d['pageName']	= ': Event Display'
     d['message']	= evdisp.message()
+    d['navtable']	= TopTable(domain)
     
     return render(request, 'display6.html', d)
 

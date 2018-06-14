@@ -6,7 +6,7 @@ from django.utils.safestring		import mark_safe
 def NavBarData(domain):
     data = []
     purityTableLink	= mark_safe('<a href="http://'+domain+'/monitor/puritytable">Purity Table</a>')
-    purityChartLink	= mark_safe('<a href="http://'+domain+'/monitor/purityshart">Purity Charts</a>')
+    purityChartLink	= mark_safe('<a href="http://'+domain+'/monitor/puritychart">Purity Charts</a>')
     evdispRunLink	= mark_safe('<a href="http://'+domain+'/monitor/runeventdisplay">Event Display by Run and Event</a>')
     evdispCatalogLink	= mark_safe('<a href="http://'+domain+'/monitor/eventdisplay">Event Display Image Catalog</a>')
     
