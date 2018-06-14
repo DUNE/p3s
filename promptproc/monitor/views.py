@@ -51,6 +51,7 @@ from .monitorTables import *
 
 from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.miscUtils			import makeTupleList
+from utils.navbar			import TopTable
 
 from django import forms
 
@@ -194,6 +195,16 @@ def data_handler(request, what):
     stateSelector, perPageSelector,userSelector, typeSelector,serviceSelector	= None, None, None, None, None
 
     t = None  # placeholder for the main table object
+    try:
+        refreshSelector = dropDownGeneric(request.POST,
+                                          label='Refresh',
+                                          choices=refreshChoices,
+                                          tag='refresh')
+            
+        if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
+    except:
+        pass
+        
     
     if(what in ['job', 'pilot', 'dag', 'workflow', 'service']):
         
@@ -254,16 +265,6 @@ def data_handler(request, what):
             #     pass
 
 
-            try:
-                refreshSelector = dropDownGeneric(request.POST,
-                                                  label='Refresh',
-                                                  choices=refreshChoices,
-                                                  tag='refresh')
-            
-                if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
-            except:
-                pass
-        
             perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
             if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
                     
@@ -367,6 +368,7 @@ def data_handler(request, what):
 
     d['selectors']	= selectors
     d['refresh']	= refresh
+    d['navtable']	= TopTable(domain)
 
     return render(request, template, d)
 
@@ -519,6 +521,8 @@ def detail_handler(request, what):
         d['aux2title'] = 'Data for "'+theName+'"'
         RequestConfig(request).configure(aux2)
 
+    d['navtable']	= TopTable(domain)
+        
     return render(request, template, d)
 
 

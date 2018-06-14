@@ -22,6 +22,7 @@ from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.timeUtils import uptime
 from utils.timeUtils import loadavg
 
+from utils.navbar			import TopTable
 
 refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
 
@@ -178,6 +179,8 @@ def index(request):
                       'users':		users,
                       'selectors':	selectors,
                       'refresh':	refresh,
+                      'navtable':	TopTable(domain),
+
                   }
     )
 

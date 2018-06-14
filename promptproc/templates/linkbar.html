@@ -1,3 +1,4 @@
+{% load render_table from django_tables2 %}
 {% load static %}
 <table width="100%">
   <tr> <!-- style="font-size:20px" -->
@@ -8,9 +9,9 @@
   </tr>
 </table>
 <hr/>
-<center>
+<!-- center>
 <table width="90%">
-  <tr> <!-- style="font-size:20px" -->
+  <tr>
     <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/jobs">	Jobs</a></td>
     <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/pilots">	Pilots</a></td>
 
@@ -20,12 +21,20 @@
     <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/data">	Data</a></td>
     <td align="center" width="14%" >  <a href="http://{{ domain }}/monitor/datatypes">	Data Types</a></td>
     <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/services">	Services</a></td>
-    <!-- retire the files till later -->
-    <!-- td align="center" width="12%" >  <a href="http://{{ domain }}/monitor/filesystem">Filesystem</a></td -->
 
     <td align="center" width="12%"><a href="http://{{ domain }}/monitor/sites">	Sites</a></td>
 
   </tr>
 </table>
+</center -->
+
+{% if navtable %}
+<center>
+  <!-- img src="{% static 'images/dune_logo.png' %}" -->
+{% render_table navtable %}
 </center>
+{% endif %}
+
+
+
     <!-- td width="5%"><h2>p3s</h2></td -->
