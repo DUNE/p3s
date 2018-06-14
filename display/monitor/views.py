@@ -219,6 +219,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     run		= request.GET.get('run','')
     evnum	= request.GET.get('evnum','')
     refresh	= request.GET.get('refresh',None)
+    showjob	= request.GET.get('showjob',None)
     tpc		= request.GET.get('tpc','')
 
     q=''	# stub for a query that may be built
@@ -294,7 +295,12 @@ def data_handler2(request, what, tbl, tblHeader, url):
                 
 
         return makeQuery(url, q) # We built a query and will come to same page/view with the query parameters
+
+
+    ###########################################################################
     # -------------------------------------------------------------------------
+    ###########################################################################
+    
 
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
     d		= dict(domain=domain, time=str(now))
@@ -309,7 +315,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
     if(tpc!=''):	objs = objs.filter(tpc=tpc)
 
-    ##############################
+    #-------------
 
     t = None
     if(tbl=='RunTable'):
@@ -325,7 +331,9 @@ def data_handler2(request, what, tbl, tblHeader, url):
             t = RunTable(RunData)
     else:
         t = eval(tbl)(objs.order_by('-pk'))
-    
+
+
+    if(tbl=='EvdispTable' and showjob is None): t.exclude = ('j_uuid',)
     t.set_site(domain)
     
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
