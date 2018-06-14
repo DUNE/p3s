@@ -368,7 +368,7 @@ def data_handler(request, what):
 
     d['selectors']	= selectors
     d['refresh']	= refresh
-    d['navtable']	= TopTable(domain)
+    d['navtable']	= TopTable(domain, dqm_domain)
 
     return render(request, template, d)
 
@@ -521,7 +521,7 @@ def detail_handler(request, what):
         d['aux2title'] = 'Data for "'+theName+'"'
         RequestConfig(request).configure(aux2)
 
-    d['navtable']	= TopTable(domain)
+    d['navtable']	= TopTable(domain, dqm_domain)
         
     return render(request, template, d)
 

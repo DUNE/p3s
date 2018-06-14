@@ -179,7 +179,7 @@ def index(request):
                       'users':		users,
                       'selectors':	selectors,
                       'refresh':	refresh,
-                      'navtable':	TopTable(domain),
+                      'navtable':	TopTable(domain, dqm_domain),
 
                   }
     )
