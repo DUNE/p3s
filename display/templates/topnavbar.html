@@ -1,3 +1,4 @@
+{% load render_table from django_tables2 %}
 {% load static %}
 <hr/>
 <img src="{% static 'images/dune_logo.png' %}">
@@ -16,9 +17,10 @@
 </table>
 </center>
 
-<!-- the following was in the top nav bar before but we need to move to a prod quality
-management of ev displ images -->
-
-<!-- td><a href="http://{{ domain }}/evdisp">		Event Display Images	</a><br/></td -->
+{% if navtable %}
+<center>
+{% render_table navtable %}
+</center>
+{% endif %}
 
 <hr/>

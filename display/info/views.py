@@ -9,9 +9,10 @@ from django.utils	import timezone
 from django.conf	import settings
 
 
-from utils.timeUtils import uptime
-from utils.timeUtils import loadavg
+from utils.timeUtils	import uptime
+from utils.timeUtils	import loadavg
 
+from utils.navbar	import TopTable
 
 def index(request):
     hostname	= settings.HOSTNAME
@@ -19,14 +20,13 @@ def index(request):
     upt		= uptime()
     ldavg	= loadavg()
 
+    
     return render(request, 'index.html',
                   {
                       'domain':		domain,
                       'hostname':	hostname,
                       'uptime':		upt,
-                      'time':		'timeString',
-                      'summary':	{'tSummary':'summary'},
-                      'system':		{'tSystem':'system'},
+                      'navtable':	TopTable(domain),
                   }
 
 )

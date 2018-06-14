@@ -1,4 +1,3 @@
-{% load render_table from django_tables2 %}
 {% load static %}
 <!doctype html>
 <html>
@@ -12,11 +11,13 @@
   
   <body>
 
-    
+    <!-- TOP TOP TOP -->
     {% include "topnavbar.html" %}
-    <h2>protoDUNE DQM: Home@{{ hostname }}</h2>
 
-    <table border="1">
+    
+    <!-- h2>protoDUNE DQM content server running on {{ hostname }}, uptime {{ uptime }}</h2 -->
+
+    <!-- table border="1">
       <tr>
 	<th>Uptime</th>
 	<th>System</th>
@@ -29,7 +30,7 @@
 {{ hostname }}
 	</td>
       </tr>
-    </table>
+    </table -->
 
     <hr/>  
   </body>
