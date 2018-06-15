@@ -163,6 +163,7 @@ def data_handler(request, what):
     pk		= request.GET.get('pk','')
     name	= request.GET.get('name','')
     state	= request.GET.get('state','')
+    error	= request.GET.get('error','')
     jobtype	= request.GET.get('jobtype','')
     user	= request.GET.get('user','')
     refresh	= request.GET.get('refresh', None)
@@ -348,6 +349,10 @@ def data_handler(request, what):
 
         try:
             objs = objects.filter(**kwargs)
+            if(state=='error'):
+                kwargs['errcode__in'] = ['0','']
+                objs = objs.exclude(**kwargs)
+
             Nfilt = objs.count()
             t = chosenTable(objs)
         except:
