@@ -82,7 +82,7 @@ SELECTORS	= {
     {'stateLabel':'Job States',
      'states':[
          ('all',	'All'),		('template',	'Template'),	('defined',	'Defined'),	('running',	'Running'),
-         ('finished','Finished'),	('pilotTO','Pilot Timed Out'),	('timelimit',	'Time Limit'),
+         ('finished','Finished'),	('pilotTO','Pilot Timed Out'),	('timelimit',	'Time Limit'),  ('error',	'Error'),
      ],
      'stateselector':True,
      'userselector': True,
@@ -175,7 +175,12 @@ def data_handler(request, what):
     perpage	= request.GET.get('perpage','25')
 
     states = ['all',]
-    if(state != ''): states = state.split(',')
+    stateD = {'all':True}
+    if(state != ''):
+        states = state.split(',')
+        stateD = {}
+        for st in states:
+            stateD[st] = True
 
     initUser=user
     if(user==''): initUser='All'
@@ -270,13 +275,14 @@ def data_handler(request, what):
                     
             return makeQuery(what, q) # will go and get the query results...
 
-        ###################################################################
-        ##### IF IT'S NOT RESPONSE TO a "POST", BUILD THE INITIAL PAGE ####
-        ###################################################################
+        #######################################################################################
+        ##### IF IT'S NOT RESPONSE TO a "POST", BUILD THE INITIAL PAGE AND/OR RUN A QUERY #####
+        #######################################################################################
+        
         refresh		= request.GET.get('refresh', None)
         try:
             if(selector['stateselector']):
-                stateSelector	= boxSelector(what=what,
+                stateSelector	= boxSelector(what=what,initial={'stateChoice':stateD},
                                               states=SELECTORS[what]['states'],
                                               label=SELECTORS[what]['stateLabel'])
         except:
@@ -318,9 +324,12 @@ def data_handler(request, what):
         perPageSelector	= dropDownGeneric(initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
 
         
-#        timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time') # work in progress
+        # 4 later: timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time')
 
-
+        ###############################
+        # initiate the  query
+        ###############################
+        
         objects = eval(what).objects.order_by('-pk') # newest on top
         kwargs = {}
 
@@ -330,7 +339,12 @@ def data_handler(request, what):
 
         # corner cases
         if(serviceName	!= ''):	kwargs['name']		= serviceName
-        if(state	!= ''):	kwargs['state__in']	= states # note multiple values
+        if(state	!= ''):
+            if(state=='error'):
+                pass
+            else:
+                kwargs['state__in']	= states # note multiple values
+#        if(error	!= '')
 
         try:
             objs = objects.filter(**kwargs)

@@ -11,7 +11,7 @@ class boxSelector(forms.Form):
        super(boxSelector, self).__init__(*args, **kwargs)
        self.fields['stateChoice'].choices	= self.states # SELECTORS[self.what]['states']
        self.fields['stateChoice'].label		= self.label  # SELECTORS[self.what]['stateLabel']
-
+       
     def handleBoxSelector(self):
         selectedStates = self.cleaned_data['stateChoice']
         if len(selectedStates):
