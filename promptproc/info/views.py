@@ -8,6 +8,9 @@ from django.http	import HttpResponseRedirect # for future dev
 from django.utils	import timezone
 from django.conf	import settings
 
+
+from django.utils.safestring		import mark_safe
+
 # Provisional, for stats - don't forget to delete
 # if this view is refactored:
 from jobs.models			import job
@@ -22,9 +25,13 @@ from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.timeUtils import uptime
 from utils.timeUtils import loadavg
 
+from utils.navbar			import TopTable
 
 refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
 
+
+def makeRefLink(domain, what):
+    return mark_safe('<a href="http://'+domain+'/monitor/jobs?state='+what+'">'+what+'</a>')
 #######################
 def index(request):
     if request.method == 'POST':
@@ -131,12 +138,13 @@ def index(request):
 
     times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
     states	= (
-        ('defined','ts_def',None),
-        ('started','ts_sta',None),
-        ('stopped','ts_sto',None),
-        ('pilotTO','ts_sto','pilotTO'),
-        ('over time limit','ts_sto','timelimit'),
-        ('errors','ts_sto','error'),
+        (makeRefLink(domain, 'defined'),'ts_def',None),
+        (makeRefLink(domain, 'started'),'ts_sta',None),
+        (makeRefLink(domain, 'finished'),'ts_sto',None),
+        (makeRefLink(domain, 'pilotTO'),'ts_sto','pilotTO'),
+        (makeRefLink(domain, 'timelimit'),'ts_sto','timelimit'),
+        (makeRefLink(domain, 'error'),'ts_sto','error'),
+#        (mark_safe('<a href="http://'+domain+'/monitor/jobs?state=error">'+'errors</a>'),'ts_sto','error'),
     )
     
     for s in states:
@@ -178,6 +186,8 @@ def index(request):
                       'users':		users,
                       'selectors':	selectors,
                       'refresh':	refresh,
+                      'navtable':	TopTable(domain, dqm_domain),
+
                   }
     )
 

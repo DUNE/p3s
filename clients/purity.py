@@ -54,7 +54,7 @@ parser.add_argument("-r", "--run",	type=str,	default='',
                     help="run number of the entries to be added, adjusted or deleted")
 
 parser.add_argument("-T", "--timestamp",type=str,	default='',
-                    help="override the clock when generating a timestamp")
+                    help="enforce/override the timestamp - YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]")
 
 
 parser.add_argument("-S", "--server",	type=str,

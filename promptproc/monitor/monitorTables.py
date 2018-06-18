@@ -204,7 +204,7 @@ class PilotTable(MonitorTable):
     class Meta:
         model	= pilot
         attrs	= {'class': 'paleblue'}
-        exclude	= ('uuid', 'j_uuid', 'jobs_done', 'site', 'host',)
+        exclude	= ('j_uuid', 'jobs_done', 'site', 'host',)
 
 
 #################### DAG

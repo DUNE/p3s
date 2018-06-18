@@ -1,22 +1,25 @@
-{% load render_table from django_tables2 %}
 {% load static %}
 <!doctype html>
 <html>
   <head>
     <title>protoDUNE DQM: Home@{{ hostname }}</title>
     <!-- THIS IS TEMP, until we plant it on Apache -->
-    <link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
-    <!-- link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" / -->
+    <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
+
+    <!-- APACHE -->
+    <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
   </head>
 
   
   <body>
 
-    
+    <!-- TOP TOP TOP -->
     {% include "topnavbar.html" %}
-    <h2>protoDUNE DQM: Home@{{ hostname }}</h2>
 
-    <table border="1">
+    
+    <!-- h2>protoDUNE DQM content server running on {{ hostname }}, uptime {{ uptime }}</h2 -->
+
+    <!-- table border="1">
       <tr>
 	<th>Uptime</th>
 	<th>System</th>
@@ -29,7 +32,7 @@
 {{ hostname }}
 	</td>
       </tr>
-    </table>
+    </table -->
 
     <hr/>  
   </body>
