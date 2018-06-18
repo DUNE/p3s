@@ -21,6 +21,7 @@ else
     export INPUT_FILE=./$P3S_INPUT_FILE
 fi
 
+P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/mon/'`
 
 lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 
@@ -46,11 +47,7 @@ if [ ! -d "$DESTINATION" ]; then
     exit -1
 fi
 
-roots=`ls *.root`
-
-ls -l *.root
-
-
+roots=$P3S_OUTPUT_FILE    #`ls *.root`
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -77,5 +74,12 @@ du $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
 
-echo 'done'
+echo 'done with cleanup'
+
+cd $DESTINATION
+cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
+
+ROOT_MACRO_TORUN=makeplotsV2.C'("'${P3S_OUTPUT_FILE}'");'
+root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
+
 exit 0
