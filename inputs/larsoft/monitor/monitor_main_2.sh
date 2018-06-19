@@ -11,6 +11,8 @@ source ${P3S_LAR_SETUP}
 
 echo MSG finished larsoft setup
 
+echo XRD: $P3S_XRD_URI
+
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage in the data
@@ -22,6 +24,8 @@ else
 fi
 
 P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/mon/'`
+
+echo Output file: $P3S_OUTPUT_FILE
 
 lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 
