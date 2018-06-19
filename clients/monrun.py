@@ -154,17 +154,21 @@ if(json_in!=''):
     with open(json_in, 'r') as myfile:
         data = myfile.read()
 
+    data = takeJson(json_in, verb)
 
     print(data)
 
-    j = json.loads(json_in)
-    print(j["run"])
+    #j = json.loads(json_in)
+    print(data[0]["run"])
+
+    rs = data[0]["run"].split('_')
+    run = rs[0][3:]
+    subrun = rs[1][6:]
 
     d['json'] = data
     d['run'] = run
-    d['subrun'] = 1
+    d['subrun'] = subrun
     
-    # data = takeJson(json_in, verb)
 
     # for entry in data:
     #     if(run!=''):

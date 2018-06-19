@@ -84,10 +84,13 @@ class PurityTable(MonitorTable):
         model = pur
         attrs = {'class': 'paleblue'}
 #---
-class MonitorRunTable(MonitorTable):
+class MonRunTable(MonitorTable):
+    items = tables.Column(verbose_name='Items')
+
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
+        exclude = ('summary',)
 #---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
@@ -349,7 +352,10 @@ def data_handler2(request, what, tbl, tblHeader, url):
     d['domain']	= domain
     
     d['pageName']	= ': '+tbl
-    d['message']	= eval(what).message()
+    try:
+        d['message']	= eval(what).message()
+    except:
+        pass
 
     selectors = []
     refreshSelector = dropDownGeneric(label='Refresh',
@@ -481,6 +487,13 @@ def display1(request):
     return render(request, 'display1.html', d)
 #########################################################    
 @csrf_exempt
+def plot16(request):
+    domain	= request.get_host()
+    run		= request.GET.get('run','')
+    return HttpResponse('work in progress')
+
+#########################################################    
+@csrf_exempt
 def display6(request):
     
     domain	= request.get_host()
@@ -531,11 +544,18 @@ def addmon(request):
     post	= request.POST
 
     run		= post.get('run', '')
+    subrun	= post.get('subrun', '')
     json_data	= post.get('json', '')
 
-    data = json.loads(json_data)
-    print(run, data)
 
+    m=monrun()
+    m.run = run
+    m.subrun = subrun
+    m.summary = json_data
+    m.save()
+
+    print(m)    
+    
 #    for d in data:
 #        e=evdisp()
 #        for k in d.keys(): e.__dict__[k]=d[k]
