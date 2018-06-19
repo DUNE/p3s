@@ -88,6 +88,12 @@ class serverAPI(dict):
             'maxrun':	server+'evd/maxrun/%s',
         }
 
+        ### DQM monitor
+        self['monitor']	= {
+            'addmon':	server+'monitor/addmon',
+            'delete':	server+'monitor/delmon',
+        }
+
 
     def setLogger(self, logger):
         self.logger=logger

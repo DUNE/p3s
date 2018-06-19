@@ -156,6 +156,14 @@ if(json_in!=''):
 
 
     print(data)
+
+    j = json.loads(json_in)
+    print(j["run"])
+
+    d['json'] = data
+    d['run'] = run
+    d['subrun'] = 1
+    
     # data = takeJson(json_in, verb)
 
     # for entry in data:
@@ -170,8 +178,8 @@ if(json_in!=''):
 
     # d['json'] = json.dumps(data)
 
-#resp = API.post2server('evd', 'add', d)
-#print(resp)
+    resp = API.post2server('monitor', 'addmon', d)
+    print(resp)
 
 
 exit(0)
