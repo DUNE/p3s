@@ -20,6 +20,10 @@ def NavBarData(domain):
     return data
     
 class NavTable(tables.Table):
+    def __init__(self, *args, **kwargs):
+        print(args)
+        print(kwargs)
+        super(NavTable, self).__init__(*args,**kwargs)
     col1	= tables.Column()
     col2	= tables.Column()
     col3	= tables.Column()

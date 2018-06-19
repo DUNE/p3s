@@ -24,6 +24,7 @@ from django.utils.timezone		import activate
 
 from purity.models import pur
 from evdisp.models import evdisp
+from .models import monrun
 
 from django import forms
 
@@ -81,6 +82,11 @@ class MonitorTable(tables.Table):
 class PurityTable(MonitorTable):
     class Meta:
         model = pur
+        attrs = {'class': 'paleblue'}
+#---
+class MonitorRunTable(MonitorTable):
+    class Meta:
+        model = monrun
         attrs = {'class': 'paleblue'}
 #---
 class EvdispTable(MonitorTable):
@@ -519,6 +525,23 @@ def display6(request):
     
     return render(request, 'display6.html', d)
 
+#########################################################    
+@csrf_exempt
+def addmon(request):
+    post	= request.POST
+
+    run		= post.get('run', '')
+    json_data	= post.get('json', '')
+
+    data = json.loads(json_data)
+    print(run, data)
+
+#    for d in data:
+#        e=evdisp()
+#        for k in d.keys(): e.__dict__[k]=d[k]
+#        e.save()
+        
+    return HttpResponse('Adding mon entry')
 #########################################################    
 #    d['form'] = f.as_table()
 #

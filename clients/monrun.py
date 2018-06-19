@@ -41,7 +41,7 @@ user = os.environ['USER']
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-j", "--json_in",	type=str,	help="image file descriptor", default='')
+parser.add_argument("-j", "--json_in",	type=str,	help="summary file name", default='')
 
 parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete or to register (override)", default='')
 
@@ -53,7 +53,7 @@ parser.add_argument("-i", "--id",	type=str,	default='',
                     help="id of the entry to be adjusted or deleted (pk)")
 
 parser.add_argument("-r", "--run",	type=str,	default='',
-                    help="run number to be deleted, or to override the entry with; NEXT has a special meaning")
+                    help="run number")
 
 parser.add_argument("-T", "--timestamp",type=str,	default='',
                     help="override the timestamp with user value like 2018-05-16, NOW has a special meaning")
@@ -150,22 +150,28 @@ if(auto):
 #########################################################
 
 if(json_in!=''):
-    data = takeJson(json_in, verb)
+    data = None
+    with open(json_in, 'r') as myfile:
+        data = myfile.read()
 
-    for entry in data:
-        if(run!=''):
-            if(run=='NEXT'): run=API.get2server('evd', 'maxrun', '')
-            entry['run']=run
-        if(timestamp!=''):
-            if(timestamp=='NOW'): timestamp=str(timezone.now())
-            entry['ts']=timestamp
-        else:
-            timestamp=str(timezone.now())
 
-    d['json'] = json.dumps(data)
+    print(data)
+    # data = takeJson(json_in, verb)
 
-resp = API.post2server('evd', 'add', d)
-print(resp)
+    # for entry in data:
+    #     if(run!=''):
+    #         if(run=='NEXT'): run=API.get2server('evd', 'maxrun', '')
+    #         entry['run']=run
+    #     if(timestamp!=''):
+    #         if(timestamp=='NOW'): timestamp=str(timezone.now())
+    #         entry['ts']=timestamp
+    #     else:
+    #         timestamp=str(timezone.now())
+
+    # d['json'] = json.dumps(data)
+
+#resp = API.post2server('evd', 'add', d)
+#print(resp)
 
 
 exit(0)

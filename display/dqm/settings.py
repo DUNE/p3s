@@ -57,6 +57,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'monitor.apps.MonitorConfig',
     'purity.apps.PurityConfig',
     'evdisp.apps.EvdispConfig',
     'django.contrib.admin',

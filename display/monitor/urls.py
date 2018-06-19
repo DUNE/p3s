@@ -28,5 +28,8 @@ urlpatterns = [
 	views.display6,
         name='display6'),
 
+
+    url(r'^addmon',	views.addmon,    	name='addmon'),
+
 ]
 
