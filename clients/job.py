@@ -237,6 +237,12 @@ if(json_in!=''):
 
     if(filename!=''):	inputFile = filename
 
+
+    inputFiles = inputFile.split(',')
+    
+    # multiple files override the number of jobs to be auto-generated
+    if(len(inputFiles) !=1): Njobs=len(inputFiles)
+    
     data = takeJson(json_in, verb)
 
     for jj in data:
@@ -249,8 +255,12 @@ if(json_in!=''):
                 print('Also make sure any I/O files you specify in the "env" attribute are READ/WRITE accessible to members of your group.')
                 exit(-1)
             if(inputFile!=''):
-                jj['env']['P3S_INPUT_FILE'] = inputFile
-                if(verb>1): print('Overriding input file with: '+inputFile)
+                if(len(inputFiles)==1):
+                    jj['env']['P3S_INPUT_FILE'] = inputFiles[0]
+                    if(verb>1): print('Overriding input file with: '+inputFiles[0])
+                else:
+                    jj['env']['P3S_INPUT_FILE'] = inputFiles[jN-1]
+                    if(verb>1): print('Overriding input file with: '+inputFiles[jN-1])
             if(version!=''):
                 jj['env']['DUNETPCVER'] = version
                 if(verb>1): print('Overriding DUNETPCVER with: '+version)
