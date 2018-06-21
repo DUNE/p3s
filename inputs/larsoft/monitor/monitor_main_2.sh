@@ -20,7 +20,15 @@ then
 else
     echo P3S_XRD_URI defined, using xrdcp to stage in the data
     time xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .
-    export INPUT_FILE=./$P3S_INPUT_FILE
+    s1=`stat --printf="%s" $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE`
+    s2=`stat --printf="%s" ./$P3S_INPUT_FILE`
+    if [ $s1 -eq $s1 ];
+    then export INPUT_FILE=./$P3S_INPUT_FILE
+    elif
+	echo XRDCP failure, exiting
+	exit -3
+    fi
+
 fi
 
 P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/mon/'`
