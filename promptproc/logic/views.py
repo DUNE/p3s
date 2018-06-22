@@ -166,6 +166,17 @@ def pilotTO(request):
         return HttpResponse(ret)
 ###################################################
 @csrf_exempt
+def jobTO(request):
+
+    post	= request.POST
+    TO		= int(post['to']) # time out, meausured in seconds
+    host	= post['host']
+    direct	= post.get('direct', '')
+
+    return HttpResponse('test')
+
+###################################################
+@csrf_exempt
 def serviceReport(request):
 
     post	= request.POST

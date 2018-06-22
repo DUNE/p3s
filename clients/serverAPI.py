@@ -70,6 +70,7 @@ class serverAPI(dict):
         self['logic']	= {
             'purge':	server+'logic/purge',
             'pilotTO':	server+'logic/pilotTO',
+            'jobTO':	server+'logic/jobTO',
             'service':	server+'logic/service',
             'delete':	server+'logic/delete',
         }
