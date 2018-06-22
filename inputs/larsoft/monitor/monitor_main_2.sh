@@ -20,8 +20,9 @@ then
 else
     echo P3S_XRD_URI defined, using xrdcp to stage in the data
     time xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .
-    s1=`stat --printf="%s" $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE`
+    s1=`stat --printf="%s"  $P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE`
     s2=`stat --printf="%s" ./$P3S_INPUT_FILE`
+    echo sizes after XRDCP $s1 $s2
     if [ $s1 -eq $s1 ];
     then export INPUT_FILE=./$P3S_INPUT_FILE
     else
