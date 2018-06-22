@@ -46,3 +46,8 @@ else
 fi
     
 env | grep P3S
+
+echo lar_setup_2 finished
+echo "Directory:"
+pwd
+

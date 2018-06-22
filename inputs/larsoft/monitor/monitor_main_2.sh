@@ -24,7 +24,7 @@ else
     s2=`stat --printf="%s" ./$P3S_INPUT_FILE`
     if [ $s1 -eq $s1 ];
     then export INPUT_FILE=./$P3S_INPUT_FILE
-    elif
+    else
 	echo XRDCP failure, exiting
 	exit -3
     fi
