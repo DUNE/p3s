@@ -92,7 +92,7 @@ class serverAPI(dict):
         ### DQM monitor
         self['monitor']	= {
             'addmon':	server+'monitor/addmon',
-            'delete':	server+'monitor/delmon',
+            'delmon':	server+'monitor/delmon',
         }
 
 

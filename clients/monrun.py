@@ -168,24 +168,23 @@ if(json_in!=''):
     d['json'] = data
     d['run'] = run
     d['subrun'] = subrun
-    
-
-    # for entry in data:
-    #     if(run!=''):
-    #         if(run=='NEXT'): run=API.get2server('evd', 'maxrun', '')
-    #         entry['run']=run
-    #     if(timestamp!=''):
-    #         if(timestamp=='NOW'): timestamp=str(timezone.now())
-    #         entry['ts']=timestamp
-    #     else:
-    #         timestamp=str(timezone.now())
-
-    # d['json'] = json.dumps(data)
 
     resp = API.post2server('monitor', 'addmon', d)
     print(resp)
 
 
+if(delete):
+    if(run==''):
+        print('Need to specify the run number to delete, exiting...')
+        exit(-1)
+        
+    print('Will delete run number '+run)
+    
+    d['run'] = run
+
+    resp = API.post2server('monitor', 'delmon', d)
+    print(resp)
+    
 exit(0)
 
 #########################################################

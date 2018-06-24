@@ -85,7 +85,7 @@ class PurityTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #---
 class MonRunTable(MonitorTable):
-    items = tables.Column(verbose_name='Items')
+    #    items = tables.Column(verbose_name='Items')
 
     class Meta:
         model = monrun
@@ -563,6 +563,33 @@ def addmon(request):
         
     return HttpResponse('Adding mon entry')
 #########################################################    
+@csrf_exempt
+def delmon(request):
+    post	= request.POST
+    run		= post.get('run', '')
+
+    if(run==''): return HttpResponse('Did not delete mon entries, run unspecified')
+
+    try:
+        objs = monrun.objects.filter(run=run)
+        l = str(len(objs))
+        objs.delete()
+        return HttpResponse('Deleted '+l+' mon entries for run '+run)
+    except:
+        return HttpResponse('Failed to delete mon entries for run '+run)
+
+#########################################################    
+def showmon(request):
+    domain	= request.get_host()
+    host	= request.GET.get('host','')
+    run		= request.GET.get('run','')
+                  
+    return HttpResponse('Showing run '+run)
+    
+#########################################################    
+
+
+
 #    d['form'] = f.as_table()
 #
 # general request handler for summary type of a table
