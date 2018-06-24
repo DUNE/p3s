@@ -167,13 +167,25 @@ def pilotTO(request):
 ###################################################
 @csrf_exempt
 def jobTO(request):
-
     post	= request.POST
     TO		= int(post['to']) # time out, meausured in seconds
     host	= post['host']
     direct	= post.get('direct', '')
 
-    return HttpResponse('test')
+    dT = None
+    if(TO!=0):
+        dT = timedelta(seconds=TO)
+
+    selection = job.objects.filter(state='running') # .filter(ts_sta__lte=cutoff)
+    cnt=0
+    for j in selection:
+        if(TO==0): dT = timedelta(seconds=j.timelimit)
+        duration = timezone.now() - j.ts_sta
+        if(duration>dT):
+            j.delete()
+            cnt+=1
+    
+    return HttpResponse('deleted timout jobs: '+str(cnt))
 
 ###################################################
 @csrf_exempt

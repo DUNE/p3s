@@ -62,6 +62,7 @@ if(what=='pilot'):
 d = dict(to=to, host=myhost)
 if(direct): d['direct']='True'
 resp = API.post2server('logic', 'jobTO', d)
+
 if(not direct and resp!=''): print(resp)
 exit
     
