@@ -93,19 +93,19 @@ API  = serverAPI(server=server)
 
 #########################################################
 
-if(delete):
-    if(p_id == '' and run == '' and job == ''):
-        print('ID/run/job for deletion not specified, exiting')
-        exit(-1)
+# if(delete):
+#     if(p_id == '' and run == '' and job == ''):
+#         print('ID/run/job for deletion not specified, exiting')
+#         exit(-1)
 
-    resp = ''
-    if(p_id != ''):	resp = API.post2server('evd', 'delete', dict(pk=p_id))
-    if(run != ''):	resp = API.post2server('evd', 'delete', dict(run=run))
-    if(job != ''):	resp = API.post2server('evd', 'delete', dict(j_uuid=job))
+#     resp = ''
+#     if(p_id != ''):	resp = API.post2server('evd', 'delete', dict(pk=p_id))
+#     if(run != ''):	resp = API.post2server('evd', 'delete', dict(run=run))
+#     if(job != ''):	resp = API.post2server('evd', 'delete', dict(j_uuid=job))
         
-    if(verb>0): print(resp)
+#     if(verb>0): print(resp)
 
-    exit(0)
+#     exit(0)
 
 #########################################################
 

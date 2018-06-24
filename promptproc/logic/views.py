@@ -185,7 +185,7 @@ def jobTO(request):
             j.delete()
             cnt+=1
     
-    return HttpResponse('deleted timout jobs: '+str(cnt))
+    return HttpResponse('deleted timeout jobs: '+str(cnt))
 
 ###################################################
 @csrf_exempt
