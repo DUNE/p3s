@@ -533,12 +533,13 @@ def showmon(request):
     data = []
     data.append({'items':'RMS of ADC per view per APA for all channels'})
     d['table'] = ShowMonTable(data)
+    d['navtable']	= TopTable(domain)
 
 
     #mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
     #                     % (self.site, reverse(what), key, value, value))
 
-    return render(request, 'unitable2.html', d)
+    return render(request, 'unitable3.html', d)
     
 #########################################################    
 

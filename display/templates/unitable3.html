@@ -1,0 +1,12 @@
+{% extends "monitor_base3.html" %}
+{% load render_table from django_tables2 %}
+{% load static %}
+
+{% block content1 %}
+<h3>{{ tblHeader }}</h3>
+
+{% if table %}
+{% render_table table %}
+{% endif %}
+
+{% endblock %}    
