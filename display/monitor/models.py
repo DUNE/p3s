@@ -11,7 +11,7 @@ class monrun(models.Model):
     @classmethod
     def TPCmonitor(self, N=None):
         tpcMonCategories = [
-            ('RMS of ADC per view per APA for all channels',	'fChanRMSDist',	['U','V','Z']),
+            ('RMS of ADC per view per APA for all channels',	'fChanRMSDist'),
             
             ('Mean of ADC per view per APA for all channels',	'fChanMeanDist'),
             ('RMS of ADC per channel per view per APA and per channel','fChanRMS*pfx'),

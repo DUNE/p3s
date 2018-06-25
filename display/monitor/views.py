@@ -498,25 +498,28 @@ def showmon(request):
     d = {}
     
     if(tpcmoncat!=''):
-        obj = monrun.objects.filter(run=run).filter(subrun=subrun)
-        j_uuid = obj[0].j_uuid
-        d['tblHeader']	= run+' '+subrun+' '+j_uuid
+        item	= monrun.TPCmonitor(int(tpcmoncat))
+        cat	= item[0]
+        obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
+        j_uuid	= obj[0].j_uuid
+        
+        d['tblHeader']	= cat+'  -- run:'+run+' subrun:'+subrun
         d['navtable']	= TopTable(domain)
         d['rows']	= []
 
-        row = []
-        for i in range(6):
-            item = monrun.TPCmonitor(0)
-            pattern = item[1]
-            wire = item[2][0]
-            plotUrl = ('http://%s/%s/%s/%s'
-                      % (domain, settings.SITE['dqm_monitor_url'], j_uuid,
-                         'run'+run+'_subrun'+subrun+'_tpcmonitor_'+pattern+wire+str(i)+'.png')
-            )
-            print(plotUrl)
-            row.append(plotUrl)
+        for plane in ['U','V','Z']:
+            row = []
+            for apa in range(6):
+                pattern = item[1]
+                plotUrl = ('http://%s/%s/%s/%s'
+                           % (domain, settings.SITE['dqm_monitor_url'], j_uuid,
+                              'run'+run+'_subrun'+subrun+'_tpcmonitor_'+pattern+plane+str(apa)+'.png')
+                )
+                print(plotUrl)
+                row.append(plotUrl)
         
-        d['rows'].append(row)
+            d['rows'].append(row)
+            print(d['rows'])
         
         return render(request, 'unitable3.html', d)
     
