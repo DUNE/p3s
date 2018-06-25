@@ -70,7 +70,7 @@ class PurityTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #---
 class ShowMonTable(MonitorTable):
-    items = tables.Column(verbose_name='Items')
+    items = tables.Column(verbose_name='TPC Monitor Items')
 
     class Meta:
         attrs = {'class': 'paleblue'}

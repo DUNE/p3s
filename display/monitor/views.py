@@ -273,31 +273,31 @@ def data_handler2(request, what, tbl, tblHeader, url):
         pass
 
     selectors = []
+    # ---
     refreshSelector = dropDownGeneric(label='Refresh',
                                       initial={'refresh': refresh},
                                       choices=REFRESHCHOICES,
                                       tag='refresh')
     selectors.append(refreshSelector)
-            
+    # ---
     perPageSelector = dropDownGeneric(initial={'perpage':perpage},
                                       label='# per page',
                                       choices = PAGECHOICES,
                                       tag='perpage')
     selectors.append(perPageSelector)
-    
+    # ---
     tsSelector = twoFieldGeneric(label1="min. time", field1="tsmin", init1=tsmin, label2="max. time", field2="tsmax",
                                  init2=tsmax)
     selectors.append(tsSelector)
-
+    # ---
     if(what=='pur'):
         tpcSelector = dropDownGeneric(initial={'tpc':tpc},
                                       label='tpc',
                                       choices = TPCCHOICES,
                                       tag='tpc')
         selectors.append(tpcSelector)
-        
+    # ---
     if(what=='evdisp'):
-
         juuidSelector = twoFieldGeneric(label1="Job UUID",
                                         field1="j_uuid",
                                         init1=j_uuid,
@@ -314,10 +314,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
                                        init2=evnum)
         selectors.append(runSelector)
 
-
-
-
-        
+    # -------------------------------------------------------------
     u1, u2, r, e, g = None, None, None, None, None
     
     if(tbl=='EvdispTable'):
@@ -370,8 +367,6 @@ def eventdisplay(request):
     d['pageName']	= ': Event Display'
     d['navtable']	= TopTable(domain)
 
-    
-    
     return render(request, 'display.html', d)
 
 #########################################################    
@@ -497,13 +492,13 @@ def showmon(request):
     host	= request.GET.get('host','')
     run		= request.GET.get('run','')
     subrun	= request.GET.get('subrun','')
-    category	= request.GET.get('category','')
+    tpcmoncat	= request.GET.get('tpcmoncat','')
 
 
     d = {}
     d['tblHeader'] = 'Run '+ run
     
-    if(category!=''):
+    if(tpcmoncat!=''):
         monrows = []
         monrows.append('1')
         monrows.append('2')
@@ -513,14 +508,15 @@ def showmon(request):
     
     data = []
 
-    category_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s</a>' % (
-        domain, run, subrun, 'RMS of ADC per view per APA for all channels'
-    )
-
-
-    print(category_url)
+    cnt=0
+    for item in monrun.TPCmonitor():
+        tpcmoncat_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&tpcmoncat=%s">%s</a>' % (
+            domain, run, subrun, str(cnt), item[0]
+        )
+        print(tpcmoncat_url)
+        cnt+=1
+        data.append({'items':mark_safe(tpcmoncat_url)})
     
-    data.append({'items':'RMS of ADC per view per APA for all channels'})
     d['table']		= ShowMonTable(data)
     d['navtable']	= TopTable(domain)
 
