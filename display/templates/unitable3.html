@@ -9,4 +9,23 @@
 {% render_table table %}
 {% endif %}
 
+{% if rows %}
+
+<table>
+  {% for i0,i1,i2,i3,i4,i5 in rows %}
+  <tr>
+    <td><img src="{{ i0 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i1 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i2 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i3 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i4 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i5 }}" width="100%" alt="NOT FOUND" /></td>
+  </tr>
+  {% endfor %}
+</table>
+  
+{% endif %}
+
+
+
 {% endblock %}    

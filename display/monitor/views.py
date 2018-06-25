@@ -496,13 +496,27 @@ def showmon(request):
 
 
     d = {}
-    d['tblHeader'] = 'Run '+ run
     
     if(tpcmoncat!=''):
         obj = monrun.objects.filter(run=run).filter(subrun=subrun)
         j_uuid = obj[0].j_uuid
         d['tblHeader']	= run+' '+subrun+' '+j_uuid
         d['navtable']	= TopTable(domain)
+        d['rows']	= []
+
+        row = []
+        for i in range(6):
+            item = monrun.TPCmonitor(0)
+            pattern = item[1]
+            wire = item[2][0]
+            plotUrl = ('http://%s/%s/%s/%s'
+                      % (domain, settings.SITE['dqm_monitor_url'], j_uuid,
+                         'run'+run+'_subrun'+subrun+'_tpcmonitor_'+pattern+wire+str(i)+'.png')
+            )
+            print(plotUrl)
+            row.append(plotUrl)
+        
+        d['rows'].append(row)
         
         return render(request, 'unitable3.html', d)
     
