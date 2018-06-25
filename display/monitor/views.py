@@ -499,12 +499,12 @@ def showmon(request):
     d['tblHeader'] = 'Run '+ run
     
     if(tpcmoncat!=''):
-        monrows = []
-        monrows.append('1')
-        monrows.append('2')
-        d['monrows'] = monrows
+        obj = monrun.objects.filter(run=run).filter(subrun=subrun)
+        j_uuid = obj[0].j_uuid
+        d['tblHeader']	= run+' '+subrun+' '+j_uuid
+        d['navtable']	= TopTable(domain)
         
-        return render(request, 'unitable2.html', d)
+        return render(request, 'unitable3.html', d)
     
     data = []
 
