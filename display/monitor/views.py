@@ -573,9 +573,18 @@ def addmon(request):
 @csrf_exempt
 def delmon(request):
     post	= request.POST
+    pk		= post.get('pk', '')
     run		= post.get('run', '')
 
-    if(run==''): return HttpResponse('Did not delete mon entries, run unspecified')
+    if(run=='' and pk==''): return HttpResponse('Did not delete mon entries, run/ID unspecified')
+
+    if(pk!=''):
+        try:
+            obj = monrun.objects.get(pk=int(pk))
+            obj.delete()
+            return HttpResponse('Deleted the mon entry for ID '+pk)
+        except:
+            return HttpResponse('Failed to delete mon entry for ID '+pk)
 
     try:
         objs = monrun.objects.filter(run=run)

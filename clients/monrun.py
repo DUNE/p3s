@@ -73,7 +73,7 @@ server		= args.server
 
 delete		= args.delete
 auto		= args.auto
-p_id		= args.id
+pk		= args.id
 run		= args.run
 timestamp	= args.timestamp
 verb		= args.verbosity
@@ -179,13 +179,13 @@ if(json_in!=''):
 
 
 if(delete):
-    if(run==''):
-        print('Need to specify the run number to delete, exiting...')
+    if(run=='' and pk==''):
+        print('Need to specify the run number or ID to delete, exiting...')
         exit(-1)
         
-    print('Will delete run number '+run)
     
-    d['run'] = run
+    if(run!=''): d['run'] = run
+    if(pk!=''): d['pk'] = pk
 
     resp = API.post2server('monitor', 'delmon', d)
     print(resp)
