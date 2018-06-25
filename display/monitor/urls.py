@@ -33,9 +33,9 @@ urlpatterns = [
 	views.display6,
         name='display6'),
 
-    url(r'^plot16',
-	views.plot16,
-        name='plot16'),
+    url(r'^plot18',
+	views.plot18,
+        name='plot18'),
 
 
     url(r'^addmon',	views.addmon,    	name='addmon'),

@@ -24,8 +24,8 @@ from django.utils.timezone		import activate
 
 from purity.models import pur
 from evdisp.models import evdisp
-from .models import monrun
 
+from .models import monrun
 
 from django import forms
 
@@ -45,12 +45,6 @@ REFRESHCHOICES	= [('', 'Never'), ('10', '10s'), ('30', '30s'), ('60','1min'), ('
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'), ('400','400'),]
 TPCCHOICES	= [('', 'All'), ('1', '1'), ('2','2'), ('5','5'), ('6','6'), ('9','9'), ('10','10'), ]
 
-
-
-#+"&run="+str(run)+"&event="+str(evnum)+"&changroup="+str(group)+"&datatype="+datatype
-    
-def makeEvLink(site, run, evnum):
-    return mark_safe('<a href="http://%s/monitor/display6?run=%s&event=%s">%s</a>' % (site, run, evnum, evnum))
 
 
 def makeQuery(page, q=''):
@@ -408,7 +402,7 @@ def display1(request):
     return render(request, 'display1.html', d)
 #########################################################    
 @csrf_exempt
-def plot16(request):
+def plot18(request):
     domain	= request.get_host()
     run		= request.GET.get('run','')
     return HttpResponse('work in progress')
@@ -464,27 +458,14 @@ def display6(request):
 def addmon(request):
     post	= request.POST
 
-    run		= post.get('run', '')
-    subrun	= post.get('subrun', '')
-    json_data	= post.get('json', '')
-    j_uuid	= post.get('j_uuid', '')
-
-
     m=monrun()
-    m.run = run
-    m.subrun = subrun
-    m.summary = json_data
-    m.j_uuid = j_uuid
+    m.run	= post.get('run', '')
+    m.subrun	= post.get('subrun', '')
+    m.summary	= post.get('json', '')
+    m.j_uuid	= post.get('j_uuid', '')
     m.save()
-
-#    print(m)    
-    
-#    for d in data:
-#        e=evdisp()
-#        for k in d.keys(): e.__dict__[k]=d[k]
-#        e.save()
         
-    return HttpResponse('Adding mon entry')
+    return HttpResponse('Adding mon entry for run '+run+' subrun '+subrun)
 #########################################################    
 @csrf_exempt
 def delmon(request):
@@ -531,8 +512,16 @@ def showmon(request):
         return render(request, 'unitable2.html', d)
     
     data = []
+
+    category_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s</a>' % (
+        domain, run, subrun, 'RMS of ADC per view per APA for all channels'
+    )
+
+
+    print(category_url)
+    
     data.append({'items':'RMS of ADC per view per APA for all channels'})
-    d['table'] = ShowMonTable(data)
+    d['table']		= ShowMonTable(data)
     d['navtable']	= TopTable(domain)
 
 
@@ -542,46 +531,4 @@ def showmon(request):
     return render(request, 'unitable3.html', d)
     
 #########################################################    
-
-
-
-#    d['form'] = f.as_table()
-#
-# general request handler for summary type of a table
-# def data_handler(request, what):
-#     domain	= request.get_host()
-
-#     # testing only
-#     objs = pur.objects.order_by('-pk').all()
-
-#     d = {}
-    
-#     t = PurityTable(objs)
-#     t.set_site(domain)
-#     RequestConfig(request).configure(t)
-
-#     d['table']	= t
-#     d['N']	= str(len(objs))
-#     d['domain']	= domain
-    
-#     d['pageName']	= ': Purity Monitor'
-    
-#     return render(request, 'unitable.html', d)
-
-
-# ------------------------------------
-# Table classes -  just an example:
-# error = tables.Column(verbose_name='Error')
-
-
-# for future development:
-#    def __init__(self, *args, **kwargs):
-#       self.obj	= kwargs.pop('obj')
-#       print(self.obj)
-
-#       setattr(PurityTable.Meta, 'model', eval(self.obj))
-#       setattr(PurityTable.Meta, 'attrs', {'class': 'paleblue'})
-
-#       super(PurityTable, self).__init__(*args, **kwargs)
-
 

@@ -22,11 +22,19 @@ except ImportError:
     exit(-3)
 
 
+#########################################################    
+################## LINK UTILS ###########################    
+#########################################################
+
 def makeImageLink(site, evdispURL, j_uuid, run, evnum, datatype, group):
     filename =  evdisp.makename(evnum, datatype, group)
     # debug only:  print(evnum, datatype, group)
     # debug only:  print("filename", filename)
     return "http://"+site+"/"+evdispURL+"/"+j_uuid+"/"+filename
+
+
+def makeEvLink(site, run, evnum):
+    return mark_safe('<a href="http://%s/monitor/display6?run=%s&event=%s">%s</a>' % (site, run, evnum, evnum))
 
 
 #########################################################    
@@ -73,7 +81,7 @@ class MonRunTable(MonitorTable):
         subrun_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s</a>' % (
             self.site, str(record.run), str(record.subrun), value
         )
-        #'<a href="http://cnn.com">'+str(value)+'</a>'
+
         return mark_safe(subrun_url)
 
     class Meta:
