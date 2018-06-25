@@ -69,7 +69,11 @@ class ShowMonTable(MonitorTable):
 #---
 class MonRunTable(MonitorTable):
     def render_subrun(self, value, record):
-        subrun_url= '<a href="http://cnn.com">'+str(value)+'</a>'
+
+        subrun_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s</a>' % (
+            self.site, str(record.run), str(record.subrun), value
+        )
+        #'<a href="http://cnn.com">'+str(value)+'</a>'
         return mark_safe(subrun_url)
 
     class Meta:
