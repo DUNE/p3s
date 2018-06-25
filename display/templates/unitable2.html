@@ -23,9 +23,11 @@
     {% endif %}
   </tr>
   <tr>
-    <td>
+    {% if table %}
+      <td>
       {% render_table table %}
-    </td>
+      </td>
+    {% endif %}
     
     {% if table_aux %}
     <!--td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td -->
@@ -42,5 +44,12 @@
     </td>
     {% endif %}
     
+    {% if monrows %}
+    {% for mon in monrows %}
+    <td>
+      {{ mon }}<br/>
+    </td>
+    {% endfor %}
+    {% endif %}
   </tr>
 {% endblock %}    

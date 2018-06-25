@@ -84,8 +84,13 @@ class PurityTable(MonitorTable):
         model = pur
         attrs = {'class': 'paleblue'}
 #---
+class ShowMonTable(MonitorTable):
+    items = tables.Column(verbose_name='Items')
+
+    class Meta:
+        attrs = {'class': 'paleblue'}
+#---
 class MonRunTable(MonitorTable):
-    #    items = tables.Column(verbose_name='Items')
 
     class Meta:
         model = monrun
@@ -546,15 +551,17 @@ def addmon(request):
     run		= post.get('run', '')
     subrun	= post.get('subrun', '')
     json_data	= post.get('json', '')
+    j_uuid	= post.get('j_uuid', '')
 
 
     m=monrun()
     m.run = run
     m.subrun = subrun
     m.summary = json_data
+    m.j_uuid = j_uuid
     m.save()
 
-    print(m)    
+#    print(m)    
     
 #    for d in data:
 #        e=evdisp()
@@ -583,8 +590,29 @@ def showmon(request):
     domain	= request.get_host()
     host	= request.GET.get('host','')
     run		= request.GET.get('run','')
-                  
-    return HttpResponse('Showing run '+run)
+    category	= request.GET.get('category','')
+
+
+    d = {}
+    d['tblHeader'] = 'Run '+ run
+    
+    if(category!=''):
+        monrows = []
+        monrows.append('1')
+        monrows.append('2')
+        d['monrows'] = monrows
+        
+        return render(request, 'unitable2.html', d)
+    
+    data = []
+    data.append({'items':'RMS of ADC per view per APA for all channels'})
+    d['table'] = ShowMonTable(data)
+
+
+    #mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
+    #                     % (self.site, reverse(what), key, value, value))
+
+    return render(request, 'unitable2.html', d)
     
 #########################################################    
 

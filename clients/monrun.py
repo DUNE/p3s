@@ -155,8 +155,13 @@ if(json_in!=''):
         data = myfile.read()
 
     data = takeJson(json_in, verb)
-
     print(data)
+
+    if(job==''):
+        d['j_uuid'] = os.path.basename(os.getcwd())
+    else:
+        d['j_uuid'] = job
+        
 
     #j = json.loads(json_in)
     print(data[0]["run"])
