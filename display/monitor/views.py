@@ -492,8 +492,11 @@ def showmon(request):
     # a choice of catogeries in a table.
     
     d = {}
+    d['navtable'] = TopTable(domain)
 
     if(tpcmoncat!=''):
+        url2images = settings.SITE['dqm_monitor_url']
+        
         item	= monrun.TPCmonitor(int(tpcmoncat))
         cat	= item[0]
         obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
@@ -501,13 +504,12 @@ def showmon(request):
         j_uuid	= entry.j_uuid
         
         d['tblHeader']	= cat+'  -- run:'+run+' subrun:'+subrun
-        d['navtable']	= TopTable(domain)
 
         Ncat = int(tpcmoncat)
-        if Ncat in (0,1,2,3):
-           d['rows'] = monrun.TPCmonitorURLplanes(Ncat, domain, settings.SITE['dqm_monitor_url'], j_uuid, run, subrun)
+        if Ncat in (0,1,2,3,6,7,8):
+           d['rows'] = monrun.TPCmonitorURLplanes(Ncat, domain, url2images, j_uuid, run, subrun)
         elif Ncat in (4,5):
-            d['rows'] = monrun.TPCmonitorURLind(Ncat, domain, settings.SITE['dqm_monitor_url'], j_uuid, run, subrun)
+            d['rows'] = monrun.TPCmonitorURLind(Ncat, domain, url2images, j_uuid, run, subrun)
         else:
            pass
         
@@ -518,7 +520,6 @@ def showmon(request):
     # this table presents the categories available (clickable)
     d['tblHeader']	= 'Run:'+run+' subrun:'+subrun
     d['table']		= ShowMonTable(monrun.TPCmonitorCatURLs(domain, run, subrun))
-    d['navtable']	= TopTable(domain)
 
     return render(request, 'unitable3.html', d)
     
