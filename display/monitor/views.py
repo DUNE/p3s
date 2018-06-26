@@ -501,7 +501,8 @@ def showmon(request):
         item	= monrun.TPCmonitor(int(tpcmoncat))
         cat	= item[0]
         obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
-        j_uuid	= obj[0].j_uuid
+        entry	= obj[0]
+        j_uuid	= entry.j_uuid
         
         d['tblHeader']	= cat+'  -- run:'+run+' subrun:'+subrun
         d['navtable']	= TopTable(domain)
@@ -511,15 +512,18 @@ def showmon(request):
             row = []
             for apa in range(6):
                 pattern = item[1]
-                plotUrl = ('http://%s/%s/%s/%s'
-                           % (domain, settings.SITE['dqm_monitor_url'], j_uuid,
-                              'run'+run+'_subrun'+subrun+'_tpcmonitor_'+pattern+plane+str(apa)+'.png')
-                )
-                print(plotUrl)
+                # plotUrl = ('http://%s/%s/%s/%s'
+                #            % (domain, settings.SITE['dqm_monitor_url'], j_uuid,
+                #               'run'+run+'_subrun'+subrun+'_tpcmonitor_'+pattern+plane+str(apa)+'.png')
+                # )
+                #print(plotUrl)
+                
+                plotUrl = monrun.TPCmonitorURL(int(tpcmoncat), domain, settings.SITE['dqm_monitor_url'], j_uuid, run, subrun, plane, apa)
+                
                 row.append(plotUrl)
         
             d['rows'].append(row)
-            print(d['rows'])
+            #print(d['rows'])
         
         return render(request, 'unitable3.html', d)
     
