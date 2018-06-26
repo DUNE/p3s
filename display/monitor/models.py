@@ -81,7 +81,7 @@ class monrun(models.Model):
                 cnt=0
                 rows.append(row)
                 row = []
-            
+        if(len(row)>0): rows.append(row) #!
 
         return rows
         

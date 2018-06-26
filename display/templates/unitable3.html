@@ -12,14 +12,11 @@
 {% if rows %}
 
 <table>
-  {% for i0,i1,i2,i3,i4,i5 in rows %}
+  {% for row in rows %}
   <tr>
-    <td><img src="{{ i0 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i1 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i2 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i3 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i4 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i5 }}" width="100%" alt="NOT FOUND" /></td>
+    {% for plot in row %}
+    <td><img src="{{ plot }}" width="100%" alt="NOT FOUND" /></td>
+    {% endfor %}
   </tr>
   {% endfor %}
 </table>
@@ -29,3 +26,8 @@
 
 
 {% endblock %}    
+    <!-- td><img src="{{ i1 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i2 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i3 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i4 }}" width="100%" alt="NOT FOUND" /></td>
+    <td><img src="{{ i5 }}" width="100%" alt="NOT FOUND" /></td -->
