@@ -70,7 +70,10 @@ class PurityTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #---
 class ShowMonTable(MonitorTable):
-    items = tables.Column(verbose_name='TPC Monitor Items')
+    items = tables.Column()
+
+    def changeName(self, newName):
+        self.base_columns['items'].verbose_name = newName
 
     class Meta:
         attrs = {'class': 'paleblue'}

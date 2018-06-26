@@ -11,9 +11,16 @@ class monrun(models.Model):
 
     # ---
     @classmethod
-    def TPCmonitor(self, N=None):
-        common = 'run%s_subrun%s_tpcmonitor_'
-        tpcMonCategories = [
+    def ALLmonitor(self, what, N=None):
+        if(what == 'tpc'):
+            common = 'run%s_subrun%s_tpcmonitor_'
+        elif(what == 'pdsphit'):
+            common = 'run%s_subrun%s_pdsphitmonitor_'
+        else:
+            common = ''
+            
+        Categories = {}
+        Categories['tpc'] = [
             ('RMS of ADC per view per APA for all channels',		common+'fChanRMSDist%s%s.png'),
             ('Mean of ADC per view per APA for all channels',		common+'fChanMeanDist%s%s.png'),
             
@@ -32,10 +39,15 @@ class monrun(models.Model):
             ('Profiled FFT fiber',		common+'ProfiledFFTFiber%s.png', 120),
         ]
 
+        Categories['pdsphit'] = [
+            ('RMS of ADC per view per APA for all channels', common+'fChanRMSDist%s%s.png'),
+        ]
+
+
         if N is None:
-            return tpcMonCategories
+            return Categories[what]
         else:
-            return tpcMonCategories[N]
+            return Categories[what][N]
 
     # ---
     @classmethod
@@ -48,7 +60,7 @@ class monrun(models.Model):
         catPattern = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&tpcmoncat=%s">%s</a>'
         data = []
         cnt=0
-        for item in monrun.TPCmonitor():
+        for item in monrun.ALLmonitor('tpc'):
             tpcmoncat_url =  catPattern % (domain, run, subrun, str(cnt), item[0])
             cnt+=1
             data.append({'items':mark_safe(tpcmoncat_url)})
@@ -57,7 +69,7 @@ class monrun(models.Model):
     # ---
     @classmethod
     def TPCmonitorURL(self, N, domain, dqmURL, j_uuid, run, subrun, plane, apa):
-        pattern	= self.TPCmonitor(N)[1]
+        pattern	= self.ALLmonitor('tpc',N)[1]
         filename= pattern % (run, subrun, plane, apa) # print('filename:',filename)
         return ('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
     # ---
@@ -78,9 +90,9 @@ class monrun(models.Model):
         row = []
         rows = []
         
-        pattern	= self.TPCmonitor(N)[1]
+        pattern	= self.ALLmonitor('tpc', N)[1]
         cnt = 0
-        for ind in range(self.TPCmonitor(N)[2]):
+        for ind in range(self.ALLmonitor('tpc', N)[2]):
             filename= pattern % (run, subrun, str(ind)) # print(filename)
             row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
             cnt+=1

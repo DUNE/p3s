@@ -497,7 +497,7 @@ def showmon(request):
     if(tpcmoncat!=''):
         url2images = settings.SITE['dqm_monitor_url']
         
-        item	= monrun.TPCmonitor(int(tpcmoncat))
+        item	= monrun.ALLmonitor('tpc', int(tpcmoncat))
         cat	= item[0]
         obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
         entry	= obj[0]
@@ -519,7 +519,9 @@ def showmon(request):
     # ---
     # this table presents the categories available (clickable)
     d['tblHeader']	= 'Run:'+run+' subrun:'+subrun
-    d['table']		= ShowMonTable(monrun.TPCmonitorCatURLs(domain, run, subrun))
+    t = ShowMonTable(monrun.TPCmonitorCatURLs(domain, run, subrun))
+    t.changeName('TPC monitor items')
+    d['table']		= t
 
     return render(request, 'unitable3.html', d)
     
