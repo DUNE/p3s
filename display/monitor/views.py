@@ -1,50 +1,42 @@
 import django.db.models
-from django.db.models	import Max
+from django.db.models			import Max
+from django				import forms
 
-from django.conf	import settings
+from django.conf			import settings
 from django.utils.safestring		import mark_safe
-from django_tables2 import A
-from django.shortcuts	import render
+from django_tables2			import A
+from django.shortcuts			import render
+from django.utils			import timezone
+from django.utils.timezone		import utc
+from django.utils.timezone		import activate
 
-from django.http	import HttpResponseRedirect
-from django.http	import HttpResponse
+from django.http			import HttpResponseRedirect
+from django.http			import HttpResponse
 
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf	import csrf_exempt
 
 import  django_tables2 as tables
 from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
-
 import datetime
-from django.utils			import timezone
-from django.utils.timezone		import utc
-from django.utils.timezone		import activate
-
-
-from purity.models import pur
-from evdisp.models import evdisp
-
-from .models import monrun
-
-from django import forms
-
-
 import random
 
-from utils.selectorUtils	import dropDownGeneric, boxSelector, twoFieldGeneric
-from utils.navbar		import TopTable
+from purity.models			import pur
+from evdisp.models			import evdisp
+from .models				import monrun
+
+from utils.selectorUtils		import dropDownGeneric, boxSelector, twoFieldGeneric
+from utils.navbar			import TopTable
 
 
-# The tables are defined separately
+# The tables needed here are defined in a separate unit of code
 from .monitorTables import *
 
-
 #########################################################
-REFRESHCHOICES	= [('', 'Never'), ('10', '10s'), ('30', '30s'), ('60','1min'), ('120', '2min'),  ]
-PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'), ('400','400'),]
-TPCCHOICES	= [('', 'All'), ('1', '1'), ('2','2'), ('5','5'), ('6','6'), ('9','9'), ('10','10'), ]
-
+REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
+PAGECHOICES	= [('25','25'),		('50','50'),	('100','100'),	('200','200'),	('400','400'),]
+TPCCHOICES	= [('', 'All'),		('1', '1'),	('2','2'),	('5','5'),	('6','6'),	('9','9'),	('10','10'), ]
 
 
 def makeQuery(page, q=''):
@@ -494,9 +486,15 @@ def showmon(request):
     subrun	= request.GET.get('subrun','')
     tpcmoncat	= request.GET.get('tpcmoncat','')
 
-
-    d = {}
+    # This page serves two purposes - if the TPC monitor category
+    # is defined, then it shows a page with graphics (depending
+    # on the category.
+    #
+    # If there is no category provided, it shows a choice of catogeries
+    # in a table.
     
+    d = {}
+
     if(tpcmoncat!=''):
         item	= monrun.TPCmonitor(int(tpcmoncat))
         cat	= item[0]
@@ -511,39 +509,21 @@ def showmon(request):
         for plane in ['U','V','Z']:
             row = []
             for apa in range(6):
-                pattern = item[1]
-                # plotUrl = ('http://%s/%s/%s/%s'
-                #            % (domain, settings.SITE['dqm_monitor_url'], j_uuid,
-                #               'run'+run+'_subrun'+subrun+'_tpcmonitor_'+pattern+plane+str(apa)+'.png')
-                # )
-                #print(plotUrl)
-                
-                plotUrl = monrun.TPCmonitorURL(int(tpcmoncat), domain, settings.SITE['dqm_monitor_url'], j_uuid, run, subrun, plane, apa)
-                
+                plotUrl = monrun.TPCmonitorURL(int(tpcmoncat), domain, settings.SITE['dqm_monitor_url'],
+                                               j_uuid, run, subrun, plane, apa)
                 row.append(plotUrl)
         
             d['rows'].append(row)
             #print(d['rows'])
         
         return render(request, 'unitable3.html', d)
-    
-    data = []
+    # - we just served a graphic page according to the chosen category
 
-    cnt=0
-    for item in monrun.TPCmonitor():
-        tpcmoncat_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&tpcmoncat=%s">%s</a>' % (
-            domain, run, subrun, str(cnt), item[0]
-        )
-        print(tpcmoncat_url)
-        cnt+=1
-        data.append({'items':mark_safe(tpcmoncat_url)})
-    
-    d['table']		= ShowMonTable(data)
+    # ---
+    # this table presents the categories available (clickable)
+    d['tblHeader']	= 'Run:'+run+' subrun:'+subrun
+    d['table']		= ShowMonTable(monrun.TPCmonitorCatURLs(domain, run, subrun))
     d['navtable']	= TopTable(domain)
-
-
-    #mark_safe('<a href="http://%s%s?%s=%s">%s</a>'
-    #                     % (self.site, reverse(what), key, value, value))
 
     return render(request, 'unitable3.html', d)
     

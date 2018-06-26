@@ -1,6 +1,7 @@
 import json
 from django.db import models
 from django.core	import serializers
+from django.utils.safestring		import mark_safe
 
 class monrun(models.Model):
     run		= models.PositiveIntegerField(default=0, verbose_name='Run')
@@ -27,6 +28,19 @@ class monrun(models.Model):
         else:
             return tpcMonCategories[N]
 
+    # ---
+    @classmethod
+    def TPCmonitorCatURLs(self, domain, run, subrun):
+        catPattern = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&tpcmoncat=%s">%s</a>'
+        data = []
+        cnt=0
+        for item in monrun.TPCmonitor():
+            tpcmoncat_url =  catPattern % (domain, run, subrun, str(cnt), item[0])
+            print(tpcmoncat_url)
+            cnt+=1
+            data.append({'items':mark_safe(tpcmoncat_url)})
+
+        return data
     # ---
     @classmethod
     def TPCmonitorURL(self, N, domain, dqmURL, j_uuid, run, subrun, plane, apa):
