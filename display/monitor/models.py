@@ -27,6 +27,9 @@ class monrun(models.Model):
             ('Channels Stuck Code Off', 	common+'fChanStuckCodeOnFrac%s%s.png'),
 
             ('FFT',				common+'fChanFFT%s%s.png'),
+            
+            ('Persistent FFT fiber',		common+'PersistentFFTFiber%s.png', 120),
+            ('Profiled FFT fiber',		common+'ProfiledFFTFiber%s.png', 120),
         ]
 
         if N is None:

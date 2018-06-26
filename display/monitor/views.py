@@ -508,7 +508,7 @@ def showmon(request):
         Ncat = int(tpcmoncat)
         if Ncat in (0,1,2,3,6,7,8):
            d['rows'] = monrun.TPCmonitorURLplanes(Ncat, domain, url2images, j_uuid, run, subrun)
-        elif Ncat in (4,5):
+        elif Ncat in (4,5,9,10):
             d['rows'] = monrun.TPCmonitorURLind(Ncat, domain, url2images, j_uuid, run, subrun)
         else:
            pass
