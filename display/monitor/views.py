@@ -488,10 +488,8 @@ def showmon(request):
 
     # This page serves two purposes - if the TPC monitor category
     # is defined, then it shows a page with graphics (depending
-    # on the category.
-    #
-    # If there is no category provided, it shows a choice of catogeries
-    # in a table.
+    # on the category. If there is no category provided, it shows
+    # a choice of catogeries in a table.
     
     d = {}
 
@@ -504,17 +502,14 @@ def showmon(request):
         
         d['tblHeader']	= cat+'  -- run:'+run+' subrun:'+subrun
         d['navtable']	= TopTable(domain)
-        d['rows']	= []
 
-        for plane in ['U','V','Z']:
-            row = []
-            for apa in range(6):
-                plotUrl = monrun.TPCmonitorURL(int(tpcmoncat), domain, settings.SITE['dqm_monitor_url'],
-                                               j_uuid, run, subrun, plane, apa)
-                row.append(plotUrl)
-        
-            d['rows'].append(row)
-            #print(d['rows'])
+        Ncat = int(tpcmoncat)
+        if Ncat in (0,1,2,3):
+           d['rows'] = monrun.TPCmonitorURLplanes(Ncat, domain, settings.SITE['dqm_monitor_url'], j_uuid, run, subrun)
+        elif Ncat in (4,5):
+            d['rows'] = monrun.TPCmonitorURLind(Ncat, domain, settings.SITE['dqm_monitor_url'], j_uuid, run, subrun)
+        else:
+           pass
         
         return render(request, 'unitable3.html', d)
     # - we just served a graphic page according to the chosen category

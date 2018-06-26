@@ -19,8 +19,8 @@ class monrun(models.Model):
             ('RMS of ADC per channel per view per APA and per channel',	'run%s_subrun%s_tpcmonitor_fChanRMS%s%spfx.png'),
             ('Mean of ADC per channel per view per APA and per channel','run%s_subrun%s_tpcmonitor_fChanMean%s%spfx.png'),
             
-            ('RMS of channel ADC from slots', 'run%s_subrun%s_tpcmonitor_Slot%sRMSpfx.png'),
-            ('Mean of channel ADC from slots', 'run%s_subrun%s_tpcmonitor_Slot%sMeanpfx.png'),
+            ('RMS of channel ADC from slots', 'run%s_subrun%s_tpcmonitor_Slot%sRMSpfx.png', 30),
+            ('Mean of channel ADC from slots', 'run%s_subrun%s_tpcmonitor_Slot%sMeanpfx.png', 30),
         ]
 
         if N is None:
@@ -30,13 +30,17 @@ class monrun(models.Model):
 
     # ---
     @classmethod
+    def planes(self):
+        return ['U','V','Z']
+    # ---
+    @classmethod
     def TPCmonitorCatURLs(self, domain, run, subrun):
+        # eval('self.test(1)')
         catPattern = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&tpcmoncat=%s">%s</a>'
         data = []
         cnt=0
         for item in monrun.TPCmonitor():
             tpcmoncat_url =  catPattern % (domain, run, subrun, str(cnt), item[0])
-            print(tpcmoncat_url)
             cnt+=1
             data.append({'items':mark_safe(tpcmoncat_url)})
 
@@ -45,16 +49,41 @@ class monrun(models.Model):
     @classmethod
     def TPCmonitorURL(self, N, domain, dqmURL, j_uuid, run, subrun, plane, apa):
         pattern	= self.TPCmonitor(N)[1]
-        filename = None
-        if(N<4):
-            filename= pattern % (run, subrun, plane, apa)
-        elif(N>3 and N<6):
-            pass
-        else:
-            pass
-        
+        filename= pattern % (run, subrun, plane, apa)
+        #        print('filename:',filename)
         return ('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
-        
+    # ---
+    @classmethod
+    def TPCmonitorURLplanes(self, N, domain, dqmURL, j_uuid, run, subrun):
+        rows = []
+        for plane in self.planes():
+            row = []
+            for apa in range(6):
+                plotUrl = self.TPCmonitorURL(N, domain, dqmURL, j_uuid, run, subrun, plane, apa)
+                row.append(plotUrl)
+            rows.append(row)
 
+        return rows
+    # ---
+    @classmethod
+    def TPCmonitorURLind(self, N, domain, dqmURL, j_uuid, run, subrun):
+        row = []
+        rows = []
+        
+        pattern	= self.TPCmonitor(N)[1]
+        cnt = 0
+        for ind in range(self.TPCmonitor(N)[2]):
+            filename= pattern % (run, subrun, str(ind))
+            #            print(filename)
+            row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
+            cnt+=1
+            if cnt==6:
+                cnt=0
+                rows.append(row)
+                row = []
+            
+
+        return rows
+        
 
 #        filename = 'run'+run+'_subrun'+subrun+'_tpcmonitor_'+pattern+plane+str(apa)+'.png'
