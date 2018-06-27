@@ -40,7 +40,13 @@ class monrun(models.Model):
         ]
 
         Categories['pdsphit'] = [
-            ('RMS of ADC per view per APA for all channels', common+'fChanRMSDist%s%s.png'),
+            ('NHits distribution for each view and each APA',		common+'NHitsAPA%s%s.png'),
+            ('Hit Charge distribution for each view and each APA',	common+'HitChargeAPA%s%s.png'),
+            ('Hit RMS distribution for each view and each APA',		common+'HitRMSAPA%s%s.png'),
+            ('Hit peak time for each view and each APA',		common+'HitPeakTimeAPA%s%s.png'),
+            ('NHits profiled',						common+'fNHitsView%s%sprof.png'),
+            ('Hit charge profiled',					common+'fChargeView%s%sprof.png'),
+            ('Hit RMS profile',						common+'fRMSView%s%sprof.png'),
         ]
 
 
@@ -55,8 +61,19 @@ class monrun(models.Model):
         return ['U','V','Z']
     # ---
     @classmethod
+    def PDSPHITmonitorCatURLs(self, domain, run, subrun):
+        catPattern = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&pdsphitmoncat=%s">%s</a>'
+        data = []
+        cnt=0
+        for item in monrun.ALLmonitor('pdsphit'):
+            tpcmoncat_url =  catPattern % (domain, run, subrun, str(cnt), item[0])
+            cnt+=1
+            data.append({'items':mark_safe(tpcmoncat_url)})
+
+        return data
+    # ---
+    @classmethod
     def TPCmonitorCatURLs(self, domain, run, subrun):
-        # eval('self.test(1)')
         catPattern = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&tpcmoncat=%s">%s</a>'
         data = []
         cnt=0
@@ -68,18 +85,18 @@ class monrun(models.Model):
         return data
     # ---
     @classmethod
-    def TPCmonitorURL(self, N, domain, dqmURL, j_uuid, run, subrun, plane, apa):
-        pattern	= self.ALLmonitor('tpc',N)[1]
+    def TPCmonitorURL(self, what, N, domain, dqmURL, j_uuid, run, subrun, plane, apa):
+        pattern	= self.ALLmonitor(what,N)[1]
         filename= pattern % (run, subrun, plane, apa) # print('filename:',filename)
         return ('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
     # ---
     @classmethod
-    def TPCmonitorURLplanes(self, N, domain, dqmURL, j_uuid, run, subrun):
+    def TPCmonitorURLplanes(self, what, N, domain, dqmURL, j_uuid, run, subrun):
         rows = []
         for plane in self.planes():
             row = []
             for apa in range(6):
-                plotUrl = self.TPCmonitorURL(N, domain, dqmURL, j_uuid, run, subrun, plane, apa)
+                plotUrl = self.TPCmonitorURL(what, N, domain, dqmURL, j_uuid, run, subrun, plane, apa)
                 row.append(plotUrl)
             rows.append(row)
 

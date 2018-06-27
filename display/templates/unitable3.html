@@ -5,10 +5,24 @@
 {% block content1 %}
 <h3>{{ tblHeader }}</h3>
 
-{% if table %}
-{% render_table table %}
-{% endif %}
+<table>
+  <tr>
+    <td>
+      {% if table %}
+      {% render_table table %}
+      {% endif %}
+    </td>
+    <td>
+      {% if table2 %}
+      {% render_table table2 %}
+      {% endif %}
+    </td>
+  </tr>
+</table>
 
+
+
+<!-- what's below is meant to display multiple rows of images -->
 {% if rows %}
 
 <table>
@@ -23,11 +37,4 @@
   
 {% endif %}
 
-
-
 {% endblock %}    
-    <!-- td><img src="{{ i1 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i2 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i3 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i4 }}" width="100%" alt="NOT FOUND" /></td>
-    <td><img src="{{ i5 }}" width="100%" alt="NOT FOUND" /></td -->

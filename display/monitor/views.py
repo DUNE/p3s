@@ -485,6 +485,9 @@ def showmon(request):
     run		= request.GET.get('run','')
     subrun	= request.GET.get('subrun','')
     tpcmoncat	= request.GET.get('tpcmoncat','')
+    pdsphitmoncat	= request.GET.get('pdsphitmoncat','')
+
+    url2images = settings.SITE['dqm_monitor_url']
 
     # This page serves two purposes - if the TPC monitor category
     # is defined, then it shows a page with graphics (depending
@@ -495,8 +498,6 @@ def showmon(request):
     d['navtable'] = TopTable(domain)
 
     if(tpcmoncat!=''):
-        url2images = settings.SITE['dqm_monitor_url']
-        
         item	= monrun.ALLmonitor('tpc', int(tpcmoncat))
         cat	= item[0]
         obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
@@ -507,21 +508,43 @@ def showmon(request):
 
         Ncat = int(tpcmoncat)
         if Ncat in (0,1,2,3,6,7,8):
-           d['rows'] = monrun.TPCmonitorURLplanes(Ncat, domain, url2images, j_uuid, run, subrun)
+           d['rows'] = monrun.TPCmonitorURLplanes('tpc', Ncat, domain, url2images, j_uuid, run, subrun)
         elif Ncat in (4,5,9,10):
             d['rows'] = monrun.TPCmonitorURLind(Ncat, domain, url2images, j_uuid, run, subrun)
         else:
            pass
         
         return render(request, 'unitable3.html', d)
+    # ---
+    if(pdsphitmoncat!=''):
+        print('hereh')
+        item	= monrun.ALLmonitor('pdsphit', int(pdsphitmoncat))
+        cat	= item[0]
+        obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
+        entry	= obj[0]
+        j_uuid	= entry.j_uuid
+        
+        d['tblHeader']	= cat+'  -- run:'+run+' subrun:'+subrun
+
+        Ncat = int(pdsphitmoncat)
+        if Ncat in (0,1,2,3,4,5,6):
+           d['rows'] = monrun.TPCmonitorURLplanes('pdsphit', Ncat, domain, url2images, j_uuid, run, subrun)
+        else:
+           pass
+        
+        return render(request, 'unitable3.html', d)
     # - we just served a graphic page according to the chosen category
 
-    # ---
+    # ------------------
     # this table presents the categories available (clickable)
     d['tblHeader']	= 'Run:'+run+' subrun:'+subrun
     t = ShowMonTable(monrun.TPCmonitorCatURLs(domain, run, subrun))
     t.changeName('TPC monitor items')
     d['table']		= t
+    
+    t2 = ShowMonTable(monrun.PDSPHITmonitorCatURLs(domain, run, subrun))
+    t2.changeName('PDSP HIT monitor items')
+    d['table2']		= t2
 
     return render(request, 'unitable3.html', d)
     
