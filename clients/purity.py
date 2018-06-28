@@ -110,9 +110,10 @@ if(run==''):
     run = API.get2server('purity', 'index', '')
     if(verb>0): print('Assigning run number based on DB: '+run)
 
-items = ('run','tpc', 'lifetime', 'error', 'count')
+items = ('run','tpc', 'lifetime', 'error', 'count', 'sn', 'snclusters')
 
-for row in myreader:    # print(row)
+for row in myreader:
+    print(row)
     if(frst):
         frst = False
         continue # skip Bruce's header
@@ -123,7 +124,6 @@ for row in myreader:    # print(row)
         e = e.replace(',', '')
         d[items[cnt]] = e
         cnt+=1
-        # print(cnt)
 
     d['run']	= run
 

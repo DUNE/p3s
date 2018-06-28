@@ -90,6 +90,10 @@ def add(request):
     p.error	= post['error']
     p.count	= post['count']
     p.ts	= post['ts']
+
+    # print('here')
+    p.sn	= post.get('sn', 0.0)
+    p.snclusters= post.get('snclusters',0)
     
     
     p.save()
