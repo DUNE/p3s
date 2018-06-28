@@ -1,6 +1,8 @@
 # P3S Documentation
 
 ---
+## If you are looking for the p3s introduction and tutorial...
+Please read the document "JOB.pdf" found in the pdf directory.
 
 ## What's in here?
 The *documents* folder contains definitive documentation for the protoDUNE prompt processing system (p3s). There are
