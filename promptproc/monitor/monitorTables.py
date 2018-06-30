@@ -63,6 +63,12 @@ class TimelineTable(tables.Table):
         attrs	= {'class': 'paleblue'}
 
 #--------------------------------------------------------
+class ShortSummaryTable(tables.Table):
+    State	= tables.Column(verbose_name='State')
+    Count	= tables.Column(verbose_name='Count')
+    class Meta:
+        attrs	= {'class': 'paleblue'}
+#--------------------------------------------------------
 class SummaryTable(tables.Table):
     Object	= tables.Column()
     Number	= tables.Column()

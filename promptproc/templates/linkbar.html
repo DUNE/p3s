@@ -28,12 +28,24 @@
 </table>
 </center -->
 
-{% if navtable %}
 <center>
-  <!-- img src="{% static 'images/dune_logo.png' %}" -->
-{% render_table navtable %}
-</center>
+<table>
+  <tr>
+{% if navtable %}
+<td align="left">
+  {% render_table navtable %}
+</td>
 {% endif %}
+<td><img src="{% static 'images/dune_logo.png' %}"  width="100%" </td>
+{% if hometable %}
+<td align="right">
+  {% render_table hometable %}
+</td>
+{% endif %}
+  </tr>
+</table>
+</center>
+
 
 
 

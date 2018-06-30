@@ -51,7 +51,7 @@ from .monitorTables import *
 
 from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.miscUtils			import makeTupleList
-from utils.navbar			import TopTable
+from utils.navbar			import TopTable, HomeTable
 
 from django import forms
 
@@ -388,6 +388,7 @@ def data_handler(request, what):
     d['selectors']	= selectors
     d['refresh']	= refresh
     d['navtable']	= TopTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
 
     return render(request, template, d)
 
@@ -541,6 +542,7 @@ def detail_handler(request, what):
         RequestConfig(request).configure(aux2)
 
     d['navtable']	= TopTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
         
     return render(request, template, d)
 

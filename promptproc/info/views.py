@@ -25,7 +25,7 @@ from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.timeUtils import uptime
 from utils.timeUtils import loadavg
 
-from utils.navbar			import TopTable
+from utils.navbar			import TopTable, HomeTable
 
 refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
 
@@ -136,14 +136,36 @@ def index(request):
     timeString	= datetime.datetime.now().strftime('%X %x')+' '+timezone.get_current_timezone_name()
 
 
+    # Pilot summary
+    pilotSummaryData = []
+
+    pilotSummaryData.append({'State':'Total',	'Count': pilot.N()})
+    pilotSummaryData.append({'State':'No jobs',	'Count': pilot.N('no jobs')})
+    pilotSummaryData.append({'State':'Running',	'Count': pilot.N('running')})
+    pilotSummaryData.append({'State':'Active',	'Count': pilot.N('active')})
+    pilotSummaryData.append({'State':'Timeout',	'Count': pilot.N('timeout')})
+    
+    pilotSummary = ShortSummaryTable(pilotSummaryData)
+    
+    # Job summary
+    jobSummaryData = []
+
+    jobSummaryData.append({'State':'Total',	'Count': job.N()})
+    jobSummaryData.append({'State':'Defined',	'Count': pilot.N('defined')})
+    jobSummaryData.append({'State':'Running',	'Count': pilot.N('running')})
+    jobSummaryData.append({'State':'Finished',	'Count': pilot.N('finished')})
+    jobSummaryData.append({'State':'pilotTO',	'Count': pilot.N('pilotTO')})
+    
+    jobSummary = ShortSummaryTable(jobSummaryData)
+
     times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
     states	= (
-        (makeRefLink(domain, 'defined'),'ts_def',None),
-        (makeRefLink(domain, 'started'),'ts_sta',None),
-        (makeRefLink(domain, 'finished'),'ts_sto',None),
-        (makeRefLink(domain, 'pilotTO'),'ts_sto','pilotTO'),
-        (makeRefLink(domain, 'timelimit'),'ts_sto','timelimit'),
-        (makeRefLink(domain, 'error'),'ts_sto','error'),
+        (makeRefLink(domain, 'defined'),	'ts_def',None),
+        (makeRefLink(domain, 'started'),	'ts_sta',None),
+        (makeRefLink(domain, 'finished'),	'ts_sto',None),
+        (makeRefLink(domain, 'pilotTO'),	'ts_sto','pilotTO'),
+        (makeRefLink(domain, 'timelimit'),	'ts_sto','timelimit'),
+        (makeRefLink(domain, 'error'),		'ts_sto','error'),
 #        (mark_safe('<a href="http://'+domain+'/monitor/jobs?state=error">'+'errors</a>'),'ts_sto','error'),
     )
     
@@ -179,7 +201,8 @@ def index(request):
                       'dqm_host':	settings.SITE['dqm_host'],
                       'uptime':		uptime(),
                       'time':		timeString,
-                      'summary':	tSummary,
+                      'jobsummary':	jobSummary,
+                      'pilotsummary':	pilotSummary,
                       'jobs':		tJobs,
                       'system':		tSystem,
                       'time':		timeString,
@@ -187,7 +210,7 @@ def index(request):
                       'selectors':	selectors,
                       'refresh':	refresh,
                       'navtable':	TopTable(domain, dqm_domain),
-
+                      'hometable':	HomeTable(domain, dqm_domain),
                   }
     )
 
