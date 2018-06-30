@@ -54,13 +54,10 @@ if(what=='pilot'):
     d = dict(to=to, host=myhost)
     if(direct): d['direct']='True'
     resp = API.post2server('logic', 'pilotTO', d)
-    if(not direct and resp!=''):
-        print(resp)
-    
-    exit
-    print('done with pilot TO')
-    # assume it's a job
+    if(not direct and resp!=''): print(resp)
+    exit(0)
 
+# if it was not a pilot, assume it's a job
 if(verb>0): print('will be TOing jobs with timeout', to)
 
 d = dict(to=to, host=myhost)
@@ -68,7 +65,7 @@ if(direct): d['direct']='True'
 resp = API.post2server('logic', 'jobTO', d)
 
 if(not direct and resp!=''): print(resp)
-exit
+exit(0)
     
 
 
