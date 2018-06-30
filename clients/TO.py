@@ -59,6 +59,8 @@ if(what=='pilot'):
 
     # assume it's a job
 
+if(verb>0): print('will be TOing jobs with timeout', to)
+
 d = dict(to=to, host=myhost)
 if(direct): d['direct']='True'
 resp = API.post2server('logic', 'jobTO', d)
