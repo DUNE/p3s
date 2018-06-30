@@ -144,6 +144,8 @@ def index(request):
     pilotSummaryData.append({'State':'Running',	'Count': pilot.N('running')})
     pilotSummaryData.append({'State':'Active',	'Count': pilot.N('active')})
     pilotSummaryData.append({'State':'Timeout',	'Count': pilot.N('timeout')})
+    pilotSummaryData.append({'State':' ',	'Count': ' '})
+    pilotSummaryData.append({'State':' ',	'Count': ' '})
     
     pilotSummary = ShortSummaryTable(pilotSummaryData)
     
@@ -155,6 +157,8 @@ def index(request):
     jobSummaryData.append({'State':'Running',	'Count': pilot.N('running')})
     jobSummaryData.append({'State':'Finished',	'Count': pilot.N('finished')})
     jobSummaryData.append({'State':'pilotTO',	'Count': pilot.N('pilotTO')})
+    jobSummaryData.append({'State':' ',	'Count': ' '})
+    jobSummaryData.append({'State':' ',	'Count': ' '})
     
     jobSummary = ShortSummaryTable(jobSummaryData)
 
