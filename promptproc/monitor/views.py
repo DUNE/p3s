@@ -62,7 +62,7 @@ JOBTYPECHOICES	= [] # ditto
 
 PAGECHOICES	= [('25','25'), ('50','50'), ('100','100'), ('200','200'),('400','400'),]
 
-refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
+refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min'), ]
 
 SELECTORS	= {
     'pilot':
@@ -166,7 +166,7 @@ def data_handler(request, what):
     error	= request.GET.get('error','')
     jobtype	= request.GET.get('jobtype','')
     user	= request.GET.get('user','')
-    refresh	= request.GET.get('refresh', None)
+    refresh	= request.GET.get('refresh', '')
 
     serviceName	= request.GET.get('service','')
     
@@ -198,22 +198,12 @@ def data_handler(request, what):
     d		= dict(domain=domain, dqm_domain=dqm_domain, dqm_host=dqm_host, time=str(now))
 
     objects, t, Nfilt						= None, None, None
-    stateSelector, perPageSelector,userSelector, typeSelector,serviceSelector	= None, None, None, None, None
+    stateSelector, perPageSelector, userSelector, typeSelector, serviceSelector, refreshSelector = None, None, None, None, None, None
 
     t = None  # placeholder for the main table object
-    try:
-        refreshSelector = dropDownGeneric(request.POST,
-                                          label='Refresh',
-                                          choices=refreshChoices,
-                                          tag='refresh')
-            
-        if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
-    except:
-        pass
-        
     
     if(what in ['job', 'pilot', 'dag', 'workflow', 'service']):
-        
+
         USERCHOICES	= makeTupleList(userlist)
         JOBTYPECHOICES	= makeTupleList(jobtypes)
         SERVICECHOICES	= makeTupleList(services)
@@ -229,6 +219,7 @@ def data_handler(request, what):
         #----------
 
         if request.method == 'POST':
+            
             try:
                 if(selector['stateselector']):
                     stateSelector = boxSelector(request.POST,
@@ -271,16 +262,19 @@ def data_handler(request, what):
             #     pass
 
 
-            perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
+            perPageSelector = dropDownGeneric(request.POST, initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
             if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
-                    
+
+            refreshSelector = dropDownGeneric(request.POST, label='Refresh', choices=refreshChoices, tag='refresh')
+            if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
+            
             return makeQuery(what, q) # will go and get the query results...
 
         #######################################################################################
         ##### IF IT'S NOT RESPONSE TO a "POST", BUILD THE INITIAL PAGE AND/OR RUN A QUERY #####
         #######################################################################################
         
-        refresh		= request.GET.get('refresh', None)
+        refresh		= request.GET.get('refresh', '')
         try:
             if(selector['stateselector']):
                 stateSelector	= boxSelector(what=what,initial={'stateChoice':stateD},
@@ -316,14 +310,9 @@ def data_handler(request, what):
         except:
             pass
 
-
-        refreshSelector = dropDownGeneric(label='Refresh',
-                                          initial={'refresh': refresh},
-                                          choices=refreshChoices,
-                                          tag='refresh')
         
-        perPageSelector	= dropDownGeneric(initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
-
+        refreshSelector = dropDownGeneric(label='Refresh',	initial={'refresh': refresh},	choices=refreshChoices,	tag='refresh')
+        perPageSelector	= dropDownGeneric(label='# per page',	initial={'perpage':perpage},	choices = PAGECHOICES,	tag='perpage')
         
         # 4 later: timeselector	= dropDownGeneric(label='Time limit', choices=(('1','1h'),('2','2h'),), tag='time')
 
