@@ -57,7 +57,7 @@ if(what=='pilot'):
     if(not direct and resp!=''):
         print(resp)
     
-    exit(0)
+    exit
     print('done with pilot TO')
     # assume it's a job
 
