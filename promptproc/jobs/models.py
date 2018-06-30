@@ -47,6 +47,7 @@ class job(models.Model):
                 return self.objects.filter(site=site).count()
         else:
             if(state):
+                if(state=='Total'): return self.objects.count()
                 return self.objects.filter(state=state).count()
             else:
                 return self.objects.count()

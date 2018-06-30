@@ -5,7 +5,7 @@ from data.models	import dataset, datatype
 from jobs.models	import job
 
 
-
+# ---
 class user(models.Model):
     name	= models.CharField(max_length=64, primary_key = True, default='')
 
@@ -19,6 +19,21 @@ class user(models.Model):
             allUsers.append(u.name)
         return ",".join(allUsers)
 
+# ---
+class jobtype(models.Model):
+    name	= models.CharField(max_length=64, primary_key = True, default='')
+    nrunning	= models.PositiveIntegerField(default=0)
+  
+    def __str__(self):
+        return self.name
+
+    @classmethod
+    def all(self):
+        allTypes=[]
+        for u in jobtype.objects.order_by('name'):
+            allTypes.append(u.name)
+        return ",".join(allTypes)
+# ---
 class service(models.Model):
     name	= models.CharField(max_length=32, default='')
     ts		= models.DateTimeField('ts',  blank=True, null=True)

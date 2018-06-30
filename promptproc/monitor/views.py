@@ -143,11 +143,10 @@ def data_handler(request, what):
     try:
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
-        p3s_users	= settings.SITE['p3s_users']
         p3s_jobtypes	= settings.SITE['p3s_jobtypes']
         p3s_services	= settings.SITE['p3s_services']
     except:
-        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_users,p3s_jobtypes, p3s_services")
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
 
     p3s_users	= 'All,'+p3sUser.all()
     

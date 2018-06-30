@@ -6,8 +6,8 @@ from django.db import models
 
 class pilot(models.Model):
     uuid	= models.CharField(max_length=36, default='')
-    j_uuid	= models.CharField(max_length=36, default='')	# current job id
-    jpid	= models.CharField(max_length=16, default='')	# current job pid
+    j_uuid	= models.CharField(max_length=36, default='')	# unique job id
+    jpid	= models.CharField(max_length=16, default='')	# the job pid
     state	= models.CharField(max_length=16, default='')
     status	= models.CharField(max_length=16, default='')
     site	= models.CharField(max_length=32, default='')
@@ -15,15 +15,16 @@ class pilot(models.Model):
     ts_cre	= models.DateTimeField('ts_cre',  blank=True, null=True)
     ts_reg	= models.DateTimeField('ts_reg',  blank=True, null=True)
     ts_lhb	= models.DateTimeField('ts_lhb',  blank=True, null=True)
-    jobcount	= models.PositiveIntegerField(default=0) # number of processed jobs
-    jobs_done	= models.TextField(default='') # uuid's of processed jobs
+    jobcount	= models.PositiveIntegerField(default=0) # number of jobs processed by this pilot
+    jobs_done	= models.TextField(default='') # csv list - uuid's of processed jobs
     pid		= models.CharField(max_length=16, default='')
-    extra	= models.CharField(max_length=256, default='')	# extra info (e.g. batch)
+    extra	= models.CharField(max_length=256, default='')	# extra info (e.g. batch ID)
 
 
     # time autofill:
     #    auto_now=True
     
+# ---    
     @classmethod
     def N(self, state=None, site=None):
         if(site):
@@ -33,10 +34,11 @@ class pilot(models.Model):
                 return self.objects.filter(site=site).count()
         else:
             if(state):
+                if(state=='Total'): return self.objects.count()
                 return self.objects.filter(state=state).count()
             else:
                 return self.objects.count()
-
+# ---
     @classmethod
     def jobsDone(self):
         cnt=0

@@ -29,9 +29,19 @@ from utils.navbar			import TopTable, HomeTable
 
 refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
 
-
-def makeRefLink(domain, what):
-    return mark_safe('<a href="http://'+domain+'/monitor/jobs?state='+what+'">'+what+'</a>')
+###############################################################################################
+# ---
+def makeJobLink(domain, what):
+    if(what=='Total'or what=='started'):
+        return mark_safe('<a href="http://'+domain+'/monitor/jobs">'+what+'</a>')
+    else:
+        return mark_safe('<a href="http://'+domain+'/monitor/jobs?state='+what+'">'+what+'</a>')
+# ---
+def makePilotLink(domain, what):
+    if(what=='Total'):
+        return mark_safe('<a href="http://'+domain+'/monitor/pilots">'+what+'</a>')
+    else:
+        return mark_safe('<a href="http://'+domain+'/monitor/pilots?state='+what+'">'+what+'</a>')
 #######################
 def index(request):
     if request.method == 'POST':
@@ -139,37 +149,34 @@ def index(request):
     # Pilot summary
     pilotSummaryData = []
 
-    pilotSummaryData.append({'State':'Total',	'Count': pilot.N()})
-    pilotSummaryData.append({'State':'No jobs',	'Count': pilot.N('no jobs')})
-    pilotSummaryData.append({'State':'Running',	'Count': pilot.N('running')})
-    pilotSummaryData.append({'State':'Active',	'Count': pilot.N('active')})
-    pilotSummaryData.append({'State':'Timeout',	'Count': pilot.N('timeout')})
-    pilotSummaryData.append({'State':' ',	'Count': ' '})
-    pilotSummaryData.append({'State':' ',	'Count': ' '})
+    for what in ('Total','no jobs', 'running', 'active', 'timeout'):
+        pilotSummaryData.append({'State':(makePilotLink(domain, what)),	'Count': pilot.N(what)})
+    
+    pilotSummaryData.append({'State':' ',	'Count': ' '}) # placeholder
+    pilotSummaryData.append({'State':' ',	'Count': ' '}) # placeholder
     
     pilotSummary = ShortSummaryTable(pilotSummaryData)
     
     # Job summary
     jobSummaryData = []
 
-    jobSummaryData.append({'State':'Total',	'Count': job.N()})
-    jobSummaryData.append({'State':'Defined',	'Count': pilot.N('defined')})
-    jobSummaryData.append({'State':'Running',	'Count': pilot.N('running')})
-    jobSummaryData.append({'State':'Finished',	'Count': pilot.N('finished')})
-    jobSummaryData.append({'State':'pilotTO',	'Count': pilot.N('pilotTO')})
-    jobSummaryData.append({'State':' ',	'Count': ' '})
-    jobSummaryData.append({'State':' ',	'Count': ' '})
+    for what in ('Total','defined', 'running', 'finished','pilotTO'):
+        jobSummaryData.append({'State':(makeJobLink(domain, what)),	'Count': job.N(what)})
+    
+    jobSummaryData.append({'State':' ',	'Count': ' '}) # placeholder
+    jobSummaryData.append({'State':' ',	'Count': ' '}) # placeholder
     
     jobSummary = ShortSummaryTable(jobSummaryData)
 
     times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
+    
     states	= (
-        (makeRefLink(domain, 'defined'),	'ts_def',None),
-        (makeRefLink(domain, 'started'),	'ts_sta',None),
-        (makeRefLink(domain, 'finished'),	'ts_sto',None),
-        (makeRefLink(domain, 'pilotTO'),	'ts_sto','pilotTO'),
-        (makeRefLink(domain, 'timelimit'),	'ts_sto','timelimit'),
-        (makeRefLink(domain, 'error'),		'ts_sto','error'),
+        (makeJobLink(domain, 'defined'),	'ts_def',None),
+        (makeJobLink(domain, 'started'),	'ts_sta',None),
+        (makeJobLink(domain, 'finished'),	'ts_sto',None),
+        (makeJobLink(domain, 'pilotTO'),	'ts_sto','pilotTO'),
+        (makeJobLink(domain, 'timelimit'),	'ts_sto','timelimit'),
+        (makeJobLink(domain, 'error'),		'ts_sto','error'),
 #        (mark_safe('<a href="http://'+domain+'/monitor/jobs?state=error">'+'errors</a>'),'ts_sto','error'),
     )
     
