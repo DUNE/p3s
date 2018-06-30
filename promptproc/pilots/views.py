@@ -274,10 +274,15 @@ def report(request):
             j = job.objects.get(uuid=p.j_uuid)
             j.state = state # that's where the job has its state set in normal running
             j.pid	= jpid
-            # print('--------------', j.pid, j.state)
-            with transaction.atomic():
-                j.save()
-            
+
+            # was: with transaction.atomic():
+            j.save()
+        except:
+            return HttpResponse(json.dumps({'status':	'FAIL',
+                                            'state':	state,
+                                            'error':	'failed to locate job'}))
+
+        try:
             if(event=='jobstart'):
                 j.ts_sta= timezone.now()
                 j.state = state
@@ -288,9 +293,14 @@ def report(request):
                     if(wf.state!='running'):
                         wf.ts_sta = timezone.now() #since noop does not really execute: if(wf.rootuuid==j.uuid):
                         wf.state = "running"
-                        with transaction.atomic():
-                            wf.save()
-
+                        # was: with transaction.atomic():
+                        wf.save()
+        except:
+            return HttpResponse(json.dumps({'status':	'FAIL',
+                                            'state':	state,
+                                            'error':	'failed to update job on jobstart'}))
+        
+        try:        
             if(event=='timelimit'): # don't toggle children in the WF
                 doneJobs = p.jobs_done
                 if(doneJobs==''):
@@ -304,9 +314,13 @@ def report(request):
                 j.errcode	= errcode
                 j.state		= 'timelimit'
                 
-                with transaction.atomic():
-                    j.save()
-                    
+                # was: with transaction.atomic():
+                j.save()
+        except:
+            return HttpResponse(json.dumps({'status':	'FAIL',
+                                            'state':	state,
+                                            'error':	'failed to update job on timelimit'}))
+        try:
             if(event=='jobstop'): # timestamp and toggle children
                 doneJobs = p.jobs_done
                 if(doneJobs==''):
@@ -319,8 +333,8 @@ def report(request):
                 j.ts_sto = timezone.now()
                 j.errcode= errcode
                 nd = manager.childrenStateToggle(j,'defined')
-                with transaction.atomic():
-                    j.save()
+                # was: with transaction.atomic():
+                j.save()
                 
                 if(j.wfuuid!=''): # Check the workflow - maybe it has completed
                     done	= True
@@ -339,7 +353,7 @@ def report(request):
         except:
             return HttpResponse(json.dumps({'status':	'FAIL',
                                             'state':	state,
-                                            'error':	'failed to update job state'}))
+                                            'error':	'failed to update job state on jobstop'}))
 
         with transaction.atomic():
             p.save()
