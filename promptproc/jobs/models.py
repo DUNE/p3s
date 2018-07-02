@@ -6,6 +6,7 @@ from django.db		import models
 from django.core	import serializers
 from django.utils	import timezone
 
+########################################################################
 class job(models.Model):
     uuid	= models.CharField(max_length=36, default='')
     user	= models.CharField(max_length=64, default='')		# who submitted the job
@@ -27,17 +28,17 @@ class job(models.Model):
     env		= models.TextField(default='{}')			# optional - env for the job
     pid		= models.CharField(max_length=16, default='')
     errcode	= models.CharField(max_length=16, default='')		#
-    directive	= models.CharField(max_length=16, default='')		#
-#    auxi	= models.CharField(max_length=16, default='')		#
+    directive	= models.CharField(max_length=16, default='')		# for future development
 
+    # ---
     def __str__(self):
         return serializers.serialize("json", [self, ])
-    #        return self.uuid
-
-    
+   
+    # ---
     def augmentEnv(self, d):# add to the existing job environment from the dictionary provided
         self.env = json.dumps({**json.loads(self.env), **d})
 
+    # ---
     @classmethod
     def N(self, state=None, site=None):
         if(site):
@@ -52,6 +53,7 @@ class job(models.Model):
             else:
                 return self.objects.count()
 
+    # ---
     @classmethod
     def timeline(self, timestamp, seconds, state=None):
         cutoff = timezone.now() - timedelta(seconds=seconds)
@@ -67,8 +69,26 @@ class job(models.Model):
         else:
             return self.objects.filter(**kwargs).count()
 
-
+ 
+###############################################################################    
+class jobtype(models.Model):
+    name	= models.CharField(max_length=32, default='')
+    priority	= models.PositiveIntegerField(default=0)
+    njobs	= models.PositiveIntegerField(default=0)
     
+    def __str__(self):
+        return self.name
+
+# ---
+# The priority policy
+class prioritypolicy(models.Model):
+    name	= models.CharField(max_length=32, default='')
+    value	= models.CharField(max_length=32, default='')
+    
+    def __str__(self):
+        return self.name
+
+   
     # @classmethod
     # def Nrun(self):
     #     return self.objects.filter(state='running').count()
@@ -80,21 +100,4 @@ class job(models.Model):
     # @classmethod
     # def Ndef(self):
     #     return self.objects.filter(state='defined').count()
-
-#######################    
-class jobtype(models.Model):
-    name	= models.CharField(max_length=32, default='')
-    priority	= models.PositiveIntegerField(default=0)
-    njobs	= models.PositiveIntegerField(default=0)
-    
-    def __str__(self):
-        return self.name
-    
-# The priority policy
-class prioritypolicy(models.Model):
-    name	= models.CharField(max_length=32, default='')
-    value	= models.CharField(max_length=32, default='')
-    
-    def __str__(self):
-        return self.name
 
