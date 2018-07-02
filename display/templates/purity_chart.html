@@ -1,84 +1,4 @@
 {% extends "chart_base.html" %}
-{% load render_table from django_tables2 %}
-{% load static from staticfiles%}
-<!doctype html>
-<html>
-  <head>
-    <title>protoDUNE DQM{{ pageName }}</title>
-    <!-- THIS IS TEMP, until we plant it on Apache -->
-    <!-- link rel="stylesheet" href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" / -->
-    <link rel="stylesheet" href="{% static 'paleblue/css/screen.css' %}" />
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['corechart', 'bar']});
-      google.charts.setOnLoadCallback(drawStuff);
-
-function drawStuff() {
-    {% for p in purS %}
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Date/Time');
-//    data.addColumn('timeofday', 'Date/Time');
-    data.addColumn('number', 'Lifetime');
-
-    data.addRows([
-	{{ p.timeseries }}
-    ]);
-
-    var options = {
-	title: '{{ p.panel }}',
-	legend: {position:'none'},
-	height: 300,
-	width: 400,
-	timeZone:-5,
-	vAxis: {
-          title: {{ vAxis }} //  WAS: 'Electron Lifetime (ms)'
-        },
-	hAxis: {
-	    title: 'Date/Time'
-	}
-    };
-      
-    var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
-//    var chart = new google.charts.Bar(document.getElementById('{{ p.panel }}'));
-    chart.draw(data, google.charts.Bar.convertOptions(options));
-
-    {% endfor %}
-      };
-    </script>
-  </head>
-
-  
-  <body>
-        {% include "topnavbar.html" %}
-    <h2>protoDUNE DQM{{ pageName }}</h2>
-
-
-
-	    <!-- div -->
-	    {% block frm %}
-	    {% if selectors %}
-	      <form action="" method="post">
-		{% csrf_token %}
-		<table>
-		  <tr>
-		    {% for sel in selectors %}
-		    <td>
-		      <table>
-			{{ sel }}
-		      </table>
-		    </td>
-		    {% endfor %}
-		    <td>
-		      <input type="submit" value="Submit" />
-		    </td>
-		  </tr>
-		</table>
-		
-	      </form>
-	      {% endif %}
-	      {% endblock %}
-	      <!-- /div -->
-
 
               {% block content %}
 
@@ -96,6 +16,6 @@ function drawStuff() {
 		</tr>
 	      </table>
 	      {% endblock %}
-    <hr/>  
+    <!-- hr/>  
   </body>
-</html>
+</html -->
