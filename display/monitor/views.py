@@ -27,7 +27,7 @@ from evdisp.models			import evdisp
 from .models				import monrun
 
 from utils.selectorUtils		import dropDownGeneric, boxSelector, twoFieldGeneric
-from utils.navbar			import TopTable
+from utils.navbar			import TopTable, HomeTable
 
 
 # The tables needed here are defined in a separate unit of code
@@ -51,6 +51,16 @@ def makeQuery(page, q=''):
 ####################  VIEWS #############################    
 #########################################################
 def puritychart(request, what):
+    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
     
     host	= request.GET.get('host','')
     
@@ -91,7 +101,10 @@ def puritychart(request, what):
 
         for forChart in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
-                purStr += ('[new Date(%s), %s],') % (forChart.ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
+                if(what=='purity'):
+                    purStr += ('[new Date(%s), %s],') % (forChart.ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
+                else:
+                    purStr += ('[new Date(%s), %s],') % (forChart.ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.sn)
             except:
                 break
     
@@ -113,16 +126,36 @@ def puritychart(request, what):
     
     selectors = []
     selectors.append(tsSelector)
+
+
+    garnish = {}
+
+    garnish['purity'] = {'vAxis':'Electron Lifetime (ms)'}
+    garnish['sn'] = {'vAxis':'S/N'}
     
     d['selectors']	= selectors
-    d['pageName']	= ': purity timeline'
+    d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
+
+    d['vAxis']	=garnish[what]['vAxis']
+    print(what,d['vAxis'])
 
     return render(request, 'purity_chart.html', d)
 
 #########################################################    
 # general request handler for summary type of a table
 def data_handler2(request, what, tbl, tblHeader, url):
+    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
     domain	= request.get_host()
 
     host	= request.GET.get('host','')
@@ -335,6 +368,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     d['tblHeader']	= tblHeader
     d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
     
     return render(request, 'unitable2.html', d)
 
@@ -358,12 +392,23 @@ def eventdisplay(request):
     
     d['pageName']	= ': Event Display'
     d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
 
     return render(request, 'display.html', d)
 
 #########################################################    
 @csrf_exempt
 def display1(request):
+    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
     
     domain	= request.get_host()
     url		= request.GET.get('url','')
@@ -397,6 +442,16 @@ def plot18(request):
 #########################################################    
 @csrf_exempt
 def display6(request):
+    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
     
     domain	= request.get_host()
     run		= request.GET.get('run','')
@@ -489,6 +544,18 @@ def showmon(request):
 
     url2images = settings.SITE['dqm_monitor_url']
 
+    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
+
+    
     # This page serves two purposes - if the TPC monitor category
     # is defined, then it shows a page with graphics (depending
     # on the category. If there is no category provided, it shows
@@ -545,6 +612,9 @@ def showmon(request):
     t2 = ShowMonTable(monrun.PDSPHITmonitorCatURLs(domain, run, subrun))
     t2.changeName('PDSP HIT monitor items')
     d['table2']		= t2
+
+    d['navtable']	= TopTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
 
     return render(request, 'unitable3.html', d)
     

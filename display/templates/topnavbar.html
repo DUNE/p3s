@@ -15,13 +15,23 @@
   </tr>
 </table>
 </center -->
-
-{% if navtable %}
 <center>
-  <!-- img src="{% static 'images/dune_logo.png' %}" -->
-  <h2>p3s/DQM</h2><br/>
-{% render_table navtable %}
-</center>
+<table width="80%">
+  <tr>
+{% if navtable %}
+<td align="left">
+  {% render_table navtable %}
+</td>
 {% endif %}
+<td align="center"><img src="{% static 'images/dune_logo.png' %}"  width="70%"></td>
+{% if hometable %}
+<td align="right">
+  {% render_table hometable %}
+</td>
+{% endif %}
+  </tr>
+</table>
+</center>
+
 
 <hr/>

@@ -17,6 +17,7 @@ def NavBarData(domain=''):
     links = (
         '<a href="http://'+domain+'/monitor/puritytable">Purity Table</a>',
         '<a href="http://'+domain+'/monitor/puritychart">Purity Charts</a>',
+        '<a href="http://'+domain+'/monitor/snchart">S/N Charts</a>',
         '<a href="http://'+domain+'/monitor/runeventdisplay">Event Display by Run and Event</a>',
         '<a href="http://'+domain+'/monitor/eventdisplay">Event Display Image Catalog</a>',
         '<a href="http://'+domain+'/monitor/monrun">Monitor</a>',
@@ -43,9 +44,32 @@ class NavTable(tables.Table):
         attrs	= {'class': 'paleblue'}
 
 
+# ---
 def TopTable(domain):
     Ncolumns.setN(NavBarData())
-
     t = NavTable(NavBarData(domain), show_header = False)
+    return t
 
+# ---
+def HomeBarData(domain, dqm_domain):
+    data = []
+    data.append({
+        'col1':mark_safe('<a href="http://'+domain+'/">p3s Home@'+domain+'</a>'),
+        'col2':mark_safe('<a href="http://'+domain+'/">DQM Home@'+dqm_domain+'</a>'),
+    })
+
+    return data
+
+# ---
+class AnchorTable(tables.Table):
+    col1 = tables.Column()
+    col2 = tables.Column()
+    
+    def set_site(self, site=''):
+        self.site=site
+    class Meta:
+        attrs	= {'class': 'paleblue'}
+# ---
+def HomeTable(domain, dqm_domain):
+    t = AnchorTable(HomeBarData(domain, dqm_domain), show_header = False)
     return t

@@ -24,6 +24,7 @@ urlpatterns = [
         name='monruntable'),
 
     url(r'^puritychart',views.puritychart,{'what':'purity'},name='puritychart'),
+    url(r'^snchart',views.puritychart,{'what':'sn'},name='snchart'),
     
     url(r'^display1',
 	views.display1,
