@@ -38,6 +38,7 @@ ls -l Lifetime_Run1.txt
 source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
 /afs/cern.ch/user/n/np04dqm/public/p3s/p3s/clients/purity.py -f Lifetime_Run1.txt
 
+cat Lifetime_Run1.txt
 echo MSG finished uploading purity data
 
 cd ..

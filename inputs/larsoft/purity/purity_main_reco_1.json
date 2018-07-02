@@ -1,7 +1,7 @@
 [
     {
 	"name":		"Purity:Main",
-	"timeout":	"3000",
+	"timeout":	"4000",
         "jobtype":	"purity",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/purity/purity_main.sh",
         "priority":	"1",
@@ -9,10 +9,12 @@
 	"env":		{
 	    "DUNETPCVER":"v06_81_00",
 	    "DUNETPCQUAL":"e15:prof",
+	    "P3S_XRD_URI":"xroot://eospublic.cern.ch/",
+	    "P3S_DATA":"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
 	    "P3S_NEVENTS":"10",
-	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/lar_setup_1.sh",
+	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_2.sh",
 	    "P3S_FCL":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/purity/purity_main_reco_1.fcl",
-	    "P3S_INPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/input",
+	    "P3S_INPUT_DIR":"input",
 	    "P3S_INPUT_FILE":"dummy_to_be_replaced",
 	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
 	    "P3S_OUTPUT_FILE":"PurityOutput.root"}
