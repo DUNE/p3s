@@ -40,22 +40,28 @@ class job(models.Model):
 
     # ---
     @classmethod
-    def N(self, state=None, site=None):
+    def N(self, state=None, site=None, jobtype=None):
         if(site):
             if(state):
-                return self.objects.filter(site=site).filter(state=state).count()
+                if(jobtype):
+                    return self.objects.filter(site=site).filter(state=state).filter(jobtype=jobtype).count()
+                else:
+                    return self.objects.filter(site=site).filter(state=state).count()
             else:
                 return self.objects.filter(site=site).count()
         else:
             if(state):
-                if(state=='Total'): return self.objects.count()
-                return self.objects.filter(state=state).count()
+                if(state=='Total'): return self.objects.count() # special case...
+                if(jobtype):
+                    return self.objects.filter(state=state).filter(jobtype=jobtype).count()
+                else:
+                    return self.objects.filter(state=state).count()
             else:
                 return self.objects.count()
 
     # ---
     @classmethod
-    def timeline(self, timestamp, seconds, state=None):
+    def timeline(self, timestamp, seconds, state=None, jobtype=None):
         cutoff = timezone.now() - timedelta(seconds=seconds)
         kwargs = {'{0}__{1}'.format(timestamp, 'gte'): str(cutoff),}
         if(state):
@@ -65,14 +71,20 @@ class job(models.Model):
                     if(o.errcode!='' and int(o.errcode)!=0): cnt+=1
                 return cnt
             else:
-                return self.objects.filter(**kwargs).filter(state=state).count()
+                if(jobtype):
+                    return self.objects.filter(**kwargs).filter(jobtype=jobtype).filter(state=state).count()
+                else:
+                    return self.objects.filter(**kwargs).filter(state=state).count()
         else:
-            return self.objects.filter(**kwargs).count()
+            if(jobtype):
+                return self.objects.filter(**kwargs).filter(jobtype=jobtype).count()
+            else:
+                return self.objects.filter(**kwargs).count()
 
  
 ###############################################################################    
 class jobtype(models.Model):
-    name	= models.CharField(max_length=32, default='')
+    name	= models.CharField(max_length=32, primary_key=True, default='')
     priority	= models.PositiveIntegerField(default=0)
     njobs	= models.PositiveIntegerField(default=0)
     

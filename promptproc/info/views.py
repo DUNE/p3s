@@ -13,7 +13,7 @@ from django.utils.safestring		import mark_safe
 
 # Provisional, for stats - don't forget to delete
 # if this view is refactored:
-from jobs.models			import job
+from jobs.models			import job, jobtype
 from data.models			import dataset, datatype
 from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
@@ -29,6 +29,8 @@ from utils.navbar			import TopTable, HomeTable
 
 refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
 
+times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
+
 ###############################################################################################
 # ---
 def makeJobLink(domain, what):
@@ -42,6 +44,23 @@ def makePilotLink(domain, what):
         return mark_safe('<a href="http://'+domain+'/monitor/pilots">'+what+'</a>')
     else:
         return mark_safe('<a href="http://'+domain+'/monitor/pilots?state='+what+'">'+what+'</a>')
+
+# ---
+def jobTypeTable(ts, state=None):
+    jtData = []
+
+    for jt in jobtype.objects.all():
+        tmpDict = collections.OrderedDict()
+        tmpDict['State']=jt.name
+        for t in times: tmpDict[t[0]]=job.timeline(ts, t[1], state=state, jobtype=jt.name)
+        jtData.append(tmpDict)
+    
+    jtt = TimelineTable(jtData)
+    jtt.changeName('Type')
+
+    return jtt
+
+
 #######################
 def index(request):
     if request.method == 'POST':
@@ -168,7 +187,6 @@ def index(request):
     
     jobSummary = ShortSummaryTable(jobSummaryData)
 
-    times	= (('OneMin',60),('TenMin',600),('OneHour',3600),('TwoHours',7200),('Day',24*3600))
     
     states	= (
         (makeJobLink(domain, 'defined'),	'ts_def',None),
@@ -186,9 +204,20 @@ def index(request):
         for t in times: tmpDict[t[0]]=job.timeline(s[1], t[1], s[2])
         jobsData.append(tmpDict)
     
-    
     jobTimelineTable = TimelineTable(jobsData)
 
+    # jtData = []
+
+    # for jt in jobtype.objects.all():
+    #     tmpDict = collections.OrderedDict()
+    #     tmpDict['State']=jt.name
+    #     for t in times: tmpDict[t[0]]=job.timeline('ts_sto', t[1], state='finished', jobtype=jt.name)
+    #     jtData.append(tmpDict)
+    
+    # jobTypeTable = TimelineTable(jtData)
+    # jobTypeTable.changeName('Type')
+
+   
     
     # systemData = []
     # systemData.append({'attribute': 'Uptime',		'value': upt})
@@ -202,8 +231,22 @@ def index(request):
     selectors = []
     selectors.append(refreshSelector)
 
-    allTables		= [pilotSummary,jobSummary,	jobTimelineTable, ] # systemInfoTable
-    columnHeaders	= ['Pilots',	'Jobs',		'Timeline of Job Execution']
+    allTables		= [
+        pilotSummary,
+        jobSummary,
+        jobTimelineTable,
+        jobTypeTable('ts_sto', 'finished'),
+        jobTypeTable('ts_def'),
+    ]
+    #defTypeTable]
+    
+    columnHeaders	= [
+        'Pilots',
+        'Jobs',
+        'Timeline of Job States',
+        'Finished Jobs Types',
+        'Defined Jobs Types',
+    ]
     
     return render(request, 'index.html',
                   {
@@ -229,4 +272,13 @@ def index(request):
 def pilotinfo(request):
     activePilots = pilot.N(state='running')+pilot.N(state='no jobs')+pilot.N(state='active')+pilot.N(state='finished')
     return HttpResponse(str(activePilots))
+
+
+# - attic
+# for jt in jobtype.objects.all():
+#     jtName = jt.name
+#     r = job.N(state='running', jobtype=jtName)
+#     jtData.append({'Type':jtName, 'Running':str(r)})
+
+#    tst = job.timeline('ts_sto', 36*3600, state='finished', jobtype='type2')
 

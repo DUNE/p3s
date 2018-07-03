@@ -9,7 +9,7 @@ from django.db.models import F
 import	django_tables2 as tables
 
 from sites.models			import site
-from jobs.models			import job
+from jobs.models			import job, jobtype
 from data.models			import dataset, datatype
 from pilots.models			import pilot
 
@@ -49,6 +49,7 @@ class DetailTable(tables.Table):
         attrs	= {'class': 'paleblue'}
 
 ##### FOR THE DASHBOARD
+#--------------------------------------------------------
 class TimelineTable(tables.Table):
     State	= tables.Column(verbose_name='State')
     OneMin	= tables.Column(verbose_name='1min')
@@ -57,15 +58,23 @@ class TimelineTable(tables.Table):
     TwoHours	= tables.Column(verbose_name='2hrs')
     Day		= tables.Column(verbose_name='24hrs')
     
+    def changeName(self, newName):
+        self.base_columns['State'].verbose_name = newName
+
     def set_site(self, site=''):
         self.site=site
     class Meta:
         attrs	= {'class': 'paleblue'}
-
 #--------------------------------------------------------
 class ShortSummaryTable(tables.Table):
     State	= tables.Column(verbose_name='State')
     Count	= tables.Column(verbose_name='Count')
+    class Meta:
+        attrs	= {'class': 'paleblue'}
+#--------------------------------------------------------
+class JobTypeTable(tables.Table):
+    Type	= tables.Column()
+    Running	= tables.Column()
     class Meta:
         attrs	= {'class': 'paleblue'}
 #--------------------------------------------------------
@@ -77,7 +86,6 @@ class SummaryTable(tables.Table):
         self.site=site
     class Meta:
         attrs	= {'class': 'paleblue'}
-
 #--------------------------------------------------------
 class ServiceTable(MonitorTable):
     name	= tables.Column(verbose_name='Name')
