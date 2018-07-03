@@ -187,7 +187,7 @@ def index(request):
         jobsData.append(tmpDict)
     
     
-    tJobs = TimelineTable(jobsData)
+    jobTimelineTable = TimelineTable(jobsData)
 
     
     systemData = []
@@ -197,12 +197,15 @@ def index(request):
     systemData.append({'attribute': 'Data location',	'value': dirpath})
 
     
-    tSystem = DetailTable(systemData)
+    systemInfoTable = DetailTable(systemData)
 
     users = user.all()
 
     selectors = []
     selectors.append(refreshSelector)
+
+    allTables		= [pilotSummary,jobSummary,	jobTimelineTable, ] # systemInfoTable
+    columnHeaders	= ['Pilots',	'Jobs',		'Timeline of Job Execution']
     
     return render(request, 'index.html',
                   {
@@ -212,10 +215,8 @@ def index(request):
                       'dqm_host':	settings.SITE['dqm_host'],
                       'uptime':		uptime(),
                       'time':		timeString,
-                      'jobsummary':	jobSummary,
-                      'pilotsummary':	pilotSummary,
-                      'jobs':		tJobs,
-                      'system':		tSystem,
+                      'allTables':	allTables,
+                      'columnHeaders':	columnHeaders,
                       'time':		timeString,
                       'users':		users,
                       'selectors':	selectors,
@@ -229,3 +230,4 @@ def index(request):
 def pilotinfo(request):
     activePilots = pilot.N(state='running')+pilot.N(state='no jobs')+pilot.N(state='active')+pilot.N(state='finished')
     return HttpResponse(str(activePilots))
+

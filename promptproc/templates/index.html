@@ -26,28 +26,13 @@
     <hr/>
     <!-- include "topnavbar.html" Moved to linkbar-->
     <center>
-    <!-- h1>&#2384;</h1 -->
-    <h3>p3s running on server "{{ host }}". Page updated at {{ time }}</h3>
-    <table border="1">
-      <tr>
-	<th>Pilots</th>
-	<th>Jobs</th>
-	<th>Timeline of Job Execution</th>
-	<th>System Status</th>
-      </tr>
-      <tr>
-	<td>{% block table1 %}{% render_table pilotsummary %}{% endblock %}</td>
-	<td>{% block table2 %}{% render_table jobsummary %}{% endblock %}</td>
-	<td>{% block table3 %}{% render_table jobs %}{% endblock %}</td>
-	<td>{% block table4 %}{% render_table system %}{% endblock %}</td>
-      </tr>
-    </table>
-
-    <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
-    <hr/>
-    Users: {{ users }}
-    <hr/>
-
+      <!-- h1>&#2384;</h1 -->
+      <table>
+	<tr>
+	  <td>
+	    <b>p3s on server "{{ host }}", page updated at {{ time }},</b>
+	  </td>
+	  <td>
     {% block frm %}
     {% if selectors %}
 	      <form action="" method="post">
@@ -70,6 +55,28 @@
 	      </form>
 	      {% endif %}
 	      {% endblock %}
+
+	  </td>
+	</tr>
+	</table>
+    
+    <table border="1">
+      <tr>
+	{% for th in columnHeaders %}
+	<th>{{ th }}</th>
+	{% endfor %}
+      </tr>
+      <tr>
+	{% for tbl in allTables %}
+	<td>{% render_table tbl %}</td>
+	{% endfor %}
+      </tr>
+    </table>
+
+    <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
+    <hr/>
+    Users: {{ users }}
+    <hr/>
 
     </center>
   </body>
