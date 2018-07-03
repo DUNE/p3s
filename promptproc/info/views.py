@@ -39,6 +39,9 @@ def makeJobLink(domain, what):
     else:
         return mark_safe('<a href="http://'+domain+'/monitor/jobs?state='+what+'">'+what+'</a>')
 # ---
+def makeJobTypeLink(domain, what):
+    return mark_safe('<a href="http://'+domain+'/monitor/jobs?jobtype='+what+'">'+what+'</a>')
+# ---
 def makePilotLink(domain, what):
     if(what=='Total'):
         return mark_safe('<a href="http://'+domain+'/monitor/pilots">'+what+'</a>')
@@ -46,12 +49,12 @@ def makePilotLink(domain, what):
         return mark_safe('<a href="http://'+domain+'/monitor/pilots?state='+what+'">'+what+'</a>')
 
 # ---
-def jobTypeTable(ts, state=None):
+def jobTypeTable(domain, ts, state=None):
     jtData = []
 
     for jt in jobtype.objects.all():
         tmpDict = collections.OrderedDict()
-        tmpDict['State']=jt.name
+        tmpDict['State']=makeJobTypeLink(domain, jt.name)
         for t in times: tmpDict[t[0]]=job.timeline(ts, t[1], state=state, jobtype=jt.name)
         jtData.append(tmpDict)
     
@@ -235,14 +238,14 @@ def index(request):
         pilotSummary,
         jobSummary,
         jobTimelineTable,
-        jobTypeTable('ts_sto', 'finished'),
-        jobTypeTable('ts_def'),
+        jobTypeTable(domain, 'ts_sto', 'finished'),
+        jobTypeTable(domain, 'ts_def'),
     ]
     #defTypeTable]
     
     columnHeaders	= [
-        'Pilots',
-        'Jobs',
+        mark_safe('<a href="http://'+domain+'/monitor/pilots">'+'Pilots</a>'),
+        mark_safe('<a href="http://'+domain+'/monitor/jobs">'+'Jobs</a>'),
         'Timeline of Job States',
         'Finished Jobs Types',
         'Defined Jobs Types',
