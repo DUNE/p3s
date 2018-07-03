@@ -27,36 +27,38 @@
     <!-- include "topnavbar.html" Moved to linkbar-->
     <center>
       <!-- h1>&#2384;</h1 -->
-      <table>
+      <table width="70%">
 	<tr>
 	  <td>
-	    <b>p3s on server "{{ host }}", page updated at {{ time }},</b>
+	    <b>p3s on server "{{ host }}"</b>
 	  </td>
 	  <td>
-    {% block frm %}
-    {% if selectors %}
-	      <form action="" method="post">
-		{% csrf_token %}
-		<table>
-		  <tr>
-		    {% for sel in selectors %}
-		    <td>
-		      <table>
-			{{ sel }}
-		      </table>
-		    </td>
-		    {% endfor %}
-		    <td>
-		      <input type="submit" value="Submit" />
-		    </td>
-		  </tr>
-		</table>
-		
-	      </form>
-	      {% endif %}
-	      {% endblock %}
+	    {% block frm %}
+	    {% if selectors %}
+	    <form action="" method="post">
+	      {% csrf_token %}
+	      <table>
+		<tr>
+		  {% for sel in selectors %}
+		  <td>
+		    <table>
+		      {{ sel }}
+		    </table>
+		  </td>
+		  {% endfor %}
+		  <td>
+		    <input type="submit" value="Submit" />
+		  </td>
+		</tr>
+	      </table>
+	      
+	    </form>
+	    {% endif %}
+	    {% endblock %}
 
 	  </td>
+	  <td><b>Last updated at {{ time }}.</b></td>
+	  <td><b>Load: {{ ldavg }}</b></td>
 	</tr>
 	</table>
     

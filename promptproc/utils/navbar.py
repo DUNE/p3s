@@ -22,7 +22,7 @@ def HomeBarData(domain, dqm_domain):
     data = []
     data.append({
         'col1':mark_safe('<a href="http://'+domain+'/">p3s Home@'+domain+'</a>'),
-        'col2':mark_safe('<a href="http://'+domain+'/">DQM Home@'+dqm_domain+'</a>'),
+        'col2':mark_safe('<a href="http://'+dqm_domain+'/">DQM Home@'+dqm_domain+'</a>'),
     })
 
     return data

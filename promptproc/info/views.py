@@ -75,8 +75,8 @@ def index(request):
         pass
 
 
-    summaryData = []
-    jobsData = []
+    summaryData	= []
+    jobsData	= []
     
     out		= request.GET.get('out','') # format
 
@@ -89,7 +89,7 @@ def index(request):
     dqm_domain	= settings.SITE['dqm_domain']
 
     # Accomodate testing on the custom ssh tunnel
-    if(domain=='localhost:8008') : dqm_domain = 'localhost:8009'
+    if('local' in domain) : dqm_domain = 'localhost:8009'
     
     dataDict = collections.OrderedDict()
 
@@ -190,14 +190,12 @@ def index(request):
     jobTimelineTable = TimelineTable(jobsData)
 
     
-    systemData = []
-    systemData.append({'attribute': 'Uptime',		'value': upt})
-    systemData.append({'attribute': 'Load',		'value': ldavg})
-    systemData.append({'attribute': 'Sites',		'value': ",".join(site.list())})
-    systemData.append({'attribute': 'Data location',	'value': dirpath})
-
-    
-    systemInfoTable = DetailTable(systemData)
+    # systemData = []
+    # systemData.append({'attribute': 'Uptime',		'value': upt})
+    # systemData.append({'attribute': 'Load',		'value': ldavg})
+    # systemData.append({'attribute': 'Sites',		'value': ",".join(site.list())})
+    # systemData.append({'attribute': 'Data location',	'value': dirpath})
+    # systemInfoTable = DetailTable(systemData) # suspended until further decision
 
     users = user.all()
 
@@ -218,6 +216,7 @@ def index(request):
                       'allTables':	allTables,
                       'columnHeaders':	columnHeaders,
                       'time':		timeString,
+                      'ldavg':		ldavg,
                       'users':		users,
                       'selectors':	selectors,
                       'refresh':	refresh,
