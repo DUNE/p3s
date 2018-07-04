@@ -139,7 +139,7 @@ def puritychart(request, what):
     d['hometable']	= HomeTable(domain, dqm_domain)
 
     d['vAxis']	=garnish[what]['vAxis']
-    print(what,d['vAxis'])
+    #    print(what,d['vAxis'])
 
     return render(request, 'purity_chart.html', d)
 
