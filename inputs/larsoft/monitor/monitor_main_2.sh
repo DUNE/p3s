@@ -92,7 +92,7 @@ echo 'done with cleanup'
 cd $DESTINATION
 cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 
-ROOT_MACRO_TORUN=makeplotsV2.C'("'${P3S_OUTPUT_FILE}'");'
+ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
 root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
 
 exit 0
