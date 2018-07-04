@@ -562,7 +562,6 @@ def showmon(request):
     # a choice of catogeries in a table.
     
     d = {}
-    d['navtable'] = TopTable(domain)
 
     if(tpcmoncat!=''):
         item	= monrun.ALLmonitor('tpc', int(tpcmoncat))
@@ -584,7 +583,6 @@ def showmon(request):
         return render(request, 'unitable3.html', d)
     # ---
     if(pdsphitmoncat!=''):
-        print('hereh')
         item	= monrun.ALLmonitor('pdsphit', int(pdsphitmoncat))
         cat	= item[0]
         obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
