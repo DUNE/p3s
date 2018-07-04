@@ -613,7 +613,7 @@ def showmon(request):
     t2.changeName('PDSP HIT monitor items')
     d['table2']		= t2
 
-    d['navtable']	= TopTable(domain, dqm_domain)
+    d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(domain, dqm_domain)
 
     return render(request, 'unitable3.html', d)

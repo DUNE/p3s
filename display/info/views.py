@@ -12,9 +12,21 @@ from django.conf	import settings
 from utils.timeUtils	import uptime
 from utils.timeUtils	import loadavg
 
-from utils.navbar	import TopTable
+from utils.navbar	import TopTable, HomeTable
 
 def index(request):
+
+    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+
+    try:
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
+    
     hostname	= settings.HOSTNAME
     domain	= request.get_host()
     upt		= uptime()
@@ -27,7 +39,8 @@ def index(request):
                       'hostname':	hostname,
                       'uptime':		upt,
                       'navtable':	TopTable(domain),
+                      'hometable':	HomeTable(domain, dqm_domain),
                   }
 
 )
-########    return HttpResponse('test index')
+

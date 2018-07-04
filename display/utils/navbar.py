@@ -34,7 +34,7 @@ class NavTable(tables.Table):
         self.Ncolumns = len(args[0][0].keys())
         super(NavTable, self).__init__(*args,**kwargs)
 
-    for i in range(5): locals()['col'+str(i+1)] = tables.Column()
+    for i in range(6): locals()['col'+str(i+1)] = tables.Column()
     
     def set_site(self, site=''):
         self.site=site
