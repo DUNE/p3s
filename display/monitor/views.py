@@ -577,7 +577,7 @@ def showmon(request):
     
     d = {}
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(domain, dqm_domain, domain)
     
     r6 = ("%06d"%int(run))
     s3 = ("%03d"%int(subrun))
