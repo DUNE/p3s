@@ -518,7 +518,14 @@ def delmon(request):
     run		= post.get('run', '')
 
     if(run=='' and pk==''): return HttpResponse('Did not delete mon entries, run/ID unspecified')
-
+    if(run=='ALL' or pk=='ALL'):
+        try:
+            obj = monrun.objects.delete()
+            return HttpResponse('Deleted ALL mon entries')
+        except:
+            return HttpResponse('Failed to delete ALL mon entries ')
+       
+    
     if(pk!=''):
         try:
             obj = monrun.objects.get(pk=int(pk))
