@@ -13,9 +13,9 @@ class monrun(models.Model):
     @classmethod
     def ALLmonitor(self, what, N=None):
         if(what == 'tpc'):
-            common = 'run%s_subrun%s_tpcmonitor_'
+            common = 'run%s_%s_tpcmonitor_'
         elif(what == 'pdsphit'):
-            common = 'run%s_subrun%s_pdsphitmonitor_'
+            common = 'run%s_%s_pdsphitmonitor_'
         else:
             common = ''
             

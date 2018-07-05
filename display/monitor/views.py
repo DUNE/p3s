@@ -574,9 +574,9 @@ def showmon(request):
 
         Ncat = int(tpcmoncat)
         if Ncat in (0,1,2,3,6,7,8):
-           d['rows'] = monrun.TPCmonitorURLplanes('tpc', Ncat, domain, url2images, j_uuid, run, subrun)
+           d['rows'] = monrun.TPCmonitorURLplanes('tpc', Ncat, domain, url2images, j_uuid, ("%06d"%run) , ("%03d"%subrun))
         elif Ncat in (4,5,9,10):
-            d['rows'] = monrun.TPCmonitorURLind(Ncat, domain, url2images, j_uuid, run, subrun)
+            d['rows'] = monrun.TPCmonitorURLind(Ncat, domain, url2images, j_uuid, ("%06d"%run) , ("%03d"%subrun))
         else:
            pass
         
@@ -593,7 +593,7 @@ def showmon(request):
 
         Ncat = int(pdsphitmoncat)
         if Ncat in (0,1,2,3,4,5,6):
-           d['rows'] = monrun.TPCmonitorURLplanes('pdsphit', Ncat, domain, url2images, j_uuid, run, subrun)
+           d['rows'] = monrun.TPCmonitorURLplanes('pdsphit', Ncat, domain, url2images, j_uuid,  ("%06d"%run) , ("%03d"%subrun))
         else:
            pass
         
