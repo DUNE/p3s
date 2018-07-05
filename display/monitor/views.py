@@ -137,7 +137,7 @@ def puritychart(request, what):
     d['selectors']	= selectors
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
     d['vAxis']	=garnish[what]['vAxis']
     #    print(what,d['vAxis'])
@@ -370,7 +370,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     d['tblHeader']	= tblHeader
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
     
     return render(request, 'unitable2.html', d)
 
@@ -630,7 +630,7 @@ def showmon(request):
     d['table2']		= t2
 
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
     return render(request, 'unitable3.html', d)
     
