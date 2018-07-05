@@ -564,7 +564,7 @@ def showmon(request):
     d = {}
     
     r6 = ("%06d"%int(run))
-    s3 = ("%03d"%in(subrun))
+    s3 = ("%03d"%int(subrun))
     if(tpcmoncat!=''):
         item	= monrun.ALLmonitor('tpc', int(tpcmoncat))
         cat	= item[0]
