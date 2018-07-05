@@ -57,5 +57,8 @@ class AnchorTable(tables.Table):
         attrs	= {'class': 'paleblue'}
 
 def HomeTable(domain, dqm_domain):
+    # Accomodate testing on the custom ssh tunnel
+    if('localhost' in domain) : dqm_domain = 'localhost:8009'
+
     t = AnchorTable(HomeBarData(domain, dqm_domain), show_header = False)
     return t

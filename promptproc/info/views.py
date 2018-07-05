@@ -110,9 +110,6 @@ def index(request):
     dirpath	= settings.SITE['dirpath']
     dqm_domain	= settings.SITE['dqm_domain']
 
-    # Accomodate testing on the custom ssh tunnel
-    if('local' in domain) : dqm_domain = 'localhost:8009'
-    
     dataDict = collections.OrderedDict()
 
     # Note to self - the N method also takes site, must think about how to use it 
