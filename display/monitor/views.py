@@ -51,9 +51,10 @@ def makeQuery(page, q=''):
 ####################  VIEWS #############################    
 #########################################################
 def puritychart(request, what):
-    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
+        p3s_domain	= settings.SITE['p3s_domain']
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
         p3s_jobtypes	= settings.SITE['p3s_jobtypes']
@@ -136,7 +137,7 @@ def puritychart(request, what):
     d['selectors']	= selectors
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
 
     d['vAxis']	=garnish[what]['vAxis']
     #    print(what,d['vAxis'])
@@ -146,9 +147,10 @@ def puritychart(request, what):
 #########################################################    
 # general request handler for summary type of a table
 def data_handler2(request, what, tbl, tblHeader, url):
-    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
+        p3s_domain	= settings.SITE['p3s_domain']
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
         p3s_jobtypes	= settings.SITE['p3s_jobtypes']
@@ -368,7 +370,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     d['tblHeader']	= tblHeader
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
     
     return render(request, 'unitable2.html', d)
 
@@ -399,9 +401,10 @@ def eventdisplay(request):
 #########################################################    
 @csrf_exempt
 def display1(request):
-    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
+        p3s_domain	= settings.SITE['p3s_domain']
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
         p3s_jobtypes	= settings.SITE['p3s_jobtypes']
@@ -430,7 +433,7 @@ def display1(request):
     d['pageName']	= ': Event Display'
     d['message']	= evdisp.message()
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
     
     return render(request, 'display1.html', d)
 #########################################################    
@@ -443,9 +446,10 @@ def plot18(request):
 #########################################################    
 @csrf_exempt
 def display6(request):
-    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
+        p3s_domain	= settings.SITE['p3s_domain']
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
         p3s_jobtypes	= settings.SITE['p3s_jobtypes']
@@ -493,7 +497,7 @@ def display6(request):
     d['pageName']	= ': Event Display'
     d['message']	= evdisp.message()
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
     
     return render(request, 'display6.html', d)
 
@@ -553,9 +557,10 @@ def showmon(request):
 
     url2images = settings.SITE['dqm_monitor_url']
 
-    dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
+        p3s_domain	= settings.SITE['p3s_domain']
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
         p3s_jobtypes	= settings.SITE['p3s_jobtypes']
@@ -625,7 +630,7 @@ def showmon(request):
     d['table2']		= t2
 
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(domain, dqm_domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
 
     return render(request, 'unitable3.html', d)
     
