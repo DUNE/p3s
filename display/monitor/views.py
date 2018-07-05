@@ -430,6 +430,7 @@ def display1(request):
     d['pageName']	= ': Event Display'
     d['message']	= evdisp.message()
     d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
     
     return render(request, 'display1.html', d)
 #########################################################    
@@ -492,6 +493,7 @@ def display6(request):
     d['pageName']	= ': Event Display'
     d['message']	= evdisp.message()
     d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
     
     return render(request, 'display6.html', d)
 
@@ -562,6 +564,8 @@ def showmon(request):
     # a choice of catogeries in a table.
     
     d = {}
+    d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(domain, dqm_domain)
     
     r6 = ("%06d"%int(run))
     s3 = ("%03d"%int(subrun))
