@@ -78,16 +78,6 @@ run		= args.run
 timestamp	= args.timestamp
 verb		= args.verbosity
 
-cgdict = {
-    '00000-02559':1,
-    '02560-04639':2,
-    '05120-07679':3,
-    '07680-09759':4,
-    '10240-12799':5,
-    '12800-14879':6
-}
-
-
 ### dqm interface defined here
 API  = serverAPI(server=server)
 
@@ -111,49 +101,9 @@ API  = serverAPI(server=server)
 
 d = {}    
 #########################################################
-if(auto):
-    if(job==''): job=os.path.basename(os.getcwd())
-
-    timestamp	= str(timezone.now())
-    entries	= []
-    
-    for f in os.listdir("."):
-        filedict = {}
-        if f.endswith(".png"):
-            if(verb>0): print(f)
-            for t in ('raw','prep'):
-                
-                # important - this will change, this is a necessary stop-gap hack
-                # based on the current convention re: filenames
-                
-                filedict['evnum']	= f.split('_')[2][3:] # will correct later
-                filedict['run']		= API.get2server('evd', 'maxrun', '')
-
-                # in MCC the runs are now fixed at 1 so we need to run a counter
-                # we do ignore the constant "1" here in the filename
-                
-                if(verb>0): print('Will use the run:', filedict['run'])
-                
-                if(t in f): filedict['datatype'] = t
-                
-                for cg in cgdict.keys():
-                    if(cg in f): filedict['changroup'] = cgdict[cg]
-                    
-            filedict['ts'] = timestamp
-            filedict['j_uuid'] = job
-            
-            entries.append(filedict)
-
-    if(verb>0): print(entries)
-    d['json'] = json.dumps(entries)
-    
-#########################################################
 
 if(json_in!=''):
-    data = None
-    with open(json_in, 'r') as myfile:
-        data = myfile.read()
-
+    
     data = takeJson(json_in, verb)
     print(data)
 
@@ -163,20 +113,25 @@ if(json_in!=''):
         d['j_uuid'] = job
         
 
-    #j = json.loads(json_in)
-    print(data[0]["run"])
+    if(job==''):
+        print('Need job ID to proceed, exiting...')
+        exit(-1)
+        
+    print('Run descriptor:', data[0]["run"])
 
-    rs = data[0]["run"].split('_')
-    run = rs[0][3:]
-    subrun = rs[1][6:]
+    rs		= data[0]["run"].split('_')
+    run		= rs[0][3:]
+    subrun	= rs[1]
+    
+    print('Run:', run, '   Subrun:', subrun)
 
-    d['json'] = data
-    d['run'] = run
-    d['subrun'] = subrun
+    d['json']	= data
+    d['run']	= run
+    d['subrun']	= subrun
 
     resp = API.post2server('monitor', 'addmon', d)
     print(resp)
-
+    exit(0)
 
 if(delete):
     if(run=='' and pk==''):
