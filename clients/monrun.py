@@ -113,7 +113,7 @@ if(json_in!=''):
         d['j_uuid'] = job
         
 
-    if(job==''):
+    if(d['j_uuid'==''):
         print('Need job ID to proceed, exiting...')
         exit(-1)
         
