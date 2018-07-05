@@ -509,7 +509,7 @@ def addmon(request):
     m.j_uuid	= post.get('j_uuid', '')
     m.save()
         
-    return HttpResponse('Adding mon entry for run '+run+' subrun '+subrun)
+    return HttpResponse('Adding mon entry for run '+m.run+' subrun '+m.subrun)
 #########################################################    
 @csrf_exempt
 def delmon(request):
@@ -520,7 +520,7 @@ def delmon(request):
     if(run=='' and pk==''): return HttpResponse('Did not delete mon entries, run/ID unspecified')
     if(run=='ALL' or pk=='ALL'):
         try:
-            obj = monrun.objects.delete()
+            obj = monrun.objects.all().delete()
             return HttpResponse('Deleted ALL mon entries')
         except:
             return HttpResponse('Failed to delete ALL mon entries ')

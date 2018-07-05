@@ -52,10 +52,11 @@ def TopTable(domain):
 
 # ---
 def HomeBarData(domain, dqm_domain):
+    if('localhost' in domain) : domain = 'localhost:8008'
     data = []
     data.append({
         'col1':mark_safe('<a href="http://'+domain+'/">p3s Home@'+domain+'</a>'),
-        'col2':mark_safe('<a href="http://'+domain+'/">DQM Home@'+dqm_domain+'</a>'),
+        'col2':mark_safe('<a href="http://'+dqm_domain+'/">DQM Home@'+dqm_domain+'</a>'),
     })
 
     return data
