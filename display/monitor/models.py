@@ -16,6 +16,10 @@ class monrun(models.Model):
             common = 'run%s_%s_tpcmonitor_'
         elif(what == 'pdsphit'):
             common = 'run%s_%s_pdsphitmonitor_'
+        elif(what == 'timingrawdecoder'):
+            common = 'run%s_%s_timingrawdecoder_'
+        elif(what == 'ssprawdecoder'):
+            common = 'run%s_%s_ssprawdecoder_triggertypechannel%s.png'
         else:
             common = ''
             
@@ -49,6 +53,17 @@ class monrun(models.Model):
             ('Hit RMS profile',						common+'fRMSView%s%sprof.png'),
         ]
 
+        Categories['timingrawdecoder'] = [
+            ('Timestamp Delta', common+'TimestampDelta.png'),
+            ('Timestamp', common+'Timestamp.png'),
+            ('Trigger Type', common+'TrigType.png'),
+        ]
+        
+
+        Categories['ssprawdecoder'] = [
+            (common,),
+        ]
+        
 
         if N is None:
             return Categories[what]
@@ -59,6 +74,69 @@ class monrun(models.Model):
     @classmethod
     def planes(self):
         return ['U','V','Z']
+
+
+
+    # ---
+    @classmethod
+    def TimingRawImgURLs(self, domain, dqmURL, j_uuid, run, subrun):
+        row = []
+        rows = []
+        
+        cnt = 0
+        for N in range(len(self.ALLmonitor('timingrawdecoder'))):
+            pattern	= self.ALLmonitor('timingrawdecoder', N)[1]
+            filename= pattern % (run, subrun)
+            print(filename)
+            row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
+            cnt+=1
+            if cnt==6:
+                cnt=0
+                rows.append(row)
+                row = []
+        if(len(row)>0): rows.append(row) #!
+
+        return rows
+
+    # ---
+    @classmethod
+    def SSPRawImgURLs(self, domain, dqmURL, j_uuid, run, subrun):
+        row = []
+        rows = []
+        
+        cnt = 0
+        for N in range(252,300):
+            pattern	= self.ALLmonitor('ssprawdecoder', 0)[0]
+            filename= pattern % (run, subrun,("%03d"%N) )
+            print(filename)
+            row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
+            cnt+=1
+            if cnt==6:
+                cnt=0
+                rows.append(row)
+                row = []
+        if(len(row)>0): rows.append(row) #!
+
+        return rows
+
+    
+    # ---
+    @classmethod
+    def TimingRawCatURLs(self, domain, run, subrun):
+        catPattern = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&timingrawcat=%s">%s</a>'
+        data = []
+        cnt=0
+        for item in monrun.ALLmonitor('timingrawdecoder'):
+            cat_url =  catPattern % (domain, run, subrun, str(cnt), item[0])
+            cnt+=1
+            data.append({'items':mark_safe(cat_url)})
+
+        catPattern = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s&ssprawcat=%s">%s</a>'
+        cat_url =  catPattern % (domain, run, subrun, str(0), 'SSP Raw Decoder Trigger Type')
+        data.append({'items':mark_safe(cat_url)})
+        
+        print(data)
+        return data
     # ---
     @classmethod
     def PDSPHITmonitorCatURLs(self, domain, run, subrun):

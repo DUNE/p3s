@@ -553,6 +553,8 @@ def showmon(request):
     run		= request.GET.get('run','')
     subrun	= request.GET.get('subrun','')
     tpcmoncat	= request.GET.get('tpcmoncat','')
+    ssprawcat	= request.GET.get('ssprawcat','')
+    timingrawcat= request.GET.get('timingrawcat','')
     pdsphitmoncat	= request.GET.get('pdsphitmoncat','')
 
     url2images = settings.SITE['dqm_monitor_url']
@@ -581,6 +583,29 @@ def showmon(request):
     
     r6 = ("%06d"%int(run))
     s3 = ("%03d"%int(subrun))
+    
+    if(ssprawcat!=''):
+        print('here')
+        obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
+        entry	= obj[0]
+        j_uuid	= entry.j_uuid
+        
+        d['tblHeader']	= 'SSP raw decoder  -- run:'+run+' subrun:'+subrun
+        d['rows'] = monrun.SSPRawImgURLs(domain, url2images, j_uuid, r6, s3)
+        return render(request, 'unitable3.html', d)
+
+    if(timingrawcat!=''):
+        item	= monrun.ALLmonitor('timingrawdecoder', int(timingrawcat))
+        cat	= item[0]
+        obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
+        entry	= obj[0]
+        j_uuid	= entry.j_uuid
+        
+        d['tblHeader']	= cat+'  -- run:'+run+' subrun:'+subrun
+        d['rows'] = monrun.TimingRawImgURLs(domain, url2images, j_uuid, r6, s3)
+        return render(request, 'unitable3.html', d)
+
+        
     if(tpcmoncat!=''):
         item	= monrun.ALLmonitor('tpc', int(tpcmoncat))
         cat	= item[0]
@@ -621,13 +646,20 @@ def showmon(request):
     # ------------------
     # this table presents the categories available (clickable)
     d['tblHeader']	= 'Run:'+run+' subrun:'+subrun
+
+    d['tables']		= []
+    
     t = ShowMonTable(monrun.TPCmonitorCatURLs(domain, run, subrun))
     t.changeName('TPC monitor items')
-    d['table']		= t
+    d['tables'].append(t)
     
     t2 = ShowMonTable(monrun.PDSPHITmonitorCatURLs(domain, run, subrun))
     t2.changeName('PDSP HIT monitor items')
-    d['table2']		= t2
+    d['tables'].append(t2)
+    
+    t3 = ShowMonTable(monrun.TimingRawCatURLs(domain, run, subrun))
+    t3.changeName('Timing Raw Decoder and SSP raw decoder')
+    d['tables'].append(t3)
 
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
