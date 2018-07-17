@@ -21,6 +21,7 @@ from	django_tables2.utils		import A
 
 import datetime
 import random
+import json
 
 from purity.models			import pur
 from evdisp.models			import evdisp
@@ -505,15 +506,21 @@ def display6(request):
 @csrf_exempt
 def addmon(request):
     post	= request.POST
+    
+    summary	= post.get('summary', '')
 
+    s = json.loads(summary)
+    print(s)
+    
     m=monrun()
     
     m.run		= post.get('run', '')
     m.subrun		= post.get('subrun', '')
-    m.summary		= post.get('summary', '')
+    m.summary		= summary
     m.description	= post.get('description', '')
     m.j_uuid		= post.get('j_uuid', '')
-
+    m.ts		= timezone.now()
+    
     # print(m.summary)
     m.save()
         

@@ -9,6 +9,7 @@ class monrun(models.Model):
     summary	= models.TextField(default='{}')
     description	= models.TextField(default='{}')
     j_uuid	= models.CharField(max_length=36, default='', verbose_name='Produced by job')
+    ts		= models.DateTimeField(blank=True, verbose_name='Timestamp', null=True)
 
     # ---
     @classmethod
