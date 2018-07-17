@@ -507,10 +507,14 @@ def addmon(request):
     post	= request.POST
 
     m=monrun()
-    m.run	= post.get('run', '')
-    m.subrun	= post.get('subrun', '')
-    m.summary	= post.get('json', '')
-    m.j_uuid	= post.get('j_uuid', '')
+    
+    m.run		= post.get('run', '')
+    m.subrun		= post.get('subrun', '')
+    m.summary		= post.get('summary', '')
+    m.description	= post.get('description', '')
+    m.j_uuid		= post.get('j_uuid', '')
+
+    # print(m.summary)
     m.save()
         
     return HttpResponse('Adding mon entry for run '+m.run+' subrun '+m.subrun)
@@ -585,7 +589,7 @@ def showmon(request):
     s3 = ("%03d"%int(subrun))
     
     if(ssprawcat!=''):
-        print('here')
+        # print('here')
         obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
         entry	= obj[0]
         j_uuid	= entry.j_uuid
