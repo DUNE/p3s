@@ -510,7 +510,7 @@ def addmon(request):
     summary	= post.get('summary', '')
 
     s = json.loads(summary)
-    print(s)
+    # print(s)
     
     m=monrun()
     
@@ -519,7 +519,7 @@ def addmon(request):
     m.summary		= summary
     m.description	= post.get('description', '')
     m.j_uuid		= post.get('j_uuid', '')
-    m.ts		= timezone.now()
+    m.ts		= post.get('ts', None)
     
     # print(m.summary)
     m.save()
