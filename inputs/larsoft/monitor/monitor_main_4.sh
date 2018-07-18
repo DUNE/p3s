@@ -90,7 +90,7 @@ du $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
 
-echo 'done with cleanup'
+echo MSG done with cleanup
 
 cd $DESTINATION
 cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
@@ -98,14 +98,13 @@ cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
 root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
 
-f=`ls run*summary.json`
-echo MSG found the run descriptor $f
-echo MSG will run $P3S_HOME/clients/monrun.py
-
-$P3S_HOME/clients/monrun.py -j $f
+summary=`ls run*summary.json`
+echo MSG found the run summary $summary
 
 descriptor=`ls *FileList.json`
-echo Found the file descriptor: $descriptor
+echo MSG Found the file descriptor: $descriptor
+
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptor
 
 echo MSG finished registration
 
