@@ -23,6 +23,8 @@ import datetime
 import random
 import json
 
+from collections import OrderedDict
+
 from purity.models			import pur
 from evdisp.models			import evdisp
 from .models				import monrun
@@ -678,4 +680,48 @@ def showmon(request):
     return render(request, 'unitable3.html', d)
     
 #########################################################    
+def automon(request):
+    domain	= request.get_host()
+    host	= request.GET.get('host','')
+    run		= request.GET.get('run','')
+    subrun	= request.GET.get('subrun','')
 
+    url2images = settings.SITE['dqm_monitor_url']
+
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
+
+    try:
+        p3s_domain	= settings.SITE['p3s_domain']
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
+
+    
+    d = {}
+    d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
+    
+    d['tables']		= []
+
+
+    obj		= monrun.objects.filter(run=run).filter(subrun=subrun)[0]
+    description = json.loads(obj.description, object_pairs_hook=OrderedDict)
+
+    for item in description:
+        print(item['Category'])
+        list4table = []
+        for fileType in item['Files'].keys():
+            list4table.append({'items':fileType})
+            
+        print('typea', list4table)
+    
+        t = ShowMonTable(list4table)
+        t.changeName(item['Category'])
+        d['tables'].append(t)
+
+    return render(request, 'unitable3.html', d)
+#########################################################    

@@ -42,6 +42,7 @@ urlpatterns = [
     url(r'^addmon',	views.addmon,    	name='addmon'),
     url(r'^delmon',	views.delmon,    	name='delmon'),
     url(r'^showmon',	views.showmon,    	name='showmon'),
+    url(r'^automon',	views.automon,    	name='automon'),
 
 ]
 

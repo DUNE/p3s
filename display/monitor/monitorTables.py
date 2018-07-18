@@ -81,7 +81,8 @@ class ShowMonTable(MonitorTable):
 class MonRunTable(MonitorTable):
     def render_subrun(self, value, record):
 
-        subrun_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s</a>' % (
+        subrun_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s (old)</a> <br/><a href="http://%s/monitor/automon?run=%s&subrun=%s">%s (new)</a>' % (
+            self.site, str(record.run), str(record.subrun), value,
             self.site, str(record.run), str(record.subrun), value
         )
 
@@ -90,7 +91,7 @@ class MonRunTable(MonitorTable):
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('description',)
+        exclude = ('summary',)
 #---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
