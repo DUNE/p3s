@@ -1,5 +1,5 @@
 import json
-
+from collections import OrderedDict
 ###################################################################
 def logexit(mode, msg, logger):
     if(mode=='FAIL'):
@@ -21,13 +21,12 @@ def takeJson(json_in, verb):
     if('.json' in json_in):
         try:
             f=open(json_in)
-            data=json.load(f)
-            #            with open(json_in) as data_file:    
-            #                data = json.load(data_file)
+            if(verb>0): print("Opened file:", json_in)
+            data=json.load(f)		# , object_pairs_hook=OrderedDict)
         except:
-            if(verb>0): print('Failed to open or parse JSON')
+            if(verb>0): print('Failed to open or parse JSON file:', json_in)
             exit(-3)
     else:
-        data = json.loads(json_in)
+        data = json.loads(json_in)	# , object_pairs_hook=OrderedDict)
     return data
 ###################################################################

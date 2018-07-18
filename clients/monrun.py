@@ -41,9 +41,11 @@ user = os.environ['USER']
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-j", "--json_in",	type=str,	help="summary file name", default='')
+parser.add_argument("-s", "--summary",	type=str,	help="summary file name (JSON)", default='')
 
-parser.add_argument("-J", "--job",	type=str,	help="job uuid to delete or to register (override)", default='')
+parser.add_argument("-D", "--description",type=str,	help="description file name (JSON)", default='')
+
+parser.add_argument("-u", "--uuid",	type=str,	help="job uuid to delete or to register (override)", default='')
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number, or job uuid")
 
@@ -56,7 +58,7 @@ parser.add_argument("-r", "--run",	type=str,	default='',
                     help="run number")
 
 parser.add_argument("-T", "--timestamp",type=str,	default='',
-                    help="override the timestamp with user value like 2018-05-16, NOW has a special meaning")
+                    help="enforce/override the timestamp - YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]")
 
 
 parser.add_argument("-S", "--server",	type=str,
@@ -67,8 +69,10 @@ parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], help
 
 args = parser.parse_args()
 
-json_in		= args.json_in
-job		= args.job
+summary		= args.summary
+description	= args.description
+
+job_uuid	= args.uuid
 server		= args.server
 
 delete		= args.delete
@@ -102,41 +106,64 @@ API  = serverAPI(server=server)
 d = {}    
 #########################################################
 
-if(json_in!=''):
+if((summary=='' or description=='') and not delete):
+    print("Missing input summary and/or description, exiting...")
+    exit(-1)
     
-    data = takeJson(json_in, verb)
-    print(data)
+if(summary!='' and description!=''):
+    
+    summary_dict = takeJson(summary, verb)
 
-    if(job==''):
+    sf = open(summary)
+    summary_data = sf.read()
+    print(summary_data)
+    
+    df = open(description)
+    description_data = df.read()
+    print(description_data)
+    
+#    description_data = takeJson(description, verb)
+#    print(description_data)
+
+    if(job_uuid==''):
         d['j_uuid'] = os.path.basename(os.getcwd())
     else:
-        d['j_uuid'] = job
+        d['j_uuid'] = job_uuid
         
 
     if(d['j_uuid']==''):
         print('Need job ID to proceed, exiting...')
-        exit(-1)
+        exit(-2)
         
-    print('Run descriptor:', data[0]["run"])
+    print('Run descriptor:', summary_dict[0]["run"])
 
-    rs		= data[0]["run"].split('_')
+    rs		= summary_dict[0]["run"].split('_')
     run		= rs[0][3:]
     subrun	= rs[1]
     
     print('Run:', run, '   Subrun:', subrun)
 
-    d['json']	= data
-    d['run']	= run
-    d['subrun']	= subrun
+    d['summary']	= summary_data
+    d['description']	= description_data
+    d['run']		= run
+    d['subrun']		= subrun
 
+    if(timestamp==''):
+        d['ts']	= str(timezone.now())
+    else:
+        d['ts']	= timestamp
+
+    if(verb>0): print('Using timestamp:', d['ts'])
+    
     resp = API.post2server('monitor', 'addmon', d)
     print(resp)
+    
     exit(0)
 
 if(delete):
     if(run=='' and pk==''):
         print('Need to specify the run number or ID to delete, exiting...')
-        exit(-1)
+        exit(-3)
         
     
     if(run!=''): d['run'] = run
@@ -145,6 +172,9 @@ if(delete):
     resp = API.post2server('monitor', 'delmon', d)
     print(resp)
     
-exit(0)
+    exit(0)
+
+print("Inconsistent input, check...")
+exit(-3)
 
 #########################################################
