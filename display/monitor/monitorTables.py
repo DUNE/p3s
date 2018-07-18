@@ -1,3 +1,6 @@
+import json
+from collections			import OrderedDict
+
 from django.shortcuts			import render
 from django.utils.safestring		import mark_safe
 from django.utils			import timezone
@@ -7,11 +10,25 @@ from django.conf			import settings
 from django.db.models import F
 
 import	django_tables2 as tables
+from django.utils.html import format_html
 
 
 from purity.models import pur
 from evdisp.models import evdisp
 from .models import monrun
+
+
+
+SUMMARY = OrderedDict(
+    [
+        ("Plane U Mean NHits","U mean hits"),		("Plane V Mean NHits","V mean hits"),		("Plane Z Mean NHits","Z mean hits"),
+        ("Plane U Mean of Hit RMS","U hit RMS"),	("Plane V Mean of Hit RMS","V hit RMS"),	("Plane Z Mean of Hit RMS","Z hit RMS"),
+        ("break","<tr></tr>"),
+        ("Plane U Mean of Charge","U mean charge"),	("Plane V Mean of Charge","V mean charge"),	("Plane Z Mean of Charge","Z mean charge"),
+        ("Plane U RMS of Charge","U charge RMS"),	("Plane V RMS of Charge","V charge RMS"),	("Plane Z RMS of Charge","Z charge RMS"),
+    ]
+)
+    
 
 
 # We need this to make links to this service itself.
@@ -88,10 +105,33 @@ class MonRunTable(MonitorTable):
 
         return mark_safe(subrun_url)
 
+    def render_summary(self, value, record):
+
+        output = '<table><tr>'
+        
+        data = json.loads(value, object_pairs_hook=OrderedDict)
+        d = data[0]
+        
+        for k in SUMMARY.keys():
+            if(k=="break"):
+                output+=SUMMARY[k]
+            else:
+                output+= ('<td>%s</td><td>%s</td>') % (SUMMARY[k], d[k])
+        
+        # for k in SUMMARY.keys():
+        #     if(k=='separator'):
+        #         output+=SUMMARY[k]
+        #     else:
+        #         output+= SUMMARY[k]+':'+d[k]+'<br/>'
+
+        output+='</tr></table>'
+        
+        return format_html(output)
+    
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('summary',)
+        exclude = ('description',)
 #---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')

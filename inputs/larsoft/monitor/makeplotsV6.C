@@ -684,7 +684,7 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename){
     if(objname.Contains("NHitsAPA") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      TString tempstr = Form("%f,",(float)h1->GetMean());
+      TString tempstr = Form("%.3f,",(float)h1->GetMean());
       
       if(objname.Contains("_U")){
 	nhits_Ustr += tempstr;
@@ -699,8 +699,8 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename){
     if(objname.Contains("HitChargeAPA") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      TString tempstr = Form("%f,",(float)h1->GetMean());
-      TString tempstr2 = Form("%f,",(float)h1->GetRMS());
+      TString tempstr = Form("%.3f,",(float)h1->GetMean());
+      TString tempstr2 = Form("%.3f,",(float)h1->GetRMS());
       
       if(objname.Contains("_U")){
         hitchargeM_Ustr += tempstr;
@@ -718,8 +718,8 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename){
     if(objname.Contains("HitRMSAPA") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      TString tempstr = Form("%f,",(float)h1->GetMean());
-      TString tempstr2 = Form("%f,",(float)h1->GetRMS());
+      TString tempstr = Form("%.3f,",(float)h1->GetMean());
+      TString tempstr2 = Form("%.3f,",(float)h1->GetRMS());
 
       if(objname.Contains("_U")){
         hitrmsM_Ustr += tempstr;
