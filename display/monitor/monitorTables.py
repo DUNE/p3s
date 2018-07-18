@@ -111,12 +111,29 @@ class MonRunTable(MonitorTable):
         
         data = json.loads(value, object_pairs_hook=OrderedDict)
         d = data[0]
+
+        patternHits1	= "Plane %s Mean NHits"
+        patternHits2	= "Plane %s Mean of Hit RMS"
+
+        patternCharge1	= "Plane %s Mean of Charge"
+        patternCharge2	= "Plane %s RMS of Charge"
+
+        for plane in ('U','V','Z'): output+= ('<th>%s Hits/RMS</th>') % plane
+        for plane in ('U','V','Z'): output+= ('<th>%s Charge/RMS</th>') % plane
+
+        output+='<th>Dead Channels</th>'
+        output+='</tr><tr>'
+            
+        for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
+        for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
+
+        output+='<td>%s</td>' % d["NDead  Channels"]
         
-        for k in SUMMARY.keys():
-            if(k=="break"):
-                output+=SUMMARY[k]
-            else:
-                output+= ('<td>%s</td><td>%s</td>') % (SUMMARY[k], d[k])
+        # for k in SUMMARY.keys():
+        #     if(k=="break"):
+        #         output+=SUMMARY[k]
+        #     else:
+        #         output+= ('<td>%s</td><td>%s</td>') % (SUMMARY[k], d[k])
         
         # for k in SUMMARY.keys():
         #     if(k=='separator'):
