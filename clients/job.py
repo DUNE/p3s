@@ -241,7 +241,9 @@ if(json_in!=''):
     inputFiles = inputFile.split(',')
     
     # multiple files override the number of jobs to be auto-generated
-    if(len(inputFiles) !=1): Njobs=len(inputFiles)
+    # N.B. suspend this feature since it interferes with testing
+    # with a subset of all files...
+    # if(len(inputFiles) !=1): Njobs=len(inputFiles)
     
     data = takeJson(json_in, verb)
 
