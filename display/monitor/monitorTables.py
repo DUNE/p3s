@@ -80,6 +80,9 @@ class MonitorTable(tables.Table):
     def renderDateTime(self, dt): # common format defined here.
         return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
 
+    def modifyName(self, oldName, newName):
+        self.base_columns[oldName].verbose_name = newName
+
 #---
 class PurityTable(MonitorTable):
     class Meta:
@@ -105,6 +108,16 @@ class MonRunTable(MonitorTable):
 
         return mark_safe(subrun_url)
 
+    def render_run(self, value, record):
+        subrun_url = ': <a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s (old)</a>, <a href="http://%s/monitor/automon?run=%s&subrun=%s">%s (new)</a>' % (
+            self.site, value, str(record.subrun), record.subrun,
+            self.site, value, str(record.subrun), record.subrun
+        )
+
+        output=str(value)+'  '+mark_safe(subrun_url)+'<hr/>'+record.j_uuid
+
+        return format_html(output)
+    
     def render_summary(self, value, record):
 
         output = '<table><tr>'
@@ -148,7 +161,7 @@ class MonRunTable(MonitorTable):
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('description',)
+        exclude = ('description','j_uuid','subrun',)
 #---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')

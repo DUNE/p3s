@@ -361,6 +361,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
             pass   #   if(last_image is None): return render(request, 'unitable2.html', d)
 
 
+    if(tbl=='MonRunTable'):
+        t.modifyName('run','Run/SubRun/Job')
         
     d['selectors']	= selectors
     d['refresh']	= refresh
