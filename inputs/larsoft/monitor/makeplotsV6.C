@@ -581,7 +581,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
   fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
   fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
-  fprintf(deadchanJsonFile,"      \"APA\": \"APA1, APA2, APA3, APA4, APA5, APA6\",\n");
+  fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
 
   // loop over all keys in this directory
   TString deadchannel_str("");
