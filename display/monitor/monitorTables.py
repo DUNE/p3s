@@ -107,13 +107,10 @@ class MonRunTable(MonitorTable):
         return mark_safe(subrun_url)
 
     def render_run(self, value, record):
-        subrun_url = ': <a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s (old)</a>, <a href="http://%s/monitor/automon?run=%s&subrun=%s">%s (new)</a>' % (
-            self.site, value, str(record.subrun), record.subrun,
-            self.site, value, str(record.subrun), record.subrun
+        subrun_url = '<a href="http://%s/monitor/automon?run=%s&subrun=%s">%s::%s</a>' % (
+            self.site, value, str(record.subrun), value, str(record.subrun)
         )
-
-        output=str(value)+'  '+mark_safe(subrun_url)+'<hr/>'+record.j_uuid
-
+        output=mark_safe(subrun_url)+'<hr/>'+record.j_uuid
         return format_html(output)
     
     def render_summary(self, value, record):

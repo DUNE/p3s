@@ -361,8 +361,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
             pass   #   if(last_image is None): return render(request, 'unitable2.html', d)
 
 
-    if(tbl=='MonRunTable'):
-        t.modifyName('run','Run/SubRun/Job')
+    if(tbl=='MonRunTable'): t.modifyName('run','Run::SubRun/Job')
         
     d['selectors']	= selectors
     d['refresh']	= refresh
@@ -690,10 +689,9 @@ def automon(request):
     category	= request.GET.get('category','')
     filetype	= request.GET.get('filetype','')
 
-    obj, entry = None, None
+    entry = None
     try:
-        obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
-        entry	= obj[0]
+        entry	= monrun.objects.filter(run=run).filter(subrun=subrun)[0]
     except:
         return 'not found'
         
@@ -701,25 +699,22 @@ def automon(request):
     
     print('***',category)
 
-    url2images = settings.SITE['dqm_monitor_url']
 
-    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
+    url2images, p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None, None
 
     try:
+        url2images	= settings.SITE['dqm_monitor_url']
         p3s_domain	= settings.SITE['p3s_domain']
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
         p3s_jobtypes	= settings.SITE['p3s_jobtypes']
         p3s_services	= settings.SITE['p3s_services']
     except:
-        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
-
-
+        return HttpResponse("error: check local.py")
     
     d = {}
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
-    
     d['tables']		= []
 
     if(category!=''):
@@ -733,8 +728,6 @@ def automon(request):
         d['rows'] = monrun.autoMonImgURLs(domain, url2images, j_uuid, files)
         return render(request, 'unitable3.html', d)
     
-
-    obj		= monrun.objects.filter(run=run).filter(subrun=subrun)[0]
 
     for item in description:
         # print(item['Category'])
