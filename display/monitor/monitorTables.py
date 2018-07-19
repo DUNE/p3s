@@ -134,13 +134,14 @@ class MonRunTable(MonitorTable):
         for plane in ('U','V','Z'): output+= ('<th>%s Hits/RMS</th>') % plane
         for plane in ('U','V','Z'): output+= ('<th>%s Charge/RMS</th>') % plane
 
-        output+='<th>Dead Channels</th>'
+        output+='<th>Dead Channels</th><th>Noisy 6&sigma;/1&sigma;'
         output+='</tr><tr>'
             
         for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
         for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
 
         output+='<td>%s</td>' % d["NDead  Channels"]
+        output+=('<td>%s<br/>%s</td>') % (d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"],d["NNoisy Channels Above ADC RMS Threshold(40)"])
         
         # for k in SUMMARY.keys():
         #     if(k=="break"):
