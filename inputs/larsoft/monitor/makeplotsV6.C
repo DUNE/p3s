@@ -375,6 +375,9 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 	objname.ReplaceAll("5U","U5");
 	objname.ReplaceAll("5V","V5");
 	objname.ReplaceAll("5Z","Z5");
+	objname.ReplaceAll("6U","U6");
+	objname.ReplaceAll("6V","V6");
+	objname.ReplaceAll("6Z","Z6");
       }
       
       //TString HistoTitle = runname + TString(":") + TString(h->GetTitle());
@@ -508,6 +511,9 @@ void PrintSummaryPlots(FILE *file, TObjArray* dir, TString keyname, TString keyn
       objname.ReplaceAll("5U","U5");
       objname.ReplaceAll("5V","V5");
       objname.ReplaceAll("5Z","Z5");
+      objname.ReplaceAll("6U","U6");
+      objname.ReplaceAll("6V","V6");
+      objname.ReplaceAll("6Z","Z6");
 
       TString figname = runname + TString("_") + TString(dir->GetName()) + TString("_") + objname;
       figname += ".png";
@@ -575,7 +581,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
   fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
   fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
-  fprintf(deadchanJsonFile,"      \"APA\": \"APA0, APA1, APA2, APA3, APA4, APA5\",\n");
+  fprintf(deadchanJsonFile,"      \"APA\": \"APA1, APA2, APA3, APA4, APA5, APA6\",\n");
 
   // loop over all keys in this directory
   TString deadchannel_str("");
@@ -632,8 +638,8 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
   }
 
   fprintf(deadchanJsonFile,"      \"NDead  Channels\": \"%s\",\n",deadchannel_str.Data());
-  fprintf(deadchanJsonFile,"      \"NNoisy Channels-1\": \"%s\",\n",nois1channel_str.Data());
-  fprintf(deadchanJsonFile,"      \"NNoisy Channels-2\": \"%s\"\n",nois2channel_str.Data());
+  fprintf(deadchanJsonFile,"      \"NNoisy Channels 6Sigma away from mean value of the ADC RMS\": \"%s\",\n",nois1channel_str.Data());
+  fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold(40)\": \"%s\"\n",nois2channel_str.Data());
   fprintf(deadchanJsonFile,"   }\n");
   fprintf(deadchanJsonFile,"]\n");
   
