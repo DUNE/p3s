@@ -687,6 +687,19 @@ def automon(request):
     host	= request.GET.get('host','')
     run		= request.GET.get('run','')
     subrun	= request.GET.get('subrun','')
+    category	= request.GET.get('category','')
+    filetype	= request.GET.get('filetype','')
+
+    obj, entry = None, None
+    try:
+        obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
+        entry	= obj[0]
+    except:
+        return 'not found'
+        
+    description = json.loads(entry.description, object_pairs_hook=OrderedDict)
+    
+    print('***',category)
 
     url2images = settings.SITE['dqm_monitor_url']
 
@@ -709,18 +722,26 @@ def automon(request):
     
     d['tables']		= []
 
+    if(category!=''):
+        j_uuid	= entry.j_uuid
+
+        files = None
+        for item in description:
+            if(item['Category']==category): files=item['Files'][filetype]
+        if(files is None): return 'error'
+        
+        d['rows'] = monrun.autoMonImgURLs(domain, url2images, j_uuid, files)
+        return render(request, 'unitable3.html', d)
+    
 
     obj		= monrun.objects.filter(run=run).filter(subrun=subrun)[0]
-    description = json.loads(obj.description, object_pairs_hook=OrderedDict)
 
     for item in description:
-        print(item['Category'])
+        # print(item['Category'])
         list4table = []
         for fileType in item['Files'].keys():
-            list4table.append({'items':fileType})
+            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,item['Category'],fileType)})
             
-        print('typea', list4table)
-    
         t = ShowMonTable(list4table)
         t.changeName(item['Category'])
         d['tables'].append(t)

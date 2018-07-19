@@ -147,7 +147,7 @@ class MonRunTable(MonitorTable):
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('description','j_uuid','subrun',)
+        exclude = ('description','j_uuid','subrun','id',)
 #---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')

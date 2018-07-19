@@ -110,7 +110,6 @@ class monrun(models.Model):
         for N in range(252,300):
             pattern	= self.ALLmonitor('ssprawdecoder', 0)[0]
             filename= pattern % (run, subrun,("%03d"%N) )
-            print(filename)
             row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
             cnt+=1
             if cnt==6:
@@ -200,3 +199,30 @@ class monrun(models.Model):
         if(len(row)>0): rows.append(row) #!
 
         return rows
+
+    # ---
+    @classmethod
+    def autoMonLink(self,domain,run,subrun,category,filetype):
+        pattern = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&category=%s&filetype=%s">%s</a>'
+        link = mark_safe(pattern % (domain,run, subrun, category, filetype, filetype))
+        return link
+    
+    @classmethod
+    def autoMonImgURLs(self, domain, dqmURL, j_uuid, files):
+        fList = files.split(',')
+        row = []
+        rows = []
+        
+        cnt = 0
+        for filename in fList:
+            row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
+            cnt+=1
+            if cnt==6:
+                cnt=0
+                rows.append(row)
+                row = []
+        if(len(row)>0): rows.append(row) #!
+
+        return rows
+
+    
