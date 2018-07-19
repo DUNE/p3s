@@ -80,6 +80,9 @@ class MonitorTable(tables.Table):
     def renderDateTime(self, dt): # common format defined here.
         return timezone.localtime(dt).strftime(settings.TIMEFORMAT)
 
+    def modifyName(self, oldName, newName):
+        self.base_columns[oldName].verbose_name = newName
+
 #---
 class PurityTable(MonitorTable):
     class Meta:
@@ -105,18 +108,45 @@ class MonRunTable(MonitorTable):
 
         return mark_safe(subrun_url)
 
+    def render_run(self, value, record):
+        subrun_url = ': <a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s (old)</a>, <a href="http://%s/monitor/automon?run=%s&subrun=%s">%s (new)</a>' % (
+            self.site, value, str(record.subrun), record.subrun,
+            self.site, value, str(record.subrun), record.subrun
+        )
+
+        output=str(value)+'  '+mark_safe(subrun_url)+'<hr/>'+record.j_uuid
+
+        return format_html(output)
+    
     def render_summary(self, value, record):
 
         output = '<table><tr>'
         
         data = json.loads(value, object_pairs_hook=OrderedDict)
         d = data[0]
+
+        patternHits1	= "Plane %s Mean NHits"
+        patternHits2	= "Plane %s Mean of Hit RMS"
+
+        patternCharge1	= "Plane %s Mean of Charge"
+        patternCharge2	= "Plane %s RMS of Charge"
+
+        for plane in ('U','V','Z'): output+= ('<th>%s Hits/RMS</th>') % plane
+        for plane in ('U','V','Z'): output+= ('<th>%s Charge/RMS</th>') % plane
+
+        output+='<th>Dead Channels</th>'
+        output+='</tr><tr>'
+            
+        for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
+        for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
+
+        output+='<td>%s</td>' % d["NDead  Channels"]
         
-        for k in SUMMARY.keys():
-            if(k=="break"):
-                output+=SUMMARY[k]
-            else:
-                output+= ('<td>%s</td><td>%s</td>') % (SUMMARY[k], d[k])
+        # for k in SUMMARY.keys():
+        #     if(k=="break"):
+        #         output+=SUMMARY[k]
+        #     else:
+        #         output+= ('<td>%s</td><td>%s</td>') % (SUMMARY[k], d[k])
         
         # for k in SUMMARY.keys():
         #     if(k=='separator'):
@@ -131,7 +161,7 @@ class MonRunTable(MonitorTable):
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('description',)
+        exclude = ('description','j_uuid','subrun',)
 #---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
