@@ -19,18 +19,7 @@ from .models import monrun
 
 
 
-SUMMARY = OrderedDict(
-    [
-        ("Plane U Mean NHits","U mean hits"),		("Plane V Mean NHits","V mean hits"),		("Plane Z Mean NHits","Z mean hits"),
-        ("Plane U Mean of Hit RMS","U hit RMS"),	("Plane V Mean of Hit RMS","V hit RMS"),	("Plane Z Mean of Hit RMS","Z hit RMS"),
-        ("break","<tr></tr>"),
-        ("Plane U Mean of Charge","U mean charge"),	("Plane V Mean of Charge","V mean charge"),	("Plane Z Mean of Charge","Z mean charge"),
-        ("Plane U RMS of Charge","U charge RMS"),	("Plane V RMS of Charge","V charge RMS"),	("Plane Z RMS of Charge","Z charge RMS"),
-    ]
-)
-    
-
-
+#########################################################    
 # We need this to make links to this service itself.
 try:
     from django.urls import reverse
@@ -38,6 +27,15 @@ except ImportError:
     print("FATAL IMPORT ERROR")
     exit(-3)
 
+
+#########################################################    
+#########################################################    
+#########################################################    
+def pad0four(input):
+        mylist = input.split(',')
+        newList = []
+        for item in mylist: newList.append('{0:0>4}'.format(item))
+        return ",".join(newList)
 
 #########################################################    
 ################## LINK UTILS ###########################    
@@ -137,24 +135,11 @@ class MonRunTable(MonitorTable):
         output+='<th>Dead Channels</th><th>Noisy 6&sigma;/1&sigma;'
         output+='</tr><tr>'
             
-        for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
-        for plane in ('U','V','Z'): output+= ('<td>%s<br/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
+        for plane in ('U','V','Z'): output+= ('<td>%s<hr/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
+        for plane in ('U','V','Z'): output+= ('<td>%s<hr/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
 
-        output+='<td>%s</td>' % d["NDead  Channels"]
-        output+=('<td>%s<br/>%s</td>') % (d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"],d["NNoisy Channels Above ADC RMS Threshold(40)"])
-        
-        # for k in SUMMARY.keys():
-        #     if(k=="break"):
-        #         output+=SUMMARY[k]
-        #     else:
-        #         output+= ('<td>%s</td><td>%s</td>') % (SUMMARY[k], d[k])
-        
-        # for k in SUMMARY.keys():
-        #     if(k=='separator'):
-        #         output+=SUMMARY[k]
-        #     else:
-        #         output+= SUMMARY[k]+':'+d[k]+'<br/>'
-
+        output+='<td>%s</td>' % pad0four(d["NDead  Channels"])
+        output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))
         output+='</tr></table>'
         
         return format_html(output)
