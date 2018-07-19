@@ -375,6 +375,9 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 	objname.ReplaceAll("5U","U5");
 	objname.ReplaceAll("5V","V5");
 	objname.ReplaceAll("5Z","Z5");
+	objname.ReplaceAll("6U","U6");
+	objname.ReplaceAll("6V","V6");
+	objname.ReplaceAll("6Z","Z6");
       }
       
       //TString HistoTitle = runname + TString(":") + TString(h->GetTitle());
@@ -508,6 +511,9 @@ void PrintSummaryPlots(FILE *file, TObjArray* dir, TString keyname, TString keyn
       objname.ReplaceAll("5U","U5");
       objname.ReplaceAll("5V","V5");
       objname.ReplaceAll("5Z","Z5");
+      objname.ReplaceAll("6U","U6");
+      objname.ReplaceAll("6V","V6");
+      objname.ReplaceAll("6Z","Z6");
 
       TString figname = runname + TString("_") + TString(dir->GetName()) + TString("_") + objname;
       figname += ".png";
@@ -575,7 +581,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
   fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
   fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
-  fprintf(deadchanJsonFile,"      \"APA\": \"APA0, APA1, APA2, APA3, APA4, APA5\",\n");
+  fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
 
   // loop over all keys in this directory
   TString deadchannel_str("");
@@ -632,8 +638,8 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
   }
 
   fprintf(deadchanJsonFile,"      \"NDead  Channels\": \"%s\",\n",deadchannel_str.Data());
-  fprintf(deadchanJsonFile,"      \"NNoisy Channels-1\": \"%s\",\n",nois1channel_str.Data());
-  fprintf(deadchanJsonFile,"      \"NNoisy Channels-2\": \"%s\"\n",nois2channel_str.Data());
+  fprintf(deadchanJsonFile,"      \"NNoisy Channels 6Sigma away from mean value of the ADC RMS\": \"%s\",\n",nois1channel_str.Data());
+  fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold(40)\": \"%s\"\n",nois2channel_str.Data());
   fprintf(deadchanJsonFile,"   }\n");
   fprintf(deadchanJsonFile,"]\n");
   
@@ -782,19 +788,19 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename){
 void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> imagevec){
   // --------------------------------------------------
   
-  // Open file
+ // Open file
   FILE *JsonFile = fopen(jsonfile.Data(),"a");
 
   if(dirstr.Contains("timingrawdecoder")){
     TString category("Timing Raw Decoder");
     fprintf(JsonFile,"   {\n");
     fprintf(JsonFile,"     \"Category\":\"%s\",\n",category.Data());
-    fprintf(JsonFile,"     \"Files\":\n");
+    fprintf(JsonFile,"     \"Files\": {\n");
 
-    fprintf(JsonFile,"       {\"Plots\":\"");
+    fprintf(JsonFile,"       \"Plots\":\"");
     TString filesstr = FindImagesAndPrint(dirstr, dirstr, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\"}\n");
+    fprintf(JsonFile,"%s\"\n",filesstr.Data());
+    fprintf(JsonFile,"      }\n");
 
     fprintf(JsonFile,"   },\n");
   }
@@ -802,49 +808,43 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
     TString category("Hit Monitor");
     fprintf(JsonFile,"   {\n");
     fprintf(JsonFile,"     \"Category\":\"%s\",\n",category.Data());
-    fprintf(JsonFile,"     \"Files\":\n");
+    fprintf(JsonFile,"     \"Files\": {\n");
     
     TString strtolook("NHitsAPA");
-    fprintf(JsonFile,"       {\"Number of hits per APA per view\":\"");
+    fprintf(JsonFile,"       \"Number of hits per APA per view\":\"");
     TString filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
-    
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+      
     strtolook = "HitChargeAPA";
     fprintf(JsonFile,"       \"Hit Charge distribution per APA per view\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
-    
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+      
     strtolook = "HitRMSAPA";
     fprintf(JsonFile,"       \"Hit RMS distribution per APA per view\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n"); 
-    
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+      
     strtolook = "HitPeakTimeAPA";
     fprintf(JsonFile,"       \"Hit peak time distribution per APA per view\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n"); 
-    
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+      
     strtolook = "fNHitsView";
     fprintf(JsonFile,"       \"Profiled number of hits\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n"); 
-    
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+      
     strtolook = "fChargeView";
     fprintf(JsonFile,"       \"Profiled hit charge\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n"); 
-    
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+      
     strtolook = "fRMSView";
     fprintf(JsonFile,"       \"Profiled hit RMS\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\"}\n"); 
+    fprintf(JsonFile,"%s\"\n",filesstr.Data());
+    fprintf(JsonFile,"      }\n"); 
     
     fprintf(JsonFile,"   },\n");
   }
@@ -852,64 +852,55 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
     TString category("TPC Monitor");
     fprintf(JsonFile,"   {\n");
     fprintf(JsonFile,"     \"Category\":\"%s\",\n",category.Data());
-    fprintf(JsonFile,"     \"Files\":\n");
+    fprintf(JsonFile,"     \"Files\": {\n");
   
     TString strtolook("fChanRMSDist");
-    fprintf(JsonFile,"       {\"RMS of ADC per view per APA for all channels\":\"");
+    fprintf(JsonFile,"       \"RMS of ADC per view per APA for all channels\":\"");
     TString filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "fChanMeanDist";
     fprintf(JsonFile,"       \"Mean of ADC per view per APA for all channels\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "fChanRMS";
     TString strtolook2("pfx");
     fprintf(JsonFile,"       \"RMS of ADC per view per APA and per channels\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "fChanMean";
     fprintf(JsonFile,"       \"Mean of ADC per view per APA and per channels\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "Slot";
     strtolook2 = "RMSpfx";
     fprintf(JsonFile,"       \"RMS of channel ADC from slot\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "Slot";
     strtolook2 = "Meanpfx";
     fprintf(JsonFile,"       \"Mean of channel ADC from slot\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "fChanStuckCodeOnFrac";
     fprintf(JsonFile,"       \"Channel stuck code on\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "fChanStuckCodeOffFrac";
     fprintf(JsonFile,"       \"Channel stuck code off\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "fChanFFT";
     fprintf(JsonFile,"       \"FFT\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "PersistentFFTFiber";
     fprintf(JsonFile,"       \"Persistent FFT Fiber\":\"");
@@ -928,20 +919,18 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
     strtolook = "fNDeadChannels";
     fprintf(JsonFile,"       \"Number of dead channels\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "fNNoisyChannels";
     fprintf(JsonFile,"       \"Number of noisy channels\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\",\n");
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "NTicks";
     fprintf(JsonFile,"       \"Number of Ticks in TPC channels\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
-    fprintf(JsonFile,"%s",filesstr.Data());
-    fprintf(JsonFile,"\"}\n");
+    fprintf(JsonFile,"%s\"\n",filesstr.Data());
+    fprintf(JsonFile,"      }\n");
 
     fprintf(JsonFile,"   }\n");
   }
