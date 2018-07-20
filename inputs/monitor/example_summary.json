@@ -1,0 +1,25 @@
+[
+   {
+      "Plane U Mean NHits": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane V Mean NHits": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane Z Mean NHits": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane U Mean of Charge": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane V Mean of Charge": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane Z Mean of Charge": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane U RMS of Charge": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane V RMS of Charge": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane Z RMS of Charge": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane U Mean of Hit RMS": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane V Mean of Hit RMS": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane Z Mean of Hit RMS": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane U RMS of Hit RMS": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane V RMS of Hit RMS": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "Plane Z RMS of Hit RMS": "0.000,0.000,0.000,0.000,0.000,0.000",
+      "run": "run001837_001",
+      "TimeStamp": "Fri Jun  1 17:54:40 2018",
+      "APA": "APA1, APA2, APA3, APA4, APA5, APA6",
+      "NDead  Channels": "2304,2560,2560,2560,2560,2560",
+      "NNoisy Channels 6Sigma away from mean value of the ADC RMS": "256,0,0,0,0,0",
+      "NNoisy Channels Above ADC RMS Threshold(40)": "256,0,0,0,0,0"
+   }
+]
