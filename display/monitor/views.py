@@ -203,12 +203,12 @@ def data_handler2(request, what, tbl, tblHeader, url):
             if tpcSelector.is_valid(): q += tpcSelector.handleDropSelector()
         
         tsSelector = twoFieldGeneric(request.POST,
-                                            label1="min. time",
-                                            field1="tsmin",
-                                            init1=tsmin,
-                                            label2="max. time",
-                                            field2="tsmax",
-                                            init2=tsmax)
+                                     label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                     field1="tsmin",
+                                     init1=tsmin,
+                                     label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                     field2="tsmax",
+                                     init2=tsmax)
         if tsSelector.is_valid():
             tsmin=tsSelector.getval("tsmin")
             tsmax=tsSelector.getval("tsmax")
@@ -316,8 +316,15 @@ def data_handler2(request, what, tbl, tblHeader, url):
                                       tag='perpage')
     selectors.append(perPageSelector)
     # ---
-    tsSelector = twoFieldGeneric(label1="min. time", field1="tsmin", init1=tsmin, label2="max. time", field2="tsmax",
-                                 init2=tsmax)
+    tsSelector = twoFieldGeneric(
+        label1="min. (YYYY-MM-DD HH:MM:SS)",
+        field1="tsmin",
+        init1=tsmin,
+        label2="max. (YYYY-MM-DD HH:MM:SS)",
+        field2="tsmax",
+        init2=tsmax
+    )
+    
     selectors.append(tsSelector)
     # ---
     if(what=='pur'):
