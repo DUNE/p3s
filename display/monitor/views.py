@@ -37,6 +37,8 @@ from utils.navbar			import TopTable, HomeTable
 from .monitorTables import *
 
 #########################################################
+JOBTYPECHOICES	= [('', 'All'), ('monitor','monitor'), ('test','test'),]
+
 REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
 PAGECHOICES	= [('25','25'),		('50','50'),	('100','100'),	('200','200'),	('400','400'),]
 TPCCHOICES	= [('', 'All'),		('1', '1'),	('2','2'),	('5','5'),	('6','6'),	('9','9'),	('10','10'), ]
@@ -169,6 +171,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
     j_uuid	= request.GET.get('j_uuid','')
+    jobtype	= request.GET.get('jobtype','')
     d_type	= request.GET.get('d_type','')
     run		= request.GET.get('run','')
     evnum	= request.GET.get('evnum','')
@@ -176,6 +179,12 @@ def data_handler2(request, what, tbl, tblHeader, url):
     showjob	= request.GET.get('showjob',None)
     tpc		= request.GET.get('tpc','')
 
+
+
+    initJobType=jobtype
+    if(jobtype==''): initJobType='All'
+
+    
     q=''	# stub for a query that may be built
 
     if request.method == 'POST':
@@ -194,6 +203,11 @@ def data_handler2(request, what, tbl, tblHeader, url):
         
         if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
 
+        if(what=='monrun'):
+            typeSelector = dropDownGeneric(request.POST, label='Type', choices=JOBTYPECHOICES, tag='jobtype')
+            if typeSelector.is_valid(): q += typeSelector.handleDropSelector()
+
+        
         if(what=='pur'):
             tpcSelector = dropDownGeneric(request.POST,
                                           initial={'tpc':tpc},
@@ -264,6 +278,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin)# .order_by('-pk')
     if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)	# .order_by('-pk')
     if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
+    if(jobtype!=''):	objs = objs.filter(jobtype=jobtype)
     if(d_type!=''):	objs = objs.filter(datatype=d_type)
     if(run!=''):	objs = objs.filter(run=run)
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
@@ -315,6 +330,14 @@ def data_handler2(request, what, tbl, tblHeader, url):
                                       choices = PAGECHOICES,
                                       tag='perpage')
     selectors.append(perPageSelector)
+
+    if(what=='monrun'):
+        typeSelector	= dropDownGeneric(initial={'jobtype':initJobType},
+	                                  label='Type',
+	                                  choices = JOBTYPECHOICES,
+                                          tag='jobtype')
+        selectors.append(typeSelector)
+        
     # ---
     tsSelector = twoFieldGeneric(
         label1="min. (YYYY-MM-DD HH:MM:SS)",
