@@ -579,6 +579,11 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
   TString nois1channel_str("");
   TString nois2channel_str("");
 
+   const Int_t napas = 6;
+  Int_t deadchannel_arr[napas] = {0,0,0,0,0,0};
+  Int_t nois1channel_arr[napas] = {0,0,0,0,0,0};
+  Int_t nois2channel_arr[napas] = {0,0,0,0,0,0};
+
   TIter nextkey(dir->GetListOfKeys() );
   TKey *key, *oldkey=0;
   int histfound = 0;
@@ -596,28 +601,46 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
       for(int j=1; j<h1->GetNbinsX(); j++){
-	TString tempstr = Form(",%i",(int)h1->GetBinContent(j));
-	if(j == 1)
-	  tempstr = Form("%i",(int)h1->GetBinContent(j));
+	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
+	if(binlabel.Contains("APA 1"))
+	  deadchannel_arr[0] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 2"))
+	  deadchannel_arr[1] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 3"))
+	  deadchannel_arr[2] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 4"))
+	  deadchannel_arr[3] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 5"))
+	  deadchannel_arr[4] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 6"))
+	  deadchannel_arr[5] = (int)h1->GetBinContent(j);
+	else
+	  cout << "WARNING::DeadChannelsHisto unknown bin label " << binlabel << endl;
+      }
+      
+      for(Int_t i=0; i<napas; i++){
+	TString tempstr = Form(",%i", deadchannel_arr[i]);
+	if(i == 0)
+	  tempstr = Form("%i",deadchannel_arr[i]);
 
 	// 
-	if(h1->GetBinContent(j) > 1000){
+	if(deadchannel_arr[i] > 1000){
 	  // Nothing to do here
 	}
-	else if(h1->GetBinContent(j) > 100){
-	  tempstr = Form(", %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form(" %i",(int)h1->GetBinContent(j));
+	else if(deadchannel_arr[i] > 100){
+	  tempstr = Form(", %i",deadchannel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form(" %i",deadchannel_arr[i]);
 	}
-	else if(h1->GetBinContent(j) > 10){
-	  tempstr = Form(",  %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form("  %i",(int)h1->GetBinContent(j));
+	else if(deadchannel_arr[i] > 10){
+	  tempstr = Form(",  %i",deadchannel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form("  %i",deadchannel_arr[i]);
 	}
-	else if(h1->GetBinContent(j) >= 0){
-	  tempstr = Form(",   %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form("   %i",(int)h1->GetBinContent(j));
+	else if(deadchannel_arr[i] >= 0){
+	  tempstr = Form(",   %i",deadchannel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form("   %i",deadchannel_arr[i]);
 	}
 	else{
 	  if(VERBOSE)
@@ -626,76 +649,115 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
 	deadchannel_str += tempstr;
       }
+
     }
     if(objname.Contains("ChannelsHistoFromNSigma") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
       for(int j=1; j<h1->GetNbinsX(); j++){
-        TString tempstr = Form(",%i",(int)h1->GetBinContent(j));
-        if(j == 1)
-          tempstr = Form("%i",(int)h1->GetBinContent(j));
+	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
+	if(binlabel.Contains("APA 1"))
+	  nois1channel_arr[0] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 2"))
+	  nois1channel_arr[1] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 3"))
+	  nois1channel_arr[2] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 4"))
+	  nois1channel_arr[3] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 5"))
+	  nois1channel_arr[4] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 6"))
+	  nois1channel_arr[5] = (int)h1->GetBinContent(j);
+	else
+	  cout << "WARNING::ChannelsHistoFromNSigma unknown bin label " << binlabel << endl;
+      }
+
+      for(Int_t i=0; i<napas; i++){
+	TString tempstr = Form(",%i", nois1channel_arr[i]);
+	if(i == 0)
+	  tempstr = Form("%i",nois1channel_arr[i]);
 
 	// 
-	if(h1->GetBinContent(j) > 1000){
+	if(nois1channel_arr[i] > 1000){
 	  // Nothing to do here
 	}
-	else if(h1->GetBinContent(j) > 100){
-	  tempstr = Form(", %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form(" %i",(int)h1->GetBinContent(j));
+	else if(nois1channel_arr[i] > 100){
+	  tempstr = Form(", %i",nois1channel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form(" %i",nois1channel_arr[i]);
 	}
-	else if(h1->GetBinContent(j) > 10){
-	  tempstr = Form(",  %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form("  %i",(int)h1->GetBinContent(j));
+	else if(nois1channel_arr[i] > 10){
+	  tempstr = Form(",  %i",nois1channel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form("  %i",nois1channel_arr[i]);
 	}
-	else if(h1->GetBinContent(j) >= 0){
-	  tempstr = Form(",   %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form("   %i",(int)h1->GetBinContent(j));
+	else if(nois1channel_arr[i] >= 0){
+	  tempstr = Form(",   %i",nois1channel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form("   %i",nois1channel_arr[i]);
 	}
 	else{
 	  if(VERBOSE)
 	    cout << "WARNING::Unknown bin content for histogram " << h1->GetName() << endl;
 	}
 
-        nois1channel_str += tempstr;
+	nois1channel_str += tempstr;
       }
     }
     if(objname.Contains("ChannelsHistoFromNCounts") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
+    
       for(int j=1; j<h1->GetNbinsX(); j++){
-        TString tempstr = Form(",%i",(int)h1->GetBinContent(j));
-        if(j == 1)
-          tempstr = Form("%i",(int)h1->GetBinContent(j));
+	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
+	if(binlabel.Contains("APA 1"))
+	  nois2channel_arr[0] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 2"))
+	  nois2channel_arr[1] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 3"))
+	  nois2channel_arr[2] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 4"))
+	  nois2channel_arr[3] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 5"))
+	  nois2channel_arr[4] = (int)h1->GetBinContent(j);
+	else if(binlabel.Contains("APA 6"))
+	  nois2channel_arr[5] = (int)h1->GetBinContent(j);
+	else
+	  cout << "WARNING::ChannelsHistoFromNCounts unknown bin label " << binlabel << endl;
+      }
+
+      for(Int_t i=0; i<napas; i++){
+	TString tempstr = Form(",%i", nois2channel_arr[i]);
+	if(i == 0)
+	  tempstr = Form("%i",nois2channel_arr[i]);
 
 	// 
-	if(h1->GetBinContent(j) > 1000){
+	if(nois2channel_arr[i] > 1000){
 	  // Nothing to do here
 	}
-	else if(h1->GetBinContent(j) > 100){
-	  tempstr = Form(", %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form(" %i",(int)h1->GetBinContent(j));
+	else if(nois2channel_arr[i] > 100){
+	  tempstr = Form(", %i",nois2channel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form(" %i",nois2channel_arr[i]);
 	}
-	else if(h1->GetBinContent(j) > 10){
-	  tempstr = Form(",  %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form("  %i",(int)h1->GetBinContent(j));
+	else if(nois2channel_arr[i] > 10){
+	  tempstr = Form(",  %i",nois2channel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form("  %i",nois2channel_arr[i]);
 	}
-	else if(h1->GetBinContent(j) >= 0){
-	  tempstr = Form(",   %i",(int)h1->GetBinContent(j));
-	  if(j == 1)
-	    tempstr = Form("   %i",(int)h1->GetBinContent(j));
+	else if(nois2channel_arr[i] >= 0){
+	  tempstr = Form(",   %i",nois2channel_arr[i]);
+	  if(i == 0)
+	    tempstr = Form("   %i",nois2channel_arr[i]);
 	}
 	else{
 	  if(VERBOSE)
 	    cout << "WARNING::Unknown bin content for histogram " << h1->GetName() << endl;
 	}
 
-        nois2channel_str += tempstr;
+	nois2channel_str += tempstr;
       }
+
     }
 
   }
@@ -741,6 +803,24 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
   TString hitrmsS_Vstr("");
   TString hitrmsS_Zstr("");
 
+ const Int_t napas = 6;
+  Float_t nhits_Uarr[napas];
+  Float_t nhits_Varr[napas];
+  Float_t nhits_Zarr[napas];
+  Float_t hitchargeM_Uarr[napas];
+  Float_t hitchargeM_Varr[napas];
+  Float_t hitchargeM_Zarr[napas];
+  Float_t hitchargeS_Uarr[napas];
+  Float_t hitchargeS_Varr[napas];
+  Float_t hitchargeS_Zarr[napas];
+  Float_t hitrmsM_Uarr[napas];
+  Float_t hitrmsM_Varr[napas];
+  Float_t hitrmsM_Zarr[napas];
+  Float_t hitrmsS_Uarr[napas];
+  Float_t hitrmsS_Varr[napas];
+  Float_t hitrmsS_Zarr[napas];
+
+  // loop over all keys in this directory
   TIter nextkey(dir->GetListOfKeys() );
   TKey *key, *oldkey=0;
   int histfound = 0;
@@ -757,57 +837,234 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
     if(objname.Contains("NHitsAPA") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      TString tempstr = Form("%f,",(float)h1->GetMean());
- 
-      if(objname.Contains("_U")){
-	nhits_Ustr += tempstr;
-      }
-      else if(objname.Contains("_V")){
-        nhits_Vstr += tempstr;
-      }
-      else if(objname.Contains("_Z")){
-        nhits_Zstr += tempstr;
-      }
+
+      if(objname.Contains("APA1_U"))
+	nhits_Uarr[0] = h1->GetMean();
+      else if(objname.Contains("APA2_U"))
+	nhits_Uarr[1] = h1->GetMean();
+      else if(objname.Contains("APA3_U"))
+	nhits_Uarr[2] = h1->GetMean();
+      else if(objname.Contains("APA4_U"))
+	nhits_Uarr[3] = h1->GetMean();
+      else if(objname.Contains("APA5_U"))
+	nhits_Uarr[4] = h1->GetMean();
+      else if(objname.Contains("APA6_U"))
+	nhits_Uarr[5] = h1->GetMean();
+      else if(objname.Contains("APA1_V"))
+	nhits_Varr[0] = h1->GetMean();
+      else if(objname.Contains("APA2_V"))
+	nhits_Varr[1] = h1->GetMean();
+      else if(objname.Contains("APA3_V"))
+	nhits_Varr[2] = h1->GetMean();
+      else if(objname.Contains("APA4_V"))
+	nhits_Varr[3] = h1->GetMean();
+      else if(objname.Contains("APA5_V"))
+	nhits_Varr[4] = h1->GetMean();
+      else if(objname.Contains("APA6_V"))
+	nhits_Varr[5] = h1->GetMean();
+      else if(objname.Contains("APA1_Z"))
+	nhits_Zarr[0] = h1->GetMean();
+      else if(objname.Contains("APA2_Z"))
+	nhits_Zarr[1] = h1->GetMean();
+      else if(objname.Contains("APA3_Z"))
+	nhits_Zarr[2] = h1->GetMean();
+      else if(objname.Contains("APA4_Z"))
+	nhits_Zarr[3] = h1->GetMean();
+      else if(objname.Contains("APA5_Z"))
+	nhits_Zarr[4] = h1->GetMean();
+      else if(objname.Contains("APA6_Z"))
+	nhits_Zarr[5] = h1->GetMean();
     }
     if(objname.Contains("HitChargeAPA") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      TString tempstr = Form("%f,",(float)h1->GetMean());
-      TString tempstr2 = Form("%f,",(float)h1->GetRMS());
-      
-      if(objname.Contains("_U")){
-        hitchargeM_Ustr += tempstr;
-	hitchargeS_Ustr += tempstr2;
+
+      if(objname.Contains("APA1_U")){
+	hitchargeM_Uarr[0] = h1->GetMean();
+	hitchargeS_Uarr[0] = h1->GetRMS();
       }
-      else if(objname.Contains("_V")){
-	hitchargeM_Vstr += tempstr;
-        hitchargeS_Vstr += tempstr2;
+      else if(objname.Contains("APA2_U")){
+	hitchargeM_Uarr[1] = h1->GetMean();
+	hitchargeS_Uarr[1] = h1->GetRMS();
       }
-      else if(objname.Contains("_Z")){
-	hitchargeM_Zstr += tempstr;
-        hitchargeS_Zstr += tempstr2;
+      else if(objname.Contains("APA3_U")){
+	hitchargeM_Uarr[2] = h1->GetMean();
+	hitchargeS_Uarr[2] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA4_U")){
+	hitchargeM_Uarr[3] = h1->GetMean();
+	hitchargeS_Uarr[3] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA5_U")){
+	hitchargeM_Uarr[4] = h1->GetMean();
+	hitchargeS_Uarr[4] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA6_U")){
+	hitchargeM_Uarr[5] = h1->GetMean();
+	hitchargeS_Uarr[5] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA1_V")){
+	hitchargeM_Varr[0] = h1->GetMean();
+	hitchargeS_Varr[0] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA2_V")){
+	hitchargeM_Varr[1] = h1->GetMean();
+	hitchargeS_Varr[1] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA3_V")){
+	hitchargeM_Varr[2] = h1->GetMean();
+	hitchargeS_Varr[2] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA4_V")){
+	hitchargeM_Varr[3] = h1->GetMean();
+	hitchargeS_Varr[3] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA5_V")){
+	hitchargeM_Varr[4] = h1->GetMean();
+	hitchargeS_Varr[4] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA6_V")){
+	hitchargeM_Varr[5] = h1->GetMean();
+	hitchargeS_Varr[5] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA1_Z")){
+	hitchargeM_Zarr[0] = h1->GetMean();
+	hitchargeS_Zarr[0] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA2_Z")){
+	hitchargeM_Zarr[1] = h1->GetMean();
+	hitchargeS_Zarr[1] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA3_Z")){
+	hitchargeM_Zarr[2] = h1->GetMean();
+	hitchargeS_Zarr[2] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA4_Z")){
+	hitchargeM_Zarr[3] = h1->GetMean();
+	hitchargeS_Zarr[3] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA5_Z")){
+	hitchargeM_Zarr[4] = h1->GetMean();
+	hitchargeS_Zarr[4] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA6_Z")){
+	hitchargeM_Zarr[5] = h1->GetMean();
+	hitchargeS_Zarr[5] = h1->GetRMS();
       }
     }
     if(objname.Contains("HitRMSAPA") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      TString tempstr = Form("%f,",(float)h1->GetMean());
-      TString tempstr2 = Form("%f,",(float)h1->GetRMS());
 
-      if(objname.Contains("_U")){
-        hitrmsM_Ustr += tempstr;
-        hitrmsS_Ustr += tempstr2;
+      if(objname.Contains("APA1_U")){
+	hitrmsM_Uarr[0] = h1->GetMean();
+	hitrmsS_Uarr[0] = h1->GetRMS();
       }
-      else if(objname.Contains("_V")){
-        hitrmsM_Vstr += tempstr;
-        hitrmsS_Vstr += tempstr2;
+      else if(objname.Contains("APA2_U")){
+	hitrmsM_Uarr[1] = h1->GetMean();
+	hitrmsS_Uarr[1] = h1->GetRMS();
       }
-      else if(objname.Contains("_Z")){
-        hitrmsM_Zstr += tempstr;
-        hitrmsS_Zstr += tempstr2;
+      else if(objname.Contains("APA3_U")){
+	hitrmsM_Uarr[2] = h1->GetMean();
+	hitrmsS_Uarr[2] = h1->GetRMS();
       }
+      else if(objname.Contains("APA4_U")){
+	hitrmsM_Uarr[3] = h1->GetMean();
+	hitrmsS_Uarr[3] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA5_U")){
+	hitrmsM_Uarr[4] = h1->GetMean();
+	hitrmsS_Uarr[4] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA6_U")){
+	hitrmsM_Uarr[5] = h1->GetMean();
+	hitrmsS_Uarr[5] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA1_V")){
+	hitrmsM_Varr[0] = h1->GetMean();
+	hitrmsS_Varr[0] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA2_V")){
+	hitrmsM_Varr[1] = h1->GetMean();
+	hitrmsS_Varr[1] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA3_V")){
+	hitrmsM_Varr[2] = h1->GetMean();
+	hitrmsS_Varr[2] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA4_V")){
+	hitrmsM_Varr[3] = h1->GetMean();
+	hitrmsS_Varr[3] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA5_V")){
+	hitrmsM_Varr[4] = h1->GetMean();
+	hitrmsS_Varr[4] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA6_V")){
+	hitrmsM_Varr[5] = h1->GetMean();
+	hitrmsS_Varr[5] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA1_Z")){
+	hitrmsM_Zarr[0] = h1->GetMean();
+	hitrmsS_Zarr[0] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA2_Z")){
+	hitrmsM_Zarr[1] = h1->GetMean();
+	hitrmsS_Zarr[1] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA3_Z")){
+	hitrmsM_Zarr[2] = h1->GetMean();
+	hitrmsS_Zarr[2] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA4_Z")){
+	hitrmsM_Zarr[3] = h1->GetMean();
+	hitrmsS_Zarr[3] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA5_Z")){
+	hitrmsM_Zarr[4] = h1->GetMean();
+	hitrmsS_Zarr[4] = h1->GetRMS();
+      }
+      else if(objname.Contains("APA6_Z")){
+	hitrmsM_Zarr[5] = h1->GetMean();
+	hitrmsS_Zarr[5] = h1->GetRMS();
+      }
+    
     }
-
+  }
+  
+  for(Int_t i=0; i < napas; i++){
+    TString tempstr = Form("%f,",(float)nhits_Uarr[i]);
+    nhits_Ustr += tempstr;
+    tempstr = Form("%f,",(float)nhits_Varr[i]);
+    nhits_Vstr += tempstr;
+    tempstr = Form("%f,",(float)nhits_Zarr[i]);
+    nhits_Zstr += tempstr;
+    
+    tempstr = Form("%f,",(float)hitchargeM_Uarr[i]);
+    hitchargeM_Ustr += tempstr;
+    tempstr = Form("%f,",(float)hitchargeS_Uarr[i]);
+    hitchargeS_Ustr += tempstr;
+    tempstr = Form("%f,",(float)hitchargeM_Varr[i]);
+    hitchargeM_Vstr += tempstr;
+    tempstr = Form("%f,",(float)hitchargeS_Varr[i]);
+    hitchargeS_Vstr += tempstr;
+    tempstr = Form("%f,",(float)hitchargeM_Zarr[i]);
+    hitchargeM_Zstr += tempstr;
+    tempstr = Form("%f,",(float)hitchargeS_Zarr[i]);
+    hitchargeS_Zstr += tempstr;
+    
+    tempstr = Form("%f,",(float)hitrmsM_Uarr[i]);
+    hitrmsM_Ustr += tempstr;
+    tempstr = Form("%f,",(float)hitrmsS_Uarr[i]);
+    hitrmsS_Ustr += tempstr;
+    tempstr = Form("%f,",(float)hitrmsM_Varr[i]);
+    hitrmsM_Vstr += tempstr;
+    tempstr = Form("%f,",(float)hitrmsS_Varr[i]);
+    hitrmsS_Vstr += tempstr;
+    tempstr = Form("%f,",(float)hitrmsM_Zarr[i]);
+    hitrmsM_Zstr += tempstr;
+    tempstr = Form("%f,",(float)hitrmsS_Zarr[i]);
+    hitrmsS_Zstr += tempstr;
   }
 
   // Remove last comma
@@ -845,10 +1102,10 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
 
   fprintf(deadchanJsonFile,"   }\n");
   fprintf(deadchanJsonFile,"]\n");
-
+  
   // Close file
   fclose(deadchanJsonFile);
-
+  
 }
 
 // --------------------------------------------------
