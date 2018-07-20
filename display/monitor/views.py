@@ -529,6 +529,7 @@ def addmon(request):
     m.summary		= summary
     m.description	= post.get('description', '')
     m.j_uuid		= post.get('j_uuid', '')
+    m.jobtype		= post.get('jobtype', '')
     m.ts		= post.get('ts', None)
     
     # print(m.summary)

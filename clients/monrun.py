@@ -47,12 +47,13 @@ parser.add_argument("-D", "--description",type=str,	help="description file name 
 
 parser.add_argument("-u", "--uuid",	type=str,	help="job uuid to delete or to register (override)", default='')
 
+parser.add_argument("-j", "--jobtype",	type=str,	help="job type (which produced these data", default='')
+
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number, or job uuid")
 
 parser.add_argument("-a", "--auto",	action='store_true',	help="parse the current directory automatically")
 
-parser.add_argument("-i", "--id",	type=str,	default='',
-                    help="id of the entry to be adjusted or deleted (pk)")
+parser.add_argument("-i", "--id",	type=str,	help="id of the entry to be adjusted or deleted (pk)", 	default='')
 
 parser.add_argument("-r", "--run",	type=str,	default='',
                     help="run number")
@@ -73,6 +74,7 @@ summary		= args.summary
 description	= args.description
 
 job_uuid	= args.uuid
+jobtype		= args.jobtype
 server		= args.server
 
 delete		= args.delete
@@ -122,9 +124,6 @@ if(summary!='' and description!=''):
     description_data = df.read()
     print(description_data)
     
-#    description_data = takeJson(description, verb)
-#    print(description_data)
-
     if(job_uuid==''):
         d['j_uuid'] = os.path.basename(os.getcwd())
     else:
@@ -147,6 +146,7 @@ if(summary!='' and description!=''):
     d['description']	= description_data
     d['run']		= run
     d['subrun']		= subrun
+    d['jobtype']	= jobtype
 
     if(timestamp==''):
         d['ts']	= str(timezone.now())
