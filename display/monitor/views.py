@@ -15,6 +15,8 @@ from django.http			import HttpResponse
 
 from django.views.decorators.csrf	import csrf_exempt
 
+from django.db import models
+
 import  django_tables2 as tables
 from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
@@ -22,6 +24,7 @@ from	django_tables2.utils		import A
 import datetime
 import random
 import json
+import pytz
 
 from collections import OrderedDict
 
@@ -74,6 +77,11 @@ def puritychart(request, what):
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
 
+    tz = pytz.timezone('Europe/Berlin')
+    # print(tz)
+    #    if(tsmin!=''): tsminFixed = datetime.datetime(tsmin) # , tzinfo=tz)
+    #    tsminFixed.replace(tzinfo=tz)    
+
     q=''
 
     if request.method == 'POST':
@@ -107,10 +115,12 @@ def puritychart(request, what):
 
         for forChart in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
+                t = forChart.ts
+                
                 if(what=='purity'):
-                    purStr += ('[new Date(%s), %s],') % (forChart.ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
+                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
                 else:
-                    purStr += ('[new Date(%s), %s],') % (forChart.ts.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.sn)
+                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.sn)
             except:
                 break
     
@@ -728,7 +738,7 @@ def automon(request):
         
     description = json.loads(entry.description, object_pairs_hook=OrderedDict)
     
-    print('***',category)
+    # print('***',category)
 
 
     url2images, p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None, None
