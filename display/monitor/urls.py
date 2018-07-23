@@ -23,6 +23,7 @@ urlpatterns = [
         {'what':'monrun','tbl':'MonRunTable','tblHeader':'Monitor Runs','url':'monrun'},
         name='monruntable'),
 
+    url(r'^monchart',views.puritychart,{'what':'purity'},name='monchart'),
     url(r'^puritychart',views.puritychart,{'what':'purity'},name='puritychart'),
     url(r'^snchart',views.puritychart,{'what':'sn'},name='snchart'),
     

@@ -58,7 +58,7 @@ def makeQuery(page, q=''):
 #########################################################    
 ####################  VIEWS #############################    
 #########################################################
-def puritychart(request, what):
+def monchart(request, what):
     p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
@@ -159,6 +159,121 @@ def puritychart(request, what):
     #    print(what,d['vAxis'])
 
     return render(request, 'purity_chart.html', d)
+
+#########################################################
+def puritychart(request, what):
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
+
+    try:
+        p3s_domain	= settings.SITE['p3s_domain']
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
+    
+    host	= request.GET.get('host','')
+    
+    domain	= request.get_host()
+    tsmin	= request.GET.get('tsmin','')
+    tsmax	= request.GET.get('tsmax','')
+    width	= request.GET.get('width','3')
+
+    # tz = pytz.timezone('Europe/Berlin')
+    # print(tz)
+    #    if(tsmin!=''): tsminFixed = datetime.datetime(tsmin) # , tzinfo=tz)
+    #    tsminFixed.replace(tzinfo=tz)    
+
+    q=''
+
+    if request.method == 'POST':
+        tsSelector = twoFieldGeneric(request.POST,
+                                     label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                     field1="tsmin",
+                                     init1=tsmin,
+                                     label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                     field2="tsmax",
+                                     init2=tsmax)
+        if tsSelector.is_valid():
+            tsmin=tsSelector.getval("tsmin")
+            tsmax=tsSelector.getval("tsmax")
+            if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
+            if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
+
+        return makeQuery('puritychart', q) # will go and get the query results...
+    
+    #-----------
+    # for the charts
+
+    bigPur = []
+    purSeries = []
+    W=int(width)
+    cnt=0
+    for tpcNum in (1,2,5,6,9,10):
+        purDict = {}
+
+        objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
+        if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
+        if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
+
+        purStr=''
+
+        for forChart in objs:
+            try: # template: [new Date(2014, 10, 15, 7, 30), 1],
+                t = forChart.ts
+                
+                if(what=='purity'):
+#                    purStr += ('[new Date(%s), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
+                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
+                else:
+                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.sn)
+            except:
+                break
+    
+        purDict["panel"] = 'tpc'+str(tpcNum)
+        purDict["timeseries"]=purStr
+    
+        purSeries.append(purDict)
+        cnt+=1
+        if(cnt == W):
+            bigPur.append(purSeries)
+            purSeries = []
+            cnt=0
+            
+    bigPur.append(purSeries)
+
+    d = {}
+    d['purS']	= bigPur #purSeries
+    print(bigPur)
+    d['domain']	= domain
+    
+    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
+                                 field1="tsmin",
+                                 init1=tsmin,
+                                 label2="max. (YYYY-MM-DD HH:MM:SS)",
+                                 field2="tsmax",
+                                 init2=tsmax)
+    
+    selectors = []
+    selectors.append(tsSelector)
+
+
+    garnish = {}
+
+    garnish['purity'] = {'vAxis':'Electron Lifetime (ms)'}
+    garnish['sn'] = {'vAxis':'S/N'}
+    
+    d['selectors']	= selectors
+    d['pageName']	= ': '+what+' timeline'
+    d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
+
+    d['vAxis']	=garnish[what]['vAxis']
+    #    print(what,d['vAxis'])
+
+    return render(request, 'purity_chart1.html', d)
 
 #########################################################    
 # general request handler for summary type of a table

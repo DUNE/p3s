@@ -126,8 +126,11 @@ class MonRunTable(MonitorTable):
         patternCharge1	= "Plane %s Mean of Charge"
         patternCharge2	= "Plane %s RMS of Charge"
 
-        for plane in ('U','V','Z'): output+= ('<th>%s Hits/RMS</th>') % plane
-        for plane in ('U','V','Z'): output+= ('<th>%s Charge/RMS</th>') % plane
+        for plane in ('U','V','Z'): output+= ('<th><a href="http://%s/monitor/automon?run=%s&subrun=%s&plane=%s&what=hits">%s Hits/RMS</a></th>') % (self.site, str(record.run), str(record.subrun), plane, plane)
+
+        for plane in ('U','V','Z'): output+= ('<th><a href="http://%s/monitor/automon?run=%s&subrun=%s&plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, str(record.run), str(record.subrun), plane, plane)        
+
+        # for plane in ('U','V','Z'): output+= ('<th>%s Charge/RMS</th>') % plane
 
         output+='<th>Dead Channels</th><th>Noisy 6&sigma;/1&sigma;'
         output+='</tr><tr>'
