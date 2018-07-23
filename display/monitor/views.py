@@ -564,7 +564,9 @@ def addmon(request):
     m.description	= post.get('description', '')
     m.j_uuid		= post.get('j_uuid', '')
     m.jobtype		= post.get('jobtype', '')
-    m.ts		= post.get('ts', None)
+
+    
+    m.ts		= post.get('ts', timezone.now())
     
     # print(m.summary)
     m.save()

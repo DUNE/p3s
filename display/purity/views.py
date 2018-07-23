@@ -1,3 +1,4 @@
+from django.utils			import timezone
 import django.db.models
 from django.db.models	import Max
 
@@ -89,8 +90,10 @@ def add(request):
     p.lifetime	= post['lifetime']
     p.error	= post['error']
     p.count	= post['count']
-    p.ts	= post['ts']
+    # p.ts	= post['ts']
 
+    p.ts	= post.get('ts', timezone.now())
+    
     # print('here')
     p.sn	= post.get('sn', 0.0)
     p.snclusters= post.get('snclusters',0)
@@ -99,7 +102,7 @@ def add(request):
     p.save()
 
     
-    return HttpResponse('Adding run '+p.run+' time:'+p.ts)
+    return HttpResponse('Adding run '+p.run+' time:'+p.ts.strftime('%x %X'))
 
 #    return HttpResponse('Delete request:'+str(p_pk))
 #    maxnum = pur.objects.latest('id').id

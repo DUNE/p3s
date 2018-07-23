@@ -128,11 +128,11 @@ for row in myreader:
     d['run']	= run
 
     if(timestamp==''):
-        d['ts']	= str(timezone.now())
+        pass
+        # d['ts']	= str(timezone.now()) ---- shift to server
     else:
         d['ts']	= timestamp
-
-    if(verb>0): print('Using timestamp:', d['ts'])
+        if(verb>0): print('Using timestamp:', d['ts'])
     
     resp = API.post2server('purity', 'add', d)
 
