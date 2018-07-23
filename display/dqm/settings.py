@@ -141,7 +141,8 @@ LANGUAGE_CODE = 'en-us'
 try:
     TIME_ZONE = SITE['tz']
 except: # take default which is not guaranteed to be optimal...
-    TIME_ZONE = 'America/New_York'
+    TIME_ZONE = 'Europe/Zurich'
+#    TIME_ZONE = 'America/New_York'
 
 USE_I18N = True
 
