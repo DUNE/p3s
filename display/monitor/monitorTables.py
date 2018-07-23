@@ -17,9 +17,17 @@ from purity.models import pur
 from evdisp.models import evdisp
 from .models import monrun
 
+#########################################################
+Planes = ('U','V','Z')
+
+patternHits1	= "Plane %s Mean NHits"
+patternHits2	= "Plane %s Mean of Hit RMS"
+
+patternCharge1	= "Plane %s Mean of Charge"
+patternCharge2	= "Plane %s RMS of Charge"
 
 
-#########################################################    
+#########################################################
 # We need this to make links to this service itself.
 try:
     from django.urls import reverse
@@ -28,9 +36,9 @@ except ImportError:
     exit(-3)
 
 
-#########################################################    
-#########################################################    
-#########################################################    
+#########################################################
+#########################################################
+#########################################################
 def pad0four(input):
         mylist = input.split(',')
         newList = []
@@ -120,23 +128,17 @@ class MonRunTable(MonitorTable):
         data = json.loads(value, object_pairs_hook=OrderedDict)
         d = data[0]
 
-        patternHits1	= "Plane %s Mean NHits"
-        patternHits2	= "Plane %s Mean of Hit RMS"
+        for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=hits">%s Hits/RMS</a></th>') % (self.site, plane, plane)
 
-        patternCharge1	= "Plane %s Mean of Charge"
-        patternCharge2	= "Plane %s RMS of Charge"
-
-        for plane in ('U','V','Z'): output+= ('<th><a href="http://%s/monitor/automon?run=%s&subrun=%s&plane=%s&what=hits">%s Hits/RMS</a></th>') % (self.site, str(record.run), str(record.subrun), plane, plane)
-
-        for plane in ('U','V','Z'): output+= ('<th><a href="http://%s/monitor/automon?run=%s&subrun=%s&plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, str(record.run), str(record.subrun), plane, plane)        
+        for plane in Planes: output+= ('<th><a href="http://%s/monitor/automon?run=%s&subrun=%s&plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, str(record.run), str(record.subrun), plane, plane)        
 
         # for plane in ('U','V','Z'): output+= ('<th>%s Charge/RMS</th>') % plane
 
         output+='<th>Dead Channels</th><th>Noisy 6&sigma;/1&sigma;'
         output+='</tr><tr>'
             
-        for plane in ('U','V','Z'): output+= ('<td>%s<hr/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
-        for plane in ('U','V','Z'): output+= ('<td>%s<hr/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
+        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
+        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
 
         output+='<td>%s</td>' % pad0four(d["NDead  Channels"])
         output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))

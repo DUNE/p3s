@@ -58,7 +58,7 @@ def makeQuery(page, q=''):
 #########################################################    
 ####################  VIEWS #############################    
 #########################################################
-def monchart(request, what):
+def monchart(request):
     p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
@@ -72,15 +72,14 @@ def monchart(request, what):
 
     
     host	= request.GET.get('host','')
-    
+
     domain	= request.get_host()
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
-
-    # tz = pytz.timezone('Europe/Berlin')
-    # print(tz)
-    #    if(tsmin!=''): tsminFixed = datetime.datetime(tsmin) # , tzinfo=tz)
-    #    tsminFixed.replace(tzinfo=tz)    
+    
+    width	= request.GET.get('width','6')
+    what	= request.GET.get('what','')
+    plane	= request.GET.get('plane','')
 
     q=''
 
@@ -98,40 +97,50 @@ def monchart(request, what):
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
-        return makeQuery('puritychart', q) # will go and get the query results...
+        return makeQuery('monchart', q) # will go and get the query results...
     
     #-----------
     # for the charts
+    bigStruct = []
+    timeSeries = []
+    W=int(width)
+    cnt=0
 
-    purSeries = []
-    for tpcNum in (1,2,5,6,9,10):
-        purDict = {}
+    for tpcNum in range(6):
+        myDict = {}
 
-        objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
+        objs = monrun.objects.order_by('-pk')
         if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
-        purStr=''
-
+        dataStr = ''
         for forChart in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
                 t = forChart.ts
-                
-                if(what=='purity'):
-#                    purStr += ('[new Date(%s), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
-                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
-                else:
-                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.sn)
+                s = json.loads(forChart.summary)[0]
+                data = s[patternHits1%plane].split(',')
+                # print(data)
+                dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data[tpcNum])
             except:
                 break
-    
-        purDict["panel"] = 'tpc'+str(tpcNum)
-        purDict["timeseries"]=purStr
-    
-        purSeries.append(purDict)
 
+
+        myDict["panel"] = 'tpc'+str(tpcNum)
+        myDict["timeseries"]=dataStr
+
+        timeSeries.append(myDict)
+        cnt+=1
+        if(cnt == W):
+            bigStruct.append(timeSeries)
+            timeSeries = []
+            cnt=0
+            
+    bigStruct.append(timeSeries)
+
+    print(bigStruct)
+    
     d = {}
-    d['purS']	= purSeries
+    d['purS']	= bigStruct
     d['domain']	= domain
     
     tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
@@ -155,10 +164,9 @@ def monchart(request, what):
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
-    d['vAxis']	=garnish[what]['vAxis']
+    d['vAxis']	= {'vAxis':'S/N'}
     #    print(what,d['vAxis'])
-
-    return render(request, 'purity_chart.html', d)
+    return render(request, 'purity_chart1.html', d)
 
 #########################################################
 def puritychart(request, what):
@@ -244,9 +252,9 @@ def puritychart(request, what):
             
     bigPur.append(purSeries)
 
+    # print(bigPur)
     d = {}
     d['purS']	= bigPur #purSeries
-    print(bigPur)
     d['domain']	= domain
     
     tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
