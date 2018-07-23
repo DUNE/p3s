@@ -24,7 +24,7 @@ from	django_tables2.utils		import A
 import datetime
 import random
 import json
-import pytz
+# import pytz
 
 from collections import OrderedDict
 
@@ -77,7 +77,7 @@ def puritychart(request, what):
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
 
-    tz = pytz.timezone('Europe/Berlin')
+    # tz = pytz.timezone('Europe/Berlin')
     # print(tz)
     #    if(tsmin!=''): tsminFixed = datetime.datetime(tsmin) # , tzinfo=tz)
     #    tsminFixed.replace(tzinfo=tz)    
