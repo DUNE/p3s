@@ -77,11 +77,11 @@ def monchart(request):
     tsmin	= request.GET.get('tsmin','')
     tsmax	= request.GET.get('tsmax','')
     
-    width	= request.GET.get('width','6')
+    width	= request.GET.get('width','3')
     what	= request.GET.get('what','')
     plane	= request.GET.get('plane','')
 
-    q=''
+    q='what='+what+'&plane='+plane+'&'
 
     if request.method == 'POST':
         tsSelector = twoFieldGeneric(request.POST,
@@ -110,7 +110,9 @@ def monchart(request):
         myDict = {}
 
         objs = monrun.objects.order_by('-pk')
-        if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
+        if(tsmin!=''):
+            objs = objs.filter(ts__gte=tsmin)
+            for o in objs: print(o.ts)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
         dataStr = ''
@@ -119,9 +121,8 @@ def monchart(request):
                 t = forChart.ts
                 s = json.loads(forChart.summary)[0]
                 data1 = s[patternHits1%plane].split(',')
-                dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum])
                 data2 = s[patternHits2%plane].split(',')
-                dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data2[tpcNum])
+                dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
             except:
                 break
 
@@ -130,9 +131,11 @@ def monchart(request):
         myDict["timeseries"]=dataStr
 
         if(what=='hits'):
-            myDict["vAxis"]='hits'
+            myDict["vAxis"]='hits/RMS'
+            myDict["main"]='hits'
+            myDict["extra"]='rms'
         else:
-            purDict["vAxis"]='S/N'
+            myDict["vAxis"]='S/N'
         
         timeSeries.append(myDict)
         cnt+=1
@@ -146,7 +149,7 @@ def monchart(request):
     print(bigStruct)
     
     d = {}
-    d['purS']	= bigStruct
+    d['rows']	= bigStruct
     d['domain']	= domain
     
     tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
@@ -159,19 +162,11 @@ def monchart(request):
     selectors = []
     selectors.append(tsSelector)
 
-
-    garnish = {}
-
-    garnish['purity'] = {'vAxis':'Electron Lifetime (ms)'}
-    garnish['sn'] = {'vAxis':'S/N'}
-    
     d['selectors']	= selectors
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
-    d['vAxis']	= 'foo'
-    #    print(what,d['vAxis'])
     return render(request, 'purity_chart1.html', d)
 
 #########################################################
@@ -251,9 +246,11 @@ def puritychart(request, what):
         purDict["timeseries"]=purStr
         
         if(what=='purity'):
-            purDict["vAxis"]='Lifetime'
+            purDict["main"]='lifetime'
+            purDict["vAxis"]='Lifetime (ms)'
         else:
             purDict["vAxis"]='S/N'
+            purDict["main"]='s/n'
             
         purSeries.append(purDict)
         cnt+=1
@@ -266,7 +263,7 @@ def puritychart(request, what):
 
     # print(bigPur)
     d = {}
-    d['purS']	= bigPur #purSeries
+    d['rows']	= bigPur #purSeries
     d['domain']	= domain
     
     tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
