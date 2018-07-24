@@ -26,6 +26,12 @@ patternHits2	= "Plane %s Mean of Hit RMS"
 patternCharge1	= "Plane %s Mean of Charge"
 patternCharge2	= "Plane %s RMS of Charge"
 
+monPatterns = {
+    "hits1":	"Plane %s Mean NHits",
+    "hits2":	"Plane %s Mean of Hit RMS",
+    "charge1":	"Plane %s Mean of Charge",
+    "charge2":	"Plane %s RMS of Charge"
+    }
 
 #########################################################
 # We need this to make links to this service itself.
@@ -129,10 +135,8 @@ class MonRunTable(MonitorTable):
         d = data[0]
 
         for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=hits">%s Hits/RMS</a></th>') % (self.site, plane, plane)
-
-        for plane in Planes: output+= ('<th><a href="http://%s/monitor/automon?run=%s&subrun=%s&plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, str(record.run), str(record.subrun), plane, plane)        
-
-        # for plane in ('U','V','Z'): output+= ('<th>%s Charge/RMS</th>') % plane
+        
+        for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, plane, plane)
 
         output+='<th>Dead Channels</th><th>Noisy 6&sigma;/1&sigma;'
         output+='</tr><tr>'

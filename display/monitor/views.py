@@ -110,18 +110,17 @@ def monchart(request):
         myDict = {}
 
         objs = monrun.objects.order_by('-pk')
-        if(tsmin!=''):
-            objs = objs.filter(ts__gte=tsmin)
-            for o in objs: print(o.ts)
+        if(tsmin!=''):  objs = objs.filter(ts__gte=tsmin)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
         dataStr = ''
+
         for forChart in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
                 t = forChart.ts
                 s = json.loads(forChart.summary)[0]
-                data1 = s[patternHits1%plane].split(',')
-                data2 = s[patternHits2%plane].split(',')
+                data1 = s[monPatterns[what+'1']%plane].split(',')
+                data2 = s[monPatterns[what+'2']%plane].split(',')
                 dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
             except:
                 break
@@ -135,7 +134,10 @@ def monchart(request):
             myDict["main"]='hits'
             myDict["extra"]='rms'
         else:
-            myDict["vAxis"]='S/N'
+            myDict["vAxis"]='Charge/RMS'
+            myDict["main"]='charge'
+            myDict["extra"]='rms'
+
         
         timeSeries.append(myDict)
         cnt+=1
@@ -146,7 +148,7 @@ def monchart(request):
             
     bigStruct.append(timeSeries)
 
-    print(bigStruct)
+    # print(bigStruct)
     
     d = {}
     d['rows']	= bigStruct
