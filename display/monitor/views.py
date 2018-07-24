@@ -114,25 +114,26 @@ def monchart(request):
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
         dataStr = ''
-
         for forChart in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
                 t = forChart.ts
                 s = json.loads(forChart.summary)[0]
                 if(what in ('hits','charge')):
-                   data1 = s[monPatterns[what+'1']%plane].split(',')
-                   data2 = s[monPatterns[what+'2']%plane].split(',')
-                   dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                    data1 = s[monPatterns[what+'1']%plane].split(',')
+                    data2 = s[monPatterns[what+'2']%plane].split(',')
+                    dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                elif(what=='noise'):
+                    data1 = s[monPatterns[what+'1']].split(',')
+                    data2 = s[monPatterns[what+'2']].split(',')
+                    dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
                 elif(what=='dead'):
-                   data3 = s[monPatterns[what]].split(',')
-                   dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
-                   print(data3[tpcNum])
+                    data3 = s[monPatterns[what]].split(',')
+                    dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
                 else:
                     pass
             except:
                 break
 
-        print('DataStr', dataStr)
         myDict["panel"] = 'tpc'+str(tpcNum)
         myDict["timeseries"]=dataStr
 
@@ -144,6 +145,10 @@ def monchart(request):
             myDict["vAxis"]='Plane %s Charge/RMS' % plane
             myDict["main"]='charge'
             myDict["extra"]='rms'
+        elif(what=='noise'):
+            myDict["vAxis"]='Noisy channels 6\u03C3/1\u03C3'
+            myDict["main"]='noise 6\u03C3'
+            myDict["extra"]='noise 1\u03C3'
         elif(what=='dead'):
             myDict["vAxis"]='Dead Channels'
             myDict["main"]='dead channels'
@@ -160,8 +165,6 @@ def monchart(request):
             
     bigStruct.append(timeSeries)
 
-    # print(bigStruct)
-    
     d = {}
     d['rows']	= bigStruct
     d['domain']	= domain
@@ -275,9 +278,8 @@ def puritychart(request, what):
             
     bigPur.append(purSeries)
 
-    # print(bigPur)
     d = {}
-    d['rows']	= bigPur #purSeries
+    d['rows']	= bigPur
     d['domain']	= domain
     
     tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
@@ -296,9 +298,6 @@ def puritychart(request, what):
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
-
-    # d['vAxis']	=garnish[what]['vAxis']
-    #    print(what,d['vAxis'])
 
     return render(request, 'purity_chart1.html', d)
 
@@ -696,7 +695,6 @@ def addmon(request):
     summary	= post.get('summary', '')
 
     s = json.loads(summary)
-    # print(s)
     
     m=monrun()
     
@@ -707,10 +705,8 @@ def addmon(request):
     m.j_uuid		= post.get('j_uuid', '')
     m.jobtype		= post.get('jobtype', '')
 
-    
     m.ts		= post.get('ts', timezone.now())
     
-    # print(m.summary)
     m.save()
         
     return HttpResponse('Adding mon entry for run '+m.run+' subrun '+m.subrun)
@@ -785,7 +781,6 @@ def showmon(request):
     s3 = ("%03d"%int(subrun))
     
     if(ssprawcat!=''):
-        # print('here')
         obj	= monrun.objects.filter(run=run).filter(subrun=subrun)
         entry	= obj[0]
         j_uuid	= entry.j_uuid
@@ -883,9 +878,6 @@ def automon(request):
         
     description = json.loads(entry.description, object_pairs_hook=OrderedDict)
     
-    # print('***',category)
-
-
     url2images, p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None, None
 
     try:
@@ -916,7 +908,6 @@ def automon(request):
     
 
     for item in description:
-        # print(item['Category'])
         list4table = []
         for fileType in item['Files'].keys():
             list4table.append({'items':monrun.autoMonLink(domain,run,subrun,item['Category'],fileType)})
