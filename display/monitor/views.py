@@ -118,9 +118,10 @@ def monchart(request):
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
                 t = forChart.ts
                 s = json.loads(forChart.summary)[0]
-                data = s[patternHits1%plane].split(',')
-                # print(data)
-                dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data[tpcNum])
+                data1 = s[patternHits1%plane].split(',')
+                dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum])
+                data2 = s[patternHits2%plane].split(',')
+                dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data2[tpcNum])
             except:
                 break
 
@@ -128,6 +129,11 @@ def monchart(request):
         myDict["panel"] = 'tpc'+str(tpcNum)
         myDict["timeseries"]=dataStr
 
+        if(what=='hits'):
+            myDict["vAxis"]='hits'
+        else:
+            purDict["vAxis"]='S/N'
+        
         timeSeries.append(myDict)
         cnt+=1
         if(cnt == W):
@@ -164,12 +170,13 @@ def monchart(request):
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
-    d['vAxis']	= {'vAxis':'S/N'}
+    d['vAxis']	= 'foo'
     #    print(what,d['vAxis'])
     return render(request, 'purity_chart1.html', d)
 
 #########################################################
 def puritychart(request, what):
+   
     p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
 
     try:
@@ -242,7 +249,12 @@ def puritychart(request, what):
     
         purDict["panel"] = 'tpc'+str(tpcNum)
         purDict["timeseries"]=purStr
-    
+        
+        if(what=='purity'):
+            purDict["vAxis"]='Lifetime'
+        else:
+            purDict["vAxis"]='S/N'
+            
         purSeries.append(purDict)
         cnt+=1
         if(cnt == W):
@@ -268,17 +280,13 @@ def puritychart(request, what):
     selectors.append(tsSelector)
 
 
-    garnish = {}
-
-    garnish['purity'] = {'vAxis':'Electron Lifetime (ms)'}
-    garnish['sn'] = {'vAxis':'S/N'}
     
     d['selectors']	= selectors
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
-    d['vAxis']	=garnish[what]['vAxis']
+    # d['vAxis']	=garnish[what]['vAxis']
     #    print(what,d['vAxis'])
 
     return render(request, 'purity_chart1.html', d)
