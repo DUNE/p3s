@@ -25,7 +25,9 @@ monPatterns = {
     "hits2":	"Plane %s Mean of Hit RMS",
     "charge1":	"Plane %s Mean of Charge",
     "charge2":	"Plane %s RMS of Charge",
-    "dead":	"NDead  Channels"
+    "dead":	"NDead  Channels",
+    "noise1":	"NNoisy Channels 6Sigma away from mean value of the ADC RMS",
+    "noise2":	"NNoisy Channels Above ADC RMS Threshold(40)"
 }
 
 #########################################################
@@ -134,7 +136,7 @@ class MonRunTable(MonitorTable):
         for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, plane, plane)
 
         output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
-        output+='<th>Noisy 6&sigma;/1&sigma;'
+        output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy 6&sigma;/1&sigma;') % (self.site)
         output+='</tr><tr>'
             
         for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['hits1']%plane],monPatterns['hits2']%plane)

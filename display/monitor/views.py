@@ -114,18 +114,21 @@ def monchart(request):
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
         dataStr = ''
-
         for forChart in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
                 t = forChart.ts
                 s = json.loads(forChart.summary)[0]
                 if(what in ('hits','charge')):
-                   data1 = s[monPatterns[what+'1']%plane].split(',')
-                   data2 = s[monPatterns[what+'2']%plane].split(',')
-                   dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                    data1 = s[monPatterns[what+'1']%plane].split(',')
+                    data2 = s[monPatterns[what+'2']%plane].split(',')
+                    dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                elif(what=='noise'):
+                    data1 = s[monPatterns[what+'1']].split(',')
+                    data2 = s[monPatterns[what+'2']].split(',')
+                    dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
                 elif(what=='dead'):
-                   data3 = s[monPatterns[what]].split(',')
-                   dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
+                    data3 = s[monPatterns[what]].split(',')
+                    dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
                 else:
                     pass
             except:
@@ -142,6 +145,10 @@ def monchart(request):
             myDict["vAxis"]='Plane %s Charge/RMS' % plane
             myDict["main"]='charge'
             myDict["extra"]='rms'
+        elif(what=='noise'):
+            myDict["vAxis"]='Noisy channels 6\u03C3/1\u03C3'
+            myDict["main"]='noise 6\u03C3'
+            myDict["extra"]='noise 1\u03C3'
         elif(what=='dead'):
             myDict["vAxis"]='Dead Channels'
             myDict["main"]='dead channels'
