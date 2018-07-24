@@ -13,38 +13,41 @@
       google.charts.setOnLoadCallback(drawStuff);
 
       function drawStuff() {
-    {% for row in purS %}  
-    {% for p in row %}
-    var data = new google.visualization.DataTable();
-    data.addColumn('datetime', 'Date/Time');
-//    data.addColumn('timeofday', 'Date/Time');
-    data.addColumn('number', 'Lifetime');
-
-    data.addRows([
-	{{ p.timeseries }}
-    ]);
-
-    var options = {
-	title: '{{ p.panel }}',
-	legend: {position:'none'},
-	height: 300,
-	width: 400,
-	timeZone:0,
-	vAxis: {
-          title: '{{ vAxis }}' // 'Electron Lifetime (ms)'
-        },
-	hAxis: {
-	    title: 'Date/Time'
-	}
-    };
+      {% for row in rows %}  
+      {% for p in row %}
+      var data = new google.visualization.DataTable();
+      data.addColumn('datetime', 'Date/Time');     //    data.addColumn('timeofday', 'Date/Time');
+      data.addColumn('number', '{{ p.main }}'); //'Lifetime' etc);
       
-    var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
-//    var chart = new google.charts.Bar(document.getElementById('{{ p.panel }}'));
-    chart.draw(data, google.charts.Bar.convertOptions(options));
+      {% if p.extra %}
+      data.addColumn('number', '{{ p.extra }}');
+      {% endif %}  
 
-    {% endfor %}
-    {% endfor %}
+      data.addRows([
+      {{ p.timeseries }}
+      ]);
+
+      var options = {
+      title: '{{ p.panel }}',
+      legend: {position:'none'},
+      height: 300,
+      width: 400,
+      timeZone:0,
+      vAxis: {
+      title: '{{ p.vAxis }}' // Example: 'Electron Lifetime (ms)'
+      },
+      hAxis: {
+      title: 'Date/Time'
+      }
       };
+      
+      var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
+      chart.draw(data, google.charts.Bar.convertOptions(options));
+
+      {% endfor %}
+      {% endfor %}
+      };
+//    var chart = new google.charts.Bar(document.getElementById('{{ p.panel }}'));
     </script>
   </head>
 
