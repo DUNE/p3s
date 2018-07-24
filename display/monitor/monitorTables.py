@@ -20,12 +20,6 @@ from .models import monrun
 #########################################################
 Planes = ('U','V','Z')
 
-patternHits1	= "Plane %s Mean NHits"
-patternHits2	= "Plane %s Mean of Hit RMS"
-
-patternCharge1	= "Plane %s Mean of Charge"
-patternCharge2	= "Plane %s RMS of Charge"
-
 monPatterns = {
     "hits1":	"Plane %s Mean NHits",
     "hits2":	"Plane %s Mean of Hit RMS",
@@ -139,11 +133,12 @@ class MonRunTable(MonitorTable):
         
         for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, plane, plane)
 
-        output+='<th>Dead Channels</th><th>Noisy 6&sigma;/1&sigma;'
+        output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
+        output+='<th>Noisy 6&sigma;/1&sigma;'
         output+='</tr><tr>'
             
-        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[patternHits1%plane],d[patternHits2%plane])
-        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[patternCharge1%plane],d[patternCharge2%plane])
+        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['hits1']%plane],monPatterns['hits2']%plane)
+        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['charge1']%plane],monPatterns['charge2']%plane)
 
         output+='<td>%s</td>' % pad0four(d["NDead  Channels"])
         output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))
