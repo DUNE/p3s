@@ -119,24 +119,36 @@ def monchart(request):
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
                 t = forChart.ts
                 s = json.loads(forChart.summary)[0]
-                data1 = s[monPatterns[what+'1']%plane].split(',')
-                data2 = s[monPatterns[what+'2']%plane].split(',')
-                dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                if(what in ('hits','charge')):
+                   data1 = s[monPatterns[what+'1']%plane].split(',')
+                   data2 = s[monPatterns[what+'2']%plane].split(',')
+                   dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                elif(what=='dead'):
+                   data3 = s[monPatterns[what]].split(',')
+                   dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
+                   print(data3[tpcNum])
+                else:
+                    pass
             except:
                 break
 
-
+        print('DataStr', dataStr)
         myDict["panel"] = 'tpc'+str(tpcNum)
         myDict["timeseries"]=dataStr
 
         if(what=='hits'):
-            myDict["vAxis"]='hits/RMS'
+            myDict["vAxis"]='Plane %s hits/RMS' % plane
             myDict["main"]='hits'
             myDict["extra"]='rms'
-        else:
-            myDict["vAxis"]='Charge/RMS'
+        elif(what=='charge'):
+            myDict["vAxis"]='Plane %s Charge/RMS' % plane
             myDict["main"]='charge'
             myDict["extra"]='rms'
+        elif(what=='dead'):
+            myDict["vAxis"]='Dead Channels'
+            myDict["main"]='dead channels'
+        else:
+            pass
 
         
         timeSeries.append(myDict)

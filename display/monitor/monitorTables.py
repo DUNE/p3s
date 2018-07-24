@@ -30,8 +30,9 @@ monPatterns = {
     "hits1":	"Plane %s Mean NHits",
     "hits2":	"Plane %s Mean of Hit RMS",
     "charge1":	"Plane %s Mean of Charge",
-    "charge2":	"Plane %s RMS of Charge"
-    }
+    "charge2":	"Plane %s RMS of Charge",
+    "dead":	"NDead  Channels"
+}
 
 #########################################################
 # We need this to make links to this service itself.
