@@ -34,7 +34,7 @@ else
 
 fi
 
-P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/mon/'`
+P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/mon/'`
 
 echo Output file: $P3S_OUTPUT_FILE
 
@@ -68,18 +68,19 @@ fi
 
 roots=`ls *.root` # $P3S_OUTPUT_FILE
 txts=`ls *.txt`
-jsons=`ls *.json`
+
+echo MSG ROOT: $roots TXT: $txts
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage out the data
-    for f in $roots $txts $jsons
+    for f in $roots $txts
     do
 	[ -s $f ] && cp $f $DESTINATION
     done
 else
     echo P3S_XRD_URI defined, using xrdcp to stage out the data
-    for f in $roots $txts $jsons
+    for f in $roots $txts
     do
 	[ -s $f ] && time xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION
     done
