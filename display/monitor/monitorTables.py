@@ -107,6 +107,9 @@ class ShowMonTable(MonitorTable):
     class Meta:
         attrs = {'class': 'paleblue'}
 #---
+#############################################################
+#############################################################
+#############################################################
 class MonRunTable(MonitorTable):
     def render_subrun(self, value, record):
 
@@ -131,20 +134,37 @@ class MonRunTable(MonitorTable):
         data = json.loads(value, object_pairs_hook=OrderedDict)
         d = data[0]
 
-        for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=hits">%s Hits/RMS</a></th>') % (self.site, plane, plane)
-        
+        for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=hits"  >%s Hits/RMS  </a></th>') % (self.site, plane, plane)
         for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, plane, plane)
 
-        output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
-        output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy 6&sigma;/1&sigma;') % (self.site)
+        try:
+            # probe the data
+            foo1 = d["NDead  Channels"]
+            foo2 = d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]
+            foo3 = d["NNoisy Channels Above ADC RMS Threshold(40)"]
+                     
+            output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
+            output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy 6&sigma;/1&sigma;') % (self.site)
+        except:
+            pass
+
+        
         output+='</tr><tr>'
             
-        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['hits1']%plane],monPatterns['hits2']%plane)
-        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['charge1']%plane],monPatterns['charge2']%plane)
+        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['hits1']  % plane], monPatterns['hits2']  %plane)
+        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['charge1']% plane], monPatterns['charge2']%plane)
 
-        output+='<td>%s</td>' % pad0four(d["NDead  Channels"])
-        output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))
-        output+='</tr></table>'
+        try:
+            # probe the data
+            foo1 = d["NDead  Channels"]
+            foo2 = d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]
+            foo3 = d["NNoisy Channels Above ADC RMS Threshold(40)"]
+
+            output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
+            output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))
+            output+='</tr></table>'
+        except:
+            pass
         
         return format_html(output)
     
@@ -152,6 +172,9 @@ class MonRunTable(MonitorTable):
         model = monrun
         attrs = {'class': 'paleblue'}
         exclude = ('description','j_uuid','subrun','id',)
+#############################################################
+#############################################################
+#############################################################
 #---
 class EvdispTable(MonitorTable):
     changroup = tables.Column(verbose_name='Grp')
