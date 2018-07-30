@@ -49,6 +49,7 @@ void IncludeOverflow(TH1 *h);
 void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> imagevec);
 TString FindImagesAndPrint(TString strtolook, TString strtolook2, TString dirstr, std::vector<TString> imagevec);
 void PlotDistToMean(TH1 *h,Int_t mean);
+void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline=true);
 
 void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_dl1.root
 
@@ -113,10 +114,18 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     TString dirstr = directories_in_file.at(i);
 
     // Skip these directories for now
-    if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") || dirstr.Contains("sps") ) continue;
+    if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") ) continue;
 
     current_sourcedir->cd(dirstr.Data());
     TDirectory *subdir = gDirectory;
+
+    if(dirstr.Contains("sps")){
+      //std::cout << "INFO::Attempting to plot from " << dirstr.Data() << std::endl;
+      TString jsonfile = runstr + TString("_") + TString(subdir->GetName()) + TString("_2DEventDisplays.json");
+      DrawEventDisplays(subdir, jsonfile);
+      // Nothing else to do here
+      continue;
+    }
 
     // Save all histograms
     std::vector<TString> imagenamevec;
@@ -1033,37 +1042,37 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
   }
   
   for(Int_t i=0; i < napas; i++){
-    TString tempstr = Form("%f,",(float)nhits_Uarr[i]);
+    TString tempstr = Form("%.2f,",(float)nhits_Uarr[i]);
     nhits_Ustr += tempstr;
-    tempstr = Form("%f,",(float)nhits_Varr[i]);
+    tempstr = Form("%.2f,",(float)nhits_Varr[i]);
     nhits_Vstr += tempstr;
-    tempstr = Form("%f,",(float)nhits_Zarr[i]);
+    tempstr = Form("%.2f,",(float)nhits_Zarr[i]);
     nhits_Zstr += tempstr;
     
-    tempstr = Form("%f,",(float)hitchargeM_Uarr[i]);
+    tempstr = Form("%.2f,",(float)hitchargeM_Uarr[i]);
     hitchargeM_Ustr += tempstr;
-    tempstr = Form("%f,",(float)hitchargeS_Uarr[i]);
+    tempstr = Form("%.2f,",(float)hitchargeS_Uarr[i]);
     hitchargeS_Ustr += tempstr;
-    tempstr = Form("%f,",(float)hitchargeM_Varr[i]);
+    tempstr = Form("%.2f,",(float)hitchargeM_Varr[i]);
     hitchargeM_Vstr += tempstr;
-    tempstr = Form("%f,",(float)hitchargeS_Varr[i]);
+    tempstr = Form("%.2f,",(float)hitchargeS_Varr[i]);
     hitchargeS_Vstr += tempstr;
-    tempstr = Form("%f,",(float)hitchargeM_Zarr[i]);
+    tempstr = Form("%.2f,",(float)hitchargeM_Zarr[i]);
     hitchargeM_Zstr += tempstr;
-    tempstr = Form("%f,",(float)hitchargeS_Zarr[i]);
+    tempstr = Form("%.2f,",(float)hitchargeS_Zarr[i]);
     hitchargeS_Zstr += tempstr;
     
-    tempstr = Form("%f,",(float)hitrmsM_Uarr[i]);
+    tempstr = Form("%.2f,",(float)hitrmsM_Uarr[i]);
     hitrmsM_Ustr += tempstr;
-    tempstr = Form("%f,",(float)hitrmsS_Uarr[i]);
+    tempstr = Form("%.2f,",(float)hitrmsS_Uarr[i]);
     hitrmsS_Ustr += tempstr;
-    tempstr = Form("%f,",(float)hitrmsM_Varr[i]);
+    tempstr = Form("%.2f,",(float)hitrmsM_Varr[i]);
     hitrmsM_Vstr += tempstr;
-    tempstr = Form("%f,",(float)hitrmsS_Varr[i]);
+    tempstr = Form("%.2f,",(float)hitrmsS_Varr[i]);
     hitrmsS_Vstr += tempstr;
-    tempstr = Form("%f,",(float)hitrmsM_Zarr[i]);
+    tempstr = Form("%.2f,",(float)hitrmsM_Zarr[i]);
     hitrmsM_Zstr += tempstr;
-    tempstr = Form("%f,",(float)hitrmsS_Zarr[i]);
+    tempstr = Form("%.2f,",(float)hitrmsS_Zarr[i]);
     hitrmsS_Zstr += tempstr;
   }
 
@@ -1358,4 +1367,251 @@ void IncludeOverflow(TH1 *h){
   // Restore number of entries
   h->SetEntries(nentries);
 
+}
+
+// --------------------------------------------------
+void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
+  // --------------------------------------------------
+
+  std::vector<TString> vec;
+
+  // Define beam lines - this is approximate
+  //TPolyLine3D *polyline = new TPolyLine3D(2);
+  //polyline->SetPoint(0, 24.07, 475.0, -175.0);
+  //polyline->SetPoint(1, -25.0, 424.5, -22.22);
+
+  TLine *yzline = new TLine(-175.0, 475.0, -22.22, 424.5);
+  yzline->SetLineColor(kRed);
+  yzline->SetLineWidth(2.0);
+
+  TLine *xzline = new TLine(-175.0, 24.07, -22.22, -25.0);
+  xzline->SetLineColor(kRed);
+  xzline->SetLineWidth(2.0);
+
+  TLine *xyline = new TLine(24.07,  475.0, -25.0, 424.5);
+  xyline->SetLineColor(kRed);
+  xyline->SetLineWidth(2.0);
+
+  // loop over all keys in this directory
+  TIter nextkey(dir->GetListOfKeys());
+  TKey *fkey, *foldkey=0;
+  std::string cdate;
+  while((fkey = (TKey*)nextkey())){
+    //plot only the highest cycle number for each key
+    if (foldkey && !strcmp(foldkey->GetName(),fkey->GetName())) continue;
+
+    // read object from  source file
+    TObject *obj = fkey->ReadObj();
+
+    // Object name
+    TString objname(obj->GetName());
+
+    if(obj->IsA()->InheritsFrom(TTree::Class()) ){
+      if(!objname.Contains("spt")) continue;
+
+      Int_t run, subrun, event; Double_t evttime;
+      std::vector<double> *vx = 0;
+      std::vector<double> *vy = 0;
+      std::vector<double> *vz = 0;
+      std::vector<double> *vcharge = 0;
+      TTree *spttree = (TTree*)obj;
+      spttree->SetBranchAddress("run",      &run);
+      spttree->SetBranchAddress("subrun",   &subrun);
+      spttree->SetBranchAddress("event",    &event);
+      spttree->SetBranchAddress("evttime",  &evttime);
+      spttree->SetBranchAddress("vx",       &vx);
+      spttree->SetBranchAddress("vy",       &vy);
+      spttree->SetBranchAddress("vz",       &vz);
+      spttree->SetBranchAddress("vcharge",  &vcharge);
+
+      for(Int_t i = 0; i < spttree->GetEntries(); i++){
+	spttree->GetEntry(i);
+
+	TString runstr;
+	if(run >= 100000){
+	  if(subrun >= 100)
+	    runstr = Form("run%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 10)
+	    runstr = Form("run%i_0%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run%i_00%i_sps_event%i",run,subrun,event);
+	}
+	else if(run >= 10000){
+	  if(subrun >= 100)
+	    runstr = Form("run0%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 10)
+	    runstr = Form("run0%i_0%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run0%i_00%i_sps_event%i",run,subrun,event);
+	}
+	else if(run >= 1000){
+	  if(subrun >= 100)
+	    runstr = Form("run00%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 10)
+	    runstr = Form("run00%i_0%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run00%i_00%i_sps_event%i",run,subrun,event);
+	}
+	else if(run >= 100){
+	  if(subrun >= 100)
+	    runstr = Form("run000%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 10)
+	    runstr = Form("run000%i_0%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run000%i_00%i_sps_event%i",run,subrun,event);
+	}
+	else if(run >= 10){
+	  if(subrun >= 100)
+	    runstr = Form("run0000%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 10)
+	    runstr = Form("run0000%i_0%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run0000%i_00%i_sps_event%i",run,subrun,event);
+	}
+	else if(run >= 0){
+	  if(subrun >= 100)
+	    runstr = Form("run00000%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 10)
+	    runstr = Form("run00000%i_0%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run00000%i_00%i_sps_event%i",run,subrun,event);
+	}
+
+	TString imagestrxy = runstr + TString("XYEventDisplay.png");
+	TString imagestrxz = runstr + TString("XZEventDisplay.png");
+	TString imagestryz = runstr + TString("YZEventDisplay.png");
+
+	TH2D* YZHisto = new TH2D(Form("ZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 152, 0, 608);
+	TH2D* XZHisto = new TH2D(Form("ZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 180, -360, 360);
+	TH2D* XYHisto = new TH2D(Form("XYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 180, -360, 360, 152, 0, 608);
+
+	TH2D* YZHistoBeam = new TH2D(Form("BeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 130, -50, 80, 50, 390, 440);
+	TH2D* XZHistoBeam = new TH2D(Form("BeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 130, -50, 80, 100, -70, 30);
+	TH2D* XYHistoBeam = new TH2D(Form("BeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 100, -70, 30, 50, 390, 440);
+
+	
+	for(Int_t j = 0; j < vx->size(); j++){
+	  Double_t vxval = vx->at(j);
+	  Double_t vyval = vy->at(j);
+	  Double_t vzval = vz->at(j);
+	  Double_t vcval = vcharge->at(j);
+
+	  XYHisto->Fill(vxval, vyval, vcval);
+	  XZHisto->Fill(vzval, vxval, vcval);
+	  YZHisto->Fill(vzval, vyval, vcval);
+
+	  YZHistoBeam->Fill(vzval, vyval, vcval);
+	  XZHistoBeam->Fill(vzval, vxval, vcval);
+	  XYHistoBeam->Fill(vxval, vyval, vcval);
+	}
+
+	YZHisto->GetXaxis()->SetTitle("Z [cm]"); XZHisto->GetXaxis()->SetTitle("Z [cm]"); XYHisto->GetXaxis()->SetTitle("X [cm]");
+	YZHisto->GetYaxis()->SetTitle("Y [cm]"); XZHisto->GetYaxis()->SetTitle("X [cm]"); XYHisto->GetYaxis()->SetTitle("Y [cm]");
+	YZHistoBeam->GetXaxis()->SetTitle("Z [cm]"); XZHistoBeam->GetXaxis()->SetTitle("Z [cm]"); XYHistoBeam->GetXaxis()->SetTitle("X [cm]");
+	YZHistoBeam->GetYaxis()->SetTitle("Y [cm]"); XZHistoBeam->GetYaxis()->SetTitle("X [cm]"); XYHistoBeam->GetYaxis()->SetTitle("Y [cm]");
+	YZHisto->SetStats(0); XZHisto->SetStats(0); XYHisto->SetStats(0);
+	YZHistoBeam->SetStats(0); XZHistoBeam->SetStats(0); XYHistoBeam->SetStats(0);
+
+	// 
+	TCanvas *cyz = new TCanvas(Form("CZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
+	cyz->SetFrameFillColor(kAzure+6);
+	YZHisto->Draw("colz");
+	cyz->Update();
+	TPaletteAxis *yzpalette = (TPaletteAxis*)YZHisto->GetListOfFunctions()->FindObject("palette");
+	yzpalette->SetX2NDC(0.93);
+	//TGaxis* gaxis = palette->GetAxis();
+	//gaxis->SetTitle("charge");
+	cyz->Modified();
+	cyz->SaveAs(imagestryz.Data());
+	
+	TCanvas *cxz = new TCanvas(Form("CZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
+	cxz->SetFrameFillColor(kAzure+6);
+	XZHisto->Draw("colz");
+	cxz->Update();
+	TPaletteAxis *xzpalette = (TPaletteAxis*)XZHisto->GetListOfFunctions()->FindObject("palette");
+	xzpalette->SetX2NDC(0.93);
+	cxz->Modified();
+	cxz->SaveAs(imagestrxz.Data());
+
+	TCanvas *cxy = new TCanvas(Form("CXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
+	cxy->SetFrameFillColor(kAzure+6);
+	XYHisto->Draw("colz");
+	cxy->Update();
+	TPaletteAxis *xypalette = (TPaletteAxis*)XYHisto->GetListOfFunctions()->FindObject("palette");
+	xypalette->SetX2NDC(0.93);
+	cxy->Modified();
+	cxy->SaveAs(imagestrxy.Data());
+
+	vec.push_back(imagestrxy);
+	vec.push_back(imagestrxz);
+	vec.push_back(imagestryz);
+	
+	imagestrxy = runstr + TString("XYBeamEventDisplay.png");
+	imagestrxz = runstr + TString("XZBeamEventDisplay.png");
+	imagestryz = runstr + TString("YZBeamEventDisplay.png");
+
+	TCanvas *cyzbeam = new TCanvas(Form("CBeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
+	cyzbeam->SetFrameFillColor(kAzure+6);
+	YZHistoBeam->Draw("colz");
+	if(drawbeamline)
+	  yzline->Draw("same");
+	cyzbeam->Update();
+	TPaletteAxis *byzpalette = (TPaletteAxis*)YZHistoBeam->GetListOfFunctions()->FindObject("palette");
+	byzpalette->SetX2NDC(0.93);
+	cyzbeam->Modified();
+	cyzbeam->SaveAs(imagestryz.Data());
+
+	TCanvas *cxzbeam = new TCanvas(Form("CBeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
+	cxzbeam->SetFrameFillColor(kAzure+6);
+	XZHistoBeam->Draw("colz");
+	if(drawbeamline)
+	  xzline->Draw("same");
+	cxzbeam->Update();
+	TPaletteAxis *bxzpalette = (TPaletteAxis*)XZHistoBeam->GetListOfFunctions()->FindObject("palette");
+	bxzpalette->SetX2NDC(0.93);
+	cxzbeam->Modified();
+	cxzbeam->SaveAs(imagestrxz.Data());
+
+	TCanvas *cxybeam = new TCanvas(Form("CBeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
+	cxybeam->SetFrameFillColor(kAzure+6);
+	XYHistoBeam->Draw("colz");
+	if(drawbeamline)
+	  xyline->Draw("same");
+	cxybeam->Update();
+	TPaletteAxis *bxypalette = (TPaletteAxis*)XYHistoBeam->GetListOfFunctions()->FindObject("palette");
+	bxypalette->SetX2NDC(0.93);
+	cxybeam->Modified();
+	cxybeam->SaveAs(imagestrxy.Data());
+
+	vec.push_back(imagestrxy);
+	vec.push_back(imagestrxz);
+	vec.push_back(imagestryz);
+
+      }
+    }
+  }
+
+  delete xyline, xzline, yzline;
+
+  // Open file
+  FILE *JsonspsFile = fopen(jsonfile.Data(),"w");
+  fprintf(JsonspsFile,"[\n");
+  fprintf(JsonspsFile,"   {\n");
+
+  fprintf(JsonspsFile,"      \"Category\":\"2D event displays from hit module\",\n");
+  fprintf(JsonspsFile,"      \"Files\": {\n");
+  fprintf(JsonspsFile,"          \"Event Displays\":\"");
+  for(UInt_t i=0; i < vec.size(); i++){
+    TString strtolook = vec[i];
+    if(i < vec.size()-1)
+      fprintf(JsonspsFile,"%s,",strtolook.Data());
+    else
+      fprintf(JsonspsFile,"%s\"\n",strtolook.Data());
+  }
+
+  fprintf(JsonspsFile,"     }\n");
+
+  fprintf(JsonspsFile,"   }\n");
+  fprintf(JsonspsFile,"]\n");
+  
 }
