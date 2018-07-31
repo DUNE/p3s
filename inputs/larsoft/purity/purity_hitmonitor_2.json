@@ -3,7 +3,7 @@
 	"name":		"Purity:Main",
 	"timeout":	"6000",
         "jobtype":	"purity",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/purity/purity_hitmonitor_1.sh",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/purity/purity_hitmonitor_2.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
