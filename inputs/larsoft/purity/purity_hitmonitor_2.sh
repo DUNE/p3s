@@ -35,6 +35,7 @@ else
 fi
 
 P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/mon/'`
+BEE_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/bee/' | sed 's/root/json/'`
 
 echo Output file: $P3S_OUTPUT_FILE
 
@@ -57,12 +58,21 @@ echo MSG finished python setup
 
 
 export DESTINATION=$P3S_DATA/$P3S_MONITOR_DIR/$P3S_JOB_UUID
+export BEE_DESTINATION=$P3S_DATA/$P3S_BEE_DIR/$P3S_JOB_UUID
 
 echo making $DESTINATION
 mkdir $DESTINATION
 if [ ! -d "$DESTINATION" ]; then
     echo Directory $DESTINATION was not created, exiting
     $P3S_HOME/clients/service.py -n monitor -m "Failed to create $DESTINATION"
+    exit -1
+fi
+
+echo making $BEE_DESTINATION
+mkdir $BEE_DESTINATION
+if [ ! -d "$BEE_DESTINATION" ]; then
+    echo Directory $BEE_DESTINATION was not created, exiting
+    $P3S_HOME/clients/service.py -n monitor -m "Failed to create $BEE_DESTINATION"
     exit -1
 fi
 
@@ -99,13 +109,25 @@ rm -fr $P3S_JOB_UUID
 
 echo MSG done with cleanup
 
-#cd $DESTINATION
+cd $DESTINATION
+
+# ---
+echo MSG Doing Bee conversion
+
+cp $BEE_MACRO_LOCATION/* .
+root -b -q loadClasses.C
+root -b -q loadClasses.C 'run.C("'${P3S_OUTPUT_FILE}'", "'${BEE_OUTPUT_FILE}'")'
+
+cp ${BEE_OUTPUT_FILE} $BEE_DESTINATION
+
+# -------------------------------------------------------
+
 #cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 
 #ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
 #root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
 
-#summary=`ls run*summary.json`
+#summary=`ls *summary.json`
 #echo MSG found the run summary $summary
 
 #descriptor=`ls *FileList.json`
