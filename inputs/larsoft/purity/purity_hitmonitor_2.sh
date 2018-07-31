@@ -37,7 +37,7 @@ fi
 P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/mon/'`
 BEE_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/bee/' | sed 's/root/json/'`
 
-echo Output file: $P3S_OUTPUT_FILE
+echo Output files: $P3S_OUTPUT_FILE $BEE_OUTPUT_FILE
 
 lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 
