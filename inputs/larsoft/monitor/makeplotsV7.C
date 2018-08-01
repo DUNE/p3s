@@ -53,13 +53,16 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline=true
 
 void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_dl1.root
 
+  // Start timing
+  TStopwatch *mn_t = new TStopwatch;
+  mn_t->Start();
+
   // Silence output
   if(!VERBOSE)
     gErrorIgnoreLevel = kWarning;
 
-  // Start timing
-  TStopwatch *mn_t = new TStopwatch;
-  mn_t->Start();
+  // 2D color palette
+  gStyle->SetPalette(kBird);
 
   // Open file
   TFile *f = new TFile(infile,"READ");
@@ -1485,16 +1488,15 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	TH2D* XZHisto = new TH2D(Form("ZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 180, -360, 360);
 	TH2D* XYHisto = new TH2D(Form("XYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 180, -360, 360, 152, 0, 608);
 
-	TH2D* YZHistoBeam = new TH2D(Form("BeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 130, -50, 80, 50, 390, 440);
-	TH2D* XZHistoBeam = new TH2D(Form("BeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 130, -50, 80, 100, -70, 30);
-	TH2D* XYHistoBeam = new TH2D(Form("BeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 100, -70, 30, 50, 390, 440);
-
+	TH2D* YZHistoBeam = new TH2D(Form("BeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 120, -40, 80, 50, 390, 440);
+	TH2D* XZHistoBeam = new TH2D(Form("BeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 120, -40, 80, 70, -60, 10);
+	TH2D* XYHistoBeam = new TH2D(Form("BeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 70, -60, 10, 50, 390, 440);
 	
 	for(Int_t j = 0; j < vx->size(); j++){
 	  Double_t vxval = vx->at(j);
 	  Double_t vyval = vy->at(j);
 	  Double_t vzval = vz->at(j);
-	  Double_t vcval = vcharge->at(j);
+	  Double_t vcval = vcharge->at(j)/1000.0;
 
 	  XYHisto->Fill(vxval, vyval, vcval);
 	  XZHisto->Fill(vzval, vxval, vcval);
@@ -1507,38 +1509,41 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 
 	YZHisto->GetXaxis()->SetTitle("Z [cm]"); XZHisto->GetXaxis()->SetTitle("Z [cm]"); XYHisto->GetXaxis()->SetTitle("X [cm]");
 	YZHisto->GetYaxis()->SetTitle("Y [cm]"); XZHisto->GetYaxis()->SetTitle("X [cm]"); XYHisto->GetYaxis()->SetTitle("Y [cm]");
+	YZHisto->GetZaxis()->SetTitle("ADC counts (#times 10^{3})"); XZHisto->GetZaxis()->SetTitle("ADC counts (#times 10^{3})"); XYHisto->GetZaxis()->SetTitle("ADC counts (#times 10^{3})");
 	YZHistoBeam->GetXaxis()->SetTitle("Z [cm]"); XZHistoBeam->GetXaxis()->SetTitle("Z [cm]"); XYHistoBeam->GetXaxis()->SetTitle("X [cm]");
 	YZHistoBeam->GetYaxis()->SetTitle("Y [cm]"); XZHistoBeam->GetYaxis()->SetTitle("X [cm]"); XYHistoBeam->GetYaxis()->SetTitle("Y [cm]");
+	YZHistoBeam->GetZaxis()->SetTitle("ADC counts (#times 10^{3})"); XZHistoBeam->GetZaxis()->SetTitle("ADC counts (#times 10^{3})"); XYHistoBeam->GetZaxis()->SetTitle("ADC counts (#times 10^{3})");
 	YZHisto->SetStats(0); XZHisto->SetStats(0); XYHisto->SetStats(0);
 	YZHistoBeam->SetStats(0); XZHistoBeam->SetStats(0); XYHistoBeam->SetStats(0);
 
+	YZHisto->GetZaxis()->SetTitleOffset(1.2); XZHisto->GetZaxis()->SetTitleOffset(1.2); XYHisto->GetZaxis()->SetTitleOffset(1.2);
+	YZHistoBeam->GetZaxis()->SetTitleOffset(1.2); XZHistoBeam->GetZaxis()->SetTitleOffset(1.2); XYHistoBeam->GetZaxis()->SetTitleOffset(1.2);
+
 	// 
 	TCanvas *cyz = new TCanvas(Form("CZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
-	cyz->SetFrameFillColor(kAzure+6);
+	cyz->SetFrameFillColor(kBlue+3);
 	YZHisto->Draw("colz");
 	cyz->Update();
 	TPaletteAxis *yzpalette = (TPaletteAxis*)YZHisto->GetListOfFunctions()->FindObject("palette");
-	yzpalette->SetX2NDC(0.93);
-	//TGaxis* gaxis = palette->GetAxis();
-	//gaxis->SetTitle("charge");
+	yzpalette->SetX2NDC(0.92);
 	cyz->Modified();
 	cyz->SaveAs(imagestryz.Data());
 	
 	TCanvas *cxz = new TCanvas(Form("CZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
-	cxz->SetFrameFillColor(kAzure+6);
+	cxz->SetFrameFillColor(kBlue+3);
 	XZHisto->Draw("colz");
 	cxz->Update();
 	TPaletteAxis *xzpalette = (TPaletteAxis*)XZHisto->GetListOfFunctions()->FindObject("palette");
-	xzpalette->SetX2NDC(0.93);
+	xzpalette->SetX2NDC(0.92);
 	cxz->Modified();
 	cxz->SaveAs(imagestrxz.Data());
 
 	TCanvas *cxy = new TCanvas(Form("CXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
-	cxy->SetFrameFillColor(kAzure+6);
+	cxy->SetFrameFillColor(kBlue+3);
 	XYHisto->Draw("colz");
 	cxy->Update();
 	TPaletteAxis *xypalette = (TPaletteAxis*)XYHisto->GetListOfFunctions()->FindObject("palette");
-	xypalette->SetX2NDC(0.93);
+	xypalette->SetX2NDC(0.92);
 	cxy->Modified();
 	cxy->SaveAs(imagestrxy.Data());
 
@@ -1551,35 +1556,40 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	imagestryz = runstr + TString("YZBeamEventDisplay.png");
 
 	TCanvas *cyzbeam = new TCanvas(Form("CBeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
-	cyzbeam->SetFrameFillColor(kAzure+6);
+	cyzbeam->SetFrameFillColor(kBlue+3);
 	YZHistoBeam->Draw("colz");
 	if(drawbeamline)
 	  yzline->Draw("same");
+	else
+	  YZHistoBeam->GetXaxis()->SetRangeUser(0.0,80.0);
 	cyzbeam->Update();
 	TPaletteAxis *byzpalette = (TPaletteAxis*)YZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	byzpalette->SetX2NDC(0.93);
+	byzpalette->SetX2NDC(0.92);
 	cyzbeam->Modified();
 	cyzbeam->SaveAs(imagestryz.Data());
 
 	TCanvas *cxzbeam = new TCanvas(Form("CBeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
-	cxzbeam->SetFrameFillColor(kAzure+6);
+	cxzbeam->SetFrameFillColor(kBlue+3);
 	XZHistoBeam->Draw("colz");
 	if(drawbeamline)
 	  xzline->Draw("same");
+	else
+	  XZHistoBeam->GetXaxis()->SetRangeUser(0.0,80.0);
+
 	cxzbeam->Update();
 	TPaletteAxis *bxzpalette = (TPaletteAxis*)XZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	bxzpalette->SetX2NDC(0.93);
+	bxzpalette->SetX2NDC(0.92);
 	cxzbeam->Modified();
 	cxzbeam->SaveAs(imagestrxz.Data());
 
 	TCanvas *cxybeam = new TCanvas(Form("CBeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
-	cxybeam->SetFrameFillColor(kAzure+6);
+	cxybeam->SetFrameFillColor(kBlue+3);
 	XYHistoBeam->Draw("colz");
 	if(drawbeamline)
 	  xyline->Draw("same");
 	cxybeam->Update();
 	TPaletteAxis *bxypalette = (TPaletteAxis*)XYHistoBeam->GetListOfFunctions()->FindObject("palette");
-	bxypalette->SetX2NDC(0.93);
+	bxypalette->SetX2NDC(0.92);
 	cxybeam->Modified();
 	cxybeam->SaveAs(imagestrxy.Data());
 
@@ -1590,8 +1600,6 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
       }
     }
   }
-
-  delete xyline, xzline, yzline;
 
   // Open file
   FILE *JsonspsFile = fopen(jsonfile.Data(),"w");
