@@ -58,7 +58,8 @@ echo MSG finished python setup
 
 
 export DESTINATION=$P3S_DATA/$P3S_MONITOR_DIR/$P3S_JOB_UUID
-export BEE_DESTINATION=$P3S_DATA/$P3S_BEE_DIR/$P3S_JOB_UUID
+export BEE_DIR=$P3S_DATA/$P3S_BEE_DIR
+export BEE_DESTINATION=$BEE_DIR/$P3S_JOB_UUID
 
 echo making $DESTINATION
 mkdir $DESTINATION
@@ -111,30 +112,35 @@ echo MSG done with cleanup
 
 cd $DESTINATION
 
-# ---
-echo MSG Doing Bee conversion
+# --- Suspend the bee conversion for now
+#echo MSG Doing Bee conversion
 
-cp $BEE_MACRO_LOCATION/* .
-root -b -q loadClasses.C
-root -b -q loadClasses.C 'run.C("'${P3S_OUTPUT_FILE}'", "'${BEE_OUTPUT_FILE}'")'
+#cp $BEE_MACRO_LOCATION/* .
+#root -b -q loadClasses.C
+#root -b -q loadClasses.C 'run.C("'${P3S_OUTPUT_FILE}'", "'${BEE_OUTPUT_FILE}'")'
 
-cp ${BEE_OUTPUT_FILE} $BEE_DESTINATION
+#cp ${BEE_OUTPUT_FILE} $BEE_DESTINATION
+
+# ...but keep the ROOT file
+cp ${P3S_OUTPUT_FILE} $BEE_DESTINATION
+
+ln -s $BEE_DESTINATION/${P3S_OUTPUT_FILE} ${BEE_DIR}/recent.root
 
 # -------------------------------------------------------
 
-#cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
+cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 
-#ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
-#root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
+ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
+root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
 
-#summary=`ls *summary.json`
-#echo MSG found the run summary $summary
+summary=`ls *summary.json`
+echo MSG found the run summary $summary
 
-#descriptor=`ls *FileList.json`
-#echo MSG Found the file descriptor: $descriptor
+descriptor=`ls *FileList.json`
+echo MSG Found the file descriptor: $descriptor
 
-#$P3S_HOME/clients/monrun.py -s $summary -D $descriptor
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptor
 
-#echo MSG finished registration
+echo MSG finished registration
 
 exit 0
