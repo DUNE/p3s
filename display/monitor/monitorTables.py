@@ -20,6 +20,9 @@ from .models import monrun
 #########################################################
 Planes = ('U','V','Z')
 
+monchartHitsURL		= '<th><a href="http://%s/monitor/monchart?plane=%s&what=hits"  >%s Hits/RMS  </a></th>'
+monchartChargeURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>'
+
 monPatterns = {
     "hits1":	"Plane %s Mean NHits",
     "hits2":	"Plane %s Mean of Hit RMS",
@@ -111,15 +114,6 @@ class ShowMonTable(MonitorTable):
 #############################################################
 #############################################################
 class MonRunTable(MonitorTable):
-    def render_subrun(self, value, record):
-
-        subrun_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s (old)</a> <br/><a href="http://%s/monitor/automon?run=%s&subrun=%s">%s (new)</a>' % (
-            self.site, str(record.run), str(record.subrun), value,
-            self.site, str(record.run), str(record.subrun), value
-        )
-
-        return mark_safe(subrun_url)
-
     def render_run(self, value, record):
         subrun_url = '<a href="http://%s/monitor/automon?run=%s&subrun=%s">%s::%s</a>' % (
             self.site, value, str(record.subrun), value, str(record.subrun)
@@ -129,14 +123,24 @@ class MonRunTable(MonitorTable):
     
     def render_summary(self, value, record):
 
-        output = '<table><tr>'
+        output = '<table width="100%"><tr>'
         
         data = json.loads(value, object_pairs_hook=OrderedDict)
-        d = data[0]
+        d_raw = data[0]
 
-        for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=hits"  >%s Hits/RMS  </a></th>') % (self.site, plane, plane)
-        for plane in Planes: output+= ('<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>') % (self.site, plane, plane)
+        d = OrderedDict()
+                
+        keyList = d_raw.keys()
+        for k in keyList:
+            if('Plane' in k):
+                d[k]=d_raw[k]
 
+        print(d)
+        # column headers for hits and charge
+        for plane in Planes: output+= (monchartHitsURL)		% (self.site, plane, plane)
+        for plane in Planes: output+= (monchartChargeURL)	% (self.site, plane, plane)
+
+        # optional - column headers for dead and noisy channels
         try:
             # probe the data
             foo1 = d["NDead  Channels"]
@@ -148,12 +152,15 @@ class MonRunTable(MonitorTable):
         except:
             pass
 
+        output+='</tr><tr>' # ready to add the data to columns
         
-        output+='</tr><tr>'
-            
-        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['hits1']  % plane], monPatterns['hits2']  %plane)
-        for plane in Planes: output+= ('<td>%s<hr/>%s</td>') % (d[monPatterns['charge1']% plane], monPatterns['charge2']%plane)
-
+        # columns for hits and charge
+        for plane in Planes:
+            output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
+        for plane in Planes:
+            output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
+        
+        # optional - columns for dead and noisy channels
         try:
             # probe the data
             foo1 = d["NDead  Channels"]
@@ -164,7 +171,8 @@ class MonRunTable(MonitorTable):
             output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))
             output+='</tr></table>'
         except:
-            pass
+            output+='</tr></table>'
+
         
         return format_html(output)
     
@@ -216,4 +224,14 @@ class EvdispTable(MonitorTable):
 #########################################################    
 
 
+# Keep for later if you want to display the subrun column in the monrun table
+# Right now it's just unused anyway
+    # def render_subrun(self, value, record):
+
+    #     subrun_url = '<a href="http://%s/monitor/showmon?run=%s&subrun=%s">%s (old)</a> <br/><a href="http://%s/monitor/automon?run=%s&subrun=%s">%s (new)</a>' % (
+    #         self.site, str(record.run), str(record.subrun), value,
+    #         self.site, str(record.run), str(record.subrun), value
+    #     )
+
+    #     return mark_safe(subrun_url)
 
