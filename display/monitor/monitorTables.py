@@ -135,7 +135,7 @@ class MonRunTable(MonitorTable):
             if('Plane' in k):
                 d[k]=d_raw[k]
 
-        print(d)
+        # print(d)
         # column headers for hits and charge
         for plane in Planes: output+= (monchartHitsURL)		% (self.site, plane, plane)
         for plane in Planes: output+= (monchartChargeURL)	% (self.site, plane, plane)

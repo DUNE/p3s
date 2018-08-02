@@ -41,33 +41,22 @@ user = os.environ['USER']
 envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-s", "--summary",	type=str,	help="summary file name (JSON)", default='')
-
-parser.add_argument("-D", "--description",type=str,	help="description file name (JSON)", default='')
-
-parser.add_argument("-u", "--uuid",	type=str,	help="job uuid to delete or to register (override)", default='')
-
-parser.add_argument("-j", "--jobtype",	type=str,	help="job type (which produced these data", default='')
-
-parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entry. Needs entry id or run number, or job uuid")
-
-parser.add_argument("-a", "--auto",	action='store_true',	help="parse the current directory automatically")
-
+# ---
+parser.add_argument("-d", "--delete", 			help="deletes an entry. Needs id or run number or job uuid", action='store_true')
+parser.add_argument("-a", "--auto",			help="parse the current directory automatically",	action='store_true')
+parser.add_argument("-s", "--summary",	type=str,	help="summary file name (JSON)",			default='')
+parser.add_argument("-D", "--descr",	type=str,	help="description file name (JSON)",			default='')
+parser.add_argument("-u", "--uuid",	type=str,	help="job uuid to delete or to register (override)",	default='')
+parser.add_argument("-j", "--jobtype",	type=str,	help="job type (which produced these data",		default='')
 parser.add_argument("-i", "--id",	type=str,	help="id of the entry to be adjusted or deleted (pk)", 	default='')
-
-parser.add_argument("-r", "--run",	type=str,	default='',
-                    help="run number")
-
-parser.add_argument("-T", "--timestamp",type=str,	default='',
-                    help="enforce/override the timestamp - YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]")
-
+parser.add_argument("-r", "--run",	type=str,	help="run number",					default='')
+parser.add_argument("-T", "--timestamp",type=str,	help="enforce/override the timestamp - YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]", default='')
+parser.add_argument("-v", "--verbosity", type=int,	help="output verbosity, defaults to P3S default",	default=envDict['verb'])
 
 parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $DQM_SERVER or if unset to http://localhost:8000/",
                     default=envDict['dqmserver'])
-
-parser.add_argument("-v", "--verbosity", type=int,	default=envDict['verb'], help="output verbosity, defaults to P3S default")
-
+# ---
 args = parser.parse_args()
 
 summary		= args.summary
@@ -84,29 +73,14 @@ run		= args.run
 timestamp	= args.timestamp
 verb		= args.verbosity
 
-### dqm interface defined here
+### The DQM server interface defined here
 API  = serverAPI(server=server)
 
 #########################################################
-
-# if(delete):
-#     if(p_id == '' and run == '' and job == ''):
-#         print('ID/run/job for deletion not specified, exiting')
-#         exit(-1)
-
-#     resp = ''
-#     if(p_id != ''):	resp = API.post2server('evd', 'delete', dict(pk=p_id))
-#     if(run != ''):	resp = API.post2server('evd', 'delete', dict(run=run))
-#     if(job != ''):	resp = API.post2server('evd', 'delete', dict(j_uuid=job))
-        
-#     if(verb>0): print(resp)
-
-#     exit(0)
-
+#########################################################
 #########################################################
 
 d = {}    
-#########################################################
 
 if((summary=='' or description=='') and not delete):
     print("Missing input summary and/or description, exiting...")
@@ -166,15 +140,15 @@ if(delete):
         exit(-3)
         
     
-    if(run!=''): d['run'] = run
-    if(pk!=''): d['pk'] = pk
+    if(run!=''):	d['run']	= run
+    if(pk!=''):		d['pk']		= pk
 
     resp = API.post2server('monitor', 'delmon', d)
-    print(resp)
+    if(verb>0): print(resp)
     
     exit(0)
 
-print("Inconsistent input, check...")
+print("Inconsistent input, please check...")
 exit(-3)
 
 #########################################################
