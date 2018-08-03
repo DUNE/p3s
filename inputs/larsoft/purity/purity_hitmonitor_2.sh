@@ -141,7 +141,7 @@ descriptors=`echo $f | tr -d ' '`
 
 echo MSG Found the file descriptors: $descriptors
 
-$P3S_HOME/clients/monrun.py -s $summary -D $descriptors
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j PurityHitmonitor
 
 echo MSG finished registration
 
