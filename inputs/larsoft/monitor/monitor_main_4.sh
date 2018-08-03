@@ -101,10 +101,12 @@ root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
 summary=`ls run*summary.json`
 echo MSG found the run summary $summary
 
-descriptor=`ls *FileList.json`
-echo MSG Found the file descriptor: $descriptor
+f=`ls -m *FileList.json`
+descriptors=`echo $f | tr -d ' '`
 
-$P3S_HOME/clients/monrun.py -s $summary -D $descriptor
+echo MSG Found the file descriptors: $descriptors
+
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptors
 
 echo MSG finished registration
 
