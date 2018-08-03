@@ -101,10 +101,11 @@ cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 
 echo MSG Startng the ROOT macro
 date
-time (ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");') 2>&1
-time (root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log) 2>&1
+time ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
+time root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
 date
-echo Finished the ROOT macro
+echo Finished the ROOT macro, looking at JSON
+ls -l *.json
 
 summary=`ls run*summary.json`
 echo MSG found the run summary $summary
@@ -114,7 +115,7 @@ descriptors=`echo $f | tr -d ' '`
 
 echo MSG Found the file descriptors: $descriptors
 
-$P3S_HOME/clients/monrun.py -s $summary -D $descriptors
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j MonitorMain
 
 echo MSG finished registration
 
