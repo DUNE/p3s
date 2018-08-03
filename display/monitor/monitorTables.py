@@ -19,10 +19,10 @@ from .models import monrun
 
 #########################################################
 Planes = ('U','V','Z')
-
-monchartHitsURL		= '<th><a href="http://%s/monitor/monchart?plane=%s&what=hits"  >%s Hits/RMS  </a></th>'
-monchartChargeURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>'
-
+# ---
+monchartHitsHeaderURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=hits"  >%s Hits/RMS  </a></th>'
+monchartChargeHeaderURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>'
+# ---
 monPatterns = {
     "hits1":	"Plane %s Mean NHits",
     "hits2":	"Plane %s Mean of Hit RMS",
@@ -135,12 +135,15 @@ class MonRunTable(MonitorTable):
             if('Plane' in k):
                 d[k]=d_raw[k]
 
-        # print(d)
+        print(d)
         # column headers for hits and charge
-        for plane in Planes: output+= (monchartHitsURL)		% (self.site, plane, plane)
-        for plane in Planes: output+= (monchartChargeURL)	% (self.site, plane, plane)
+        try:
+            for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
+            for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
+        except:
+            pass
 
-        # optional - column headers for dead and noisy channels
+        # column headers for dead and noisy channels
         try:
             # probe the data
             foo1 = d["NDead  Channels"]
@@ -155,12 +158,15 @@ class MonRunTable(MonitorTable):
         output+='</tr><tr>' # ready to add the data to columns
         
         # columns for hits and charge
-        for plane in Planes:
-            output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
-        for plane in Planes:
-            output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
+        try:
+            for plane in Planes:
+                output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
+            for plane in Planes:
+                output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
+        except:
+            pass
         
-        # optional - columns for dead and noisy channels
+        # columns for dead and noisy channels
         try:
             # probe the data
             foo1 = d["NDead  Channels"]
@@ -169,10 +175,10 @@ class MonRunTable(MonitorTable):
 
             output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
             output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))
-            output+='</tr></table>'
         except:
-            output+='</tr></table>'
-
+            pass
+        
+        output+='</tr></table>'
         
         return format_html(output)
     

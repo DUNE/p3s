@@ -60,7 +60,7 @@ parser.add_argument("-S", "--server",	type=str,
 args = parser.parse_args()
 
 summary		= args.summary
-description	= args.description
+description	= args.descr
 
 job_uuid	= args.uuid
 jobtype		= args.jobtype
@@ -92,11 +92,18 @@ if(summary!='' and description!=''):
 
     sf = open(summary)
     summary_data = sf.read()
-    print(summary_data)
-    
-    df = open(description)
-    description_data = df.read()
-    print(description_data)
+    # print(summary_data)
+
+    descrList = description.split(',')
+    masterList = []
+    for descr in descrList:
+        df = open(descr)
+        data = json.load(df) # .replace("'", '"'))
+        masterList = masterList+data
+
+    #df = open(description)
+    #description_data = df.read()
+    #print(description_data)
     
     if(job_uuid==''):
         d['j_uuid'] = os.path.basename(os.getcwd())
@@ -117,7 +124,7 @@ if(summary!='' and description!=''):
     print('Run:', run, '   Subrun:', subrun)
 
     d['summary']	= summary_data
-    d['description']	= description_data
+    d['description']	= json.dumps(masterList)
     d['run']		= run
     d['subrun']		= subrun
     d['jobtype']	= jobtype
