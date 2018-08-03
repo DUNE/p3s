@@ -15,13 +15,15 @@ echo MSG finished larsoft setup
 
 echo XRD: $P3S_XRD_URI
 
+echo MSG Start stage-in
+date
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage in the data
     export INPUT_FILE=$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE
 else
     echo P3S_XRD_URI defined, using xrdcp to stage in the data
-    time xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .
+    time (xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .) 2>&1
     s1=`stat --printf="%s"  $P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE`
     s2=`stat --printf="%s" ./$P3S_INPUT_FILE`
     echo sizes after XRDCP $s1 $s2
@@ -33,15 +35,19 @@ else
     fi
 
 fi
+echo MSG Finished stage-in
+date
 
 P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/mon/'`
 BEE_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/bee/' | sed 's/root/json/'`
 
 echo Output files: $P3S_OUTPUT_FILE $BEE_OUTPUT_FILE
 
+echo MSG starting larsoft
+date
 lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
-
 echo MSG larsoft completed
+date
 
 ls -l
 
