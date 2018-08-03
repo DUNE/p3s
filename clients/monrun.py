@@ -98,12 +98,8 @@ if(summary!='' and description!=''):
     masterList = []
     for descr in descrList:
         df = open(descr)
-        data = json.load(df) # .replace("'", '"'))
-        masterList = masterList+data
-
-    #df = open(description)
-    #description_data = df.read()
-    #print(description_data)
+        data = json.load(df)
+        masterList = masterList+data # just catenate here
     
     if(job_uuid==''):
         d['j_uuid'] = os.path.basename(os.getcwd())

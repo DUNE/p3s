@@ -122,22 +122,27 @@ class MonRunTable(MonitorTable):
         return format_html(output)
     
     def render_summary(self, value, record):
+        # print(record.run, record.subrun)
 
         output = '<table width="100%"><tr>'
         
         data = json.loads(value, object_pairs_hook=OrderedDict)
-        d_raw = data[0]
+        d = data[0]
 
-        d = OrderedDict()
+        # d = OrderedDict()
                 
-        keyList = d_raw.keys()
-        for k in keyList:
-            if('Plane' in k):
-                d[k]=d_raw[k]
+        # keyList = d_raw.keys()
+        # for k in keyList:
+        #     if('Plane' in k):
+        #         d[k]=d_raw[k]
 
-        print(d)
+        # print(d, '\n------------------------------')
+        
         # column headers for hits and charge
         try:
+            # probe the data
+            foo = d["Plane U Mean NHits"]
+
             for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
             for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
         except:
