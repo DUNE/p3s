@@ -21,7 +21,7 @@ then
     export INPUT_FILE=$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE
 else
     echo P3S_XRD_URI defined, using xrdcp to stage in the data
-    time xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .
+    time (xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .) 2>&1
     s1=`stat --printf="%s"  $P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE`
     s2=`stat --printf="%s" ./$P3S_INPUT_FILE`
     echo sizes after XRDCP $s1 $s2
@@ -38,9 +38,13 @@ P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/mon/'`
 
 echo Output file: $P3S_OUTPUT_FILE
 
-lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
-
+# ---
+echo MSG starting larsoft
+date
+time (lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS) 2>&1
+date
 echo MSG larsoft completed
+
 unset PYTHONPATH # just in case
 echo MSG initializing virtual environment
 source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
@@ -75,7 +79,7 @@ else
     echo P3S_XRD_URI defined, using xrdcp to stage out the data
     for f in $roots
     do
-	[ -s $f ] && time xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION
+	[ -s $f ] && time (xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION) 2>&1
     done
 fi
 
@@ -95,8 +99,12 @@ echo MSG done with cleanup
 cd $DESTINATION
 cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 
-ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
-root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
+echo MSG Startng the ROOT macro
+date
+time (ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");') 2>&1
+time (root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log) 2>&1
+date
+echo Finished the ROOT macro
 
 summary=`ls run*summary.json`
 echo MSG found the run summary $summary
