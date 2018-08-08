@@ -17,7 +17,7 @@ then
     source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
 else
     echo Will use AFS setup
-    source ${P3S_AFS_SETUP}/dunetpc_${P3S_AFS_SETUP}/products/setup
+    source ${P3S_AFS_SETUP}/dunetpc_${DUNETPCVER}/products/setup
 fi
 
 setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
