@@ -9,8 +9,10 @@ then
 fi
 
 
-source ${P3S_LAR_SETUP}
-
+echo MSG Will perform larsoft setup
+date
+time (source ${P3S_LAR_SETUP}) 2>&1
+date
 echo MSG finished larsoft setup
 
 echo XRD: $P3S_XRD_URI
