@@ -24,7 +24,6 @@ setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
 
 echo Checking lar
 which lar
-lar -h
 
 retVal=$?
 if [ $retVal -ne 0 ]; then
