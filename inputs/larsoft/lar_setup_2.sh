@@ -11,9 +11,17 @@ fi
 echo Using input file $P3S_INPUT_FILE
 
 # set up larsoft/duneTPC
-source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
-setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
+if [ -z ${P3S_AFS_SETUP+x} ];
+then
+    echo Will use CVMFS setup
+    source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
+else
+    echo Will use AFS setup
+    source ${P3S_AFS_SETUP}/dunetpc_${P3S_AFS_SETUP}/products/setup
+fi
 
+setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
+    
 # UUID should be set by the pilot, and if it is not present at this point,
 # we create a locally generated UUID (mainly the test wrapper case)
 
@@ -24,8 +32,7 @@ then
     echo $P3S_JOB_UUID
 fi
 
-# localize the output to make it easier
-# to clean up later.
+# localize the output to make it easier to clean up later.
 
 tmpdir=$P3S_JOB_UUID
 mkdir $tmpdir
@@ -48,6 +55,4 @@ fi
 env | grep P3S
 
 echo lar_setup_2 finished
-echo "Directory:"
-pwd
 
