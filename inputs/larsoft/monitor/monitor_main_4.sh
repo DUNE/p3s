@@ -96,14 +96,13 @@ fi
 
 echo MSG finished copying root files
 
-
 cd ..
-echo ls before: $P3S_JOB_UUID
-ls $P3S_JOB_UUID
+#echo ls before: $P3S_JOB_UUID
+#ls $P3S_JOB_UUID
 #echo du before
-#du $P3S_JOB_UUID
+du -s $P3S_JOB_UUID
 echo '-----------------'
-#rm -fr $P3S_JOB_UUID
+rm -fr $P3S_JOB_UUID
 
 echo MSG done with cleanup
 
