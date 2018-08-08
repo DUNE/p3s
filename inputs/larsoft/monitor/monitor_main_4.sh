@@ -20,7 +20,7 @@ if [ $retVal -ne 0 ]; then
 fi
 
 date
-echo MSG finished larsoft setup
+echo MSG finished larsoft setup with job uuid: $P3S_JOB_UUID
 
 echo XRD: $P3S_XRD_URI
 
