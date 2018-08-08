@@ -11,7 +11,7 @@ fi
 
 echo MSG Will perform larsoft setup
 date
-time (source ${P3S_LAR_SETUP}) 2>&1
+source ${P3S_LAR_SETUP}
 
 retVal=$?
 if [ $retVal -ne 0 ]; then
