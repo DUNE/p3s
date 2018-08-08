@@ -45,7 +45,9 @@ fi
 
 P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/mon/'`
 
+
 echo Output file: $P3S_OUTPUT_FILE
+echo Job ID: $P3S_JOB_UUID
 
 # ---
 echo MSG starting larsoft
@@ -96,12 +98,12 @@ echo MSG finished copying root files
 
 
 cd ..
-echo ls before
+echo ls before: $P3S_JOB_UUID
 ls $P3S_JOB_UUID
-echo du before
-du $P3S_JOB_UUID
+#echo du before
+#du $P3S_JOB_UUID
 echo '-----------------'
-rm -fr $P3S_JOB_UUID
+#rm -fr $P3S_JOB_UUID
 
 echo MSG done with cleanup
 
