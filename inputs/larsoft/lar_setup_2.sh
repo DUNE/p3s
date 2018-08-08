@@ -21,7 +21,15 @@ else
 fi
 
 setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
-    
+
+which lar
+
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Error: larsoft not found"
+    exit $retVal
+fi
+
 # UUID should be set by the pilot, and if it is not present at this point,
 # we create a locally generated UUID (mainly the test wrapper case)
 

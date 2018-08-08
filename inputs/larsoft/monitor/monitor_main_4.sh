@@ -12,6 +12,13 @@ fi
 echo MSG Will perform larsoft setup
 date
 time (source ${P3S_LAR_SETUP}) 2>&1
+
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Error: larsoft not found"
+    exit $retVal
+fi
+
 date
 echo MSG finished larsoft setup
 
