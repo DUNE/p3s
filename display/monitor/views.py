@@ -1,6 +1,7 @@
 import django.db.models
 from django.db.models			import Max
 from django				import forms
+from django.utils.html import format_html
 
 from django.conf			import settings
 from django.utils.safestring		import mark_safe
@@ -870,12 +871,14 @@ def automon(request):
     category	= request.GET.get('category','')
     filetype	= request.GET.get('filetype','')
 
+    # Get JSON out of the database and prepare to load the dictionary
     entry = None
     try:
         entry	= monrun.objects.filter(run=run).filter(subrun=subrun)[0]
     except:
         return 'not found'
-        
+
+    # Create a dictionary describing files from JSON we just located
     description = json.loads(entry.description, object_pairs_hook=OrderedDict)
     
     url2images, p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None, None
@@ -889,12 +892,16 @@ def automon(request):
         p3s_services	= settings.SITE['p3s_services']
     except:
         return HttpResponse("error: check local.py")
-    
+
+    # construct UI items
     d = {}
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
     d['tables']		= []
-
+    d['tblHeader']	= 'Run::Subrun '+run+'::'+subrun
+    d['footer']	= 'Produced by job: '+entry.j_uuid
+    # ---
+    
     if(category!=''):
         j_uuid	= entry.j_uuid
 
@@ -907,11 +914,19 @@ def automon(request):
         return render(request, 'unitable3.html', d)
     
 
+    lengths = []
+    for item in description:
+        lengths.append(len(item['Files'].keys()))
+
+    mxLen = max(lengths)
     for item in description:
         list4table = []
         for fileType in item['Files'].keys():
             list4table.append({'items':monrun.autoMonLink(domain,run,subrun,item['Category'],fileType)})
-            
+
+        for i in range(mxLen - len(item['Files'].keys())):
+            list4table.append({'items':format_html('&nbsp;')})
+                              
         t = ShowMonTable(list4table)
         t.changeName(item['Category'])
         d['tables'].append(t)
