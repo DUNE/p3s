@@ -32,6 +32,8 @@ int exp_deadch[6] = {0,0,0,0,0,0};
 int exp_noisych1[6] = {0,0,0,0,0,0};
 int exp_noisych2[6] = {0,0,0,0,0,0};
 
+TString apaname[6] = {"APA1: DS-RaS", "APA2: MS-RaS", "APA3: US-RaS", "APA4: DS-DaS", "APA5: US-DaS", "APA6: MS-DaS"};
+
 // Global switches
 bool VERBOSE = false;
 // This will save txt files with the channel ids of the dead/noisy channels
@@ -275,52 +277,64 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
 	}
 	else{ // add six digits for run-subrun, probably not the most best way...
 	  if(runfirst >= 100000){
-	    if(subrunfirst >= 100)
+	    if(subrunfirst >= 1000)
 	      runid.Form("run%i_%i",runfirst,subrunfirst);
-	    else if(subrunfirst >= 10)
+	    else if(subrunfirst >= 100)
 	      runid.Form("run%i_0%i",runfirst,subrunfirst);
-	    else if(subrunfirst >= 0)
+	    else if(subrunfirst >= 10)
 	      runid.Form("run%i_00%i",runfirst,subrunfirst);
+	    else if(subrunfirst >= 0)
+	      runid.Form("run%i_000%i",runfirst,subrunfirst);
 	  }
 	  else if(runfirst >= 10000){
-            if(subrunfirst >= 100)
-              runid.Form("run0%i_%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 10)
+	    if(subrunfirst >= 1000)
+	      runid.Form("run%i_%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 100)
               runid.Form("run0%i_0%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 0)
+            else if(subrunfirst >= 10)
               runid.Form("run0%i_00%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 0)
+              runid.Form("run0%i_000%i",runfirst,subrunfirst);
           }
 	  else if(runfirst >= 1000){
-            if(subrunfirst >= 100)
-              runid.Form("run00%i_%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 10)
+	    if(subrunfirst >= 1000)
+	      runid.Form("run%i_%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 100)
               runid.Form("run00%i_0%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 0)
+            else if(subrunfirst >= 10)
               runid.Form("run00%i_00%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 0)
+              runid.Form("run00%i_000%i",runfirst,subrunfirst);
 	  }
 	  else if(runfirst >= 100){
-            if(subrunfirst >= 100)
-              runid.Form("run000%i_%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 10)
+	    if(subrunfirst >= 1000)
+	      runid.Form("run%i_%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 100)
               runid.Form("run000%i_0%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 0)
+            else if(subrunfirst >= 10)
               runid.Form("run000%i_00%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 0)
+              runid.Form("run000%i_000%i",runfirst,subrunfirst);
           }
 	  else if(runfirst >= 10){
-            if(subrunfirst >= 100)
-              runid.Form("run0000%i_%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 10)
+	    if(subrunfirst >= 1000)
+	      runid.Form("run%i_%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 100)
               runid.Form("run0000%i_0%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 0)
+            else if(subrunfirst >= 10)
               runid.Form("run0000%i_00%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 0)
+              runid.Form("run0000%i_000%i",runfirst,subrunfirst);
           }
 	  else if(runfirst >= 0){
-            if(subrunfirst >= 100)
-              runid.Form("run00000%i_%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 10)
+	    if(subrunfirst >= 1000)
+	      runid.Form("run%i_%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 100)
               runid.Form("run00000%i_0%i",runfirst,subrunfirst);
-            else if(subrunfirst >= 0)
+            else if(subrunfirst >= 10)
               runid.Form("run00000%i_00%i",runfirst,subrunfirst);
+            else if(subrunfirst >= 0)
+              runid.Form("run00000%i_000%i",runfirst,subrunfirst);
           }
 	}
       } // one run
@@ -386,9 +400,19 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       //TString HistoTitle = runname + TString(":") + TString(h->GetTitle());
       TString HistoName = runname + TString("_") + TString(dir->GetName()) + TString("_") + objname;
 
+      TString HistoTitle(h->GetTitle());
+      HistoTitle.ReplaceAll("APA1","APA1:DS-RaS");
+      HistoTitle.ReplaceAll("APA2","APA2:MS-RaS");
+      HistoTitle.ReplaceAll("APA3","APA3:US-RaS");
+      HistoTitle.ReplaceAll("APA4","APA4:DS-DaS");
+      HistoTitle.ReplaceAll("APA5","APA5:US-DaS");
+      HistoTitle.ReplaceAll("APA6","APA6:MS-DaS");
+      HistoTitle.ReplaceAll("distribution"," ");
+
       TH1 *h1 = (TH1*)h->Clone("hnew");
       h1->SetDirectory(0);
-      h1->SetTitle(h->GetTitle());
+      //h1->SetTitle(h->GetTitle());
+      h1->SetTitle(HistoTitle.Data());
       h1->SetName(HistoName.Data());
 
       h1->GetXaxis()->SetTitle(h->GetXaxis()->GetTitle());
@@ -409,6 +433,13 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       else{
         h1->SetStats(false);
         h1->Draw("colz");
+      }
+
+      // Rename bin label for dead/noisy channels
+      if(HistoName.Contains("NDeadChannelsHisto") || HistoName.Contains("NNoisyChannelsHistoFromNCounts") || HistoName.Contains("NNoisyChannelsHistoFromNSigma")){
+	for(int j=1; j<7; j++){
+	  h1->GetXaxis()->SetBinLabel(j, apaname[j-1].Data());
+	}
       }
 
       // Add horizontal line for expected number of dead channels
@@ -614,6 +645,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
       TH1 *h1 = (TH1*)obj;
       for(int j=1; j<h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
+	if(!binlabel.Contains("APA")) continue;
 	if(binlabel.Contains("APA 1"))
 	  deadchannel_arr[0] = (int)h1->GetBinContent(j);
 	else if(binlabel.Contains("APA 2"))
@@ -668,6 +700,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
       TH1 *h1 = (TH1*)obj;
       for(int j=1; j<h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
+	if(!binlabel.Contains("APA")) continue;
 	if(binlabel.Contains("APA 1"))
 	  nois1channel_arr[0] = (int)h1->GetBinContent(j);
 	else if(binlabel.Contains("APA 2"))
@@ -722,6 +755,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
     
       for(int j=1; j<h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
+	if(!binlabel.Contains("APA")) continue;
 	if(binlabel.Contains("APA 1"))
 	  nois2channel_arr[0] = (int)h1->GetBinContent(j);
 	else if(binlabel.Contains("APA 2"))
@@ -1159,8 +1193,42 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
     fprintf(JsonFile,"     \"Category\":\"%s\",\n",category.Data());
     fprintf(JsonFile,"     \"Files\": {\n");
 
-    fprintf(JsonFile,"       \"SSP Monitor Plots\":\"");
-    TString filesstr = FindImagesAndPrint(dirstr, dirstr, dirstr, imagevec);
+    TString strtolook("sspadcvalues");
+    TString strtolook2("ssphittimes");
+    fprintf(JsonFile,"       \"ADC values\":\"");
+    TString filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+
+    fprintf(JsonFile,"       \"Hit times\":\"");
+    filesstr = FindImagesAndPrint(strtolook2, strtolook2, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+
+    strtolook = "peaks";
+    fprintf(JsonFile,"       \"Peak Amplitude\":\"");
+    filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+    
+    strtolook = "areas";
+    fprintf(JsonFile,"       \"Peak Area\":\"");
+    filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+
+    strtolook = "persistent";
+    strtolook2 = "waveform";
+    fprintf(JsonFile,"       \"Persistent Waveform\":\"");
+    filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+
+    strtolook = "fft";
+    strtolook2 = "channel";
+    fprintf(JsonFile,"       \"FFT Channel\":\"");
+    filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+
+    strtolook = "evt";
+    strtolook2 = "channel";
+    fprintf(JsonFile,"       \"Waveform for Channel\":\"");
+    filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
     fprintf(JsonFile,"%s\"\n",filesstr.Data());
     fprintf(JsonFile,"      }\n");
 
@@ -1377,21 +1445,22 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
   // --------------------------------------------------
 
   std::vector<TString> vec;
+  std::vector<TString> beamvec;
 
   // Define beam lines - this is approximate
   //TPolyLine3D *polyline = new TPolyLine3D(2);
   //polyline->SetPoint(0, 24.07, 475.0, -175.0);
   //polyline->SetPoint(1, -25.0, 424.5, -22.22);
 
-  TLine *yzline = new TLine(-175.0, 475.0, -22.22, 424.5);
+  TLine *yzline = new TLine(-175.0, 475.0, 0.0, 417.5);
   yzline->SetLineColor(kRed);
   yzline->SetLineWidth(2.0);
 
-  TLine *xzline = new TLine(-175.0, 24.07, -22.22, -25.0);
+  TLine *xzline = new TLine(-175.0, 24.07, 0.0, -29.0);
   xzline->SetLineColor(kRed);
   xzline->SetLineWidth(2.0);
 
-  TLine *xyline = new TLine(24.07,  475.0, -25.0, 424.5);
+  TLine *xyline = new TLine(24.07,  475.0, -29.0, 417.5);
   xyline->SetLineColor(kRed);
   xyline->SetLineWidth(2.0);
 
@@ -1488,9 +1557,9 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	TH2D* XZHisto = new TH2D(Form("ZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 180, -360, 360);
 	TH2D* XYHisto = new TH2D(Form("XYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 180, -360, 360, 152, 0, 608);
 
-	TH2D* YZHistoBeam = new TH2D(Form("BeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 120, -40, 80, 50, 390, 440);
-	TH2D* XZHistoBeam = new TH2D(Form("BeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 120, -40, 80, 70, -60, 10);
-	TH2D* XYHistoBeam = new TH2D(Form("BeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 70, -60, 10, 50, 390, 440);
+	TH2D* YZHistoBeam = new TH2D(Form("BeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 110, -30, 80, 50, 390, 440);
+	TH2D* XZHistoBeam = new TH2D(Form("BeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 110, -30, 80, 60, -60, 0);
+	TH2D* XYHistoBeam = new TH2D(Form("BeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 60, -60, 0, 50, 390, 440);
 	
 	for(Int_t j = 0; j < vx->size(); j++){
 	  Double_t vxval = vx->at(j);
@@ -1525,7 +1594,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	YZHisto->Draw("colz");
 	cyz->Update();
 	TPaletteAxis *yzpalette = (TPaletteAxis*)YZHisto->GetListOfFunctions()->FindObject("palette");
-	yzpalette->SetX2NDC(0.92);
+	if(yzpalette)
+	  yzpalette->SetX2NDC(0.92);
 	cyz->Modified();
 	cyz->SaveAs(imagestryz.Data());
 	
@@ -1534,7 +1604,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	XZHisto->Draw("colz");
 	cxz->Update();
 	TPaletteAxis *xzpalette = (TPaletteAxis*)XZHisto->GetListOfFunctions()->FindObject("palette");
-	xzpalette->SetX2NDC(0.92);
+	if(xzpalette)
+	  xzpalette->SetX2NDC(0.92);
 	cxz->Modified();
 	cxz->SaveAs(imagestrxz.Data());
 
@@ -1543,7 +1614,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	XYHisto->Draw("colz");
 	cxy->Update();
 	TPaletteAxis *xypalette = (TPaletteAxis*)XYHisto->GetListOfFunctions()->FindObject("palette");
-	xypalette->SetX2NDC(0.92);
+	if(xypalette)
+	  xypalette->SetX2NDC(0.92);
 	cxy->Modified();
 	cxy->SaveAs(imagestrxy.Data());
 
@@ -1561,10 +1633,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	if(drawbeamline)
 	  yzline->Draw("same");
 	else
-	  YZHistoBeam->GetXaxis()->SetRangeUser(0.0,80.0);
+	  YZHistoBeam->GetXaxis()->SetRangeUser(0,80);
 	cyzbeam->Update();
 	TPaletteAxis *byzpalette = (TPaletteAxis*)YZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	byzpalette->SetX2NDC(0.92);
+	if(byzpalette)
+	  byzpalette->SetX2NDC(0.92);
 	cyzbeam->Modified();
 	cyzbeam->SaveAs(imagestryz.Data());
 
@@ -1574,11 +1647,12 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	if(drawbeamline)
 	  xzline->Draw("same");
 	else
-	  XZHistoBeam->GetXaxis()->SetRangeUser(0.0,80.0);
+	  XZHistoBeam->GetXaxis()->SetRangeUser(0,80);
 
 	cxzbeam->Update();
 	TPaletteAxis *bxzpalette = (TPaletteAxis*)XZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	bxzpalette->SetX2NDC(0.92);
+	if(bxzpalette)
+	  bxzpalette->SetX2NDC(0.92);
 	cxzbeam->Modified();
 	cxzbeam->SaveAs(imagestrxz.Data());
 
@@ -1589,27 +1663,37 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	  xyline->Draw("same");
 	cxybeam->Update();
 	TPaletteAxis *bxypalette = (TPaletteAxis*)XYHistoBeam->GetListOfFunctions()->FindObject("palette");
-	bxypalette->SetX2NDC(0.92);
+	if(bxypalette)
+	  bxypalette->SetX2NDC(0.92);
 	cxybeam->Modified();
 	cxybeam->SaveAs(imagestrxy.Data());
 
-	vec.push_back(imagestrxy);
-	vec.push_back(imagestrxz);
-	vec.push_back(imagestryz);
+	beamvec.push_back(imagestrxy);
+	beamvec.push_back(imagestrxz);
+	beamvec.push_back(imagestryz);
 
       }
     }
   }
 
-  // Open file
+  // Write in json file
   FILE *JsonspsFile = fopen(jsonfile.Data(),"w");
   fprintf(JsonspsFile,"[\n");
   fprintf(JsonspsFile,"   {\n");
 
-  fprintf(JsonspsFile,"      \"Category\":\"2D event displays from hit module\",\n");
+  fprintf(JsonspsFile,"     \"Category\":\"2D event displays\",\n");
   fprintf(JsonspsFile,"      \"Files\": {\n");
-  fprintf(JsonspsFile,"          \"Event Displays\":\"");
+  fprintf(JsonspsFile,"        \"Event Displays\":\"");
   for(UInt_t i=0; i < vec.size(); i++){
+    TString strtolook = vec[i];
+    if(i < vec.size()-1)
+      fprintf(JsonspsFile,"%s,",strtolook.Data());
+    else
+      fprintf(JsonspsFile,"%s\",\n",strtolook.Data());
+  }
+
+  fprintf(JsonspsFile,"         \"Event Displays beam particle\":\"");
+  for(UInt_t i=0; i < beamvec.size(); i++){
     TString strtolook = vec[i];
     if(i < vec.size()-1)
       fprintf(JsonspsFile,"%s,",strtolook.Data());
