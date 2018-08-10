@@ -24,6 +24,7 @@
 #include "TDatime.h"
 #include "TVirtualPad.h"
 #include "TObjArray.h"
+#include "TPaletteAxis.h"
 
 TCanvas *c1;
 
@@ -126,7 +127,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
     if(dirstr.Contains("sps")){
       //std::cout << "INFO::Attempting to plot from " << dirstr.Data() << std::endl;
-      TString jsonfile = runstr + TString("_") + TString(subdir->GetName()) + TString("_2DEventDisplays.json");
+      TString jsonfile = runstr + TString("_") + TString(subdir->GetName()) + TString("_FileList.json");
       DrawEventDisplays(subdir, jsonfile);
       // Nothing else to do here
       continue;
@@ -1592,30 +1593,30 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	TCanvas *cyz = new TCanvas(Form("CZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
 	cyz->SetFrameFillColor(kBlue+3);
 	YZHisto->Draw("colz");
-	cyz->Update();
-	TPaletteAxis *yzpalette = (TPaletteAxis*)YZHisto->GetListOfFunctions()->FindObject("palette");
-	if(yzpalette)
-	  yzpalette->SetX2NDC(0.92);
+	//cyz->Update();
+	//TPaletteAxis *yzpalette = (TPaletteAxis*)YZHisto->GetListOfFunctions()->FindObject("palette");
+	//if(yzpalette)
+	//yzpalette->SetX2NDC(0.92);
 	cyz->Modified();
 	cyz->SaveAs(imagestryz.Data());
 	
 	TCanvas *cxz = new TCanvas(Form("CZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
 	cxz->SetFrameFillColor(kBlue+3);
 	XZHisto->Draw("colz");
-	cxz->Update();
-	TPaletteAxis *xzpalette = (TPaletteAxis*)XZHisto->GetListOfFunctions()->FindObject("palette");
-	if(xzpalette)
-	  xzpalette->SetX2NDC(0.92);
+	//cxz->Update();
+	//TPaletteAxis *xzpalette = (TPaletteAxis*)XZHisto->GetListOfFunctions()->FindObject("palette");
+	//if(xzpalette)
+	//xzpalette->SetX2NDC(0.92);
 	cxz->Modified();
 	cxz->SaveAs(imagestrxz.Data());
 
 	TCanvas *cxy = new TCanvas(Form("CXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
 	cxy->SetFrameFillColor(kBlue+3);
 	XYHisto->Draw("colz");
-	cxy->Update();
-	TPaletteAxis *xypalette = (TPaletteAxis*)XYHisto->GetListOfFunctions()->FindObject("palette");
-	if(xypalette)
-	  xypalette->SetX2NDC(0.92);
+	//cxy->Update();
+	//TPaletteAxis *xypalette = (TPaletteAxis*)XYHisto->GetListOfFunctions()->FindObject("palette");
+	//if(xypalette)
+	//xypalette->SetX2NDC(0.92);
 	cxy->Modified();
 	cxy->SaveAs(imagestrxy.Data());
 
@@ -1634,11 +1635,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	  yzline->Draw("same");
 	else
 	  YZHistoBeam->GetXaxis()->SetRangeUser(0,80);
-	cyzbeam->Update();
-	TPaletteAxis *byzpalette = (TPaletteAxis*)YZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	if(byzpalette)
-	  byzpalette->SetX2NDC(0.92);
-	cyzbeam->Modified();
+	//cyzbeam->Update();
+	//TPaletteAxis *byzpalette = (TPaletteAxis*)YZHistoBeam->GetListOfFunctions()->FindObject("palette");
+	//if(byzpalette)
+	//byzpalette->SetX2NDC(0.92);
+	//cyzbeam->Modified();
 	cyzbeam->SaveAs(imagestryz.Data());
 
 	TCanvas *cxzbeam = new TCanvas(Form("CBeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
@@ -1649,11 +1650,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	else
 	  XZHistoBeam->GetXaxis()->SetRangeUser(0,80);
 
-	cxzbeam->Update();
-	TPaletteAxis *bxzpalette = (TPaletteAxis*)XZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	if(bxzpalette)
-	  bxzpalette->SetX2NDC(0.92);
-	cxzbeam->Modified();
+	//cxzbeam->Update();
+	//TPaletteAxis *bxzpalette = (TPaletteAxis*)XZHistoBeam->GetListOfFunctions()->FindObject("palette");
+	//if(bxzpalette)
+	//bxzpalette->SetX2NDC(0.92);
+	//cxzbeam->Modified();
 	cxzbeam->SaveAs(imagestrxz.Data());
 
 	TCanvas *cxybeam = new TCanvas(Form("CBeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
@@ -1661,11 +1662,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	XYHistoBeam->Draw("colz");
 	if(drawbeamline)
 	  xyline->Draw("same");
-	cxybeam->Update();
-	TPaletteAxis *bxypalette = (TPaletteAxis*)XYHistoBeam->GetListOfFunctions()->FindObject("palette");
-	if(bxypalette)
-	  bxypalette->SetX2NDC(0.92);
-	cxybeam->Modified();
+	//cxybeam->Update();
+	//TPaletteAxis *bxypalette = (TPaletteAxis*)XYHistoBeam->GetListOfFunctions()->FindObject("palette");
+	//if(bxypalette)
+	//bxypalette->SetX2NDC(0.92);
+	//cxybeam->Modified();
 	cxybeam->SaveAs(imagestrxy.Data());
 
 	beamvec.push_back(imagestrxy);
