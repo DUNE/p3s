@@ -427,6 +427,8 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 	}
 	else{
 	  h1->SetStats(true);
+	  if(HistoName.Contains("NDeadChannelsHisto") || HistoName.Contains("NNoisyChannels"))
+	    h1->SetStats(false);
 	  h1->Draw("hist");
 	  IncludeOverflow(h1);
 	}
@@ -439,30 +441,30 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       // Rename bin label for dead/noisy channels
       if(HistoName.Contains("NDeadChannelsHisto") || HistoName.Contains("NNoisyChannelsHistoFromNCounts") || HistoName.Contains("NNoisyChannelsHistoFromNSigma")){
 	for(int j=1; j<7; j++){
-	  h1->GetXaxis()->SetBinLabel(j, apaname[j-1].Data());
+	  h1->GetXaxis()->SetBinLabel(j+1, apaname[j-1].Data());
 	}
       }
 
       // Add horizontal line for expected number of dead channels
       if(HistoName.Contains("NDeadChannelsHisto")){
-	for(int i=1;i<=6;i++){
-	  TLine *line = new TLine(h1->GetXaxis()->GetBinLowEdge(i),exp_deadch[i-1],h1->GetXaxis()->GetBinLowEdge(i)+h1->GetXaxis()->GetBinWidth(i),exp_deadch[i-1]);
+	for(int i=1;i<7;i++){
+	  TLine *line = new TLine(h1->GetXaxis()->GetBinLowEdge(i+1),exp_deadch[i-1],h1->GetXaxis()->GetBinLowEdge(i+1)+h1->GetXaxis()->GetBinWidth(i+1),exp_deadch[i-1]);
           line->SetLineColor(kRed);
           line->SetLineWidth(2);
           line->Draw();
 	}
       }
       else if(HistoName.Contains("NNoisyChannelsHistoFromNCounts")){
-        for (int i=1;i<=6;i++){
-          TLine *line = new TLine(h1->GetXaxis()->GetBinLowEdge(i), exp_noisych1[i-1],h1->GetXaxis()->GetBinLowEdge(i)+h1->GetXaxis()->GetBinWidth(i), exp_noisych1[i-1]);
+        for (int i=1;i<7;i++){
+          TLine *line = new TLine(h1->GetXaxis()->GetBinLowEdge(i+1), exp_noisych1[i-1],h1->GetXaxis()->GetBinLowEdge(i+1)+h1->GetXaxis()->GetBinWidth(i+1), exp_noisych1[i-1]);
           line->SetLineColor(kRed);
           line->SetLineWidth(2);
           line->Draw();
         }
       }
       else if(HistoName.Contains("NNoisyChannelsHistoFromNSigma")){
-        for (int i=1;i<=6;i++){
-          TLine *line = new TLine(h1->GetXaxis()->GetBinLowEdge(i), exp_noisych2[i-1],h1->GetXaxis()->GetBinLowEdge(i)+h1->GetXaxis()->GetBinWidth(i), exp_noisych2[i-1]);
+        for (int i=1;i<7;i++){
+          TLine *line = new TLine(h1->GetXaxis()->GetBinLowEdge(i+1), exp_noisych2[i-1],h1->GetXaxis()->GetBinLowEdge(i+1)+h1->GetXaxis()->GetBinWidth(i+1), exp_noisych2[i-1]);
           line->SetLineColor(kRed);
           line->SetLineWidth(2);
           line->Draw();
@@ -1306,6 +1308,11 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
     filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
     fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
+    strtolook = "fAllChan";
+    fprintf(JsonFile,"       \"Mean and RMS of ADC for all channels\":\"");
+    filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+
     strtolook = "Slot";
     strtolook2 = "RMSpfx";
     fprintf(JsonFile,"       \"RMS of channel ADC from slot\":\"");
@@ -1354,6 +1361,11 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
 
     strtolook = "fNNoisyChannels";
     fprintf(JsonFile,"       \"Number of noisy channels\":\"");
+    filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
+    fprintf(JsonFile,"%s\",\n",filesstr.Data());
+
+    strtolook = "fBitValue";
+    fprintf(JsonFile,"       \"Bit values\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
     fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
