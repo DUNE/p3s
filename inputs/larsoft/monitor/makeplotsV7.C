@@ -420,6 +420,18 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       h1->GetYaxis()->SetTitle(h->GetYaxis()->GetTitle());
       h1->GetYaxis()->SetTitleOffset(1.4);
 
+      if(dirname.Contains("tpcmonitor")){
+	if(HistoName.Contains("fAllChan") || HistoName.Contains("fBitValue")){
+	  h1->GetXaxis()->SetBinLabel(40,  " ");
+	  h1->GetXaxis()->SetBinLabel(120, " ");
+	  h1->GetXaxis()->SetBinLabel(200, " ");
+	  TString title1 = Form("   TOP:     %s     %s     %s", apaname[3].Data(),apaname[5].Data(),apaname[4].Data());
+	  TString title2 = Form("BOTTOM: %s     %s     %s", apaname[0].Data(),apaname[1].Data(),apaname[2].Data());
+	  TString title3 = Form("#splitline{%s}{%s}",title1.Data(),title2.Data());
+	  h1->GetXaxis()->SetTitle(title3.Data());
+	}
+      }
+
       if(h1->GetNbinsY()==1){
         if(obj->IsA()->InheritsFrom(TProfile::Class())){
 	  h1->SetStats(false);
@@ -436,6 +448,21 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       else{
         h1->SetStats(false);
         h1->Draw("colz");
+	if(obj->IsA()->InheritsFrom(TProfile2D::Class())){
+	  TLine *yline = new TLine(h1->GetXaxis()->GetBinLowEdge(1),h1->GetYaxis()->GetBinLowEdge(32)+h1->GetYaxis()->GetBinWidth(32),h1->GetXaxis()->GetBinLowEdge(h1->GetNbinsX()),h1->GetYaxis()->GetBinLowEdge(32)+h1->GetYaxis()->GetBinWidth(32));
+	  yline->Draw("same");
+
+	  TLine *x1line = new TLine(h1->GetXaxis()->GetBinLowEdge(80)+h1->GetXaxis()->GetBinWidth(80),h1->GetYaxis()->GetBinLowEdge(1),h1->GetXaxis()->GetBinLowEdge(80)+h1->GetXaxis()->GetBinWidth(80),h1->GetYaxis()->GetBinLowEdge(h1->GetNbinsY()));
+	  x1line->Draw("same");
+	  TLine *x2line = new TLine(h1->GetXaxis()->GetBinLowEdge(160)+h1->GetXaxis()->GetBinWidth(160),h1->GetYaxis()->GetBinLowEdge(1),h1->GetXaxis()->GetBinLowEdge(160)+h1->GetXaxis()->GetBinWidth(160),h1->GetYaxis()->GetBinLowEdge(h1->GetNbinsY()));
+	  x2line->Draw("same");
+
+	  c1->Update();
+	  TPaletteAxis *palette = (TPaletteAxis*)h1->GetListOfFunctions()->FindObject("palette");
+	  if(palette)
+	    palette->SetX2NDC(0.92);
+	  c1->Modified();
+	}
       }
 
       // Rename bin label for dead/noisy channels
@@ -1605,30 +1632,30 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	TCanvas *cyz = new TCanvas(Form("CZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
 	cyz->SetFrameFillColor(kBlue+3);
 	YZHisto->Draw("colz");
-	//cyz->Update();
-	//TPaletteAxis *yzpalette = (TPaletteAxis*)YZHisto->GetListOfFunctions()->FindObject("palette");
-	//if(yzpalette)
-	//yzpalette->SetX2NDC(0.92);
+	cyz->Update();
+	TPaletteAxis *yzpalette = (TPaletteAxis*)YZHisto->GetListOfFunctions()->FindObject("palette");
+	if(yzpalette)
+	  yzpalette->SetX2NDC(0.92);
 	cyz->Modified();
 	cyz->SaveAs(imagestryz.Data());
 	
 	TCanvas *cxz = new TCanvas(Form("CZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
 	cxz->SetFrameFillColor(kBlue+3);
 	XZHisto->Draw("colz");
-	//cxz->Update();
-	//TPaletteAxis *xzpalette = (TPaletteAxis*)XZHisto->GetListOfFunctions()->FindObject("palette");
-	//if(xzpalette)
-	//xzpalette->SetX2NDC(0.92);
+	cxz->Update();
+	TPaletteAxis *xzpalette = (TPaletteAxis*)XZHisto->GetListOfFunctions()->FindObject("palette");
+	if(xzpalette)
+	  xzpalette->SetX2NDC(0.92);
 	cxz->Modified();
 	cxz->SaveAs(imagestrxz.Data());
 
 	TCanvas *cxy = new TCanvas(Form("CXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
 	cxy->SetFrameFillColor(kBlue+3);
 	XYHisto->Draw("colz");
-	//cxy->Update();
-	//TPaletteAxis *xypalette = (TPaletteAxis*)XYHisto->GetListOfFunctions()->FindObject("palette");
-	//if(xypalette)
-	//xypalette->SetX2NDC(0.92);
+	cxy->Update();
+	TPaletteAxis *xypalette = (TPaletteAxis*)XYHisto->GetListOfFunctions()->FindObject("palette");
+	if(xypalette)
+	  xypalette->SetX2NDC(0.92);
 	cxy->Modified();
 	cxy->SaveAs(imagestrxy.Data());
 
@@ -1647,11 +1674,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	  yzline->Draw("same");
 	else
 	  YZHistoBeam->GetXaxis()->SetRangeUser(0,80);
-	//cyzbeam->Update();
-	//TPaletteAxis *byzpalette = (TPaletteAxis*)YZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	//if(byzpalette)
-	//byzpalette->SetX2NDC(0.92);
-	//cyzbeam->Modified();
+	cyzbeam->Update();
+	TPaletteAxis *byzpalette = (TPaletteAxis*)YZHistoBeam->GetListOfFunctions()->FindObject("palette");
+	if(byzpalette)
+	  byzpalette->SetX2NDC(0.92);
+	cyzbeam->Modified();
 	cyzbeam->SaveAs(imagestryz.Data());
 
 	TCanvas *cxzbeam = new TCanvas(Form("CBeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
@@ -1662,11 +1689,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	else
 	  XZHistoBeam->GetXaxis()->SetRangeUser(0,80);
 
-	//cxzbeam->Update();
-	//TPaletteAxis *bxzpalette = (TPaletteAxis*)XZHistoBeam->GetListOfFunctions()->FindObject("palette");
-	//if(bxzpalette)
-	//bxzpalette->SetX2NDC(0.92);
-	//cxzbeam->Modified();
+	cxzbeam->Update();
+	TPaletteAxis *bxzpalette = (TPaletteAxis*)XZHistoBeam->GetListOfFunctions()->FindObject("palette");
+	if(bxzpalette)
+	  bxzpalette->SetX2NDC(0.92);
+	cxzbeam->Modified();
 	cxzbeam->SaveAs(imagestrxz.Data());
 
 	TCanvas *cxybeam = new TCanvas(Form("CBeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
@@ -1674,11 +1701,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	XYHistoBeam->Draw("colz");
 	if(drawbeamline)
 	  xyline->Draw("same");
-	//cxybeam->Update();
-	//TPaletteAxis *bxypalette = (TPaletteAxis*)XYHistoBeam->GetListOfFunctions()->FindObject("palette");
-	//if(bxypalette)
-	//bxypalette->SetX2NDC(0.92);
-	//cxybeam->Modified();
+	cxybeam->Update();
+	TPaletteAxis *bxypalette = (TPaletteAxis*)XYHistoBeam->GetListOfFunctions()->FindObject("palette");
+	if(bxypalette)
+	  bxypalette->SetX2NDC(0.92);
+	cxybeam->Modified();
 	cxybeam->SaveAs(imagestrxy.Data());
 
 	beamvec.push_back(imagestrxy);
