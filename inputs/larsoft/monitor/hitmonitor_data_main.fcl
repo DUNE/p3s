@@ -1,0 +1,77 @@
+#include "services_dune.fcl"
+#include "RawDecoder.fcl"
+#include "TPCMonitor.fcl"
+#include "SSPMonitor.fcl"
+#include "PDSPNearlineHeader.fcl"
+
+#include "caldata_dune.fcl"
+#include "hitfindermodules_dune.fcl"
+#include "SpacePointSolver.fcl"
+#include "cluster_dune.fcl"
+#include "lifetime.fcl"
+#include "PDSPHitMonitor.fcl"
+#include "SaveSpacePoints.fcl"
+#include "tools_dune.fcl"
+
+process_name: HitMonitor
+
+services:
+{
+  TimeTracker:       {}
+  RandomNumberGenerator: {} 
+  message:              @local::dune_message_services_prod_debug
+  FileCatalogMetadata:  @local::art_file_catalog_mc
+                        @table::protodune_reco_services
+  ExptGeoHelperInterface:       @local::dune_geometry_helper
+  Geometry:                     @local::protodune_geo
+  DetectorClocksService:        @local::dunefd_detectorclocks # will change to protodune
+  DetectorPropertiesService:    @local::protodune_detproperties
+  LArPropertiesService:         @local::dunefd_properties
+  DatabaseUtil:                 @local::dunefd_database
+  ChannelStatusService:         @local::dunefd_channel_status
+  PdspChannelMapService:        @local::pdspchannelmap
+  TFileService: { fileName: "rawtpcmonitor.root" }
+
+}
+
+services.DetectorPropertiesService.NumberTimeSamples: 6000
+services.DetectorPropertiesService.ReadOutWindowSize: 6000
+
+#source is now a root file
+source:
+{
+  module_type: RootInput
+  maxEvents: -1
+  fileNames: ["input_file.root"]
+}
+
+outputs: {}
+
+physics:
+{
+  producers:
+  {
+    tpcrawdecoder:      @local::pdsp_tpc_raw_decoder
+    timingrawdecoder:   @local::timing_raw_decoder
+    ssprawdecoder:      @local::ssp_raw_decoder
+    caldata:            @local::producer_adcprep
+    gaushit:            @local::dunefd_gaushitfinder
+    reco3d:             @local::standard_spacepointsolver
+    hitpdune:           @local::pdune_disambigfromsp
+  }
+
+  analyzers:
+  {
+    pdspnearlineheader: @local::PDSPNearlineHeader_params
+    pdsphitmonitor:     @local::PDSPHitMonitor_params
+    sps:                @local::proto_savesps
+  }
+
+  produce: [ tpcrawdecoder, ssprawdecoder, timingrawdecoder ]
+  reco: [ caldata, gaushit, reco3d, hitpdune ]
+  analysis: [ pdspnearlineheader, pdsphitmonitor, sps ]
+  trigger_paths : [ produce, reco ]
+  end_paths: [ analysis ]
+}
+
+physics.producers.caldata.DigitLabel: "tpcrawdecoder:daq"
