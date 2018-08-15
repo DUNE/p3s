@@ -13,7 +13,7 @@
 #include "SaveSpacePoints.fcl"
 #include "tools_dune.fcl"
 
-process_name: DecodeRawTPCMonitor
+process_name: PurityMonitor
 
 services:
 {
@@ -24,7 +24,7 @@ services:
                         @table::protodune_reco_services
   ExptGeoHelperInterface:       @local::dune_geometry_helper
   Geometry:                     @local::protodune_geo
-  DetectorClocksService:        @local::dunefd_detectorclocks
+  DetectorClocksService:        @local::dunefd_detectorclocks # will change to protodune
   DetectorPropertiesService:    @local::protodune_detproperties
   LArPropertiesService:         @local::dunefd_properties
   DatabaseUtil:                 @local::dunefd_database
@@ -34,8 +34,8 @@ services:
 
 }
 
-services.DetectorPropertiesService.NumberTimeSamples: 10000
-services.DetectorPropertiesService.ReadOutWindowSize: 10000
+services.DetectorPropertiesService.NumberTimeSamples: 6000
+services.DetectorPropertiesService.ReadOutWindowSize: 6000
 
 #source is now a root file
 source:
@@ -45,16 +45,7 @@ source:
   fileNames: ["input_file.root"]
 }
 
-outputs:
-{
-# out1:
-# {
-#   module_type: RootOutput
-#   fileName:    "file.root"
-#   dataTier:    "full-reconstructed"
-#   compressionLevel: 1
-# }
-}
+outputs: {}
 
 physics:
 {
@@ -80,12 +71,9 @@ physics:
     sps:                @local::proto_savesps
   }
 
-  #define the output stream, there could be more than one if using filters 
-  #stream1:  [ out1 ]
-
   produce: [ tpcrawdecoder, ssprawdecoder, timingrawdecoder ]
   reco: [ caldata, gaushit, reco3d, hitpdune, tjcosmic ]
-  analysis: [ pdspnearlineheader, tpcmonitor, sspmonitor, lifetime, pdsphitmonitor, sps ]
+  analysis: [ pdspnearlineheader, lifetime, pdsphitmonitor, sps ]
   trigger_paths : [ produce, reco ]
   end_paths: [ analysis ]
 }
