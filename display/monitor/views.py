@@ -943,8 +943,7 @@ def automon(request):
 #        t.changeName(category) # table column header
         tbls.append(t)
 
-    for i in range(len(cats)):
-        tbls[i].changeName('foo') # table column header
+    tbls[0].changeName('foo') # table column header
        
     d['footer']		= cats
     d['tables']		= tbls
