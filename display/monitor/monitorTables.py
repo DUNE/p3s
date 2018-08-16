@@ -102,10 +102,10 @@ class PurityTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #---
 class ShowMonTable(MonitorTable):
-    items = tables.Column()
+    c = tables.Column(verbose_name='foo')
 
     def changeName(self, newName):
-        self.base_columns['items'].verbose_name = newName
+        self.base_columns['c'].verbose_name = newName
 
     class Meta:
         attrs = {'class': 'paleblue'}
