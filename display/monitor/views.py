@@ -939,8 +939,8 @@ def automon(request):
 #            list4table.append({'items':format_html('&nbsp;')})
                               
         t = ShowMonTable(list4table)
-        cats.append(category)
         t.changeName(category) # table column header
+        cats.append(t.columns['c'].header)
         tbls.append(t)
 
     tbls[0].changeName('test2') # table column header
