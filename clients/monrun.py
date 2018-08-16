@@ -96,10 +96,6 @@ if(delete):
     
     exit(0)
 
-print("Inconsistent input, please check...")
-exit(-3)
-
-
 # ---
 
 if(description==''):
