@@ -703,8 +703,8 @@ def addmon(request):
     
     m=monrun()
     
-    m.run		= post.get('run', '')
-    m.subrun		= post.get('subrun', '')
+    m.run		= post.get('run',	0)
+    m.subrun		= post.get('subrun',	0)
     m.summary		= summary
     m.description	= post.get('description', '')
     m.j_uuid		= post.get('j_uuid', '')
