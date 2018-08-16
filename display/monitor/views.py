@@ -926,6 +926,7 @@ def automon(request):
     cats = []
     tbls = []
     hdrs = []
+    
     for item in description:
         
         category = item['Category']
@@ -940,7 +941,7 @@ def automon(request):
 #            list4table.append({'items':format_html('&nbsp;')})
                               
         t = ShowMonTable(list4table)
-        hdrs.append(t.columns['c']).header
+        hdrs.append(t.columns['c'].header)
         t.changeName(category) # table column header
         cats.append(category)
         tbls.append(t)
