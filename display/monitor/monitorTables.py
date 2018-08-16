@@ -103,11 +103,11 @@ class PurityTable(MonitorTable):
 #---
 class ShowMonTable(MonitorTable):
 
-    def __init__(self, *args, **kwargs):
-       self.hdr = kwargs.pop('hdr')
-
-       super(ShowMonTable, self).__init__(*args, **kwargs)
-       c = tables.Column(verbose_name=self.hdr)
+    c = tables.Column()
+    
+    # def __init__(self, *args, **kwargs):
+    #    self.hdr = kwargs.pop('hdr')
+    #    super(ShowMonTable, self).__init__(*args, **kwargs)
 
     def changeName(self, newName):
         self.base_columns['c'].verbose_name = newName
