@@ -51,7 +51,7 @@ parser.add_argument("-j", "--jobtype",	type=str,	help="job type (which produced 
 parser.add_argument("-i", "--id",	type=str,	help="id of the entry to be adjusted or deleted (pk)", 	default='')
 parser.add_argument("-r", "--run",	type=str,	help="run number",					default='')
 parser.add_argument("-T", "--timestamp",type=str,	help="enforce/override the timestamp - YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]", default='')
-parser.add_argument("-v", "--verbosity", type=int,	help="output verbosity, defaults to P3S default",	default=envDict['verb'])
+parser.add_argument("-v", "--verbosity",type=int,	help="output verbosity, defaults to P3S default",	default=envDict['verb'])
 
 parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $DQM_SERVER or if unset to http://localhost:8000/",
@@ -86,22 +86,32 @@ if((summary=='' or description=='') and not delete):
     print("Missing input summary and/or description, exiting...")
     exit(-1)
     
-if(summary!='' and description!=''):
+if(description!=''):
+
+    summary_dict = {}
+    if(summary!=''): summary_dict = takeJson(summary, verb)
+
+    summaryFile = open(summary)
+    summary_data = summaryFile.read()
     
-    summary_dict = takeJson(summary, verb)
+    if(verb>2):
+        print("Summary Data:")
+        print(summary_data)
 
-    sf = open(summary)
-    summary_data = sf.read()
-    # print(summary_data)
-
-    descrList = description.split(',')
-    masterList = []
+    descrList	= description.split(',')
+    masterList	= []
+    
     for descr in descrList:
-        df = open(descr)
-        data = json.load(df)
-        masterList = masterList+data # just catenate here
+        if(verb>1): print("Opening description file", descr)
+        descrFile = open(descr)
+        data = json.load(descrFile)
+        masterList = masterList+data # catenate, work with lists
+        print(data)
+
+
+    exit(0)
     
-    if(job_uuid==''):
+    if(job_uuid==''): # default to local dir name
         d['j_uuid'] = os.path.basename(os.getcwd())
     else:
         d['j_uuid'] = job_uuid
@@ -136,6 +146,8 @@ if(summary!='' and description!=''):
     print(resp)
     
     exit(0)
+
+# ---
 
 if(delete):
     if(run=='' and pk==''):
