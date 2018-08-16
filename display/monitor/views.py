@@ -940,9 +940,12 @@ def automon(request):
                               
         t = ShowMonTable(list4table)
         cats.append(category)
-        t.changeName(category) # table column header
+#        t.changeName(category) # table column header
         tbls.append(t)
 
+    for i in range(len(cats)):
+        tbls[i].changeName(cats[i]) # table column header
+       
     d['footer']		= cats
     d['tables']		= tbls
 
