@@ -1,6 +1,6 @@
 [
     {
-	"name":		"Purity:HitMonitor",
+	"name":		"TPCMonitor",
 	"timeout":	"500000",
         "jobtype":	"purity",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/purity/purity_hitmonitor_2.sh",

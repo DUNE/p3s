@@ -1,6 +1,6 @@
 [
     {
-	"name":		"EvDisp:Main",
+	"name":		"EvDisp2D",
 	"timeout":	"4000",
         "jobtype":	"evdisp",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/evdisp/evdisp_main_reg.sh",
