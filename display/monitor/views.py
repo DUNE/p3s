@@ -901,7 +901,6 @@ def automon(request):
     d = {}
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
-    d['tables']		= []
     d['tblHeader']	= 'Run::Subrun '+run+'::'+subrun
 #    d['footer']		= 'Produced by job: '+entry.j_uuid
     # ---
@@ -925,21 +924,26 @@ def automon(request):
 
 
     cats = []
+    tbls = []
     for item in description:
+        
+        category = item['Category']
+        files	 = item['Files']
+        
         list4table = []
-        for fileType in item['Files'].keys():
-            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,item['Category'],fileType)})
+        for fileType in files.keys():
+            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,category,fileType)})
 
-        for i in range(mxLen - len(item['Files'].keys())):
+        for i in range(mxLen - len(files.keys())):
             list4table.append({'items':format_html('&nbsp;')})
                               
         t = ShowMonTable(list4table)
-        category = item['Category']
         cats.append(category)
         t.changeName(category) # table column header
-        d['tables'].append(t)
+        tbls.append(t)
 
     d['footer']		= cats
+    d['tables']		= tbls
 
     return render(request, 'unitable3.html', d)
 #########################################################    
