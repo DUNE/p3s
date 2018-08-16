@@ -933,17 +933,17 @@ def automon(request):
         list4table = []
         for fileType in files.keys():
 #            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,category,fileType)})
-            list4table.append({'items':category})
+            list4table.append({'c':category})
 
-        for i in range(mxLen - len(files.keys())):
-            list4table.append({'items':format_html('&nbsp;')})
+#        for i in range(mxLen - len(files.keys())):
+#            list4table.append({'items':format_html('&nbsp;')})
                               
         t = ShowMonTable(list4table)
         cats.append(category)
-#        t.changeName(category) # table column header
+        t.changeName(category) # table column header
         tbls.append(t)
 
-    tbls[0].changeName('foo') # table column header
+    tbls[0].changeName('test2') # table column header
        
     d['footer']		= cats
     d['tables']		= tbls
