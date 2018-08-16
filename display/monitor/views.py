@@ -935,13 +935,13 @@ def automon(request):
         list4table = []
         for fileType in files.keys():
 #            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,category,fileType)})
-            list4table.append({'c':category})
+            list4table.append({'goo':category})
 
 #        for i in range(mxLen - len(files.keys())):
 #            list4table.append({'items':format_html('&nbsp;')})
                               
-        t = ShowMonTable(list4table)
-        hdrs.append(t.columns['c'].header)
+        t = ShowMonTable(list4table, hdr='goo')
+        hdrs.append(t.columns['goo'].header)
         t.changeName(category) # table column header
         cats.append(category)
         tbls.append(t)

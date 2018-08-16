@@ -102,7 +102,12 @@ class PurityTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #---
 class ShowMonTable(MonitorTable):
-    c = tables.Column(verbose_name='foo')
+
+    def __init__(self, *args, **kwargs):
+       self.hdr = kwargs.pop('hdr')
+
+       super(ShowMonTable, self).__init__(*args, **kwargs)
+       c = tables.Column(verbose_name=self.hdr)
 
     def changeName(self, newName):
         self.base_columns['c'].verbose_name = newName
