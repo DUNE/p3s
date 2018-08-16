@@ -713,8 +713,8 @@ def addmon(request):
     m.ts		= post.get('ts', timezone.now())
     
     m.save()
-        
-    return HttpResponse('Adding mon entry for run '+m.run+' subrun '+m.subrun)
+
+    return HttpResponse('Adding mon entry for run '+str(m.run)+' subrun '+str(m.subrun))
 #########################################################    
 @csrf_exempt
 def delmon(request):
