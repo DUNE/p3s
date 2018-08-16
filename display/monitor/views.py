@@ -695,7 +695,11 @@ def addmon(request):
     
     summary	= post.get('summary', '')
 
-    s = json.loads(summary)
+    s = {}
+    try:
+        s = json.loads(summary)
+    except:
+        pass
     
     m=monrun()
     
