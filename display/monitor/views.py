@@ -925,6 +925,7 @@ def automon(request):
 
     cats = []
     tbls = []
+    hdrs = []
     for item in description:
         
         category = item['Category']
@@ -940,12 +941,13 @@ def automon(request):
                               
         t = ShowMonTable(list4table)
         t.changeName(category) # table column header
-        cats.append(t.columns['c'].header)
+        hdrs.append(t.columns['c']).header
+        cats.append(category)
         tbls.append(t)
 
-    tbls[0].changeName('test2') # table column header
+    tbls[0].changeName(cats[0]) # table column header
        
-    d['footer']		= cats
+    d['footer']		= cats+hdrs
     d['tables']		= tbls
 
     return render(request, 'unitable3.html', d)
