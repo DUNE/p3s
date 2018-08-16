@@ -879,7 +879,7 @@ def automon(request):
         return 'not found'
 
     # Create a dictionary describing files from JSON we just located
-    description = json.loads(entry.description, object_pairs_hook=OrderedDict)
+    description = json.loads(entry.description) # , object_pairs_hook=OrderedDict)
     
     url2images, p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None, None
 

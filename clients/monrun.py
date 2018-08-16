@@ -106,11 +106,10 @@ if(description!=''):
         descrFile = open(descr)
         data = json.load(descrFile)
         masterList = masterList+data # catenate, work with lists
-        print(data)
+        if(verb>2):
+            print("Description file:", descr)
+            print(data)
 
-
-    exit(0)
-    
     if(job_uuid==''): # default to local dir name
         d['j_uuid'] = os.path.basename(os.getcwd())
     else:
