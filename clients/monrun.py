@@ -82,72 +82,6 @@ API  = serverAPI(server=server)
 
 d = {}    
 
-if((summary=='' or description=='') and not delete):
-    print("Missing input summary and/or description, exiting...")
-    exit(-1)
-    
-if(description!=''):
-
-    summary_dict = {}
-    if(summary!=''): summary_dict = takeJson(summary, verb)
-
-    summaryFile = open(summary)
-    summary_data = summaryFile.read()
-    
-    if(verb>2):
-        print("Summary Data:")
-        print(summary_data)
-
-    descrList	= description.split(',')
-    masterList	= []
-    
-    for descr in descrList:
-        if(verb>1): print("Opening description file", descr)
-        descrFile = open(descr)
-        data = json.load(descrFile)
-        masterList = masterList+data # catenate, work with lists
-        if(verb>2):
-            print("Description file:", descr)
-            print(data)
-
-    if(job_uuid==''): # default to local dir name
-        d['j_uuid'] = os.path.basename(os.getcwd())
-    else:
-        d['j_uuid'] = job_uuid
-        
-
-    if(d['j_uuid']==''):
-        print('Need job ID to proceed, exiting...')
-        exit(-2)
-        
-    print('Run descriptor:', summary_dict[0]["run"])
-
-    rs		= summary_dict[0]["run"].split('_')
-    run		= rs[0][3:]
-    subrun	= rs[1]
-    
-    print('Run:', run, '   Subrun:', subrun)
-
-    d['summary']	= summary_data
-    d['description']	= json.dumps(masterList)
-    d['run']		= run
-    d['subrun']		= subrun
-    d['jobtype']	= jobtype
-
-    if(timestamp==''):
-        d['ts']	= str(timezone.now())
-    else:
-        d['ts']	= timestamp
-
-    if(verb>0): print('Using timestamp:', d['ts'])
-    
-    resp = API.post2server('monitor', 'addmon', d)
-    print(resp)
-    
-    exit(0)
-
-# ---
-
 if(delete):
     if(run=='' and pk==''):
         print('Need to specify the run number or ID to delete, exiting...')
@@ -164,5 +98,84 @@ if(delete):
 
 print("Inconsistent input, please check...")
 exit(-3)
+
+
+# ---
+
+if(description==''):
+    print("Missing description, exiting...")
+    exit(-1)
+
+    
+summary_dict = {}
+if(summary!=''): summary_dict = takeJson(summary, verb)
+
+summary_data = ''
+if(summary!=''):
+    try:
+        summaryFile = open(summary)
+        summary_data = summaryFile.read()
+        if(verb>2):
+            print("Summary Data:")
+            print(summary_data)
+    except:
+        print("Problem with summary file", summary)
+
+# ---
+# Handle file description
+descrList	= description.split(',')
+masterList	= []
+    
+for descr in descrList:
+    if(verb>1): print("Opening description file", descr)
+    descrFile = open(descr)
+    data = json.load(descrFile)
+    masterList = masterList+data # catenate, work with lists
+    if(verb>2):
+        print("Description file:", descr)
+        print(data)
+
+if(job_uuid==''): # default to local dir name
+    d['j_uuid'] = os.path.basename(os.getcwd())
+else:
+    d['j_uuid'] = job_uuid
+        
+
+if(d['j_uuid']==''):
+    print('Need job ID to proceed, exiting...')
+    exit(-2)
+
+
+rs, run, subrun = None, '',''
+try:
+    print('Run descriptor:', summary_dict[0]["run"])
+
+    rs	= summary_dict[0]["run"].split('_')
+    run	= rs[0][3:]
+    subrun	= rs[1]
+except:
+    print("No summary file detected")
+        
+print('Run:', run, '   Subrun:', subrun)
+
+d['summary']	= summary_data
+d['description']= json.dumps(masterList)
+d['run']	= run
+d['subrun']	= subrun
+d['jobtype']	= jobtype
+
+if(timestamp==''):
+    d['ts']	= str(timezone.now())
+else:
+    d['ts']	= timestamp
+
+if(verb>0): print('Using timestamp:', d['ts'])
+    
+resp = API.post2server('monitor', 'addmon', d)
+print(resp)
+    
+exit(0)
+
+# ---
 
 #########################################################

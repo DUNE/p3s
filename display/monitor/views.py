@@ -899,9 +899,10 @@ def automon(request):
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
     d['tables']		= []
     d['tblHeader']	= 'Run::Subrun '+run+'::'+subrun
-    d['footer']	= 'Produced by job: '+entry.j_uuid
+#    d['footer']		= 'Produced by job: '+entry.j_uuid
     # ---
     
+    # IF THE CATEGORY HAS BEEN DEFINED, SERVE THE CONTENT:
     if(category!=''):
         j_uuid	= entry.j_uuid
 
@@ -913,12 +914,13 @@ def automon(request):
         d['rows'] = monrun.autoMonImgURLs(domain, url2images, j_uuid, files)
         return render(request, 'unitable3.html', d)
     
-
-    lengths = []
-    for item in description:
-        lengths.append(len(item['Files'].keys()))
-
+    # ok, so no category - present choices
+    lengths = [] # ... of menus...
+    for item in description: lengths.append(len(item['Files'].keys()))
     mxLen = max(lengths)
+
+
+    cats = []
     for item in description:
         list4table = []
         for fileType in item['Files'].keys():
@@ -928,8 +930,12 @@ def automon(request):
             list4table.append({'items':format_html('&nbsp;')})
                               
         t = ShowMonTable(list4table)
-        t.changeName(item['Category'])
+        category = item['Category']
+        cats.append(category)
+        t.changeName(category) # table column header
         d['tables'].append(t)
+
+    d['footer']		= cats
 
     return render(request, 'unitable3.html', d)
 #########################################################    
