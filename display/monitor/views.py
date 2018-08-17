@@ -225,8 +225,6 @@ def puritychart(request, what):
     cnt=0
     
     for tpcNum in (1,2,5,6,9,10):
-        purDict = {}
-
         # select by TPC and the time range
         objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
         if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
@@ -247,7 +245,10 @@ def puritychart(request, what):
                 purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph)
             except:
                 break
-    
+
+        # This dict takes the panel name, the above formed time series as string, and axes names
+        purDict = {}
+
         purDict["panel"]	= 'tpc'+str(tpcNum)
         purDict["timeseries"]	= purStr # ship out finalized time series STRING in Google format
         
@@ -258,7 +259,7 @@ def puritychart(request, what):
             purDict["main"]='s/n'
             purDict["vAxis"]='S/N'
             
-        purSeries.append(purDict)
+        purSeries.append(purDict) # this is just a row, it's an entry in the bigger list "bigPur"
         
         cnt+=1
         if(cnt == W):
@@ -269,7 +270,7 @@ def puritychart(request, what):
     bigPur.append(purSeries)
 
     d = {}
-    d['rows']	= bigPur
+    d['rows']	= bigPur # the data to be rendered
     d['domain']	= domain
     
     tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
@@ -283,7 +284,7 @@ def puritychart(request, what):
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
-    return render(request, 'purity_chart1.html', d)
+    return render(request, 'purity_chart2.html', d)
 
 #########################################################    
 # general request handler for summary type of a table

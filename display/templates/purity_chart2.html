@@ -1,0 +1,17 @@
+{% extends "chart_base2.html" %}
+
+              {% block content %}
+
+	      <table>
+		{% for row in rows %}
+		<tr>
+		  {% for p in row %}
+		  <td><div id="{{ p.panel }}"></div></td>
+		  {% endfor %}
+		</tr>
+		{% endfor %}
+	      </table>
+	      {% endblock %}
+    <!-- hr/>  
+  </body>
+</html -->
