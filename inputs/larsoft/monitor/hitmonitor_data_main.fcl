@@ -29,7 +29,13 @@ services:
   LArPropertiesService:         @local::dunefd_properties
   DatabaseUtil:                 @local::dunefd_database
   ChannelStatusService:         @local::dunefd_channel_status
-  PdspChannelMapService:        @local::pdspchannelmap
+  #PdspChannelMapService:        @local::pdspchannelmap
+  PdspChannelMapService: {
+    FileName:         "protoDUNETPCChannelMap_RCE_v4.txt"
+    FELIXFileName:    "protoDUNETPCChannelMap_FELIX_v4.txt"
+    SSPFileName:      "protoDUNESSPChannelMap_v1.txt"
+    LogLevel:         1
+  }
   TFileService: { fileName: "rawtpcmonitor.root" }
 
 }
@@ -62,6 +68,8 @@ physics:
 
   analyzers:
   {
+    tpcmonitor:         @local::TPCMonitor_params
+    sspmonitor:         @local::SSPMonitor_params
     pdspnearlineheader: @local::PDSPNearlineHeader_params
     pdsphitmonitor:     @local::PDSPHitMonitor_params
     sps:                @local::proto_savesps
@@ -69,9 +77,10 @@ physics:
 
   produce: [ tpcrawdecoder, ssprawdecoder, timingrawdecoder ]
   reco: [ caldata, gaushit, reco3d, hitpdune ]
-  analysis: [ pdspnearlineheader, pdsphitmonitor, sps ]
+  analysis: [ pdspnearlineheader, tpcmonitor, sspmonitor, pdsphitmonitor, sps ]
   trigger_paths : [ produce, reco ]
   end_paths: [ analysis ]
 }
 
 physics.producers.caldata.DigitLabel: "tpcrawdecoder:daq"
+#physics.producers.caldata.OnlineChannelMapTool: pd_onlineChannelMapByFemb
