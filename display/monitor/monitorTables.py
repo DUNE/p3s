@@ -102,16 +102,17 @@ class PurityTable(MonitorTable):
         attrs = {'class': 'paleblue'}
 #---
 class ShowMonTable(MonitorTable):
-
-    c = tables.Column()
     
-    # def __init__(self, *args, **kwargs):
-    #    self.hdr = kwargs.pop('hdr')
-    #    super(ShowMonTable, self).__init__(*args, **kwargs)
+#    def __init__(self, *args, **kwargs):
+#        self.hdr = kwargs.pop('hdr')
+#        super(ShowMonTable, self).__init__(*args, **kwargs)
 
     def changeName(self, newName):
-        self.base_columns['c'].verbose_name = newName
+        self.base_columns['items'].verbose_name = newName
 
+    items = tables.Column()
+
+    
     class Meta:
         attrs = {'class': 'paleblue'}
 #---

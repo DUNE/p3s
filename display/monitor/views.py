@@ -883,7 +883,7 @@ def automon(request):
         return 'not found'
 
     # Create a dictionary describing files from JSON we just located
-    description = json.loads(entry.description) # , object_pairs_hook=OrderedDict)
+    description = json.loads(entry.description, object_pairs_hook=OrderedDict)
     
     url2images, p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None, None
 
@@ -902,7 +902,7 @@ def automon(request):
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
     d['tblHeader']	= 'Run::Subrun '+run+'::'+subrun
-    d['footer']		= 'Produced by job: '+entry.j_uuid
+    d['footer']		= 'Produced by job '+entry.j_uuid+' at '+entry.ts.strftime('%x %X')
     # ---
     
     # IF THE CATEGORY HAS BEEN DEFINED, SERVE THE CONTENT:
@@ -933,21 +933,16 @@ def automon(request):
         
         list4table = []
         for fileType in files.keys():
-            list4table.append({'c':monrun.autoMonLink(domain,run,subrun,category,fileType)})
+            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,category,fileType)})
 
-
-        for i in range(mxLen - len(files.keys())):
-            list4table.append({'c':format_html('&nbsp;')})
+        for i in range(mxLen - len(files.keys())): list4table.append({'items':format_html('&nbsp;')})
                               
-        t = ShowMonTable(list4table)
-        #hdrs.append(t.columns['goo'].header)
-        t.changeName(category) # table column header
-        cats.append(category)
+        t = ShowMonTable(list4table, show_header=False)
         tbls.append(t)
-       
-#    d['footer']		= cats+hdrs # debugging
+        cats.append(category)
 
     d['tables']		= tbls
+    d['headers']	= cats
 
-    return render(request, 'unitable3.html', d)
+    return render(request, 'unitable4.html', d)
 #########################################################    

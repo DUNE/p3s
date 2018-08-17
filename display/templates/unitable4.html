@@ -1,0 +1,44 @@
+{% extends "monitor_base3.html" %}
+{% load render_table from django_tables2 %}
+{% load static %}
+
+{% block content1 %}
+<h3>{{ tblHeader }}</h3>
+<hr/>
+{% if tables %}
+<table width="100%">
+  <tr>
+    {% for h in headers %}
+    <th align="center"><em>{{ h }}</em></th>
+    {% endfor %}
+  </tr>
+
+  <tr>
+    {% for t in tables %}
+    <td align="center">{% render_table t %} </td>
+    {% endfor %}
+  </tr>
+</table>
+{% endif %}
+
+
+<!-- what's below is meant to display multiple rows of images -->
+{% if rows %}
+
+<table>
+  {% for row in rows %}
+  <tr>
+    {% for plot in row %}
+    <td><img src="{{ plot }}" width="100%" alt="NOT FOUND" /></td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+  
+{% endif %}
+
+{% endblock %}    
+
+{% block footer %}
+{{ footer }}
+{% endblock %}    
