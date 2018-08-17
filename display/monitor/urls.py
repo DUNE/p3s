@@ -31,19 +31,23 @@ urlpatterns = [
 	views.display1,
         name='display1'),
 
-    url(r'^display6',
-	views.display6,
-        name='display6'),
-
-    url(r'^plot18',
-	views.plot18,
-        name='plot18'),
-
 
     url(r'^addmon',	views.addmon,    	name='addmon'),
     url(r'^delmon',	views.delmon,    	name='delmon'),
-    url(r'^showmon',	views.showmon,    	name='showmon'),
     url(r'^automon',	views.automon,    	name='automon'),
 
 ]
+
+
+# Deprecated. Methods moved to "attic.py"
+# url(r'^showmon',	views.showmon,    	name='showmon'),
+
+# url(r'^display6',
+#     views.display6,
+#     name='display6'),
+
+# url(r'^plot18',
+#     views.plot18,
+#     name='plot18'),
+
 
