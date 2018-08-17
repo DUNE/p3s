@@ -26,11 +26,6 @@ urlpatterns = [
     url(r'^monchart',views.monchart,name='monchart'),
     url(r'^puritychart',views.puritychart,{'what':'purity'},name='puritychart'),
     url(r'^snchart',views.puritychart,{'what':'sn'},name='snchart'),
-    
-    url(r'^display1',
-	views.display1,
-        name='display1'),
-
 
     url(r'^addmon',	views.addmon,    	name='addmon'),
     url(r'^delmon',	views.delmon,    	name='delmon'),
@@ -49,5 +44,10 @@ urlpatterns = [
 # url(r'^plot18',
 #     views.plot18,
 #     name='plot18'),
+    
+# url(r'^display1',
+#     views.display1,
+#     name='display1'),
+
 
 

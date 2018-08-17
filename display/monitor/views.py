@@ -338,41 +338,27 @@ def data_handler2(request, what, tbl, tblHeader, url):
     q=''	# stub for a query that may be built
 
     if request.method == 'POST':
-        refreshSelector = dropDownGeneric(request.POST,
-                                          label='Refresh',
-                                          choices=REFRESHCHOICES,
-                                          tag='refresh')
-            
+        refreshSelector = dropDownGeneric(request.POST, label='Refresh', choices=REFRESHCHOICES, tag='refresh')
         if refreshSelector.is_valid(): q += refreshSelector.handleDropSelector()
 
-        perPageSelector	= dropDownGeneric(request.POST,
-                                          initial={'perpage':perpage},
-                                          label='# per page',
-                                          choices = PAGECHOICES,
-                                          tag='perpage')
-        
+        perPageSelector	= dropDownGeneric(request.POST, initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
         if perPageSelector.is_valid(): q += perPageSelector.handleDropSelector()
 
+        # ---
+        # page-specific controls
         if(what=='monrun'):
             typeSelector = dropDownGeneric(request.POST, label='Type', choices=JOBTYPECHOICES, tag='jobtype')
             if typeSelector.is_valid(): q += typeSelector.handleDropSelector()
 
         
         if(what=='pur'):
-            tpcSelector = dropDownGeneric(request.POST,
-                                          initial={'tpc':tpc},
-                                          label='tpc',
-                                          choices = TPCCHOICES,
-                                          tag='tpc')
+            tpcSelector = dropDownGeneric(request.POST, initial={'tpc':tpc}, label='tpc', choices = TPCCHOICES, tag='tpc')
             if tpcSelector.is_valid(): q += tpcSelector.handleDropSelector()
-        
+            
+        # ---
         tsSelector = twoFieldGeneric(request.POST,
-                                     label1="min. (YYYY-MM-DD HH:MM:SS)",
-                                     field1="tsmin",
-                                     init1=tsmin,
-                                     label2="max. (YYYY-MM-DD HH:MM:SS)",
-                                     field2="tsmax",
-                                     init2=tsmax)
+                                     label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
+                                     label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
         if tsSelector.is_valid():
             tsmin=tsSelector.getval("tsmin")
             tsmax=tsSelector.getval("tsmax")
@@ -382,14 +368,9 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
         if(what=='evdisp'):
             juuidSelector = twoFieldGeneric(request.POST,
-                                            label1="Job UUID",
-                                            field1="j_uuid",
-                                            init1=j_uuid,
-                                            label2="Data Type",
-                                            field2="d_type",
-                                            init2=d_type)
+                                            label1="Job UUID",	field1="j_uuid",	init1=j_uuid,
+                                            label2="Data Type",	field2="d_type",	init2=d_type)
             if juuidSelector.is_valid():
-                
                 j_uuid=juuidSelector.getval("j_uuid")
                 if(j_uuid!=''): q+= 'j_uuid='+j_uuid+'&'
                 
@@ -397,12 +378,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
                 if(d_type!=''): q+= 'd_type='+d_type+'&'
                 
             runSelector =  twoFieldGeneric(request.POST,
-                                           label1="Run",
-                                           field1="run",
-                                           init1=run,
-                                           label2="Event",
-                                           field2="event",
-                                           init2=evnum)
+                                           label1="Run",	field1="run",	init1=run,
+                                           label2="Event",	field2="event",	init2=evnum)
             
             if runSelector.is_valid():
                 run=runSelector.getval("run")
@@ -412,7 +389,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
                 if(event!=''): q+= 'evnum='+event+'&'
                 
 
-        return makeQuery(url, q) # We built a query and will come to same page/view with the query parameters
+        return makeQuery(url, q) # We have built a query and will come to same page/view with the query parameters
 
 
     ###########################################################################
@@ -582,44 +559,6 @@ def eventdisplay(request):
 
     return render(request, 'display.html', d)
 
-#########################################################    
-@csrf_exempt
-def display1(request):
-    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
-
-    try:
-        p3s_domain	= settings.SITE['p3s_domain']
-        dqm_domain	= settings.SITE['dqm_domain']
-        dqm_host	= settings.SITE['dqm_host']
-        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
-        p3s_services	= settings.SITE['p3s_services']
-    except:
-        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
-
-    
-    domain	= request.get_host()
-    url		= request.GET.get('url','')
-    run		= request.GET.get('run','')
-    event	= request.GET.get('event','')
-    changroup	= request.GET.get('changroup','')
-    datatype	= request.GET.get('datatype','')
-
-    d = {}
-    d['domain']		= domain
-
-    for item in ('url', 'run', 'event', 'changroup', 'datatype'):
-        stuff = request.GET.get(item,'')
-        if(item=='changroup'):
-            d[item] = stuff+' ('+evdisp.group2string(int(stuff))+')'
-        else:
-            d[item]	= stuff
-    
-    d['pageName']	= ': Event Display'
-    d['message']	= evdisp.message()
-    d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
-    
-    return render(request, 'display1.html', d)
 #########################################################    
 @csrf_exempt
 def addmon(request):

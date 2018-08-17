@@ -187,3 +187,41 @@ def display6(request):
     
     return render(request, 'display6.html', d)
 
+#########################################################    
+@csrf_exempt
+def display1(request):
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
+
+    try:
+        p3s_domain	= settings.SITE['p3s_domain']
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
+    
+    domain	= request.get_host()
+    url		= request.GET.get('url','')
+    run		= request.GET.get('run','')
+    event	= request.GET.get('event','')
+    changroup	= request.GET.get('changroup','')
+    datatype	= request.GET.get('datatype','')
+
+    d = {}
+    d['domain']		= domain
+
+    for item in ('url', 'run', 'event', 'changroup', 'datatype'):
+        stuff = request.GET.get(item,'')
+        if(item=='changroup'):
+            d[item] = stuff+' ('+evdisp.group2string(int(stuff))+')'
+        else:
+            d[item]	= stuff
+    
+    d['pageName']	= ': Event Display'
+    d['message']	= evdisp.message()
+    d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
+    
+    return render(request, 'display1.html', d)
