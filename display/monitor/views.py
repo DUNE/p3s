@@ -86,12 +86,8 @@ def monchart(request):
 
     if request.method == 'POST':
         tsSelector = twoFieldGeneric(request.POST,
-                                     label1="min. (YYYY-MM-DD HH:MM:SS)",
-                                     field1="tsmin",
-                                     init1=tsmin,
-                                     label2="max. (YYYY-MM-DD HH:MM:SS)",
-                                     field2="tsmax",
-                                     init2=tsmax)
+                                     label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
+	                             label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
         if tsSelector.is_valid():
             tsmin=tsSelector.getval("tsmin")
             tsmax=tsSelector.getval("tsmax")
@@ -170,12 +166,8 @@ def monchart(request):
     d['rows']	= bigStruct
     d['domain']	= domain
     
-    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
-                                 field1="tsmin",
-                                 init1=tsmin,
-                                 label2="max. (YYYY-MM-DD HH:MM:SS)",
-                                 field2="tsmax",
-                                 init2=tsmax)
+    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
+                                 label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
     
     selectors = []
     selectors.append(tsSelector)
@@ -209,13 +201,7 @@ def puritychart(request, what):
     tsmax	= request.GET.get('tsmax','')
     width	= request.GET.get('width','3')
 
-    # tz = pytz.timezone('Europe/Berlin')
-    # print(tz)
-    #    if(tsmin!=''): tsminFixed = datetime.datetime(tsmin) # , tzinfo=tz)
-    #    tsminFixed.replace(tzinfo=tz)    
-
-    q=''
-
+    q='' # the query string will go here
     if request.method == 'POST':
         tsSelector = twoFieldGeneric(request.POST,
                                      label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
@@ -233,41 +219,47 @@ def puritychart(request, what):
     ########################################## QUERY RESULTS #################################################
     ##########################################################################################################
 
-    bigPur = []
-    purSeries = []
+    bigPur, purSeries  = [], []
+
     W=int(width)
     cnt=0
+    
     for tpcNum in (1,2,5,6,9,10):
         purDict = {}
 
+        # select by TPC and the time range
         objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
         if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
-        purStr=''
+        purStr='' # This string must comply with the Google Charts format
 
-        for forChart in objs:
+        for purEntry in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
-                t = forChart.ts
-                
+                t = purEntry.ts
+
+                val4graph = 0.0
                 if(what=='purity'):
-                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
+                    val4graph = purEntry.lifetime
                 else:
-                    purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.sn)
+                    val4graph = purEntry.sn
+                    
+                purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph)
             except:
                 break
     
-        purDict["panel"] = 'tpc'+str(tpcNum)
-        purDict["timeseries"]=purStr
+        purDict["panel"]	= 'tpc'+str(tpcNum)
+        purDict["timeseries"]	= purStr # ship out finalized time series STRING in Google format
         
         if(what=='purity'):
             purDict["main"]='lifetime'
             purDict["vAxis"]='Lifetime (ms)'
         else:
-            purDict["vAxis"]='S/N'
             purDict["main"]='s/n'
+            purDict["vAxis"]='S/N'
             
         purSeries.append(purDict)
+        
         cnt+=1
         if(cnt == W):
             bigPur.append(purSeries)
@@ -280,17 +272,11 @@ def puritychart(request, what):
     d['rows']	= bigPur
     d['domain']	= domain
     
-    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",
-                                 field1="tsmin",
-                                 init1=tsmin,
-                                 label2="max. (YYYY-MM-DD HH:MM:SS)",
-                                 field2="tsmax",
-                                 init2=tsmax)
+    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
+                                 label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
     
     selectors = []
     selectors.append(tsSelector)
-
-
     
     d['selectors']	= selectors
     d['pageName']	= ': '+what+' timeline'
@@ -695,6 +681,107 @@ def automon(request):
     d['headers']	= cats
 
     return render(request, 'unitable4.html', d)
+
+
+
+#########################################################    
+############# EVENT DISPLAY #############################    
+#########################################################    
+@csrf_exempt
+def display6(request):
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
+
+    try:
+        p3s_domain	= settings.SITE['p3s_domain']
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
+    
+    domain	= request.get_host()
+    run		= request.GET.get('run','')
+    event	= request.GET.get('event','')
+
+
+    objs = evdisp.objects.filter(run=run).filter(evnum=event)
+    
+    d = {}
+    d['domain']		= domain
+    d['changroups']	= [1,2,3,4,5,6]
+
+    ts = None
+    d['rows'] = []
+    for N in d['changroups']:
+        raw	= objs.filter(changroup=N).filter(datatype='raw')[0]
+        prep	= objs.filter(changroup=N).filter(datatype='prep')[0]
+
+        ts = raw.ts
+        rawUrl = ('http://%s/%s/%s/%s'
+                         % (domain, # this needs to point to the image, also below
+                            settings.SITE['dqm_evdisp_url'],
+                            raw.j_uuid,
+                            evdisp.makename(int(event), 'raw', N)
+                         ))
+
+        prepUrl = ('http://%s/%s/%s/%s'
+                         % (domain, # this needs to point to the image, also below
+                            settings.SITE['dqm_evdisp_url'],
+                            raw.j_uuid,
+                            evdisp.makename(int(event), 'prep', N)
+                         ))
+        d['rows'].append([rawUrl,prepUrl])
+
+    d['run']		= run
+    d['event']		= event
+    d['ts']		= ts
+    d['pageName']	= ': Event Display'
+    d['message']	= evdisp.message()
+    d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
+    
+    return render(request, 'display6.html', d)
+
+#########################################################    
+@csrf_exempt
+def display1(request):
+    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
+
+    try:
+        p3s_domain	= settings.SITE['p3s_domain']
+        dqm_domain	= settings.SITE['dqm_domain']
+        dqm_host	= settings.SITE['dqm_host']
+        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
+        p3s_services	= settings.SITE['p3s_services']
+    except:
+        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+
+    
+    domain	= request.get_host()
+    url		= request.GET.get('url','')
+    run		= request.GET.get('run','')
+    event	= request.GET.get('event','')
+    changroup	= request.GET.get('changroup','')
+    datatype	= request.GET.get('datatype','')
+
+    d = {}
+    d['domain']		= domain
+
+    for item in ('url', 'run', 'event', 'changroup', 'datatype'):
+        stuff = request.GET.get(item,'')
+        if(item=='changroup'):
+            d[item] = stuff+' ('+evdisp.group2string(int(stuff))+')'
+        else:
+            d[item]	= stuff
+    
+    d['pageName']	= ': Event Display'
+    d['message']	= evdisp.message()
+    d['navtable']	= TopTable(domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
+    
+    return render(request, 'display1.html', d)
 #########################################################    
 # purStr += ('[new Date(%s), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
 
