@@ -29,10 +29,13 @@
 
       var options = {
       title: '{{ p.panel }}',
-      legend: {position:'none'},
-      height: 300,
+      // legend: {position:'none'},
+      legend: {position:'bottom'},
+      height: 400,
       width: 400,
       timeZone:0,
+      seriesType: 'bars',
+      series: {1: {type: 'line'}},
       vAxis: {
       title: '{{ p.vAxis }}' // Example: 'Electron Lifetime (ms)'
       },

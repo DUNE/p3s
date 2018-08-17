@@ -224,6 +224,8 @@ def puritychart(request, what):
     W=int(width)
     cnt=0
     
+    critical=2.7
+    
     for tpcNum in (1,2,5,6,9,10):
         # select by TPC and the time range
         objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
@@ -242,7 +244,9 @@ def puritychart(request, what):
                 else:
                     val4graph = purEntry.sn
                     
-                purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph)
+                #purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph)
+                purStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph, critical)
+
             except:
                 break
 
@@ -255,9 +259,11 @@ def puritychart(request, what):
         if(what=='purity'):
             purDict["main"]='lifetime'
             purDict["vAxis"]='Lifetime (ms)'
+            purDict["extra"]='lowest allowed'
         else:
             purDict["main"]='s/n'
             purDict["vAxis"]='S/N'
+            purDict["extra"]='critical'
             
         purSeries.append(purDict) # this is just a row, it's an entry in the bigger list "bigPur"
         
