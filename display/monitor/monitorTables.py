@@ -162,7 +162,7 @@ class MonRunTable(MonitorTable):
             foo3 = d["NNoisy Channels Above ADC RMS Threshold(40)"]
                      
             output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
-            output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy 6&sigma;/1&sigma;') % (self.site)
+            output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy over 6&sigma; vs over the threshold') % (self.site)
         except:
             pass
 
