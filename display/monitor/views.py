@@ -52,6 +52,12 @@ PURITYCHARTLABELS = {
     'sn':	{'main':'s/n',		'vAxis':'S/N',			'extra':'lowest allowed'},
     }
 
+GCHARTS2	= '[new Date(Date.UTC(%s)), %s, %s],'
+T4G	= '%Y, %m-1, %d, %H, %M, %S'
+
+
+TSLABEL1	= 'min. (YYYY-MM-DD HH:MM:SS)'
+TSLABEL2	= 'max. (YYYY-MM-DD HH:MM:SS)'
 #########################################################
 
 # ---
@@ -212,8 +218,8 @@ def puritychart(request, what):
     
     if request.method == 'POST':
         tsSelector = twoFieldGeneric(request.POST,
-                                     label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
-                                     label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
+                                     label1=TSLABEL1, field1="tsmin", init1=tsmin,
+                                     label2=TSLABEL2, field2="tsmax", init2=tsmax)
         if tsSelector.is_valid():
             tsmin=tsSelector.getval("tsmin")
             tsmax=tsSelector.getval("tsmax")
@@ -227,17 +233,11 @@ def puritychart(request, what):
     ########################################## QUERY RESULTS #################################################
     ##########################################################################################################
 
-    bigPur, purSeries  = [], []
-
-    W=int(width)
-    cnt=0
-
-
-    lowerLimit = settings.LIMITS[what]['min']
-    print(lowerLimit)
+    bigPur, purSeries, W, cnt	= [], [], int(width), 0
+    lowerLimit			= settings.LIMITS[what]['min']
     
+    # select by TPC and the time range
     for tpcNum in (1,2,5,6,9,10):
-        # select by TPC and the time range
         objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
         if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
@@ -245,24 +245,19 @@ def puritychart(request, what):
         purStr='' # This string must comply with the Google Charts format
 
         for purEntry in objs:
-            try: # template: [new Date(2014, 10, 15, 7, 30), 1],
-                t		= purEntry.ts
-                val4graph	= {'purity':purEntry.lifetime, 'sn':purEntry.sn}[what]
-                    
-                #purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph)
-                purStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph, lowerLimit)
-
+            try: # template: [new Date(2014, 10, 15, 7, 30), 1], ??? Leave for now
+                purStr += GCHARTS2 % (purEntry.ts.strftime(T4G), {'purity':purEntry.lifetime, 'sn':purEntry.sn}[what], lowerLimit)
             except:
                 break
 
         # This dict takes the panel name, the above formed time series as string, and axes names/labels
         purDict = {}
-
         purDict["panel"]	= 'tpc'+str(tpcNum)
-        purDict["timeseries"]	= purStr # ship out finalized time series STRING in Google format
-        purDict = {**purDict, **PURITYCHARTLABELS[what]}
+        purDict["timeseries"]	= purStr # !!! ship out finalized time series STRING in Google format !!!
+        purDict			= {**purDict, **PURITYCHARTLABELS[what]} # merge: add axes labels etc
+        purDict['extra']	= purDict['extra']+': '+str(lowerLimit)
             
-        purSeries.append(purDict) # this is just a row, it's an entry in the bigger list "bigPur"
+        purSeries.append(purDict) # purSeries is just a row, it's an entry in the bigger list "bigPur"
         
         cnt+=1
         if(cnt == W):
@@ -276,8 +271,7 @@ def puritychart(request, what):
     d['rows']	= bigPur # the data to be rendered
     d['domain']	= domain
     
-    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
-                                 label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
+    tsSelector = twoFieldGeneric(label1=TSLABEL1, field1="tsmin", init1=tsmin, label2=TSLABEL2, field2="tsmax", init2=tsmax)
     
     selectors = []
     selectors.append(tsSelector)
