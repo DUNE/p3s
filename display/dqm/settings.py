@@ -14,16 +14,9 @@ import os
 import socket
 
 
-from local import SITE, DATABASES
+from local	import SITE, DATABASES
+from parameters	import LIMITS
 
-
-
-# template -
-# LOCAL = {
-#     'dirpath': 'xxx',
-#     'dqm_domain': 'xxx:8000',
-#     'dqm_host': 'xxx'
-# }
 
 DIRPATH		= SITE['dirpath']
 DQM_DOMAIN	= SITE['dqm_domain']

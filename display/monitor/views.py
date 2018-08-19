@@ -47,7 +47,14 @@ REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('
 PAGECHOICES	= [('25','25'),		('50','50'),	('100','100'),	('200','200'),	('400','400'),]
 TPCCHOICES	= [('', 'All'),		('1', '1'),	('2','2'),	('5','5'),	('6','6'),	('9','9'),	('10','10'), ]
 
+PURITYCHARTLABELS = {
+    'purity':	{'main':'lifetime',	'vAxis':'Lifetime (ms)',	'extra':'lowest allowed'},
+    'sn':	{'main':'s/n',		'vAxis':'S/N',			'extra':'lowest allowed'},
+    }
 
+#########################################################
+
+# ---
 def makeQuery(page, q=''):
     gUrl= '/monitor/'+page
     qUrl= '/monitor/'+page+"?"
@@ -202,6 +209,7 @@ def puritychart(request, what):
     width	= request.GET.get('width','3')
 
     q='' # the query string will go here
+    
     if request.method == 'POST':
         tsSelector = twoFieldGeneric(request.POST,
                                      label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
@@ -223,8 +231,10 @@ def puritychart(request, what):
 
     W=int(width)
     cnt=0
-    
-    critical=2.7
+
+
+    lowerLimit = settings.LIMITS[what]['min']
+    print(lowerLimit)
     
     for tpcNum in (1,2,5,6,9,10):
         # select by TPC and the time range
@@ -236,34 +246,21 @@ def puritychart(request, what):
 
         for purEntry in objs:
             try: # template: [new Date(2014, 10, 15, 7, 30), 1],
-                t = purEntry.ts
-
-                val4graph = 0.0
-                if(what=='purity'):
-                    val4graph = purEntry.lifetime
-                else:
-                    val4graph = purEntry.sn
+                t		= purEntry.ts
+                val4graph	= {'purity':purEntry.lifetime, 'sn':purEntry.sn}[what]
                     
                 #purStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph)
-                purStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph, critical)
+                purStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), val4graph, lowerLimit)
 
             except:
                 break
 
-        # This dict takes the panel name, the above formed time series as string, and axes names
+        # This dict takes the panel name, the above formed time series as string, and axes names/labels
         purDict = {}
 
         purDict["panel"]	= 'tpc'+str(tpcNum)
         purDict["timeseries"]	= purStr # ship out finalized time series STRING in Google format
-        
-        if(what=='purity'):
-            purDict["main"]='lifetime'
-            purDict["vAxis"]='Lifetime (ms)'
-            purDict["extra"]='lowest allowed'
-        else:
-            purDict["main"]='s/n'
-            purDict["vAxis"]='S/N'
-            purDict["extra"]='critical'
+        purDict = {**purDict, **PURITYCHARTLABELS[what]}
             
         purSeries.append(purDict) # this is just a row, it's an entry in the bigger list "bigPur"
         
