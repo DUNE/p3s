@@ -267,8 +267,9 @@ def puritychart(request, what):
             
     bigPur.append(purSeries)
 
-    d = {}
-    d['rows']	= bigPur # the data to be rendered
+    # Finally, fill out the dictionary to be rendered in the template
+    d		= {}
+    d['rows']	= bigPur # the data to be rendered in the charts
     d['domain']	= domain
     
     tsSelector = twoFieldGeneric(label1=TSLABEL1, field1="tsmin", init1=tsmin, label2=TSLABEL2, field2="tsmax", init2=tsmax)
