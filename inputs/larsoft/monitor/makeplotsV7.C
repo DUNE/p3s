@@ -422,13 +422,19 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 
       if(dirname.Contains("tpcmonitor")){
 	if(HistoName.Contains("fAllChan") || HistoName.Contains("fBitValue")){
-	  h1->GetXaxis()->SetBinLabel(40,  " ");
-	  h1->GetXaxis()->SetBinLabel(120, " ");
-	  h1->GetXaxis()->SetBinLabel(200, " ");
-	  TString title1 = Form("   TOP:     %s     %s     %s", apaname[3].Data(),apaname[5].Data(),apaname[4].Data());
-	  TString title2 = Form("BOTTOM: %s     %s     %s", apaname[0].Data(),apaname[1].Data(),apaname[2].Data());
-	  TString title3 = Form("#splitline{%s}{%s}",title1.Data(),title2.Data());
-	  h1->GetXaxis()->SetTitle(title3.Data());
+	  Double_t stops[9] = { 0.0000, 1./255., 1./6., 1./3., 1./2., 2./3., 5./6., 254./255., 1.0000};
+	  Double_t red[9]   = {  0./255.,   5./255.,  15./255.,  35./255., 102./255., 196./255., 208./255., 199./255., 110./255.};
+	  Double_t green[9] = {  0./255.,  48./255., 124./255., 192./255., 206./255., 226./255.,  97./255.,  16./255.,   0./255.};
+	  Double_t blue[9]  = { 99./255., 142./255., 198./255., 201./255.,  90./255.,  22./255.,  13./255.,   8./255.,   2./255.};
+	  TColor::CreateGradientColorTable(9, stops, red, green, blue, 255);
+	  h1->GetXaxis()->SetLabelSize(0.0);
+	  h1->GetYaxis()->SetLabelSize(0.04);
+	  h1->GetZaxis()->SetLabelSize(0.025);
+	  h1->GetXaxis()->SetTickLength(0.0);
+	  h1->GetYaxis()->SetTickLength(0.0);
+	  h1->GetZaxis()->SetTitleOffset(1.1);
+	  h1->GetXaxis()->SetTitle(" ");
+	  c1->SetPad(0.0001,0.0001,0.99,0.99);
 	}
       }
 
@@ -449,13 +455,42 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
         h1->SetStats(false);
         h1->Draw("colz");
 	if(obj->IsA()->InheritsFrom(TProfile2D::Class())){
-	  TLine *yline = new TLine(h1->GetXaxis()->GetBinLowEdge(1),h1->GetYaxis()->GetBinLowEdge(32)+h1->GetYaxis()->GetBinWidth(32),h1->GetXaxis()->GetBinLowEdge(h1->GetNbinsX()),h1->GetYaxis()->GetBinLowEdge(32)+h1->GetYaxis()->GetBinWidth(32));
-	  yline->Draw("same");
+	  TText *apa3 = new TText(20,-4,apaname[2].Data());
+	  TText *apa2 = new TText(100,-4,apaname[1].Data());
+	  TText *apa1 = new TText(180,-4,apaname[0].Data());
+	  TText *apa5 = new TText(20,64,apaname[4].Data());
+	  TText *apa6 = new TText(100,64,apaname[5].Data());
+	  TText *apa4 = new TText(180,64,apaname[3].Data());
+	  apa3->SetTextSize(0.025);
+	  apa2->SetTextSize(0.025);
+	  apa1->SetTextSize(0.025);
+	  apa5->SetTextSize(0.025);
+	  apa6->SetTextSize(0.025);
+	  apa4->SetTextSize(0.025);
 
-	  TLine *x1line = new TLine(h1->GetXaxis()->GetBinLowEdge(80)+h1->GetXaxis()->GetBinWidth(80),h1->GetYaxis()->GetBinLowEdge(1),h1->GetXaxis()->GetBinLowEdge(80)+h1->GetXaxis()->GetBinWidth(80),h1->GetYaxis()->GetBinLowEdge(h1->GetNbinsY()));
-	  x1line->Draw("same");
-	  TLine *x2line = new TLine(h1->GetXaxis()->GetBinLowEdge(160)+h1->GetXaxis()->GetBinWidth(160),h1->GetYaxis()->GetBinLowEdge(1),h1->GetXaxis()->GetBinLowEdge(160)+h1->GetXaxis()->GetBinWidth(160),h1->GetYaxis()->GetBinLowEdge(h1->GetNbinsY()));
-	  x2line->Draw("same");
+	  apa1->Draw("SAME");
+	  apa2->Draw("SAME");
+	  apa3->Draw("SAME");
+	  apa4->Draw("SAME");
+	  apa5->Draw("SAME");
+	  apa6->Draw("SAME");
+
+	  TLine *line1 = new TLine(79.5,-0.5,79.5,63.5);
+	  TLine *line2 = new TLine(159.5,-0.5,159.5,63.5);
+	  TLine *line3 = new TLine(-0.5,31.5,239.5,31.5);
+	  line1->Draw("SAME");
+	  line2->Draw("SAME");
+	  line3->Draw("SAME");
+
+	  TLine *l[3][19];
+	  for(int i=0; i<19; i++){
+	    for(int j=0; j<3; j++){
+	      float x1 =(3.5 + 4*i + 80*j);
+	      l[j][i] = new TLine(x1,-0.5,x1,63.5);
+	      l[j][i]->SetLineStyle(3);
+	      l[j][i]->Draw("SAME");
+	    }
+	  }
 
 	  c1->Update();
 	  TPaletteAxis *palette = (TPaletteAxis*)h1->GetListOfFunctions()->FindObject("palette");
@@ -517,14 +552,20 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       }
 
       // Add second line of title
-      gPad->Update();
-      TPaveText * pt = (TPaveText *)gPad->FindObject("title");
       TString datename_new = runname + TString("(taken on ") + datename + TString(")");
-      pt->InsertText(datename_new.Data());
-      pt->SetX1NDC(0.05);   pt->SetY1NDC(0.9);
-      pt->SetX2NDC(0.75);    pt->SetY2NDC(0.99);
-      pt->SetTextSize(0.03);
-      pt->Draw();
+      if(HistoName.Contains("fAllChan") || HistoName.Contains("fBitValue")){
+	HistoTitle += TString(":") + datename_new;
+	h1->SetTitle(HistoTitle.Data());
+      }
+      else{
+	gPad->Update();
+	TPaveText * pt = (TPaveText *)gPad->FindObject("title");
+	pt->InsertText(datename_new.Data());
+	pt->SetX1NDC(0.05);   pt->SetY1NDC(0.9);
+	pt->SetX2NDC(0.75);    pt->SetY2NDC(0.99);
+	pt->SetTextSize(0.03);
+	pt->Draw();
+      }
     
       TString figname = h1->GetName(); //key->GetName();
       figname += ".png";
