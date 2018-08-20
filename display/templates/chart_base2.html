@@ -23,28 +23,26 @@
       data.addColumn('number', '{{ p.extra }}');
       {% endif %}  
 
-      data.addRows([
-      {{ p.timeseries }}
-      ]);
+      data.addRows([{{ p.timeseries }}]);
 
       var options = {
       title: '{{ p.panel }}',
-      // legend: {position:'none'},
-      legend: {position:'bottom'},
-      height: 400,
-      width: 400,
-      timeZone:0,
-      seriesType: 'bars',
+      legend: {position:'bottom'},      // legend: {position:'none'},
+      height: 400, width: 400, timeZone:0, seriesType: 'bars',
+      
       series: {1: {type: 'line'}},
+      
       vAxis: {
-      title: '{{ p.vAxis }}' // Example: 'Electron Lifetime (ms)'
+      title: '{{ p.vAxis }}', // Example: 'Electron Lifetime (ms)'
+      {% if vMinmax %}
+      viewWindow: {max:{{ vMinmax.0 }}, min:{{ vMinmax.1 }}},
+      {% endif %}
+     
       },
-      hAxis: {
-      title: 'Date/Time'
-      }
-      };
+      
+      hAxis: {title: 'Date/Time'}};
 
-// --mxp-- experimenting with combo
+      // --mxp-- experimenting with combo
       var chart = new google.visualization.ComboChart(document.getElementById('{{ p.panel }}'));
       
       chart.draw(data, google.charts.Bar.convertOptions(options));

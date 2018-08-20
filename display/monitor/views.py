@@ -99,8 +99,8 @@ def monchart(request):
 
     if request.method == 'POST':
         tsSelector = twoFieldGeneric(request.POST,
-                                     label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
-	                             label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
+                                     label1=TSLABEL1, field1="tsmin", init1=tsmin,
+	                             label2=TSLABEL2, field2="tsmax", init2=tsmax)
         if tsSelector.is_valid():
             tsmin=tsSelector.getval("tsmin")
             tsmax=tsSelector.getval("tsmax")
@@ -179,8 +179,8 @@ def monchart(request):
     d['rows']	= bigStruct
     d['domain']	= domain
     
-    tsSelector = twoFieldGeneric(label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
-                                 label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
+    tsSelector = twoFieldGeneric(label1=TSLABEL1, field1="tsmin", init1=tsmin,
+                                 label2=TSLABEL2, field2="tsmax", init2=tsmax)
     
     selectors = []
     selectors.append(tsSelector)
@@ -281,6 +281,7 @@ def puritychart(request, what):
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
 
+    d['vMinmax']	= ['1.0','4.0']
     return render(request, 'purity_chart2.html', d)
 
 #########################################################    
@@ -341,8 +342,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
             
         # ---
         tsSelector = twoFieldGeneric(request.POST,
-                                     label1="min. (YYYY-MM-DD HH:MM:SS)",	field1="tsmin",	init1=tsmin,
-                                     label2="max. (YYYY-MM-DD HH:MM:SS)",	field2="tsmax",	init2=tsmax)
+                                     label1=TSLABEL1, field1="tsmin", init1=tsmin,
+                                     label2=TSLABEL2, field2="tsmax", init2=tsmax)
         if tsSelector.is_valid():
             tsmin=tsSelector.getval("tsmin")
             tsmax=tsSelector.getval("tsmax")
@@ -396,9 +397,9 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(tpc!=''):	objs = objs.filter(tpc=tpc)
 
     #-------------
-
-    t = None
-    if(tbl=='RunTable'):
+    # Initialize the table object, fill essential info in the dictionary for the template (d)
+    t = None # placeholder for the table
+    if(tbl=='RunTable'): # special case
         RunData = []
         distinct_run = objs.order_by('-run').distinct("run").all()
         if(run!=''): distinct_run = objs.filter(run=run).distinct("run").all()
@@ -412,8 +413,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
     else:
         t = eval(tbl)(objs.order_by('-pk'))
 
-
     if(tbl=='EvdispTable' and showjob is None): t.exclude = ('j_uuid',)
+    
     t.set_site(domain)
     
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
@@ -428,53 +429,31 @@ def data_handler2(request, what, tbl, tblHeader, url):
     except:
         pass
 
+    ############################################
+    # Populate the selectors
     selectors = []
     # ---
-    refreshSelector = dropDownGeneric(label='Refresh',
-                                      initial={'refresh': refresh},
-                                      choices=REFRESHCHOICES,
-                                      tag='refresh')
+    refreshSelector = dropDownGeneric(label='Refresh', initial={'refresh': refresh}, choices=REFRESHCHOICES, tag='refresh')
     selectors.append(refreshSelector)
     # ---
-    perPageSelector = dropDownGeneric(initial={'perpage':perpage},
-                                      label='# per page',
-                                      choices = PAGECHOICES,
-                                      tag='perpage')
+    perPageSelector = dropDownGeneric(initial={'perpage':perpage}, label='# per page', choices = PAGECHOICES, tag='perpage')
     selectors.append(perPageSelector)
 
     if(what=='monrun'):
-        typeSelector	= dropDownGeneric(initial={'jobtype':initJobType},
-	                                  label='Type',
-	                                  choices = JOBTYPECHOICES,
-                                          tag='jobtype')
+        typeSelector	= dropDownGeneric(initial={'jobtype':initJobType}, label='Type', choices = JOBTYPECHOICES, tag='jobtype')
         selectors.append(typeSelector)
         
     # ---
-    tsSelector = twoFieldGeneric(
-        label1="min. (YYYY-MM-DD HH:MM:SS)",
-        field1="tsmin",
-        init1=tsmin,
-        label2="max. (YYYY-MM-DD HH:MM:SS)",
-        field2="tsmax",
-        init2=tsmax
-    )
+    tsSelector = twoFieldGeneric(label1=TSLABEL1, field1="tsmin", init1=tsmin, label2=TSLABEL2, field2="tsmax", init2=tsmax)
     
     selectors.append(tsSelector)
     # ---
     if(what=='pur'):
-        tpcSelector = dropDownGeneric(initial={'tpc':tpc},
-                                      label='tpc',
-                                      choices = TPCCHOICES,
-                                      tag='tpc')
+        tpcSelector = dropDownGeneric(initial={'tpc':tpc}, label='tpc', choices = TPCCHOICES, tag='tpc')
         selectors.append(tpcSelector)
     # ---
     if(what=='evdisp'):
-        juuidSelector = twoFieldGeneric(label1="Job UUID",
-                                        field1="j_uuid",
-                                        init1=j_uuid,
-                                        label2="Data Type",
-                                        field2="d_type",
-                                        init2=d_type)
+        juuidSelector = twoFieldGeneric(label1="Job UUID", field1="j_uuid", init1=j_uuid, label2="Data Type", field2="d_type", init2=d_type)
         selectors.append(juuidSelector)
         
         runSelector =  twoFieldGeneric(label1="Run",
