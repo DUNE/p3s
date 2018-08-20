@@ -15,7 +15,7 @@ import socket
 
 
 from local	import SITE, DATABASES
-from parameters	import LIMITS
+from parameters	import LIMITS, CHARTS
 
 
 DIRPATH		= SITE['dirpath']
