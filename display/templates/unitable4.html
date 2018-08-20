@@ -3,6 +3,11 @@
 {% load static %}
 
 {% block content1 %}
+    <center><b>Back to Home Page: </b>
+      {{ dqmHome }}
+    </center>
+
+<center>
 <h3>{{ tblHeader }}</h3>
 <hr/>
 {% if tables %}
@@ -20,7 +25,7 @@
   </tr>
 </table>
 {% endif %}
-
+</center>
 
 <!-- what's below is meant to display multiple rows of images -->
 {% if rows %}

@@ -22,9 +22,12 @@
     <!-- TOP TOP TOP TOP -->
     {% include "topnavbar.html" %}
 
-    
-    <h2>protoDUNE DQM{{ pageName }} on server {{ host }} updated at {{ time }}</h2>
-    <h3>{{ message }}</h3>
+    <center><b>Back to Home Page: </b>
+      {{ dqmHome }}
+    </center>
+    <center>    
+      <h2>protoDUNE DQM{{ pageName }} on server {{ host }} updated at {{ time }}</h2>
+      <h3>{{ message }}</h3>
 
 
 	    <!-- div -->
@@ -49,6 +52,7 @@
 	      </form>
 	      {% endblock %}
 	      <!-- /div -->
+    </center>
 
       <div id="content1">
         {% block content1 %}{% endblock %}

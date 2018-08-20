@@ -3,6 +3,7 @@ from django.db import models
 from django.core	import serializers
 from django.utils.safestring		import mark_safe
 
+################################################################################################
 class monrun(models.Model):
     run		= models.PositiveIntegerField(default=0,	verbose_name='Run')
     subrun	= models.PositiveIntegerField(default=0,	verbose_name='SubRun')
@@ -18,14 +19,11 @@ class monrun(models.Model):
         pattern = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&category=%s&filetype=%s">%s</a>'
         link = mark_safe(pattern % (domain,run, subrun, category, filetype, filetype))
         return link
-    
+    # ---
     @classmethod
     def autoMonImgURLs(self, domain, dqmURL, j_uuid, files):
-        fList = files.split(',')
-        row = []
-        rows = []
-        
-        cnt = 0
+        fList, row, rows, cnt = files.split(','), [], [], 0
+
         for filename in fList:
             row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
             cnt+=1
@@ -35,3 +33,6 @@ class monrun(models.Model):
                 row = []
         if(len(row)>0): rows.append(row) #!
         return rows
+
+################################################################################################
+#class monrun(models.Model):

@@ -34,7 +34,7 @@ from evdisp.models			import evdisp
 from .models				import monrun
 
 from utils.selectorUtils		import dropDownGeneric, boxSelector, twoFieldGeneric
-from utils.navbar			import TopTable, HomeTable
+from utils.navbar			import TopTable, HomeTable, HomeBarData
 
 
 # The tables needed here are defined in a separate unit of code
@@ -86,6 +86,7 @@ def monchart(request):
 
     
     host	= request.GET.get('host','')
+    port	= request.get_port()
 
     domain	= request.get_host()
     tsmin	= request.GET.get('tsmin','')
@@ -188,7 +189,7 @@ def monchart(request):
     d['selectors']	= selectors
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
 
     return render(request, 'purity_chart1.html', d)
 
@@ -208,6 +209,7 @@ def puritychart(request, what):
 
     
     host	= request.GET.get('host','')
+    port	= request.get_port()
     
     domain	= request.get_host()
     tsmin	= request.GET.get('tsmin','')
@@ -280,7 +282,8 @@ def puritychart(request, what):
     d['selectors']	= selectors
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
+    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
     d['vMinmax']	= [settings.CHARTS[what]['min'], settings.CHARTS[what]['max']]
     
     return render(request, 'purity_chart2.html', d)
@@ -302,6 +305,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     domain	= request.get_host()
 
     host	= request.GET.get('host','')
+    port	= request.get_port()
     
     perpage	= request.GET.get('perpage','25')
     tsmin	= request.GET.get('tsmin','')
@@ -495,7 +499,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     d['tblHeader']	= tblHeader
     d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
+    d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
+    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
     
     return render(request, 'unitable2.html', d)
 
@@ -586,6 +591,7 @@ def delmon(request):
 def automon(request):
     domain	= request.get_host()
     host	= request.GET.get('host','')
+    port	= request.get_port()
     run		= request.GET.get('run','')
     subrun	= request.GET.get('subrun','')
     category	= request.GET.get('category','')
@@ -657,6 +663,7 @@ def automon(request):
 
     d['tables']		= tbls
     d['headers']	= cats
+    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
 
     return render(request, 'unitable4.html', d)
 

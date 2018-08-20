@@ -5,8 +5,10 @@
 <table>
   <tr>
     <th width="50%">
-      {{ tblHeader }}
+     {{ tblHeader }}
     </th>
+
+    
     {% if table_aux %}
     <!-- th>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th -->
     <th width="50%">
@@ -22,9 +24,10 @@
     </th>
     {% endif %}
   </tr>
+  
   <tr>
     {% if table %}
-      <td>
+      <td align="center">
       {% render_table table %}
       </td>
     {% endif %}
@@ -45,4 +48,5 @@
     {% endif %}
     
   </tr>
+</table>
 {% endblock %}    

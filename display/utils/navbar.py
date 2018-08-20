@@ -51,14 +51,17 @@ def TopTable(domain):
     return t
 
 # ---
-def HomeBarData(domain, dqm_domain, host=None):
+def HomeBarData(domain, dqm_domain, host=None, port=None):
+    # this is for dev only, we want to stay on 8000
+    # when we run the dev server
+    if port is None: port='8009'
     if(host):
         if('localhost' in host):
             domain = 'localhost:8008'
-            dqm_domain = 'localhost:8009'
+            dqm_domain = 'localhost:'+port
     if('localhost' in domain):
         domain = 'localhost:8008'
-        dqm_domain = 'localhost:8009'
+        dqm_domain = 'localhost:'+port
         
     data = []
     data.append({
@@ -78,6 +81,6 @@ class AnchorTable(tables.Table):
     class Meta:
         attrs	= {'class': 'paleblue'}
 # ---
-def HomeTable(domain, dqm_domain, host=None):
-    t = AnchorTable(HomeBarData(domain, dqm_domain, host), show_header = False)
+def HomeTable(domain, dqm_domain, host=None, port=None):
+    t = AnchorTable(HomeBarData(domain, dqm_domain, host, port), show_header = False)
     return t

@@ -29,17 +29,17 @@ def index(request):
     
     hostname	= settings.HOSTNAME
     domain	= request.get_host()
+    port	= request.get_port()
     upt		= uptime()
     ldavg	= loadavg()
 
-    
     return render(request, 'index.html',
                   {
                       'domain':		domain,
                       'hostname':	hostname,
                       'uptime':		upt,
                       'navtable':	TopTable(domain),
-                      'hometable':	HomeTable(domain, dqm_domain),
+                      'hometable':	HomeTable(domain, dqm_domain, domain, port),
                   }
 
 )

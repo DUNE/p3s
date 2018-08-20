@@ -1,13 +1,13 @@
-from django.utils			import timezone
 import django.db.models
+from django.utils	import timezone
 from django.db.models	import Max
+from django.conf			import settings
 
 from django.shortcuts	import render
 from django.http	import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import pur
-
 from utils.miscUtils import parseCommaDash
 
 #########################################################    
@@ -101,6 +101,11 @@ def add(request):
     
     p.save()
 
+    if settings.LIMITS['purity']['alarm']:
+        if p.lifetime < settings.LIMITS['purity']['min']:
+            print('Alarm!')
+
+    
     
     return HttpResponse('Adding run '+p.run+' time:'+p.ts.strftime('%x %X'))
 
