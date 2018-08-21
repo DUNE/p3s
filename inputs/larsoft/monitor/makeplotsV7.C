@@ -482,6 +482,15 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 	  line2->Draw("SAME");
 	  line3->Draw("SAME");
 
+	  TLine *line4 = new TLine(-0.5,9.5,239.5,9.5); line4->SetLineStyle(2);
+	  TLine *line5 = new TLine(-0.5,19.5,239.5,19.5); line5->SetLineStyle(2);
+	  TLine *line6 = new TLine(-0.5,41.5,239.5,41.5); line6->SetLineStyle(2);
+	  TLine *line7 = new TLine(-0.5,51.5,239.5,51.5); line7->SetLineStyle(2);
+	  line4->Draw("SAME");
+	  line5->Draw("SAME");
+	  line6->Draw("SAME");
+	  line7->Draw("SAME");
+
 	  TLine *l[3][19];
 	  for(int i=0; i<19; i++){
 	    for(int j=0; j<3; j++){
