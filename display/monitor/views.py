@@ -401,6 +401,11 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
     if(tpc!=''):	objs = objs.filter(tpc=tpc)
 
+
+    # safety:
+    if objs is None: return("No objects found according to your citeria")
+
+    
     #-------------
     # Initialize the table object, fill essential info in the dictionary for the template (d)
     t = None # placeholder for the table
