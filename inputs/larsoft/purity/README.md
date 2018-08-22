@@ -1,5 +1,6 @@
-* purity_main_reco_2.fcl is on hold pending further comments from Tingjun and George
+# Purity Module
 
-* purity_hitmonitor_1.fcl - by George, currently in testing
-
-* working on purity_hitmonitor_1.sh
+## Deprecated as of Aug 22
+* purity_main_reco_2.fcl
+* purity_hitmonitor_1.fcl
+* purity_hitmonitor_1.sh
