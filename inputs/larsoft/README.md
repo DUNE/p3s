@@ -2,7 +2,7 @@
 ## Current Payloads
 * folder purity:
    * purity_data_reco.json
-   *purity_data_reco.fcl
+   * purity_data_reco.fcl
    * purity_hitmonitor_2.sh
 * folder monitor:
    * hitmonitor_data_main.json
