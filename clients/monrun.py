@@ -42,10 +42,10 @@ envDict = clientenv(outputDict=True) # Will need ('server', 'verb'):
 parser = argparse.ArgumentParser()
 
 # ---
-parser.add_argument("-d", "--delete", 			help="deletes an entry. Needs id or run number or job uuid", action='store_true')
+parser.add_argument("-D", "--delete", 			help="deletes an entry. Needs id or run number or job uuid", action='store_true')
 parser.add_argument("-a", "--auto",			help="parse the current directory automatically",	action='store_true')
 parser.add_argument("-s", "--summary",	type=str,	help="summary file name (JSON)",			default='')
-parser.add_argument("-D", "--descr",	type=str,	help="description file name (JSON)",			default='')
+parser.add_argument("-d", "--descr",	type=str,	help="description file name (JSON)",			default='')
 parser.add_argument("-u", "--uuid",	type=str,	help="job uuid to delete or to register (override)",	default='')
 parser.add_argument("-j", "--jobtype",	type=str,	help="job type (which produced these data",		default='')
 parser.add_argument("-i", "--id",	type=str,	help="id of the entry to be adjusted or deleted (pk)", 	default='')
@@ -84,12 +84,20 @@ d = {}
 
 if(delete):
     if(run=='' and pk==''):
-        print('Need to specify the run number or ID to delete, exiting...')
+        print('Error: you need to specify either the run number or ID to delete entries. Exiting...')
         exit(-3)
         
     
-    if(run!=''):	d['run']	= run
-    if(pk!=''):		d['pk']		= pk
+    if(run!=''):
+        if '::' in run:
+            r,s = run.split('::')
+            print(r,s)
+            d['run']=r
+            d['subrun']=s
+        else:
+            d['run']=r
+
+    if(pk!=''):	d['pk']=pk
 
     resp = API.post2server('monitor', 'delmon', d)
     if(verb>0): print(resp)
@@ -98,13 +106,20 @@ if(delete):
 
 # ---
 
+# By now we assume we are to perform registration of
+# a "monitor run" on the server. First check if there is
+# a description, otherwise it's pointless:
 if(description==''):
     print("Missing description, exiting...")
     exit(-1)
 
-    
 summary_dict = {}
-if(summary!=''): summary_dict = takeJson(summary, verb)
+if(summary!=''):
+    summary_dict = takeJson(summary, verb)
+else:
+    print("Missing summary, exiting...")
+    exit(-1)
+    
 
 summary_data = ''
 if(summary!=''):

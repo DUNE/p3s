@@ -41,7 +41,7 @@ from utils.navbar			import TopTable, HomeTable, HomeBarData
 from .monitorTables import *
 
 #########################################################
-JOBTYPECHOICES	= [('', 'All'), ('monitor','monitor'), ('test','test'),]
+JOBTYPECHOICES	= [('', 'All'), ('purity','purity'), ('monitor','monitor'), ('evdisp','evdisp'), ('crt','crt'), ]
 
 REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
 PAGECHOICES	= [('25','25'),		('50','50'),	('100','100'),	('200','200'),	('400','400'),]
@@ -561,8 +561,10 @@ def delmon(request):
     post	= request.POST
     pk		= post.get('pk', '')
     run		= post.get('run', '')
+    subrun	= post.get('subrun', '')
 
     if(run=='' and pk==''): return HttpResponse('Did not delete mon entries, run/ID unspecified')
+    
     if(run=='ALL' or pk=='ALL'):
         try:
             obj = monrun.objects.all().delete()
@@ -578,14 +580,22 @@ def delmon(request):
             return HttpResponse('Deleted the mon entry for ID '+pk)
         except:
             return HttpResponse('Failed to delete mon entry for ID '+pk)
-
+        
+    # at this point we assume we must delete entries
+    # based on the run number or run/subrun numbers:
     try:
-        objs = monrun.objects.filter(run=run)
+        objs = None
+        if(subrun==''):
+            objs = monrun.objects.filter(run=run)
+        else:
+            objs = monrun.objects.filter(run=run).filter(subrun=subrun)
+            
         l = str(len(objs))
         objs.delete()
-        return HttpResponse('Deleted '+l+' mon entries for run '+run)
+        
+        return HttpResponse('Deleted '+l+' mon entries for run '+run+'::'+subrun)
     except:
-        return HttpResponse('Failed to delete mon entries for run '+run)
+        return HttpResponse('Failed to delete mon entries for run '+run+'::'+subrun)
 
 #########################################################    
 def automon(request):
