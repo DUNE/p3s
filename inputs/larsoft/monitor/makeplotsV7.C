@@ -1905,10 +1905,15 @@ namespace
       //I want to make sure I apply the "colz" option to TH2s 
       //and the "A*" option to TGraphs.  So, check whether obj 
       //is derived from either of those types.
-      if(dynamic_cast<TH1*>(obj))
+      if(dynamic_cast<TH2*>(obj))
+      {
+        ((TH2*)obj)->SetStats(false);
+        obj->Draw("colz");
+      }
+      else if(dynamic_cast<TH1*>(obj))
       {
         ((TH1*)obj)->SetStats(false);
-        obj->Draw("colz");
+        obj->Draw("HIST"); //Suppress error bars
       }
       else if(dynamic_cast<TGraph*>(obj))
       {
