@@ -54,6 +54,10 @@ TString FindImagesAndPrint(TString strtolook, TString strtolook2, TString dirstr
 void PlotDistToMean(TH1 *h,Int_t mean);
 void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline=true);
 
+// For CRT plots
+void MakeCRTPlots(TDirectory *dir, TString jsonfile); // modify this one
+void PrintCRTSummary(TDirectory *dir, TString jsonfilename, TString srun, TString sdate); // don't change this one
+
 void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_dl1.root
 
   // Start timing
@@ -96,7 +100,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
     
-    if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") || dirstr.Contains("sps") ) continue;
+    if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") || dirstr.Contains("sps")) continue;
 
     current_sourcedir->cd(dirstr.Data());
     TDirectory *subdir = gDirectory;
@@ -110,6 +114,10 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     }
     else if(dirstr.Contains("sspmonitor")){
       //
+    }
+    else if(dirstr.Contains("CRTOnlineMonitor")){
+      subdirname = dirstr + TString("_summary.json");
+      PrintCRTSummary(subdir, subdirname, runstr, datestr);
     }
 
     current_sourcedir->cd("..");
@@ -129,6 +137,13 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
       //std::cout << "INFO::Attempting to plot from " << dirstr.Data() << std::endl;
       TString jsonfile = runstr + TString("_") + TString(subdir->GetName()) + TString("_FileList.json");
       DrawEventDisplays(subdir, jsonfile);
+      // Nothing else to do here
+      continue;
+    }
+    if(dirstr.Contains("CRTOnlineMonitor")){
+      //std::cout << "INFO::Attempting to plot from " << dirstr.Data() << std::endl;
+      TString jsonfile = TString(subdir->GetName()) + TString("_FileList.json");
+      MakeCRTPlots(subdir, jsonfile);
       // Nothing else to do here
       continue;
     }
@@ -289,7 +304,7 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
 	  }
 	  else if(runfirst >= 10000){
 	    if(subrunfirst >= 1000)
-	      runid.Form("run%i_%i",runfirst,subrunfirst);
+	      runid.Form("run0%i_%i",runfirst,subrunfirst);
             else if(subrunfirst >= 100)
               runid.Form("run0%i_0%i",runfirst,subrunfirst);
             else if(subrunfirst >= 10)
@@ -299,7 +314,7 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
           }
 	  else if(runfirst >= 1000){
 	    if(subrunfirst >= 1000)
-	      runid.Form("run%i_%i",runfirst,subrunfirst);
+	      runid.Form("run00%i_%i",runfirst,subrunfirst);
             else if(subrunfirst >= 100)
               runid.Form("run00%i_0%i",runfirst,subrunfirst);
             else if(subrunfirst >= 10)
@@ -309,7 +324,7 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
 	  }
 	  else if(runfirst >= 100){
 	    if(subrunfirst >= 1000)
-	      runid.Form("run%i_%i",runfirst,subrunfirst);
+	      runid.Form("run000%i_%i",runfirst,subrunfirst);
             else if(subrunfirst >= 100)
               runid.Form("run000%i_0%i",runfirst,subrunfirst);
             else if(subrunfirst >= 10)
@@ -319,7 +334,7 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
           }
 	  else if(runfirst >= 10){
 	    if(subrunfirst >= 1000)
-	      runid.Form("run%i_%i",runfirst,subrunfirst);
+	      runid.Form("run0000%i_%i",runfirst,subrunfirst);
             else if(subrunfirst >= 100)
               runid.Form("run0000%i_0%i",runfirst,subrunfirst);
             else if(subrunfirst >= 10)
@@ -329,7 +344,7 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
           }
 	  else if(runfirst >= 0){
 	    if(subrunfirst >= 1000)
-	      runid.Form("run%i_%i",runfirst,subrunfirst);
+	      runid.Form("run00000%i_%i",runfirst,subrunfirst);
             else if(subrunfirst >= 100)
               runid.Form("run00000%i_0%i",runfirst,subrunfirst);
             else if(subrunfirst >= 10)
@@ -695,6 +710,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
   fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
   fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
+  fprintf(deadchanJsonFile,"      \"Type\": \"tpcmonitor\",\n");
   fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
 
   // loop over all keys in this directory
@@ -890,7 +906,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
   fprintf(deadchanJsonFile,"      \"NDead  Channels\": \"%s\",\n",deadchannel_str.Data());
   fprintf(deadchanJsonFile,"      \"NNoisy Channels 6Sigma away from mean value of the ADC RMS\": \"%s\",\n",nois1channel_str.Data());
-  fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold(40)\": \"%s\"\n",nois2channel_str.Data());
+  fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold\": \"%s\"\n",nois2channel_str.Data());
   fprintf(deadchanJsonFile,"   }\n");
   fprintf(deadchanJsonFile,"]\n");
   
@@ -910,6 +926,7 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
 
   fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
   fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
+  fprintf(deadchanJsonFile,"      \"Type\": \"hitmonitor\",\n");
   fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
 
   // loop over all keys in this directory
@@ -1806,5 +1823,58 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 
   fprintf(JsonspsFile,"   }\n");
   fprintf(JsonspsFile,"]\n");
+
+  // Close file
+  fclose(JsonspsFile);
   
+}
+
+// --------------------------------------------------
+void PrintCRTSummary(TDirectory *dir, TString jsonfilename, TString srun, TString sdate){
+  // --------------------------------------------------
+
+  // Open file
+  FILE *crtJsonFile = fopen(jsonfilename.Data(),"w");
+
+  fprintf(crtJsonFile,"[\n");
+  fprintf(crtJsonFile,"   {\n");
+
+  fprintf(crtJsonFile,"      \"Type\": \"crt\"\n");
+  
+  fprintf(crtJsonFile,"   }\n");
+  fprintf(crtJsonFile,"]\n");
+
+  // Close file
+  fclose(crtJsonFile);
+
+}
+
+// --------------------------------------------------
+void MakeCRTPlots(TDirectory *dir, TString jsonfile){
+  // --------------------------------------------------
+
+  FILE *JsoncrtFile = fopen(jsonfile.Data(),"w");
+  fprintf(JsoncrtFile,"[\n");
+  fprintf(JsoncrtFile,"   {\n");
+
+  fprintf(JsoncrtFile,"     \"Category\":\"CRT Category 1\",\n");
+  fprintf(JsoncrtFile,"      \"Files\": {\n");
+  // These are example - replace with real png names
+  fprintf(JsoncrtFile,"        \"File section 1\":\"");
+  fprintf(JsoncrtFile,"File1.png,");
+  fprintf(JsoncrtFile,"File2.png\",\n");
+
+  fprintf(JsoncrtFile,"        \"File section 2\":\"");
+  fprintf(JsoncrtFile,"File3.png,");
+  fprintf(JsoncrtFile,"File4.png,");
+  fprintf(JsoncrtFile,"File5.png\"\n");
+  
+  fprintf(JsoncrtFile,"     }\n");
+
+  fprintf(JsoncrtFile,"   }\n");
+  fprintf(JsoncrtFile,"]\n");
+
+  // Close file
+  fclose(JsoncrtFile);
+
 }
