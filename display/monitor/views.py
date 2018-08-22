@@ -403,12 +403,12 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(tpc!=''):	objs = objs.filter(tpc=tpc)
 
 
-    # safety:
-    if not objs: HttpResponse('No objects found according to your citeria')
-
     #-------------
     # Initialize the table object, fill essential info in the dictionary for the template (d)
     t = None # placeholder for the table
+
+    if(len(objs)==0): return HttpResponse('No objects found according to your citeria')
+    
     if(tbl=='RunTable'): # special case
         RunData = []
         distinct_run = objs.order_by('-run').distinct("run").all()
