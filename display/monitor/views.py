@@ -41,7 +41,7 @@ from utils.navbar			import TopTable, HomeTable, HomeBarData
 from .monitorTables import *
 
 #########################################################
-JOBTYPECHOICES	= [('', 'All'), ('purity','purity'), ('monitor','monitor'), ('evdisp','evdisp'), ('crt','crt'), ]
+JOBTYPECHOICES	= [('', 'All'), ('purity','purity'), ('hitmonitor','Hit Monitor'), ('tpcmonitor','Tpc Monitor'), ('evdisp','Event Display'), ('crt','CRT'), ]
 
 REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
 PAGECHOICES	= [('25','25'),		('50','50'),	('100','100'),	('200','200'),	('400','400'),]

@@ -86,7 +86,8 @@ fi
 roots=$P3S_OUTPUT_FILE # `ls mon*.root`
 txts=`ls *.txt`
 
-echo MSG ROOT: $roots TXT: $txts
+echo MSG ROOT: $roots
+echo MSG TXT: $txts
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -129,6 +130,8 @@ cd $DESTINATION
 
 # ...but keep the ROOT file
 cp ${P3S_OUTPUT_FILE} $BEE_DESTINATION
+
+rm ${BEE_DIR}/recent.root
 
 ln -s $BEE_DESTINATION/${P3S_OUTPUT_FILE} ${BEE_DIR}/recent.root
 
