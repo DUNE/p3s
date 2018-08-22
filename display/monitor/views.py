@@ -403,7 +403,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
 
     # safety:
-    if objs is None: return("No objects found according to your citeria")
+    if len(objs)==0: return("No objects found according to your citeria")
 
     
     #-------------
