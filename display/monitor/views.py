@@ -425,6 +425,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     if(tbl=='EvdispTable' and showjob is None): t.exclude = ('j_uuid',)
     
+    if t is None: HttpResponse('No objects found according to your citeria')
     t.set_site(domain)
     
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
