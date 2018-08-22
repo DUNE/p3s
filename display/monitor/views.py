@@ -393,7 +393,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     objs	= eval(what).objects.all()
 
     if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin)
-    if not objs: return("No objects found according to your citeria")
+
     if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
     if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
     if(jobtype!=''):	objs = objs.filter(jobtype=jobtype)
@@ -404,9 +404,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
 
     # safety:
-    if len(objs)==0: return("No objects found according to your citeria")
+    if not objs: HttpResponse('No objects found according to your citeria')
 
-    
     #-------------
     # Initialize the table object, fill essential info in the dictionary for the template (d)
     t = None # placeholder for the table
