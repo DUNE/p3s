@@ -125,7 +125,7 @@ descriptors=`echo $f | tr -d ' '`
 
 echo MSG Found the file descriptors: $descriptors
 
-$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j MonitorMain
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j tpcmonitor
 
 echo MSG finished registration
 
