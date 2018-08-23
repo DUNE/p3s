@@ -1,22 +1,4 @@
 #!/usr/bin/env python3.5
-
-
-
-#########################################################
-# THIS SCRIPT IS DEPRECATED AS OF JULY 2018 AND IS KEPT #
-# HERE FOR REFERENCE                                    #
-#########################################################
-
-
-
-#########################################################
-# This is an application-dependent script - it sends    #
-# information about a graphics file to the server       #
-# FIXME - need to cleanup later as this is not really   #
-# a part of p3s proper                                  #
-#########################################################
-
-
 #########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#
