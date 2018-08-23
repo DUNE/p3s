@@ -2,7 +2,7 @@
     {
 	"name":		"Monitor:Main",
 	"timeout":	"500000",
-        "jobtype":	"monitor",
+        "jobtype":	"tpcmonitor",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/monitor_main_4.sh",
         "priority":	"1",
 	"state":	"defined",
@@ -14,7 +14,7 @@
 	    "P3S_NEVENTS":"1",
 	    "P3S_LAR_SETUP":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_2.sh",
 	    "P3S_AFS_SETUP":"/afs/cern.ch/work/t/tjunk/public",
-	    "P3S_FCL":"pdsp_decode_rawtpcmonitor.fcl",
+	    "P3S_FCL":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/hitmonitor_data_main.fcl",
 	    "P3S_INPUT_DIR":"input",
 	    "P3S_INPUT_FILE":"dummy_to_be_replaced",
 	    "P3S_OUTPUT_DIR":"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",

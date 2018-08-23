@@ -78,17 +78,18 @@ if [ ! -d "$DESTINATION" ]; then
 fi
 
 roots=$P3S_OUTPUT_FILE    #`ls *.root`
+jsons=`ls *.json`
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage out the data
-    for f in $roots
+    for f in $roots $jsons
     do
 	[ -s $f ] && cp $f $DESTINATION
     done
 else
     echo P3S_XRD_URI defined, using xrdcp to stage out the data
-    for f in $roots
+    for f in $roots $jsons
     do
 	[ -s $f ] && time (xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION) 2>&1
     done
@@ -125,7 +126,7 @@ descriptors=`echo $f | tr -d ' '`
 
 echo MSG Found the file descriptors: $descriptors
 
-$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j MonitorMain
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j tpcmonitor
 
 echo MSG finished registration
 

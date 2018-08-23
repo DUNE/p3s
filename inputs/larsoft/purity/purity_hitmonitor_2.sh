@@ -38,10 +38,11 @@ fi
 echo MSG Finished stage-in
 date
 
-P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/mon/'`
-BEE_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/bee/' | sed 's/root/json/'`
+P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/hitmonitor/'`
 
-echo Output files: $P3S_OUTPUT_FILE $BEE_OUTPUT_FILE
+# Bee conversion is suspended for now
+#BEE_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/mcc10/bee/' | sed 's/root/json/'`
+echo Output files: $P3S_OUTPUT_FILE # $BEE_OUTPUT_FILE
 
 echo MSG starting larsoft
 date
@@ -86,7 +87,8 @@ fi
 roots=$P3S_OUTPUT_FILE # `ls mon*.root`
 txts=`ls *.txt`
 
-echo MSG ROOT: $roots TXT: $txts
+echo MSG ROOT: $roots
+echo MSG TXT: $txts
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -118,22 +120,29 @@ echo MSG done with cleanup
 
 cd $DESTINATION
 
+
+#----------------------------------------------------------------
 # --- Suspend the bee conversion for now
 #echo MSG Doing Bee conversion
 
 #cp $BEE_MACRO_LOCATION/* .
 #root -b -q loadClasses.C
 #root -b -q loadClasses.C 'run.C("'${P3S_OUTPUT_FILE}'", "'${BEE_OUTPUT_FILE}'")'
-
 #cp ${BEE_OUTPUT_FILE} $BEE_DESTINATION
+#----------------------------------------------------------------
+
+
 
 # ...but keep the ROOT file
 cp ${P3S_OUTPUT_FILE} $BEE_DESTINATION
+
+rm ${BEE_DIR}/recent.root
 
 ln -s $BEE_DESTINATION/${P3S_OUTPUT_FILE} ${BEE_DIR}/recent.root
 
 # -------------------------------------------------------
 
+# the "makeplots" macro:
 cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 
 ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
@@ -147,7 +156,7 @@ descriptors=`echo $f | tr -d ' '`
 
 echo MSG Found the file descriptors: $descriptors
 
-$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j PurityHitmonitor
+$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j hitmonitor
 
 echo MSG finished registration
 

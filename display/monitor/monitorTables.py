@@ -128,21 +128,11 @@ class MonRunTable(MonitorTable):
         return format_html(output)
     
     def render_summary(self, value, record):
-        # print(record.run, record.subrun)
-
+        # this better be moved to the template...
         output = '<table width="100%"><tr>'
         
         data = json.loads(value, object_pairs_hook=OrderedDict)
         d = data[0]
-
-        # d = OrderedDict()
-                
-        # keyList = d_raw.keys()
-        # for k in keyList:
-        #     if('Plane' in k):
-        #         d[k]=d_raw[k]
-
-        # print(d, '\n------------------------------')
         
         # column headers for hits and charge
         try:
@@ -196,7 +186,7 @@ class MonRunTable(MonitorTable):
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('description','j_uuid','subrun','id',)
+        exclude = ('description','j_uuid','subrun',)
 #############################################################
 #############################################################
 #############################################################

@@ -41,7 +41,7 @@ from utils.navbar			import TopTable, HomeTable, HomeBarData
 from .monitorTables import *
 
 #########################################################
-JOBTYPECHOICES	= [('', 'All'), ('purity','purity'), ('monitor','monitor'), ('evdisp','evdisp'), ('crt','crt'), ]
+JOBTYPECHOICES	= [('', 'All'), ('purity','purity'), ('hitmonitor','Hit Monitor'), ('tpcmonitor','Tpc Monitor'), ('evdisp','Event Display'), ('crt','CRT'), ]
 
 REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
 PAGECHOICES	= [('25','25'),		('50','50'),	('100','100'),	('200','200'),	('400','400'),]
@@ -392,8 +392,9 @@ def data_handler2(request, what, tbl, tblHeader, url):
 #    objs	= eval(what).objects.order_by('-pk').all()
     objs	= eval(what).objects.all()
 
-    if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin)# .order_by('-pk')
-    if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)	# .order_by('-pk')
+    if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin)
+
+    if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
     if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
     if(jobtype!=''):	objs = objs.filter(jobtype=jobtype)
     if(d_type!=''):	objs = objs.filter(datatype=d_type)
@@ -401,9 +402,13 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
     if(tpc!=''):	objs = objs.filter(tpc=tpc)
 
+
     #-------------
     # Initialize the table object, fill essential info in the dictionary for the template (d)
     t = None # placeholder for the table
+
+    if(len(objs)==0): return HttpResponse('No objects found according to your citeria')
+    
     if(tbl=='RunTable'): # special case
         RunData = []
         distinct_run = objs.order_by('-run').distinct("run").all()
@@ -420,6 +425,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     if(tbl=='EvdispTable' and showjob is None): t.exclude = ('j_uuid',)
     
+    if t is None: HttpResponse('No objects found according to your citeria')
     t.set_site(domain)
     
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)

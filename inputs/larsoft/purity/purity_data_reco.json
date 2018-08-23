@@ -1,8 +1,8 @@
 [
     {
-	"name":		"Purity:Data:Reco",
+	"name":		"Purity:Hitmonitor",
 	"timeout":	"5000000",
-        "jobtype":	"purity",
+        "jobtype":	"hitmonitor",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/purity/purity_hitmonitor_2.sh",
         "priority":	"1",
 	"state":	"defined",
