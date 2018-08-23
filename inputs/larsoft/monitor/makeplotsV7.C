@@ -79,7 +79,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   std::vector<TString> directories_in_file = FindDirectories(current_sourcedir);
   
   // Find run/subrun ID and time this run started
-  TString runstr("0000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
+  TString runstr("run0000_000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
   // Loop first to find the run and the date
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
@@ -96,6 +96,13 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   // Define canvas
   c1 = new TCanvas("c1","c1",800,800);
 
+  TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
+  FILE *summaryJsonFile = fopen(subdirname.Data(),"w");
+
+  fprintf(summaryJsonFile,"[\n");
+  fprintf(summaryJsonFile,"   {\n");
+  fclose(summaryJsonFile);
+
   // Create summary json file
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
@@ -104,7 +111,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
     current_sourcedir->cd(dirstr.Data());
     TDirectory *subdir = gDirectory;
-    TString subdirname = runstr + TString("_") + dirstr + TString("_summary.json");
+    //TString subdirname = runstr + TString("_") + dirstr + TString("_summary.json");
     // Special for different modules
     if(dirstr.Contains("tpcmonitor")){
       PrintDeadNoisyChannelsJson(subdir, subdirname, runstr, datestr);
@@ -123,6 +130,16 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     current_sourcedir->cd("..");
     
   }
+
+  FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
+  fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstr.Data());
+  fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
+  fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
+  fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
+  fprintf(summaryJsonFile2,"   }\n");
+  fprintf(summaryJsonFile2,"]\n");
+  fclose(summaryJsonFile2);
+
   // ---------------------------------------------------------------------------
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
@@ -703,15 +720,15 @@ void PrintListofDeadNoisyChannels(TObjArray* dir, TString histoname, TString out
 void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString srun, TString sdate){
   // --------------------------------------------------
 
-  FILE *deadchanJsonFile = fopen(jsonfilename.Data(),"w"); // "a"
+  FILE *deadchanJsonFile = fopen(jsonfilename.Data(),"a"); // "w"
   
-  fprintf(deadchanJsonFile,"[\n");
-  fprintf(deadchanJsonFile,"   {\n");
+  //fprintf(deadchanJsonFile,"[\n");
+  //fprintf(deadchanJsonFile,"   {\n");
 
-  fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
-  fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
-  fprintf(deadchanJsonFile,"      \"Type\": \"tpcmonitor\",\n");
-  fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
+  //fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
+  //fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
+  //fprintf(deadchanJsonFile,"      \"Type\": \"tpcmonitor\",\n");
+  //fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
 
   // loop over all keys in this directory
   TString deadchannel_str("");
@@ -906,9 +923,9 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
   fprintf(deadchanJsonFile,"      \"NDead  Channels\": \"%s\",\n",deadchannel_str.Data());
   fprintf(deadchanJsonFile,"      \"NNoisy Channels 6Sigma away from mean value of the ADC RMS\": \"%s\",\n",nois1channel_str.Data());
-  fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold\": \"%s\"\n",nois2channel_str.Data());
-  fprintf(deadchanJsonFile,"   }\n");
-  fprintf(deadchanJsonFile,"]\n");
+  fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold\": \"%s\",\n",nois2channel_str.Data());
+  //fprintf(deadchanJsonFile,"   }\n");
+  //fprintf(deadchanJsonFile,"]\n");
   
   // Close file
   fclose(deadchanJsonFile);
@@ -919,15 +936,15 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
   // --------------------------------------------------
 
   // Open file
-  FILE *deadchanJsonFile = fopen(jsonfilename.Data(),"w");
+  FILE *deadchanJsonFile = fopen(jsonfilename.Data(),"a"); // "w"
 
-  fprintf(deadchanJsonFile,"[\n");
-  fprintf(deadchanJsonFile,"   {\n");
+  //fprintf(deadchanJsonFile,"[\n");
+  //fprintf(deadchanJsonFile,"   {\n");
 
-  fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
-  fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
-  fprintf(deadchanJsonFile,"      \"Type\": \"hitmonitor\",\n");
-  fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
+  //fprintf(deadchanJsonFile,"      \"run\": \"%s\",\n", srun.Data());
+  //fprintf(deadchanJsonFile,"      \"TimeStamp\": \"%s\",\n", sdate.Data());
+  //fprintf(deadchanJsonFile,"      \"Type\": \"hitmonitor\",\n");
+  //fprintf(deadchanJsonFile,"      \"APA\": \"1, 2, 3, 4, 5, 6\",\n");
 
   // loop over all keys in this directory
   TString nhits_Ustr("");
@@ -1241,10 +1258,10 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
   fprintf(deadchanJsonFile,"      \"Plane Z Mean of Hit RMS\": \"%s\",\n",hitrmsM_Zstr.Data());
   fprintf(deadchanJsonFile,"      \"Plane U RMS of Hit RMS\": \"%s\",\n",hitrmsS_Ustr.Data());
   fprintf(deadchanJsonFile,"      \"Plane V RMS of Hit RMS\": \"%s\",\n",hitrmsS_Vstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane Z RMS of Hit RMS\": \"%s\"\n",hitrmsS_Zstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane Z RMS of Hit RMS\": \"%s\",\n",hitrmsS_Zstr.Data());
 
-  fprintf(deadchanJsonFile,"   }\n");
-  fprintf(deadchanJsonFile,"]\n");
+  //fprintf(deadchanJsonFile,"   }\n");
+  //fprintf(deadchanJsonFile,"]\n");
   
   // Close file
   fclose(deadchanJsonFile);
