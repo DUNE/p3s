@@ -585,9 +585,9 @@ def delmon(request):
             try:
                 obj = monrun.objects.get(pk=int(pk))
                 obj.delete()
-                output+='Deleted mon entry ID '+pk+'\n'
+                output+='Deleted mon entry ID '+str(pk)+'\n'
             except:
-                output+='Failed to delete mon entry ID '+pk+'\n'
+                output+='Failed to delete mon entry ID '+str(pk)+'\n'
             
         return HttpResponse(output)
         
