@@ -1,4 +1,16 @@
 #!/usr/bin/env python3.5
+
+#########################################################
+# This version of the evdispl client aims to comply     #
+# with the filename and other changes in the evdisp     #
+# app and also to take advantage of the metadata        #
+# feature in the current DQM service (as of Aug 2018).  #
+#                                                       #
+# As such, its purpose is to generate JSON to feed a    #
+# separate (universal) client, the "monrun"             #
+#########################################################
+
+
 #########################################################
 # TZ-awarewness:					#
 # The following is not TZ-aware: datetime.datetime.now()#
@@ -67,34 +79,9 @@ run		= args.run
 timestamp	= args.timestamp
 verb		= args.verbosity
 
-cgdict = {
-    '00000-02559':1,
-    '02560-04639':2,
-    '05120-07679':3,
-    '07680-09759':4,
-    '10240-12799':5,
-    '12800-14879':6
-}
-
 
 ### dqm interface defined here
 API  = serverAPI(server=server)
-
-#########################################################
-
-if(delete):
-    if(p_id == '' and run == '' and job == ''):
-        print('ID/run/job for deletion not specified, exiting')
-        exit(-1)
-
-    resp = ''
-    if(p_id != ''):	resp = API.post2server('evd', 'delete', dict(pk=p_id))
-    if(run != ''):	resp = API.post2server('evd', 'delete', dict(run=run))
-    if(job != ''):	resp = API.post2server('evd', 'delete', dict(j_uuid=job))
-        
-    if(verb>0): print(resp)
-
-    exit(0)
 
 #########################################################
 
@@ -110,52 +97,7 @@ if(auto):
         filedict = {}
         if f.endswith(".png"):
             if(verb>0): print(f)
-            for t in ('raw','prep'):
-                
-                # important - this will change, this is a necessary stop-gap hack
-                # based on the current convention re: filenames
-                
-                filedict['evnum']	= f.split('_')[2][3:] # will correct later
-                filedict['run']		= API.get2server('evd', 'maxrun', '')
-
-                # in MCC the runs are now fixed at 1 so we need to run a counter
-                # we do ignore the constant "1" here in the filename
-                
-                if(verb>0): print('Will use the run:', filedict['run'])
-                
-                if(t in f): filedict['datatype'] = t
-                
-                for cg in cgdict.keys():
-                    if(cg in f): filedict['changroup'] = cgdict[cg]
-                    
-            filedict['ts'] = timestamp
-            filedict['j_uuid'] = job
-            
-            entries.append(filedict)
-
-    if(verb>0): print(entries)
-    d['json'] = json.dumps(entries)
     
-#########################################################
-
-if(json_in!=''):
-    data = takeJson(json_in, verb)
-
-    for entry in data:
-        if(run!=''):
-            if(run=='NEXT'): run=API.get2server('evd', 'maxrun', '')
-            entry['run']=run
-        if(timestamp!=''):
-            if(timestamp=='NOW'): timestamp=str(timezone.now())
-            entry['ts']=timestamp
-        else:
-            timestamp=str(timezone.now())
-
-    d['json'] = json.dumps(data)
-
-resp = API.post2server('evd', 'add', d)
-print(resp)
-
 
 exit(0)
 

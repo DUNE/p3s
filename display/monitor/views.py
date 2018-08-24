@@ -549,10 +549,9 @@ def addmon(request):
     
     m=monrun()
 
-    # we are counting on the defaults defined in the class...
-    # m.run=post.get('run',0), m.subrun=post.get('subrun',0)
-    
     m.summary		= summary
+    m.run		= post.get('run',0)
+    m.subrun		= post.get('subrun',0)
     m.description	= post.get('description', '')
     m.j_uuid		= post.get('j_uuid', '')
     m.jobtype		= post.get('jobtype', '')
