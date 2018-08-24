@@ -127,6 +127,10 @@ class MonRunTable(MonitorTable):
         output=mark_safe(subrun_url)+'<hr/>'+record.j_uuid
         return format_html(output)
     
+    # ---
+    # we now have the processing type in the metadata (e.g. "monitor")
+    # which should allow us to simplify the code
+    
     def render_summary(self, value, record):
         # this better be moved to the template...
         output = '<table width="100%"><tr>'
@@ -135,53 +139,61 @@ class MonRunTable(MonitorTable):
         d = data[0]
         
         # column headers for hits and charge
-        try:
-            # probe the data
-            foo = d["Plane U Mean NHits"]
-
-            for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
-            for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
-        except:
-            pass
+        for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
+        for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
 
         # column headers for dead and noisy channels
-        try:
-            # probe the data
-            foo1 = d["NDead  Channels"]
-            foo2 = d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]
-            foo3 = d["NNoisy Channels Above ADC RMS Threshold(40)"]
-                     
-            output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
-            output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy over 6&sigma; vs over the threshold') % (self.site)
-        except:
-            pass
+        output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
+        output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy over 6&sigma; vs over the threshold') % (self.site)
 
         output+='</tr><tr>' # ready to add the data to columns
         
         # columns for hits and charge
-        try:
-            for plane in Planes:
-                output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
-            for plane in Planes:
-                output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
-        except:
-            pass
+        for plane in Planes:
+            output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
+
+        for plane in Planes:
+            output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
         
         # columns for dead and noisy channels
-        try:
-            # probe the data
-            foo1 = d["NDead  Channels"]
-            foo2 = d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]
-            foo3 = d["NNoisy Channels Above ADC RMS Threshold(40)"]
-
-            output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
-            output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold(40)"]))
+        output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
+        output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold"]))
         except:
             pass
         
         output+='</tr></table>'
         
         return format_html(output)
+
+# Sample summary:
+# [
+#    {
+#       "Plane U Mean NHits": "14.00,0.00,0.00,0.00,0.00,0.00",
+#       "Plane V Mean NHits": "0.00,0.00,0.00,0.00,0.00,0.00",
+#       "Plane Z Mean NHits": "0.00,0.00,0.00,0.00,0.00,0.00",
+#       "Plane U Mean of Charge": "139.53,0.00,0.00,0.00,0.00,0.00",
+#       "Plane V Mean of Charge": "0.00,0.00,0.00,0.00,0.00,0.00",
+#       "Plane Z Mean of Charge": "653.67,0.00,0.00,0.00,0.00,0.00",
+#       "Plane U RMS of Charge": "77.52,0.00,0.00,0.00,0.00,0.00",
+#       "Plane V RMS of Charge": "0.00,0.00,0.00,0.00,0.00,0.00",
+#       "Plane Z RMS of Charge": "383.14,0.00,0.00,0.00,0.00,0.00",
+#       "Plane U Mean of Hit RMS": "5.02,0.00,0.00,0.00,0.00,0.00",
+#       "Plane V Mean of Hit RMS": "0.00,0.00,0.00,0.00,0.00,0.00",
+#       "Plane Z Mean of Hit RMS": "4.04,0.00,0.00,0.00,0.00,0.00",
+#       "Plane U RMS of Hit RMS": "1.14,0.00,0.00,0.00,0.00,0.00",
+#       "Plane V RMS of Hit RMS": "0.00,0.00,0.00,0.00,0.00,0.00",
+#       "Plane Z RMS of Hit RMS": "1.85,0.00,0.00,0.00,0.00,0.00",
+#       "NDead  Channels": "2432,2560,2560,2560,2560,   0",
+#       "NNoisy Channels 6Sigma away from mean value of the ADC RMS": " 128,   0,   0,   0,   0,   0",
+#       "NNoisy Channels Above ADC RMS Threshold": "  71,   0,   0,   0,   0,   0",
+#       "run": "run003611_0001",
+#       "TimeStamp": "Thu Aug 23 21:03:34 2018",
+#       "Type": "monitor",
+#       "APA": "1, 2, 3, 4, 5, 6"
+#    }
+# ]
+
+
     
     class Meta:
         model = monrun
