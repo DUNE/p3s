@@ -1,0 +1,26 @@
+[
+   {
+      "Plane U Mean NHits": "14.00,0.00,0.00,0.00,0.00,0.00",
+      "Plane V Mean NHits": "0.00,0.00,0.00,0.00,0.00,0.00",
+      "Plane Z Mean NHits": "0.00,0.00,0.00,0.00,0.00,0.00",
+      "Plane U Mean of Charge": "139.53,0.00,0.00,0.00,0.00,0.00",
+      "Plane V Mean of Charge": "0.00,0.00,0.00,0.00,0.00,0.00",
+      "Plane Z Mean of Charge": "653.67,0.00,0.00,0.00,0.00,0.00",
+      "Plane U RMS of Charge": "77.52,0.00,0.00,0.00,0.00,0.00",
+      "Plane V RMS of Charge": "0.00,0.00,0.00,0.00,0.00,0.00",
+      "Plane Z RMS of Charge": "383.14,0.00,0.00,0.00,0.00,0.00",
+      "Plane U Mean of Hit RMS": "5.02,0.00,0.00,0.00,0.00,0.00",
+      "Plane V Mean of Hit RMS": "0.00,0.00,0.00,0.00,0.00,0.00",
+      "Plane Z Mean of Hit RMS": "4.04,0.00,0.00,0.00,0.00,0.00",
+      "Plane U RMS of Hit RMS": "1.14,0.00,0.00,0.00,0.00,0.00",
+      "Plane V RMS of Hit RMS": "0.00,0.00,0.00,0.00,0.00,0.00",
+      "Plane Z RMS of Hit RMS": "1.85,0.00,0.00,0.00,0.00,0.00",
+      "NDead  Channels": "2432,2560,2560,2560,2560,   0",
+      "NNoisy Channels 6Sigma away from mean value of the ADC RMS": " 128,   0,   0,   0,   0,   0",
+      "NNoisy Channels Above ADC RMS Threshold": "  71,   0,   0,   0,   0,   0",
+      "run": "run003611_0001",
+      "TimeStamp": "Thu Aug 23 21:03:34 2018",
+      "Type": "monitor",
+      "APA": "1, 2, 3, 4, 5, 6"
+   }
+]
