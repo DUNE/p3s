@@ -158,8 +158,6 @@ class MonRunTable(MonitorTable):
         # columns for dead and noisy channels
         output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
         output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold"]))
-        except:
-            pass
         
         output+='</tr></table>'
         
