@@ -123,6 +123,12 @@ echo MSG found the run summary $summary
 
 f=`ls -m *FileList.json`
 descriptors=`echo $f | tr -d ' '`
+ld=`echo -n $descriptors | wc -m`
+if [ $ld == 0 ]; then
+    echo No descriptots found
+    exit 3
+fi
+
 
 echo MSG Found the file descriptors: $descriptors
 
