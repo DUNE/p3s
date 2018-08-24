@@ -126,7 +126,7 @@ descriptors=`echo $f | tr -d ' '`
 
 echo MSG Found the file descriptors: $descriptors
 
-$P3S_HOME/clients/monrun.py -s $summary -D $descriptors -j monitor
+$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
 
 echo MSG finished registration
 date | mail -s $P3S_JOB_UUID potekhin@bnl.gov
