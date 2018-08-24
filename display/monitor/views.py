@@ -35,6 +35,7 @@ from .models				import monrun
 
 from utils.selectorUtils		import dropDownGeneric, boxSelector, twoFieldGeneric
 from utils.navbar			import TopTable, HomeTable, HomeBarData
+from utils.miscUtils 			import parseCommaDash
 
 
 # The tables needed here are defined in a separate unit of code
@@ -577,14 +578,30 @@ def delmon(request):
         except:
             return HttpResponse('Failed to delete ALL mon entries ')
        
-    
+
+
+    if(j_pk):
+        pklist = parseCommaDash(j_pk)
+        for pk in pklist:
+            try:
+                j = job.objects.get(pk=pk)
+                j.delete()
+                jdeleted.append(pk)
+            except:
+                pass
+        
     if(pk!=''):
-        try:
-            obj = monrun.objects.get(pk=int(pk))
-            obj.delete()
-            return HttpResponse('Deleted the mon entry for ID '+pk)
-        except:
-            return HttpResponse('Failed to delete mon entry for ID '+pk)
+        pklist = parseCommaDash(pk)
+        output = ''
+        for pk in pklist:
+            try:
+                obj = monrun.objects.get(pk=int(pk))
+                obj.delete()
+                output+='Deleted mon entry ID '+pk+'\n'
+            except:
+                output+='Failed to delete mon entry ID '+pk+'\n'
+            
+        return HttpResponse(output)
         
     # at this point we assume we must delete entries
     # based on the run number or run/subrun numbers:
