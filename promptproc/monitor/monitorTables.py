@@ -115,10 +115,10 @@ class JobTable(MonitorTable):
     errcode	= tables.Column(verbose_name='err')
     exectime	= tables.Column(empty_values=(), verbose_name='exec.time')
 
-    def render_id(self,value):		return self.makelink('jobdetail',	'pk',	value)
-    def render_uuid(self,value):	return self.makelink('jobdetail',	'uuid',	value)
-    def render_p_uuid(self,value):	return self.makelink('pilots',		'uuid',	value)
-    def render_wfuuid(self,value):	return self.makelink('wfdetail',	'uuid',	value)
+    def render_id(self, value):		return self.makelink('jobdetail',	'pk',	value)
+    def render_uuid(self, value):	return self.makelink('jobdetail',	'uuid',	value)
+    def render_p_uuid(self, value):	return self.makelink('pilots',		'uuid',	value)
+    def render_wfuuid(self, value):	return self.makelink('wfdetail',	'uuid',	value)
     
     def render_ts_def(self, value):	return self.renderDateTime(value)
     def render_ts_dis(self, value):	return self.renderDateTime(value)
@@ -132,7 +132,15 @@ class JobTable(MonitorTable):
         
         duration = record.ts_sto - record.ts_sta
         return str(duration).split('.')[0]
-    
+
+    def render_payload(self, value):
+        if '/' in value:
+            bits = value.split('/')
+            l = len(bits)-1
+            return bits[l]
+        else:
+            return value
+            
     def order_exectime(self, queryset, is_descending):
         queryset = queryset.annotate(l=F('ts_sto')-F('ts_sta')).order_by(('-' if is_descending else '') + 'l')
         return (queryset, True)
