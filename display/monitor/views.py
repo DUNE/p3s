@@ -578,18 +578,6 @@ def delmon(request):
         except:
             return HttpResponse('Failed to delete ALL mon entries ')
        
-
-
-    if(j_pk):
-        pklist = parseCommaDash(j_pk)
-        for pk in pklist:
-            try:
-                j = job.objects.get(pk=pk)
-                j.delete()
-                jdeleted.append(pk)
-            except:
-                pass
-        
     if(pk!=''):
         pklist = parseCommaDash(pk)
         output = ''
