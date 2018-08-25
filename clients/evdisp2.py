@@ -86,7 +86,7 @@ if(auto):
     summaryDict['Type'] = 'evdisp'
 
     summaryFile = open(formatted_run+'_summary.json', 'w')
-    summaryFile.write(json.dumps([summaryDict]))
+    summaryFile.write(json.dumps([summaryDict], indent=4))
     summaryFile.close()
     
     for k in fileTypes: #    print('KEY----------------->', k)
@@ -99,7 +99,7 @@ if(auto):
     output['Files']	= filesDict
     
     fileListFile = open(formatted_run+'_FileList.json', 'w')
-    fileListFile.write(json.dumps([output]))
+    fileListFile.write(json.dumps([output], indent=4))
     fileListFile.close()
 
 exit(0)
