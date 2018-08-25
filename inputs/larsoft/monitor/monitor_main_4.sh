@@ -101,11 +101,12 @@ cd ..
 #echo ls before: $P3S_JOB_UUID
 #ls $P3S_JOB_UUID
 #echo du before
-du -s $P3S_JOB_UUID
+du -sh $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
 
 echo MSG done with cleanup
+# ---
 
 cd $DESTINATION
 cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .

@@ -13,10 +13,20 @@ then
     exit
 fi
 
-
+echo MSG Will perform larsoft setup
+date
 source ${P3S_LAR_SETUP}
 
-echo MSG finished larsoft setup
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Error: larsoft not found"
+    exit $retVal
+fi
+
+date
+echo MSG finished larsoft setup with job uuid: $P3S_JOB_UUID
+
+echo XRD: $P3S_XRD_URI
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
@@ -24,15 +34,41 @@ then
     export INPUT_FILE=$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE
 else
     echo P3S_XRD_URI defined, using xrdcp to stage in the data
-    time xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .
-    export INPUT_FILE=./$P3S_INPUT_FILE
+    time (xrdcp --silent --tpc first $P3S_XRD_URI/$P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE .) 2>&1
+    s1=`stat --printf="%s"  $P3S_DATA/$P3S_INPUT_DIR/$P3S_INPUT_FILE`
+    s2=`stat --printf="%s" ./$P3S_INPUT_FILE`
+    echo sizes after XRDCP $s1 $s2
+    if [ $s1 -eq $s1 ];
+    then export INPUT_FILE=./$P3S_INPUT_FILE
+    else
+	echo XRDCP failure, exiting
+	exit -3
+    fi
+
 fi
 
+P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/evdisp/'`
 
-lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS
 
+echo Output file: $P3S_OUTPUT_FILE
+echo Job ID: $P3S_JOB_UUID
+
+# ---
+echo MSG starting larsoft
+date
+time (lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS) 2>&1
+date
 echo MSG larsoft completed
 
+unset PYTHONPATH # just in case
+echo MSG initializing virtual environment
+source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
+echo MSG check Python: `python -V`
+echo ---
+echo MSG check PYTHONPATH: $PYTHONPATH
+echo ---
+
+echo MSG finished python setup
 
 export DESTINATION=$P3S_DATA/$P3S_EVDISP_DIR/$P3S_JOB_UUID
 
@@ -63,32 +99,42 @@ else
     done
 fi
 
-echo MSG finished copying image files
-
-unset PYTHONPATH # just in case
-echo MSG initializing virtual environment
-source /afs/cern.ch/user/n/np04dqm/public/vp3s/bin/activate
-echo MSG check Python: `python -V`
-echo ---
-echo MSG check PYTHONPATH: $PYTHONPATH
-echo ---
-
-echo MSG finished python setup
-
-
-echo MSG will run $P3S_HOME/clients/evdisp.py
-
-$P3S_HOME/clients/evdisp.py -a
-
-echo MSG finished registration
+echo MSG finished copying event display image files
 
 cd ..
-echo ls before
-ls $P3S_JOB_UUID
-echo du before
-du $P3S_JOB_UUID
+#echo ls before: $P3S_JOB_UUID
+#ls $P3S_JOB_UUID
+#echo du before
+du -sh $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
 
+echo MSG done with cleanup
+# ---
+
+cd $DESTINATION
+echo MSG will run $P3S_HOME/clients/evdisp2.py
+
+$P3S_HOME/clients/evdisp2.py -a
+ls -l *.json
+
+summary=`ls run*summary.json`
+echo MSG found the run summary $summary
+
+f=`ls -m *FileList.json`
+descriptors=`echo $f | tr -d ' '`
+ld=`echo -n $descriptors | wc -m`
+if [ $ld == 0 ]; then
+    echo No descriptots found
+    exit 3
+fi
+echo MSG Found the file descriptors: $descriptors
+
+$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
+
+echo MSG finished registration
+date | mail -s $P3S_JOB_UUID potekhin@bnl.gov
+
+date
 echo 'done'
 exit 0
