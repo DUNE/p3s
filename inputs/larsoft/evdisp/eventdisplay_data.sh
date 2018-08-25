@@ -130,7 +130,7 @@ if [ $ld == 0 ]; then
 fi
 echo MSG Found the file descriptors: $descriptors
 
-$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
+$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j evdisp
 
 echo MSG finished registration
 date | mail -s $P3S_JOB_UUID potekhin@bnl.gov
