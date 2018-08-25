@@ -138,27 +138,40 @@ class MonRunTable(MonitorTable):
         data = json.loads(value, object_pairs_hook=OrderedDict)
         d = data[0]
 
+        monType = None
         try:
-            # column headers for hits and charge
-            for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
-            for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
-
-            # column headers for dead and noisy channels
-            output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
-            output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy over 6&sigma; vs over the threshold') % (self.site)
-
-            output+='</tr><tr>' # ready to add the data to columns
-            
-            # columns for hits and charge
-            for plane in Planes: output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
-            for plane in Planes: output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
-        
-            # columns for dead and noisy channels
-            output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
-            output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold"]))
-        
-            output+='</tr></table>'
+            monType = d['Type']
         except:
+            pass
+        
+        if monType=='monitor':
+            try:
+                # column headers for hits and charge
+                for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
+                for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
+
+                # column headers for dead and noisy channels
+                output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
+                output+=('<th><a href="http://%s/monitor/monchart?what=noise">Noisy over 6&sigma; vs over the threshold') % (self.site)
+
+                output+='</tr><tr>' # ready to add the data to columns
+            
+                # columns for hits and charge
+                for plane in Planes: output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
+                for plane in Planes: output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
+        
+                # columns for dead and noisy channels
+                output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
+                output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold"]))
+        
+                output+='</tr></table>'
+            except:
+                output+='<td>ERROR PARSING JSON</td></tr></table>'
+
+        if monType=='evdisp':
+            output+='<td>EVENT DISPLAY</td></tr></table>'
+            
+        if monType is None:
             output+='<td>ERROR PARSING JSON</td></tr></table>'
             
         return format_html(output)
