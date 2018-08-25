@@ -49,6 +49,7 @@ fileTypes = OrderedDict([
 # ---
 output		= OrderedDict()
 filesDict	= OrderedDict()
+summaryDict	= OrderedDict()
 
 ########################################################
 parser = argparse.ArgumentParser()
@@ -63,16 +64,44 @@ verb	= args.verbosity
 
 #########################################################
 if(auto):
-    output['Category']	= '2D Event Display'
-    L = sorted(os.listdir("."))
+    run	= None
+    evt	= None
+    L	= sorted(os.listdir("."))
+
+    # Let's extract the run, event numbers
+    # Example adcraw_tpp0c_run002973_evt000010.png
+    
+    for f in L:
+        if (f.startswith('adcraw') and f.endswith('.png') and run is None and evt is None):
+            tokens = f.split('_')
+            run = int(tokens[2][3:])
+            evt = int(tokens[3][3:9])
+
+    if run is None or evt is None:
+        print("Could not determine the run and/or event number, exiting...")
+        exit(-1)
+
+    formatted_run = "run%06d_0001" % run
+    summaryDict['run'] = formatted_run
+    summaryDict['Type'] = 'evdisp'
+
+    summaryFile = open(formatted_run+'_summary.json', 'w')
+    summaryFile.write(json.dumps([summaryDict]))
+    summaryFile.close()
+    
     for k in fileTypes: #    print('KEY----------------->', k)
         files = []
         for f in L:
             if (f.startswith(k) and f.endswith(".png")): files.append(f)
         if (len(files)>0): filesDict[fileTypes[k]] = ",".join(files)
         
+    output['Category']	= '2D Event Display'
     output['Files']	= filesDict
-    print(json.dumps([output]))
+    
+    fileListFile = open(formatted_run+'_FileList.json', 'w')
+    fileListFile.write(json.dumps([output]))
+    fileListFile.close()
+
 exit(0)
 
 #########################################################
