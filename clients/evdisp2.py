@@ -36,6 +36,20 @@ from serverAPI		import serverAPI
 from clientenv		import clientenv
 from clientUtils	import takeJson
 
+########################################################
+fileTypes = OrderedDict([
+    ('adcraw_tpp',		'Raw ADC'),
+    ('chmet_ped_tps',		'ADC Pedestals'),
+    ('chmet_pedexc_tps',	'ADC pedestal peak bin excess'),
+    ('chmet_pedorf_tps',	'ADC pedestal out-of-range fraction'),
+    ('chmet_pedrms_tps',	'ADC pedestal RMS'),
+    ('detprep-',		'Raw ADC Collection View'),
+])
+# ---
+output		= OrderedDict()
+filesDict	= OrderedDict()
+
+########################################################
 settings.configure()
 
 user = os.environ['USER']
@@ -93,12 +107,20 @@ if(auto):
     timestamp	= str(timezone.now())
     entries	= []
     
-    for f in os.listdir("."):
-        filedict = {}
-        if f.endswith(".png"):
-            if(verb>0): print(f)
-    
+    output['Category']	= '2D Event Display'
 
+    for k in fileTypes:
+        print('KEY----------------->', k)
+        files = []
+        for f in os.listdir("."):
+            if (f.startswith(k) and f.endswith(".png")):
+                files.append(f)
+                
+        if (len(files)>0): filesDict[fileTypes[k]] = ",".join(files)
+
+        
+    output['Files']	= filesDict
+    print(json.dumps(output))
 exit(0)
 
 #########################################################
