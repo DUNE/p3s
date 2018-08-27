@@ -641,7 +641,8 @@ def automon(request):
         for item in description:
             if(item['Category']==category): files=item['Files'][filetype]
         if(files is None): return HttpResponse('error')
-        
+
+        d['tblHeader'] = d['tblHeader']+', category: "'+category+'", subcategory: "'+filetype+'"'
         d['rows'] = monrun.autoMonImgURLs(domain, url2images, j_uuid, files)
         d['backLink'] = monrun.backMonLink(domain, run, subrun, jobtype)
         return render(request, 'unitable3.html', d)
