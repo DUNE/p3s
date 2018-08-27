@@ -1,15 +1,18 @@
 [
     {
-	"name":		"CRTOM",
+	"name":		"CRTMXP",
 	"timeout":	"1000",
         "jobtype":	"crt",
-        "payload":	"/afs/cern.ch/user/a/anolivie/public/protodune/crt/example/CRTOM.sh",
-	"env":
-	{
-	    "INPUTFILES":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/crt_input/15345131*.dec",
-	    "OUTPUTDIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/crt"
-        },
-	"priority":		"1",
-	"state":		"defined"
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/crt/crt_mxp_1.sh",
+	"priority":	"1",
+	"state":	"defined",
+	"env": {
+	    "DUNETPCVER":	"v06_76_00",
+	    "DUNETPCQUAL":	"e15:prof",
+	    "P3S_DATA":		"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
+	    "P3S_MONITOR_DIR":	"monitor",
+	    "P3S_LAR_SETUP":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_2.sh",
+	    "P3S_INPUT_FILE":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/crt_input/15345131*.dec"
+        }
     }
 ]
