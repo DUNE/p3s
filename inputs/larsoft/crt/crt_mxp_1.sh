@@ -18,7 +18,7 @@ fi
 #     exit $retVal
 # fi
 
-#source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
+source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
 setup dunetpc ${DUNETPCVER} -q ${DUNETPCQUAL}
 setup cmake v3_10_1
 
