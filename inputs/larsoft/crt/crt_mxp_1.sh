@@ -8,18 +8,18 @@ then
 fi
 
 
-# echo MSG Will perform larsoft setup
-# date
-# source ${P3S_LAR_SETUP}
+echo MSG Will perform larsoft setup
+date
+source ${P3S_LAR_SETUP}
 
-# retVal=$?
-# if [ $retVal -ne 0 ]; then
-#     echo "Error: larsoft not found"
-#     exit $retVal
-# fi
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Error: larsoft not found"
+    exit $retVal
+fi
 
-source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
-setup dunetpc v06_76_00 -q debug:e15
+#source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
+#setup dunetpc v06_76_00 -q debug:e15
 setup cmake v3_10_1
 
 date
