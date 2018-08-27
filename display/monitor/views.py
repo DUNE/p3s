@@ -664,7 +664,7 @@ def automon(request):
         files = None
         for item in description:
             if(item['Category']==category): files=item['Files'][filetype]
-        if(files is None): return 'error'
+        if(files is None): return HttpResponse('error')
         
         d['rows'] = monrun.autoMonImgURLs(domain, url2images, j_uuid, files)
         return render(request, 'unitable3.html', d)
