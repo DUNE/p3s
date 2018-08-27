@@ -1,0 +1,15 @@
+[
+    {
+	"name":		"CRTOM",
+	"timeout":	"1000",
+        "jobtype":	"crt",
+        "payload":	"/afs/cern.ch/user/a/anolivie/public/protodune/crt/example/CRTOM.sh",
+	"env":
+	{
+	    "INPUTFILES":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/crt_input/15345131*.dec",
+	    "OUTPUTDIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/crt"
+        },
+	"priority":		"1",
+	"state":		"defined"
+    }
+]
