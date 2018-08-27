@@ -121,8 +121,8 @@ class ShowMonTable(MonitorTable):
 #############################################################
 class MonRunTable(MonitorTable):
     def render_run(self, value, record):
-        subrun_url = '<a href="http://%s/monitor/automon?run=%s&subrun=%s">%s::%s::%s</a>' % (
-            self.site, value, str(record.subrun), value, str(record.subrun), record.jobtype
+        subrun_url = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&jobtype=%s">%s::%s::%s</a>' % (
+            self.site, value, str(record.subrun), record.jobtype, value, str(record.subrun), record.jobtype
         )
         output=mark_safe(subrun_url)+'<hr/>'+record.j_uuid # +'<hr/>'+str(record.ts.strftime(settings.TIMEFORMAT))
 
