@@ -88,7 +88,7 @@ cd ..
 #echo ls before: $P3S_JOB_UUID
 #ls $P3S_JOB_UUID
 #echo du before
-du -sh $P3S_JOB_UUID
+#du -sh $P3S_JOB_UUID
 echo '-----------------'
 rm -fr $P3S_JOB_UUID
 
