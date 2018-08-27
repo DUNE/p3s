@@ -682,7 +682,7 @@ def automon(request):
         
         list4table = []
         for fileType in files.keys():
-            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,category,fileType)})
+            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,jobtype,category,fileType)})
 
         # padding with empty rows for better look
         for i in range(mxLen - len(files.keys())): list4table.append({'items':format_html('&nbsp;')})

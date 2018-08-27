@@ -15,9 +15,9 @@ class monrun(models.Model):
  
     # ---
     @classmethod
-    def autoMonLink(self,domain,run,subrun,category,filetype):
-        pattern = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&category=%s&filetype=%s">%s</a>'
-        link = mark_safe(pattern % (domain,run, subrun, category, filetype, filetype))
+    def autoMonLink(self,domain,run,subrun,jobtype,category,filetype):
+        pattern = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&jobtype=%s&category=%s&filetype=%s">%s</a>'
+        link = mark_safe(pattern % (domain,run, subrun, jobtype, category, filetype, filetype))
         return link
     # ---
     @classmethod
