@@ -22,6 +22,7 @@ date
 echo MSG finished larsoft setup with job uuid: $P3S_JOB_UUID
 
 setup cmake v3_10_1
+echo MSG set up cmake
 
 /afs/cern.ch/user/a/anolivie/public/app/crt/binary/bin/onlinePlots ${INPUTFILES}
 echo MSG crt binary completed
@@ -46,18 +47,17 @@ if [ ! -d "$DESTINATION" ]; then
 fi
 
 roots=$P3S_OUTPUT_FILE    #`ls *.root`
-jsons=`ls *.json`
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage out the data
-    for f in $roots $jsons
+    for f in $roots
     do
 	[ -s $f ] && cp $f $DESTINATION
     done
 else
     echo P3S_XRD_URI defined, using xrdcp to stage out the data
-    for f in $roots $jsons
+    for f in $roots
     do
 	[ -s $f ] && time (xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION) 2>&1
     done
