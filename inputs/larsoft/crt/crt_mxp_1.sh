@@ -8,21 +8,41 @@ then
 fi
 
 
-echo MSG Will perform larsoft setup
-date
-source ${P3S_LAR_SETUP}
+# echo MSG Will perform larsoft setup
+# date
+# source ${P3S_LAR_SETUP}
 
-retVal=$?
-if [ $retVal -ne 0 ]; then
-    echo "Error: larsoft not found"
-    exit $retVal
-fi
+# retVal=$?
+# if [ $retVal -ne 0 ]; then
+#     echo "Error: larsoft not found"
+#     exit $retVal
+# fi
+
+source /cvmfs/dune.opensciencegrid.org/products/dune/setup_dune.sh
+setup dunetpc v06_76_00 -q debug:e15
+setup cmake v3_10_1
 
 date
 echo MSG finished larsoft setup with job uuid: $P3S_JOB_UUID
 
 setup cmake v3_10_1
 echo MSG set up cmake
+
+if [ -z ${P3S_JOB_UUID+x} ];
+then
+    echo P3S_JOB_UUID undefined, setting new value:
+    export P3S_JOB_UUID=`uuid`
+    echo $P3S_JOB_UUID
+fi
+
+# localize the output to make it easier to clean up later.
+
+tmpdir=$P3S_JOB_UUID
+mkdir $tmpdir
+cd $tmpdir
+echo Created a working directory:
+pwd
+
 
 /afs/cern.ch/user/a/anolivie/public/app/crt/binary/bin/onlinePlots ${INPUTFILES}
 echo MSG crt binary completed
