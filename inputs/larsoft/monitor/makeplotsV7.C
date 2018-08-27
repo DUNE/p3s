@@ -1866,18 +1866,109 @@ void PrintCRTSummary(TDirectory *dir, TString jsonfilename, TString srun, TStrin
 
 }
 
+//Helper objects for CRT plotting
+namespace
+{
+  //Keep track of the old gStyle just before I create a new one so that I don't change 
+  //global settings that will affect other plots.  
+  class StyleSentry
+  {
+    public:
+      StyleSentry(): fRestore(gStyle), fMyStyle(*gStyle) //Make sure I take a copy of whatever is in gStyle to 
+                                                         //accumulate settings from other users.
+      {
+        //Histograms
+        gStyle->SetOptTitle(1); //Turns on drawing the canvas title?
+        gStyle->SetTitleSize(0.04); //Make the canvas title bigger
+        //gStyle->SetOptStat(0); //Disable the statistics box on histograms
+        gStyle->SetLabelSize(0.04, "X"); //Make x axis labels bigger
+        gStyle->SetLabelSize(0.04, "Y"); //Make y axis labels bigger
+        gStyle->SetTitleSize(0.04, "X"); //Make x axis titles bigger
+        gStyle->SetTitleSize(0.04, "Y"); //Make y axis titles bigger
+        gStyle->SetTitleOffset(1.4, "Y"); //Move the y axis titles farther away from the axis than the default distance
+        gStyle->SetHistLineWidth(2); //Default in ROOT is 1
+
+        //Make sure my style gets applied
+        gROOT->ForceStyle();
+        gStyle = &fMyStyle;     
+      }
+
+      ~StyleSentry() { gStyle = fRestore; }
+
+    private:
+      TStyle* fRestore; //Restore gStyle to this pointed object when StyleSentry goes out of scope
+      TStyle fMyStyle; //My histogram drawing style.  I own it and intend to make sure gStyle doesn't try to use it 
+                       //when this object goes out of scope.  
+  };
+
+  void PrintDirectory(TDirectory* dir, FILE* JSONFile)
+  {
+    fprintf(JSONFile, "%s", ("        \""+std::string(dir->GetName())+"\":\"").c_str()); //Start JSON Mapped value
+    bool first = true;
+    for(auto key: *(dir->GetListOfKeys()))
+    {
+      if(first)
+      {
+        first = false;
+      }
+      else fprintf(JSONFile, ",");
+
+      auto obj = ((TKey*)key)->ReadObj();
+      
+      //If this object is a directory, don't do anything to it for now...
+      auto nested = dynamic_cast<TDirectory*>(obj);
+      if(nested) continue; //TODO: continue can be the root of much evil... Try harder to avoid using it.
+      
+      //I want to make sure I apply the "colz" option to TH2s 
+      //and the "A*" option to TGraphs.  So, check whether obj 
+      //is derived from either of those types.
+      if(dynamic_cast<TH2*>(obj))
+      {
+        ((TH2*)obj)->SetStats(false);
+        obj->Draw("colz");
+      }
+      else if(dynamic_cast<TH1*>(obj))
+      {
+        ((TH1*)obj)->SetStats(false);
+        obj->Draw("HIST"); //Suppress error bars
+      }
+      else if(dynamic_cast<TGraph*>(obj))
+      {
+        obj->Draw("A*");
+      }
+      else obj->Draw();
+
+      const auto name = std::string(dir->GetName())+obj->GetName()+".png";
+      gPad->Print(name.c_str());
+      fprintf(JSONFile, "%s", name.c_str());
+    }
+    fprintf(JSONFile,"\"\n     }\n"); //End JSON mapped value and map entry
+  }
+}
+
 // --------------------------------------------------
 void MakeCRTPlots(TDirectory *dir, TString jsonfile){
   // --------------------------------------------------
+
+  //Make sure my changes to gStyle don't affect other functions
+  ::StyleSentry style;
 
   FILE *JsoncrtFile = fopen(jsonfile.Data(),"w");
   fprintf(JsoncrtFile,"[\n");
   fprintf(JsoncrtFile,"   {\n");
 
-  fprintf(JsoncrtFile,"     \"Category\":\"CRT Category 1\",\n");
+  fprintf(JsoncrtFile,"     \"Category\":\"CRT\",\n"); //It seems like I could create other Categories in a similar way if I find the need
   fprintf(JsoncrtFile,"      \"Files\": {\n");
+
+  for(auto key: *(dir->GetListOfKeys()))
+  {
+    auto obj = ((TKey*)key)->ReadObj();
+    auto nested = dynamic_cast<TDirectory*>(obj);
+    if(nested) PrintDirectory(nested, JsoncrtFile);
+    //Ignore any objects in top CRT directory that aren't directories because I'm not producing any of those anyway.  
+  }
   // These are example - replace with real png names
-  fprintf(JsoncrtFile,"        \"File section 1\":\"");
+  /*fprintf(JsoncrtFile,"        \"File section 1\":\"");
   fprintf(JsoncrtFile,"File1.png,");
   fprintf(JsoncrtFile,"File2.png\",\n");
 
@@ -1886,7 +1977,7 @@ void MakeCRTPlots(TDirectory *dir, TString jsonfile){
   fprintf(JsoncrtFile,"File4.png,");
   fprintf(JsoncrtFile,"File5.png\"\n");
   
-  fprintf(JsoncrtFile,"     }\n");
+  fprintf(JsoncrtFile,"     }\n");*/
 
   fprintf(JsoncrtFile,"   }\n");
   fprintf(JsoncrtFile,"]\n");
