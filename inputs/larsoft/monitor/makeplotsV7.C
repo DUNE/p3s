@@ -1856,10 +1856,10 @@ void PrintCRTSummary(TDirectory *dir, TString jsonfilename, TString srun, TStrin
   fprintf(crtJsonFile,"[\n");
   fprintf(crtJsonFile,"   {\n");
 
-  fprintf(crtJsonFile,"      \"Type\": \"crt\"\n");
+  //fprintf(crtJsonFile,"      \"Type\": \"crt\",\n");
   
-  fprintf(crtJsonFile,"   }\n");
-  fprintf(crtJsonFile,"]\n");
+  //fprintf(crtJsonFile,"   }\n");
+  //fprintf(crtJsonFile,"]\n");
 
   // Close file
   fclose(crtJsonFile);
@@ -1903,7 +1903,8 @@ namespace
 
   void PrintDirectory(TDirectory* dir, FILE* JSONFile)
   {
-    fprintf(JSONFile, "%s", ("        \""+std::string(dir->GetName())+"\":\"").c_str()); //Start JSON Mapped value
+    fprintf(JSONFile, "%s", ("        \""+std::string(dir->GetName())+"\":\"\n").c_str()); //Start JSON Mapped value
+    fprintf(JSONFile, "        {\n");
     bool first = true;
     for(auto key: *(dir->GetListOfKeys()))
     {
