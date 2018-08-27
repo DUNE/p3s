@@ -23,7 +23,7 @@
   {% for row in rows %}
   <tr>
     {% for plot in row %}
-    <td><img src="{{ plot }}" width="100%" alt="NOT FOUND" /></td>
+    <td><a href="{{ plot }}"><img src="{{ plot }}" width="100%" alt="NOT FOUND" /></a></td>
     {% endfor %}
   </tr>
   {% endfor %}
