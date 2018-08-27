@@ -44,7 +44,7 @@ echo Created a working directory:
 pwd
 
 
-/afs/cern.ch/user/a/anolivie/public/app/crt/binary/bin/onlinePlots ${INPUTFILES}
+/afs/cern.ch/user/a/anolivie/public/app/crt/binary/bin/onlinePlots ${P3S_INPUT_FILE}
 echo MSG crt binary completed
 
 unset PYTHONPATH # just in case
