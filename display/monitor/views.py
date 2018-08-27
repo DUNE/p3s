@@ -493,7 +493,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
             pass   #   if(last_image is None): return render(request, 'unitable2.html', d)
 
 
-    if(tbl=='MonRunTable'): t.modifyName('run','Run::SubRun/Job')
+    if(tbl=='MonRunTable'): t.modifyName('run','Run::SubRun::Type/Job')
         
     d['selectors']	= selectors
     d['refresh']	= refresh
@@ -616,13 +616,23 @@ def automon(request):
     subrun	= request.GET.get('subrun','')
     category	= request.GET.get('category','')
     filetype	= request.GET.get('filetype','')
+    jobtype	= request.GET.get('jobtype','')
 
     # Get JSON out of the database and prepare to load the dictionary
-    entry = None
+    entries = None
     try:
-        entry	= monrun.objects.filter(run=run).filter(subrun=subrun)[0]
+        entries	= monrun.objects.filter(run=run).filter(subrun=subrun)
     except:
-        return 'not found'
+        return HttpResponse('not found')
+
+    entry = None
+    if(jobtype==''):
+        entry= entries[0]
+    else:
+        try:
+            entry = entries.filter(jobtype=jobtype)[0]
+        except:
+            return HttpResponse('not found')
 
     # Create a dictionary describing files from JSON we just located
     description = json.loads(entry.description, object_pairs_hook=OrderedDict)

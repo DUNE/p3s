@@ -121,8 +121,8 @@ class ShowMonTable(MonitorTable):
 #############################################################
 class MonRunTable(MonitorTable):
     def render_run(self, value, record):
-        subrun_url = '<a href="http://%s/monitor/automon?run=%s&subrun=%s">%s::%s</a>' % (
-            self.site, value, str(record.subrun), value, str(record.subrun)
+        subrun_url = '<a href="http://%s/monitor/automon?run=%s&subrun=%s">%s::%s::%s</a>' % (
+            self.site, value, str(record.subrun), value, str(record.subrun), record.jobtype
         )
         output=mark_safe(subrun_url)+'<hr/>'+record.j_uuid
         return format_html(output)
@@ -209,7 +209,7 @@ class MonRunTable(MonitorTable):
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('description','j_uuid','subrun',)
+        exclude = ('description','j_uuid','subrun','jobtype',)
 #############################################################
 #############################################################
 #############################################################
