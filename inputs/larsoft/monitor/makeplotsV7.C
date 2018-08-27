@@ -79,7 +79,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   std::vector<TString> directories_in_file = FindDirectories(current_sourcedir);
   
   // Find run/subrun ID and time this run started
-  TString runstr("run0000_000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
+  TString runstr("run0000_0000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
   // Loop first to find the run and the date
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
@@ -95,6 +95,26 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
   // Define canvas
   c1 = new TCanvas("c1","c1",800,800);
+
+  TString dl("_dl0");
+  if(infile.Contains("dl1"))
+    dl = "_dl1";
+  else if(infile.Contains("dl2"))
+    dl = "_dl2";
+  else if(infile.Contains("dl3"))
+    dl = "_dl3";
+  else if(infile.Contains("dl4"))
+    dl = "_dl4";
+  else if(infile.Contains("dl5"))
+    dl = "_dl5";
+  else if(infile.Contains("dl6"))
+    dl = "_dl6";
+  else if(infile.Contains("dl7"))
+    dl = "_dl7";
+  else if(infile.Contains("dl8"))
+    dl = "_dl8";
+  else if(infile.Contains("dl9"))
+    dl = "_dl9";
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
   FILE *summaryJsonFile = fopen(subdirname.Data(),"w");
@@ -131,8 +151,9 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     
   }
 
+  TString runstrdl = runstr + dl;
   FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
-  fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstr.Data());
+  fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
   fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
   fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
   fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
