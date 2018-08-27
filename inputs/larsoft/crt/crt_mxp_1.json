@@ -8,7 +8,7 @@
 	"state":	"defined",
 	"env": {
 	    "DUNETPCVER":	"v06_76_00",
-	    "DUNETPCQUAL":	"e15:prof",
+	    "DUNETPCQUAL":	"debug:e15",
 	    "P3S_DATA":		"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
 	    "P3S_XRD_URI":	"xroot://eospublic.cern.ch/",
 	    "P3S_MONITOR_DIR":	"monitor",
