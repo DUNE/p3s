@@ -493,7 +493,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
             pass   #   if(last_image is None): return render(request, 'unitable2.html', d)
 
 
-    if(tbl=='MonRunTable'): t.modifyName('run','Run::FileIdx::Type/Job')
+    if(tbl=='MonRunTable'): t.modifyName('run','Run::FileIdx::DL::Type/Job')
         
     d['selectors']	= selectors
     d['refresh']	= refresh
@@ -527,16 +527,17 @@ def addmon(request):
     m=monrun()
 
     m.summary		= summary
-    m.run		= post.get('run',0)
-    m.subrun		= post.get('subrun',0)
+    m.run		= post.get('run',	0)
+    m.subrun		= post.get('subrun',	0)
+    m.dl		= post.get('dl',	0)
     m.description	= post.get('description', '')
-    m.j_uuid		= post.get('j_uuid', '')
-    m.jobtype		= post.get('jobtype', '')
-    m.ts		= post.get('ts', timezone.now())
+    m.j_uuid		= post.get('j_uuid',	'')
+    m.jobtype		= post.get('jobtype',	'')
+    m.ts		= post.get('ts',	timezone.now())
     
     m.save()
 
-    return HttpResponse('Adding mon entry for run '+str(m.run)+' subrun '+str(m.subrun))
+    return HttpResponse('Adding mon entry for run '+str(m.run)+', subrun '+str(m.subrun)+', dl '+str(m.dl))
 #########################################################    
 @csrf_exempt
 def delmon(request):
@@ -585,11 +586,14 @@ def delmon(request):
 
 #########################################################    
 def automon(request):
+    
     domain	= request.get_host()
     host	= request.GET.get('host','')
     port	= request.get_port()
+    
     run		= request.GET.get('run','')
     subrun	= request.GET.get('subrun','')
+    dl		= request.GET.get('dl','')
     category	= request.GET.get('category','')
     filetype	= request.GET.get('filetype','')
     jobtype	= request.GET.get('jobtype','')
@@ -606,7 +610,13 @@ def automon(request):
         entry= entries[0]
     else:
         try:
-            entry = entries.filter(jobtype=jobtype)[0]
+            if(dl==''):
+                entry = entries.filter(jobtype=jobtype)[0]
+            else:
+                try:
+                    entry = entries.filter(jobtype=jobtype).filter(dl=dl)[0]
+                except:
+                    return HttpResponse('not found')
         except:
             return HttpResponse('not found')
 
@@ -629,7 +639,7 @@ def automon(request):
     d = {}
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
-    d['tblHeader']	= 'Run: %s, fileIdx: %s, type: %s' % (run, subrun,jobtype)
+    d['tblHeader']	= 'Run: %s, fileIdx: %s, dl: %s, type: %s' % (run, subrun, dl, jobtype)
     d['footer']		= 'Produced by job '+entry.j_uuid+' at '+entry.ts.strftime('%x %X')
     # ---
     
@@ -660,7 +670,7 @@ def automon(request):
         
         list4table = []
         for fileType in files.keys():
-            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,jobtype,category,fileType)})
+            list4table.append({'items':monrun.autoMonLink(domain, run, subrun, dl, jobtype, category, fileType)})
 
         # padding with empty rows for better look
         for i in range(mxLen - len(files.keys())): list4table.append({'items':format_html('&nbsp;')})
