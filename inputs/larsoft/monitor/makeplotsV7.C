@@ -1903,9 +1903,10 @@ namespace
 
   void PrintDirectory(TDirectory* dir, FILE* JSONFile)
   {
-    fprintf(JSONFile, "%s", ("        \""+std::string(dir->GetName())+"\":\"\n").c_str()); //Start JSON Mapped value
-    fprintf(JSONFile, "        {\n");
+    fprintf(JSONFile, "%s", ("        \""+std::string(dir->GetName())+"\":\"").c_str()); //Start JSON Mapped value
     bool first = true;
+    
+    //Create a list of PNG files for this directory's category as one JSON string
     for(auto key: *(dir->GetListOfKeys()))
     {
       if(first)
@@ -1943,7 +1944,7 @@ namespace
       gPad->Print(name.c_str());
       fprintf(JSONFile, "%s", name.c_str());
     }
-    fprintf(JSONFile,"\"\n     }\n"); //End JSON mapped value and map entry
+    fprintf(JSONFile,"\""); //End JSON string
   }
 }
 
@@ -1955,14 +1956,22 @@ void MakeCRTPlots(TDirectory *dir, TString jsonfile){
   ::StyleSentry style;
 
   FILE *JsoncrtFile = fopen(jsonfile.Data(),"w");
-  fprintf(JsoncrtFile,"[\n");
-  fprintf(JsoncrtFile,"   {\n");
+  fprintf(JsoncrtFile,"[\n"); //Begin JSON list
+  fprintf(JsoncrtFile,"   {\n"); //Begin top-level map
 
   fprintf(JsoncrtFile,"     \"Category\":\"CRT\",\n"); //It seems like I could create other Categories in a similar way if I find the need
-  fprintf(JsoncrtFile,"      \"Files\": {\n");
+  fprintf(JsoncrtFile,"     \"Files\": {\n"); //Begin Files map
 
+  bool first = true;
   for(auto key: *(dir->GetListOfKeys()))
   {
+    if(first)
+    {
+      first = false;
+    }
+    else fprintf(JsoncrtFile,",");
+    fprintf(JsoncrtFile,"\n");
+
     auto obj = ((TKey*)key)->ReadObj();
     auto nested = dynamic_cast<TDirectory*>(obj);
     if(nested) PrintDirectory(nested, JsoncrtFile);
@@ -1976,12 +1985,12 @@ void MakeCRTPlots(TDirectory *dir, TString jsonfile){
   fprintf(JsoncrtFile,"        \"File section 2\":\"");
   fprintf(JsoncrtFile,"File3.png,");
   fprintf(JsoncrtFile,"File4.png,");
-  fprintf(JsoncrtFile,"File5.png\"\n");
+  fprintf(JsoncrtFile,"File5.png\"\n");*/
   
-  fprintf(JsoncrtFile,"     }\n");*/
+  fprintf(JsoncrtFile,"     }\n"); //End Files map
 
-  fprintf(JsoncrtFile,"   }\n");
-  fprintf(JsoncrtFile,"]\n");
+  fprintf(JsoncrtFile,"   }\n"); //End top-level map
+  fprintf(JsoncrtFile,"]\n"); //End JSON list
 
   // Close file
   fclose(JsoncrtFile);
