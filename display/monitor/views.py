@@ -493,7 +493,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
             pass   #   if(last_image is None): return render(request, 'unitable2.html', d)
 
 
-    if(tbl=='MonRunTable'): t.modifyName('run','Run::SubRun/Job')
+    if(tbl=='MonRunTable'): t.modifyName('run','Run::FileIdx::DL::Type/Job')
         
     d['selectors']	= selectors
     d['refresh']	= refresh
@@ -513,30 +513,6 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
 #########################################################    
 @csrf_exempt
-def eventdisplay(request):
-    
-    domain	= request.get_host()
-    run		= request.GET.get('run','')
-    event	= request.GET.get('event','')
-
-    d = {}
-
-    d['display'] = (event!='' and run!='')
-    d['chList'] = ('0-2559','2560-5119','5120-7679','7680-10239','10240-12799','12800-15359')
-
-    d['domain']		= domain
-    d['evdispURL']	= 'evdisp'
-    d['run']		= run
-    d['event']		= event
-    
-    d['pageName']	= ': Event Display'
-    d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(domain, dqm_domain)
-
-    return render(request, 'display.html', d)
-
-#########################################################    
-@csrf_exempt
 def addmon(request):
     post	= request.POST
     
@@ -551,16 +527,17 @@ def addmon(request):
     m=monrun()
 
     m.summary		= summary
-    m.run		= post.get('run',0)
-    m.subrun		= post.get('subrun',0)
+    m.run		= post.get('run',	0)
+    m.subrun		= post.get('subrun',	0)
+    m.dl		= post.get('dl',	0)
     m.description	= post.get('description', '')
-    m.j_uuid		= post.get('j_uuid', '')
-    m.jobtype		= post.get('jobtype', '')
-    m.ts		= post.get('ts', timezone.now())
+    m.j_uuid		= post.get('j_uuid',	'')
+    m.jobtype		= post.get('jobtype',	'')
+    m.ts		= post.get('ts',	timezone.now())
     
     m.save()
 
-    return HttpResponse('Adding mon entry for run '+str(m.run)+' subrun '+str(m.subrun))
+    return HttpResponse('Adding mon entry for run '+str(m.run)+', subrun '+str(m.subrun)+', dl '+str(m.dl))
 #########################################################    
 @csrf_exempt
 def delmon(request):
@@ -609,20 +586,39 @@ def delmon(request):
 
 #########################################################    
 def automon(request):
+    
     domain	= request.get_host()
     host	= request.GET.get('host','')
     port	= request.get_port()
+    
     run		= request.GET.get('run','')
     subrun	= request.GET.get('subrun','')
+    dl		= request.GET.get('dl','')
     category	= request.GET.get('category','')
     filetype	= request.GET.get('filetype','')
+    jobtype	= request.GET.get('jobtype','')
 
     # Get JSON out of the database and prepare to load the dictionary
-    entry = None
+    entries = None
     try:
-        entry	= monrun.objects.filter(run=run).filter(subrun=subrun)[0]
+        entries	= monrun.objects.filter(run=run).filter(subrun=subrun)
     except:
-        return 'not found'
+        return HttpResponse('not found')
+
+    entry = None
+    if(jobtype==''):
+        entry= entries[0]
+    else:
+        try:
+            if(dl==''):
+                entry = entries.filter(jobtype=jobtype)[0]
+            else:
+                try:
+                    entry = entries.filter(jobtype=jobtype).filter(dl=dl)[0]
+                except:
+                    return HttpResponse('not found')
+        except:
+            return HttpResponse('not found')
 
     # Create a dictionary describing files from JSON we just located
     description = json.loads(entry.description, object_pairs_hook=OrderedDict)
@@ -643,7 +639,7 @@ def automon(request):
     d = {}
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain)
-    d['tblHeader']	= 'Run::Subrun '+run+'::'+subrun
+    d['tblHeader']	= 'Run: %s, fileIdx: %s, dl: %s, type: %s' % (run, subrun, dl, jobtype)
     d['footer']		= 'Produced by job '+entry.j_uuid+' at '+entry.ts.strftime('%x %X')
     # ---
     
@@ -654,9 +650,11 @@ def automon(request):
         files = None
         for item in description:
             if(item['Category']==category): files=item['Files'][filetype]
-        if(files is None): return 'error'
-        
+        if(files is None): return HttpResponse('error')
+
+        d['tblHeader'] = d['tblHeader']+', category: "'+category+'", subcategory: "'+filetype+'"'
         d['rows'] = monrun.autoMonImgURLs(domain, url2images, j_uuid, files)
+        d['backLink'] = monrun.backMonLink(domain, run, subrun, jobtype)
         return render(request, 'unitable3.html', d)
     
     # ---
@@ -672,7 +670,7 @@ def automon(request):
         
         list4table = []
         for fileType in files.keys():
-            list4table.append({'items':monrun.autoMonLink(domain,run,subrun,category,fileType)})
+            list4table.append({'items':monrun.autoMonLink(domain, run, subrun, dl, jobtype, category, fileType)})
 
         # padding with empty rows for better look
         for i in range(mxLen - len(files.keys())): list4table.append({'items':format_html('&nbsp;')})
@@ -689,104 +687,4 @@ def automon(request):
 
 
 
-#########################################################    
-############# EVENT DISPLAY #############################    
-#########################################################    
-@csrf_exempt
-def display6(request):
-    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
-
-    try:
-        p3s_domain	= settings.SITE['p3s_domain']
-        dqm_domain	= settings.SITE['dqm_domain']
-        dqm_host	= settings.SITE['dqm_host']
-        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
-        p3s_services	= settings.SITE['p3s_services']
-    except:
-        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
-
-    
-    domain	= request.get_host()
-    run		= request.GET.get('run','')
-    event	= request.GET.get('event','')
-
-
-    objs = evdisp.objects.filter(run=run).filter(evnum=event)
-    
-    d = {}
-    d['domain']		= domain
-    d['changroups']	= [1,2,3,4,5,6]
-
-    ts = None
-    d['rows'] = []
-    for N in d['changroups']:
-        raw	= objs.filter(changroup=N).filter(datatype='raw')[0]
-        prep	= objs.filter(changroup=N).filter(datatype='prep')[0]
-
-        ts = raw.ts
-        rawUrl = ('http://%s/%s/%s/%s'
-                         % (domain, # this needs to point to the image, also below
-                            settings.SITE['dqm_evdisp_url'],
-                            raw.j_uuid,
-                            evdisp.makename(int(event), 'raw', N)
-                         ))
-
-        prepUrl = ('http://%s/%s/%s/%s'
-                         % (domain, # this needs to point to the image, also below
-                            settings.SITE['dqm_evdisp_url'],
-                            raw.j_uuid,
-                            evdisp.makename(int(event), 'prep', N)
-                         ))
-        d['rows'].append([rawUrl,prepUrl])
-
-    d['run']		= run
-    d['event']		= event
-    d['ts']		= ts
-    d['pageName']	= ': Event Display'
-    d['message']	= evdisp.message()
-    d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
-    
-    return render(request, 'display6.html', d)
-
-#########################################################    
-@csrf_exempt
-def display1(request):
-    p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None
-
-    try:
-        p3s_domain	= settings.SITE['p3s_domain']
-        dqm_domain	= settings.SITE['dqm_domain']
-        dqm_host	= settings.SITE['dqm_host']
-        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
-        p3s_services	= settings.SITE['p3s_services']
-    except:
-        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
-
-    
-    domain	= request.get_host()
-    url		= request.GET.get('url','')
-    run		= request.GET.get('run','')
-    event	= request.GET.get('event','')
-    changroup	= request.GET.get('changroup','')
-    datatype	= request.GET.get('datatype','')
-
-    d = {}
-    d['domain']		= domain
-
-    for item in ('url', 'run', 'event', 'changroup', 'datatype'):
-        stuff = request.GET.get(item,'')
-        if(item=='changroup'):
-            d[item] = stuff+' ('+evdisp.group2string(int(stuff))+')'
-        else:
-            d[item]	= stuff
-    
-    d['pageName']	= ': Event Display'
-    d['message']	= evdisp.message()
-    d['navtable']	= TopTable(domain)
-    d['hometable']	= HomeTable(p3s_domain, dqm_domain)
-    
-    return render(request, 'display1.html', d)
-#########################################################    
-# purStr += ('[new Date(%s), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), forChart.lifetime)
 

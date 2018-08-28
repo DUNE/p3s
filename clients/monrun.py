@@ -157,22 +157,25 @@ if(d['j_uuid']==''):
     exit(-2)
 
 
-rs, run, subrun = None, '',''
+tokens, run, subrun, dl = None, '','',''
 try:
     print('Run descriptor:', summary_dict[0]["run"])
 
-    rs	= summary_dict[0]["run"].split('_')
-    run	= rs[0][3:]
-    subrun	= rs[1]
+    tokens	= summary_dict[0]["run"].split('_')
+    run		= tokens[0][3:]
+    subrun	= tokens[1]
+    if(len(tokens)>2): dl = tokens[2][2:]
 except:
-    print("No summary file detected")
+    print("Problem encountered while parsing the summary file, exiting...")
+    exit(-3)
         
-print('Run:', run, '   Subrun:', subrun)
+print('Run:', run, '   Subrun:', subrun, '   dl:', dl)
 
 d['summary']	= summary_data
 d['description']= json.dumps(masterList)
 d['run']	= run
 d['subrun']	= subrun
+d['dl']		= dl
 d['jobtype']	= jobtype
 
 if(timestamp==''):

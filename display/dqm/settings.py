@@ -17,6 +17,8 @@ import socket
 from local	import SITE, DATABASES
 from parameters	import LIMITS, CHARTS
 
+# -mxp- common time format
+TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
 DIRPATH		= SITE['dirpath']
 DQM_DOMAIN	= SITE['dqm_domain']

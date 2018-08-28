@@ -79,7 +79,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   std::vector<TString> directories_in_file = FindDirectories(current_sourcedir);
   
   // Find run/subrun ID and time this run started
-  TString runstr("run0000_000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
+  TString runstr("run0000_0000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
   // Loop first to find the run and the date
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
@@ -95,6 +95,32 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
   // Define canvas
   c1 = new TCanvas("c1","c1",800,800);
+
+  TString dl("_dl00");
+  if(infile.Contains("dl1"))
+    dl = "_dl01";
+  else if(infile.Contains("dl2"))
+    dl = "_dl02";
+  else if(infile.Contains("dl3"))
+    dl = "_dl03";
+  else if(infile.Contains("dl4"))
+    dl = "_dl04";
+  else if(infile.Contains("dl5"))
+    dl = "_dl05";
+  else if(infile.Contains("dl6"))
+    dl = "_dl06";
+  else if(infile.Contains("dl7"))
+    dl = "_dl07";
+  else if(infile.Contains("dl8"))
+    dl = "_dl08";
+  else if(infile.Contains("dl9"))
+    dl = "_dl09";
+  else if(infile.Contains("dl10"))
+    dl = "_dl10";
+  else if(infile.Contains("dl11"))
+    dl = "_dl11";
+  else if(infile.Contains("dl12"))
+    dl = "_dl12";
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
   FILE *summaryJsonFile = fopen(subdirname.Data(),"w");
@@ -131,8 +157,9 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     
   }
 
+  TString runstrdl = runstr + dl;
   FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
-  fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstr.Data());
+  fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
   fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
   fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
   fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
@@ -1816,7 +1843,7 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
   fprintf(JsonspsFile,"[\n");
   fprintf(JsonspsFile,"   {\n");
 
-  fprintf(JsonspsFile,"     \"Category\":\"2D event displays\",\n");
+  fprintf(JsonspsFile,"     \"Category\":\"Hit 2D event displays\",\n");
   fprintf(JsonspsFile,"      \"Files\": {\n");
   fprintf(JsonspsFile,"        \"Event Displays\":\"");
   for(UInt_t i=0; i < vec.size(); i++){

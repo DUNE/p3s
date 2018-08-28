@@ -18,15 +18,17 @@ def NavBarData(domain=''):
         '<a href="http://'+domain+'/monitor/puritytable">Purity Table</a>',
         '<a href="http://'+domain+'/monitor/puritychart">Purity Charts</a>',
         '<a href="http://'+domain+'/monitor/snchart">S/N Charts</a>',
-        '<a href="http://'+domain+'/monitor/runeventdisplay">Event Display by Run and Event</a>',
-        '<a href="http://'+domain+'/monitor/eventdisplay">Event Display Image Catalog</a>',
-        '<a href="http://'+domain+'/monitor/monrun">Monitor</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=monitor">TPC Monitor</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=evdisp">2D Event Display</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=crt">CRT</a>',
+        '<a href="http://'+domain+'/monitor/monrun">All Entries</a>'
         )
-
     if(domain==''): return len(links)
-    
+
     allLinks = {}
-    for n in range(len(links)): allLinks['col'+str(n+1)] = mark_safe(links[n])
+    for n in range(len(links)):
+        allLinks['col'+str(n+1)] = mark_safe(links[n])
+
     return [allLinks,]
     
 class NavTable(tables.Table):
@@ -34,7 +36,7 @@ class NavTable(tables.Table):
         self.Ncolumns = len(args[0][0].keys())
         super(NavTable, self).__init__(*args,**kwargs)
 
-    for i in range(6): locals()['col'+str(i+1)] = tables.Column()
+    for i in range(7): locals()['col'+str(i+1)] = tables.Column()
     
     def set_site(self, site=''):
         self.site=site
@@ -84,3 +86,7 @@ class AnchorTable(tables.Table):
 def HomeTable(domain, dqm_domain, host=None, port=None):
     t = AnchorTable(HomeBarData(domain, dqm_domain, host, port), show_header = False)
     return t
+
+######################### RETIRED LINKS ###############################################
+#        '<a href="http://'+domain+'/monitor/runeventdisplay">Event Display by Run and Event</a>',
+#        '<a href="http://'+domain+'/monitor/eventdisplay">Event Display Image Catalog</a>',

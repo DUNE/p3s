@@ -7,6 +7,7 @@ from django.utils.safestring		import mark_safe
 class monrun(models.Model):
     run		= models.PositiveIntegerField(default=0,	verbose_name='Run')
     subrun	= models.PositiveIntegerField(default=0,	verbose_name='SubRun')
+    dl		= models.PositiveIntegerField(default=0,	verbose_name='dl')
     summary	= models.TextField(default='{}',		verbose_name='Summary')
     description	= models.TextField(default='{}',		verbose_name='Description')
     j_uuid	= models.CharField(max_length=36, default='',	verbose_name='Produced by job')
@@ -15,9 +16,15 @@ class monrun(models.Model):
  
     # ---
     @classmethod
-    def autoMonLink(self,domain,run,subrun,category,filetype):
-        pattern = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&category=%s&filetype=%s">%s</a>'
-        link = mark_safe(pattern % (domain,run, subrun, category, filetype, filetype))
+    def autoMonLink(self, domain, run, subrun, dl, jobtype, category, filetype):
+        pattern = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&dl=%s&jobtype=%s&category=%s&filetype=%s">%s</a>'
+        link = mark_safe(pattern % (domain, run, subrun, dl, jobtype, category, filetype, filetype))
+        return link
+    # ---
+    @classmethod
+    def backMonLink(self,domain,run,subrun,jobtype):
+        pattern = '<a href="http://%s/monitor/automon?run=%s&subrun=%s&jobtype=%s">Back to %s::%s::%s</a>'
+        link = mark_safe(pattern % (domain, run, subrun, jobtype, run, subrun, jobtype ))
         return link
     # ---
     @classmethod
