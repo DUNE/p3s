@@ -96,25 +96,31 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   // Define canvas
   c1 = new TCanvas("c1","c1",800,800);
 
-  TString dl("_dl0");
+  TString dl("_dl00");
   if(infile.Contains("dl1"))
-    dl = "_dl1";
+    dl = "_dl01";
   else if(infile.Contains("dl2"))
-    dl = "_dl2";
+    dl = "_dl02";
   else if(infile.Contains("dl3"))
-    dl = "_dl3";
+    dl = "_dl03";
   else if(infile.Contains("dl4"))
-    dl = "_dl4";
+    dl = "_dl04";
   else if(infile.Contains("dl5"))
-    dl = "_dl5";
+    dl = "_dl05";
   else if(infile.Contains("dl6"))
-    dl = "_dl6";
+    dl = "_dl06";
   else if(infile.Contains("dl7"))
-    dl = "_dl7";
+    dl = "_dl07";
   else if(infile.Contains("dl8"))
-    dl = "_dl8";
+    dl = "_dl08";
   else if(infile.Contains("dl9"))
-    dl = "_dl9";
+    dl = "_dl09";
+  else if(infile.Contains("dl10"))
+    dl = "_dl10";
+  else if(infile.Contains("dl11"))
+    dl = "_dl11";
+  else if(infile.Contains("dl12"))
+    dl = "_dl12";
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
   FILE *summaryJsonFile = fopen(subdirname.Data(),"w");
