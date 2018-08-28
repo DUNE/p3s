@@ -1837,7 +1837,7 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
   fprintf(JsonspsFile,"[\n");
   fprintf(JsonspsFile,"   {\n");
 
-  fprintf(JsonspsFile,"     \"Category\":\"2D event displays\",\n");
+  fprintf(JsonspsFile,"     \"Category\":\"Hit 2D event displays\",\n");
   fprintf(JsonspsFile,"      \"Files\": {\n");
   fprintf(JsonspsFile,"        \"Event Displays\":\"");
   for(UInt_t i=0; i < vec.size(); i++){
