@@ -123,12 +123,33 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     dl = "_dl12";
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
-  FILE *summaryJsonFile = fopen(subdirname.Data(),"w");
+  
+  bool isCRT = false;
+  for(int i=0; i < directories_in_file.size(); i++){
+    TString dirstr = directories_in_file.at(i);
+    if(dirstr.Contains("CRTOnlineMonitor")){
+      current_sourcedir->cd(dirstr.Data());
+      TDirectory *subdir = gDirectory;
 
-  fprintf(summaryJsonFile,"[\n");
-  fprintf(summaryJsonFile,"   {\n");
-  fclose(summaryJsonFile);
+      subdirname = dirstr + TString("_summary.json");
+      PrintCRTSummary(subdir, subdirname, runstr, datestr);
 
+      isCRT = true;
+
+      current_sourcedir->cd("..");
+
+      break;
+    }
+  }
+  
+  FILE *summaryJsonFile;
+  if(!isCRT){
+    summaryJsonFile = fopen(subdirname.Data(),"w");
+    fprintf(summaryJsonFile,"[\n");
+    fprintf(summaryJsonFile,"   {\n");
+    fclose(summaryJsonFile);
+  }
+    
   // Create summary json file
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);  
@@ -144,10 +165,10 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     else if(dirstr.Contains("pdsphitmonitor")){
       PrintGausHitsJson(subdir, subdirname, runstr, datestr);
     }
-    else if(dirstr.Contains("CRTOnlineMonitor")){
-      subdirname = dirstr + TString("_summary.json");
-      PrintCRTSummary(subdir, subdirname, runstr, datestr);
-    }
+    //else if(dirstr.Contains("CRTOnlineMonitor")){
+    //subdirname = dirstr + TString("_summary.json");
+    //PrintCRTSummary(subdir, subdirname, runstr, datestr);
+    //}
     //else if(dirstr.Contains("sspmonitor")){
     //
     //}
@@ -156,15 +177,17 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     
   }
 
-  TString runstrdl = runstr + dl;
-  FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
-  fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
-  fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
-  fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
-  fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
-  fprintf(summaryJsonFile2,"   }\n");
-  fprintf(summaryJsonFile2,"]\n");
-  fclose(summaryJsonFile2);
+  if(!isCRT){
+    TString runstrdl = runstr + dl;
+    FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
+    fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
+    fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
+    fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
+    fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
+    fprintf(summaryJsonFile2,"   }\n");
+    fprintf(summaryJsonFile2,"]\n");
+    fclose(summaryJsonFile2);
+  }
 
   // ---------------------------------------------------------------------------
   for(int i=0; i < directories_in_file.size(); i++){
