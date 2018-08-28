@@ -44,7 +44,7 @@ echo Created a working directory:
 pwd
 
 
-/afs/cern.ch/user/a/anolivie/public/app/crt/binary/bin/onlinePlots ${P3S_INPUT_FILE}
+/afs/cern.ch/user/a/anolivie/public/app/crt/binary/bin/onlinePlots ${P3S_INPUT_DIR}/*
 echo MSG crt binary completed
 
 unset PYTHONPATH # just in case
@@ -100,27 +100,33 @@ cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
 echo MSG Startng the ROOT macro
 date
 time ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
-time root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
+time root -b -l -q $ROOT_MACRO_TORUN  >& rootMacro.log
 date
-echo Finished the ROOT macro, looking at JSON
-ls -l *.json
 
-summary=`ls run*summary.json`
-echo MSG found the run summary $summary
+#Replace the CRTOnlineMonitor_summary.json file that makeplotsV7.C produces 
+#as a kludge to get CRT plots onto the p3s website
+#TODO: Start using LArSoft and remove this script because makeplotsV7.C will work!
+/afs/cern.ch/user/a/anolivie/public/protodune/crt/p3s/inputs/larsoft/crt/ReplaceSummary.sh &> CRTOnlineMonitor_summary.json
 
-f=`ls -m *FileList.json`
-descriptors=`echo $f | tr -d ' '`
-ld=`echo -n $descriptors | wc -m`
-if [ $ld == 0 ]; then
-    echo No descriptots found
-    exit 3
-fi
-
-
-echo MSG Found the file descriptors: $descriptors
-
-$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
-
-echo MSG finished registration
-date | mail -s $P3S_JOB_UUID potekhin@bnl.gov
+#echo Finished the ROOT macro, looking at JSON
+#ls -l *.json
+#
+#summary=`ls run*summary.json`
+#echo MSG found the run summary $summary
+#
+#f=`ls -m *FileList.json`
+#descriptors=`echo $f | tr -d ' '`
+#ld=`echo -n $descriptors | wc -m`
+#if [ $ld == 0 ]; then
+#    echo No descriptots found
+#    exit 3
+#fi
+#
+#
+#echo MSG Found the file descriptors: $descriptors
+#
+#$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
+#
+#echo MSG finished registration
+#date | mail -s $P3S_JOB_UUID potekhin@bnl.gov
 exit 0

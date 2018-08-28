@@ -1996,8 +1996,7 @@ void MakeCRTPlots(TDirectory *dir, TString jsonfile){
     {
       first = false;
     }
-    else fprintf(JsoncrtFile,",");
-    fprintf(JsoncrtFile,"\n");
+    else fprintf(JsoncrtFile,",\n");
 
     auto obj = ((TKey*)key)->ReadObj();
     auto nested = dynamic_cast<TDirectory*>(obj);
