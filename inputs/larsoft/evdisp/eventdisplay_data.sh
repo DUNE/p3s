@@ -115,7 +115,7 @@ echo MSG done with cleanup
 cd $DESTINATION
 echo MSG will run $P3S_HOME/clients/evdisp2.py
 
-$P3S_HOME/clients/evdisp2.py -a
+$P3S_HOME/clients/evdisp2.py -a -f $P3S_INPUT_FILE
 ls -l *.json
 
 summary=`ls run*summary.json`

@@ -26,7 +26,7 @@
 #include "TObjArray.h"
 #include "TPaletteAxis.h"
 
-TCanvas *c1;
+//TCanvas *c1;
 
 // These are per APA
 int exp_deadch[6] = {0,0,0,0,0,0};
@@ -74,7 +74,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   // Open file
   TFile *f = new TFile(infile,"READ");
 
-  // List name pf directories in file
+  // List name of directories in file
   TDirectory *current_sourcedir = gDirectory;
   std::vector<TString> directories_in_file = FindDirectories(current_sourcedir);
   
@@ -94,7 +94,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   }
 
   // Define canvas
-  c1 = new TCanvas("c1","c1",800,800);
+  //c1 = new TCanvas("c1","c1",800,800);
 
   TString dl("_dl00");
   if(infile.Contains("dl1"))
@@ -123,16 +123,36 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     dl = "_dl12";
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
-  FILE *summaryJsonFile = fopen(subdirname.Data(),"w");
-
-  fprintf(summaryJsonFile,"[\n");
-  fprintf(summaryJsonFile,"   {\n");
-  fclose(summaryJsonFile);
-
-  // Create summary json file
+  
+  bool isCRT = false;
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
+    if(dirstr.Contains("CRTOnlineMonitor")){
+      current_sourcedir->cd(dirstr.Data());
+      TDirectory *subdir = gDirectory;
+
+      subdirname = dirstr + TString("_summary.json");
+      PrintCRTSummary(subdir, subdirname, runstr, datestr);
+
+      isCRT = true;
+
+      current_sourcedir->cd("..");
+
+      break;
+    }
+  }
+  
+  FILE *summaryJsonFile;
+  if(!isCRT){
+    summaryJsonFile = fopen(subdirname.Data(),"w");
+    fprintf(summaryJsonFile,"[\n");
+    fprintf(summaryJsonFile,"   {\n");
+    fclose(summaryJsonFile);
+  }
     
+  // Create summary json file
+  for(int i=0; i < directories_in_file.size(); i++){
+    TString dirstr = directories_in_file.at(i);  
     if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") || dirstr.Contains("sps")) continue;
 
     current_sourcedir->cd(dirstr.Data());
@@ -145,27 +165,29 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     else if(dirstr.Contains("pdsphitmonitor")){
       PrintGausHitsJson(subdir, subdirname, runstr, datestr);
     }
-    else if(dirstr.Contains("sspmonitor")){
-      //
-    }
-    else if(dirstr.Contains("CRTOnlineMonitor")){
-      subdirname = dirstr + TString("_summary.json");
-      PrintCRTSummary(subdir, subdirname, runstr, datestr);
-    }
+    //else if(dirstr.Contains("CRTOnlineMonitor")){
+    //subdirname = dirstr + TString("_summary.json");
+    //PrintCRTSummary(subdir, subdirname, runstr, datestr);
+    //}
+    //else if(dirstr.Contains("sspmonitor")){
+    //
+    //}
 
     current_sourcedir->cd("..");
     
   }
 
-  TString runstrdl = runstr + dl;
-  FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
-  fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
-  fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
-  fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
-  fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
-  fprintf(summaryJsonFile2,"   }\n");
-  fprintf(summaryJsonFile2,"]\n");
-  fclose(summaryJsonFile2);
+  if(!isCRT){
+    TString runstrdl = runstr + dl;
+    FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
+    fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
+    fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
+    fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
+    fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
+    fprintf(summaryJsonFile2,"   }\n");
+    fprintf(summaryJsonFile2,"]\n");
+    fclose(summaryJsonFile2);
+  }
 
   // ---------------------------------------------------------------------------
   for(int i=0; i < directories_in_file.size(); i++){
@@ -173,6 +195,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
     // Skip these directories for now
     if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") ) continue;
+    //if(dirstr.Contains("pdsphitmonitor")) continue;
 
     current_sourcedir->cd(dirstr.Data());
     TDirectory *subdir = gDirectory;
@@ -182,6 +205,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
       TString jsonfile = runstr + TString("_") + TString(subdir->GetName()) + TString("_FileList.json");
       DrawEventDisplays(subdir, jsonfile);
       // Nothing else to do here
+      current_sourcedir->cd("..");
       continue;
     }
     if(dirstr.Contains("CRTOnlineMonitor")){
@@ -189,6 +213,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
       TString jsonfile = TString(subdir->GetName()) + TString("_FileList.json");
       MakeCRTPlots(subdir, jsonfile);
       // Nothing else to do here
+      current_sourcedir->cd("..");
       continue;
     }
 
@@ -213,9 +238,9 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 	PrintListofDeadNoisyChannels(vec, "fNNoisyChannelsListFromNCounts", "fNNoisyChannelsListFromNCounts");
       }
     }
-    else if(dirstr.Contains("sspmonitor")){
-      //std::cout << "INFO::Attempting to plot from " << dirstr.Data() << std::endl;
-    }
+    //else if(dirstr.Contains("sspmonitor")){
+    //std::cout << "INFO::Attempting to plot from " << dirstr.Data() << std::endl;
+    //}
     
     delete vec;
 
@@ -224,8 +249,9 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     fclose(jcfile);
 
     current_sourcedir->cd("..");
-    
   }
+
+  f->Close();
   // ---------------------------------------------------------------------------
   // Stop timing
   mn_t->Stop();
@@ -410,9 +436,9 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
   TObjArray* vec = new TObjArray();
 
   TString dirname(dir->GetName());
-
+  
   // loop over all keys in this directory
-  TIter nextkey(dir->GetListOfKeys() );
+  TIter nextkey(dir->GetListOfKeys());
   TKey *key, *oldkey=0;
   while((key = (TKey*)nextkey())){
     // plot only the highest cycle number for each key
@@ -420,18 +446,20 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 
     // read object from  source file
     TObject *obj = key->ReadObj();
-
     vec->Add(obj);
-
+  
     // Object name
     TString objname(obj->GetName());
     objname.ReplaceAll("#","");
     objname.ReplaceAll("_","");
 
     if(obj->IsA()->InheritsFrom(TH1::Class())){
+      TString canvasstr = objname + TString("_canvas");
+      TCanvas *c1 = new TCanvas(canvasstr.Data(),canvasstr.Data(),800,800);
+
       // descendant of TH1 -> make a plot
       TH1 *h = (TH1*)obj;
-  
+
       // Make sure that the order of view and APA is always the same  
       if(dirname.Contains("pdsphitmonitor")){
 	objname.ReplaceAll("0U","U0");
@@ -618,7 +646,7 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 	// Make histogram of distance between point and mean value
 	//PlotDistToMean(h1,mean);
       }
-
+      
       // Add second line of title
       TString datename_new = runname + TString("(taken on ") + datename + TString(")");
       if(HistoName.Contains("fAllChan") || HistoName.Contains("fBitValue")){
@@ -634,7 +662,7 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
 	pt->SetTextSize(0.03);
 	pt->Draw();
       }
-    
+      
       TString figname = h1->GetName(); //key->GetName();
       figname += ".png";
 
@@ -644,6 +672,7 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       c1->SaveAs(figname.Data());
       
       delete h1;
+      delete c1;
     }
   }
 
@@ -709,6 +738,10 @@ void PrintListofDeadNoisyChannels(TObjArray* dir, TString histoname, TString out
 
     TString objname(obj->GetName());
     if(!objname.Contains(histoname.Data())) continue;
+    // Don't save the channels separate in each view
+    if(objname.Contains("HistoU")   || objname.Contains("HistoV")   || objname.Contains("HistoZ")) continue;
+    if(objname.Contains("NSigmaU")  || objname.Contains("NSigmaV")  || objname.Contains("NSigmaZ")) continue;
+    if(objname.Contains("NCountsU") || objname.Contains("NCountsV") || objname.Contains("NCountsZ")) continue;
     if(obj->IsA()->InheritsFrom(TH1::Class())){
       TH1 *h1 = (TH1*)obj;
 
@@ -780,10 +813,10 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
     // Object name
     TString objname(obj->GetName());
 
-    if(objname.Contains("DeadChannelsHisto") && obj->IsA()->InheritsFrom(TH1::Class())){
+    if(objname.Contains("NDeadChannelsHisto") && !objname.Contains("HistoU") && !objname.Contains("HistoV") && !objname.Contains("HistoZ") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      for(int j=1; j<h1->GetNbinsX(); j++){
+      for(int j=1; j<=h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
 	if(!binlabel.Contains("APA")) continue;
 	if(binlabel.Contains("APA 1"))
@@ -835,10 +868,10 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
       }
 
     }
-    if(objname.Contains("ChannelsHistoFromNSigma") && obj->IsA()->InheritsFrom(TH1::Class())){
+    if(objname.Contains("ChannelsHistoFromNSigma") && !objname.Contains("NSigmaU") && !objname.Contains("NSigmaV") && !objname.Contains("NSigmaZ") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
-      for(int j=1; j<h1->GetNbinsX(); j++){
+      for(int j=1; j<=h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
 	if(!binlabel.Contains("APA")) continue;
 	if(binlabel.Contains("APA 1"))
@@ -889,11 +922,11 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 	nois1channel_str += tempstr;
       }
     }
-    if(objname.Contains("ChannelsHistoFromNCounts") && obj->IsA()->InheritsFrom(TH1::Class())){
+    if(objname.Contains("ChannelsHistoFromNCounts") && !objname.Contains("NCountsU") && !objname.Contains("NCountsV") && !objname.Contains("NCountsZ") && obj->IsA()->InheritsFrom(TH1::Class())){
       // descendant of TH1
       TH1 *h1 = (TH1*)obj;
     
-      for(int j=1; j<h1->GetNbinsX(); j++){
+      for(int j=1; j<=h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
 	if(!binlabel.Contains("APA")) continue;
 	if(binlabel.Contains("APA 1"))

@@ -30,7 +30,7 @@ monPatterns = {
     "charge2":	"Plane %s RMS of Charge",
     "dead":	"NDead  Channels",
     "noise1":	"NNoisy Channels 6Sigma away from mean value of the ADC RMS",
-    "noise2":	"NNoisy Channels Above ADC RMS Threshold(40)"
+    "noise2":	"NNoisy Channels Above ADC RMS Threshold"
 }
 
 #########################################################
@@ -131,7 +131,10 @@ class MonRunTable(MonitorTable):
     # ---
     # we now have the processing type in the metadata (e.g. "monitor")
     # which should allow us to simplify the code
-    
+    #
+    #
+    # this is the most important (and crafty) method of all, we parse json
+    # and populate tables within the monrun table dynamically
     def render_summary(self, value, record):
         # this better be moved to the template...
         output = '<table width="100%"><tr>'
@@ -210,7 +213,7 @@ class MonRunTable(MonitorTable):
     class Meta:
         model = monrun
         attrs = {'class': 'paleblue'}
-        exclude = ('description','j_uuid','subrun','jobtype',)
+        exclude = ('description','j_uuid','subrun','jobtype','dl',)
 #############################################################
 #############################################################
 #############################################################
