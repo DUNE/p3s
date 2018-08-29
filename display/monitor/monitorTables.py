@@ -175,6 +175,9 @@ class MonRunTable(MonitorTable):
         if monType=='evdisp':
             output+='<td>EVENT DISPLAY</td></tr></table>'
             
+        if monType=='crt':
+            output+='<td>CRT entry</td></tr></table>'
+            
         if monType is None:
             output+='<td>ERROR PARSING JSON</td></tr></table>'
             
