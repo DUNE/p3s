@@ -1,13 +1,16 @@
 #!/usr/bin/env python3.5
 
 #########################################################
-# This version of the evdispl client aims to comply     #
+# This version of the evdisp client aims to comply      #
 # with the filename and other changes in the evdisp     #
 # app and also to take advantage of the metadata        #
 # feature in the current DQM service (as of Aug 2018).  #
 #                                                       #
 # As such, its purpose is to generate JSON to feed a    #
-# separate (universal) client, the "monrun"             #
+# separate (universal) client, the "monrun", so it      #
+# differs in functionality from the first version of    #
+# the client which was registering files in a dedicated #
+# database. Now, all goes into the "monitor" records    #
 #########################################################
 
 
