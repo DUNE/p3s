@@ -92,7 +92,6 @@ if(auto):
     dl		= int(tokens[4].split('.')[0][2:])
 
     print("Run:", run, "Idx:", idx, "dl:", dl)
-    exit(0)
     
     if run is None or idx is None or dl is None:
         print("Could not parse the run parameters, exiting...")
