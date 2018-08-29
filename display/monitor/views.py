@@ -121,7 +121,7 @@ def monchart(request):
     for tpcNum in range(6):
         myDict = {}
 
-        objs = monrun.objects.order_by('-pk')
+        objs = monrun.objects.filter(jobtype='monitor').order_by('-pk')
         if(tsmin!=''):  objs = objs.filter(ts__gte=tsmin)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
