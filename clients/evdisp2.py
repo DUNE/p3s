@@ -1,16 +1,25 @@
 #!/usr/bin/env python3.5
 
 #########################################################
+#                                                       #
 # This version of the evdisp client aims to comply      #
 # with the filename and other changes in the evdisp     #
 # app and also to take advantage of the metadata        #
 # feature in the current DQM service (as of Aug 2018).  #
 #                                                       #
 # As such, its purpose is to generate JSON to feed a    #
-# separate (universal) client, the "monrun", so it      #
+# separate (universal) client, the "monrun", which      #
+# communicates with the DQM server. For that reason, it #
 # differs in functionality from the first version of    #
 # the client which was registering files in a dedicated #
-# database. Now, all goes into the "monitor" records    #
+# database. Now, all goes into the "monitor" records.   #
+#                                                       #
+# We rely on parsing of the input file name to          #
+# extract vital metadata i.e. the run number, the file  #
+# index and the data logger number. Example:            #
+#                                                       #
+# np04_raw_run003498_0012_dl8.root                      #
+#                                                       #
 #########################################################
 
 
@@ -57,13 +66,15 @@ summaryDict	= OrderedDict()
 ########################################################
 parser = argparse.ArgumentParser()
 
-parser.add_argument("-a", "--auto", action='store_true', help="parse the current directory automatically")
-parser.add_argument("-v", "--verbosity", type=int, default=0, help="output verbosity")
+parser.add_argument("-a", "--auto",	action='store_true',	help="parse the current directory automatically")
+parser.add_argument("-v", "--verbosity",type=int, default=0,	help="output verbosity")
+parser.add_argument("-f", "--filename",	type=str,		help="raw data file name e.g. np04_raw_run003498_0012_dl8.root", default='')
 
 args	= parser.parse_args()
 
 auto	= args.auto
 verb	= args.verbosity
+filename= args.filename
 
 #########################################################
 if(auto):
@@ -72,21 +83,25 @@ if(auto):
     L	= sorted(os.listdir("."))
 
     # Let's extract the run, event numbers
-    # Example adcraw_tpp0c_run002973_evt000010.png
+    # Example: np04_raw_run003498_0012_dl8.root                      #
     
-    for f in L:
-        if (f.startswith('adcraw') and f.endswith('.png') and run is None and evt is None):
-            tokens = f.split('_')
-            run = int(tokens[2][3:])
-            evt = int(tokens[3][3:9])
+    tokens	= filename.split('_')
+    
+    run		= int(tokens[2][3:])
+    idx		= int(tokens[3])
+    dl		= int(tokens[4].split('.')[0][2:])
 
-    if run is None or evt is None:
-        print("Could not determine the run and/or event number, exiting...")
+    print("Run:", run, "Idx:", idx, "dl:", dl)
+    exit(0)
+    
+    if run is None or idx is None or dl is None:
+        print("Could not parse the run parameters, exiting...")
         exit(-1)
 
-    formatted_run = "run%06d_0001" % run
-    summaryDict['run'] = formatted_run
-    summaryDict['Type'] = 'evdisp'
+    formatted_run	= "run%06d_%04d_dl%02" % (run, idx, dl)
+    
+    summaryDict['run']	= formatted_run
+    summaryDict['Type']	= 'evdisp'
 
     summaryFile = open(formatted_run+'_summary.json', 'w')
     summaryFile.write(json.dumps([summaryDict], indent=4))
@@ -108,3 +123,15 @@ if(auto):
 exit(0)
 
 #########################################################
+# run	= None
+# evt	= None
+# L	= sorted(os.listdir("."))
+
+# # Let's extract the run, event numbers
+# # Example adcraw_tpp0c_run002973_evt000010.png
+    
+# for f in L:
+#     if (f.startswith('adcraw') and f.endswith('.png') and run is None and evt is None):
+#         tokens = f.split('_')
+#         run = int(tokens[2][3:])
+#         evt = int(tokens[3][3:9])
