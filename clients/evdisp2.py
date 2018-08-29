@@ -97,7 +97,7 @@ if(auto):
         print("Could not parse the run parameters, exiting...")
         exit(-1)
 
-    formatted_run	= "run%06d_%04d_dl%02" % (run, idx, dl)
+    formatted_run	= "run%06d_%04d_dl%02d" % (run, idx, dl)
     
     summaryDict['run']	= formatted_run
     summaryDict['Type']	= 'evdisp'
