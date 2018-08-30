@@ -37,7 +37,19 @@ services:
     LogLevel:         1
   }
   TFileService: { fileName: "rawtpcmonitor.root" }
-
+  RawDigitPrepService: {
+    service_provider: ToolBasedRawDigitPrepService
+    LogLevel: 3
+    DoWires: true
+    AdcChannelToolNames: [
+      "digitReader",
+      "adcPedestalFit",
+      "adcSampleFiller",
+      "adcVintageDeconvoluter",
+      "adcKeepAllSignalFinder"
+      #"adcThresholdSignalFinder"
+    ]
+  }
 }
 
 services.DetectorPropertiesService.NumberTimeSamples: 6000
@@ -84,3 +96,7 @@ physics:
 
 physics.producers.caldata.DigitLabel: "tpcrawdecoder:daq"
 #physics.producers.caldata.OnlineChannelMapTool: pd_onlineChannelMapByFemb
+
+#physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane0.RoiThreshold: 1.5
+#physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane1.RoiThreshold: 1.5
+physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane2.RoiThreshold: 1.5
