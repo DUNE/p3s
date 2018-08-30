@@ -12,6 +12,7 @@ class pur(models.Model):
     count	= models.PositiveIntegerField(default=0,	verbose_name='Count')
     sn		= models.FloatField(default=0.0,		verbose_name='S/N')
     snclusters	= models.PositiveIntegerField(default=0,	verbose_name='S/N Clusters')
+    drifttime	= models.FloatField(default=0.0,		verbose_name='DriftTime')
 
     def __str__(self):
         return serializers.serialize("json", [self, ])
