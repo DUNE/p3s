@@ -56,7 +56,12 @@ echo Job ID: $P3S_JOB_UUID
 # ---
 echo MSG starting larsoft
 date
-time (lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS) 2>&1
+lar -c $P3S_FCL_LOCAL $INPUT_FILE -T $P3S_OUTPUT_FILE -n$P3S_NEVENTS 2>&1
+retVal=$?
+if [ $retVal -ne 0 ]; then
+    echo "Error: larsoft abnormal termination"
+    exit $retVal
+fi
 date
 echo MSG larsoft completed
 

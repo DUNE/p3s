@@ -85,19 +85,16 @@ def add(request):
     post	= request.POST
 
     p=pur()
+    
     p.run	= post['run']
     p.tpc	= post['tpc']
-    p.lifetime	= post['lifetime']
-    p.error	= post['error']
-    p.count	= post['count']
-    # p.ts	= post['ts']
-
-    p.ts	= post.get('ts', timezone.now())
-    
-    # print('here')
-    p.sn	= post.get('sn', 0.0)
+    p.lifetime	= post.get('lifetime',	0.0)
+    p.error	= post.get('error',	0.0)
+    p.count	= post.get('count',	0.0)
+    p.ts	= post.get('ts',	timezone.now()) # p.ts	= post['ts']
+    p.sn	= post.get('sn',	0.0)
     p.snclusters= post.get('snclusters',0)
-    
+    p.drifttime	= post.get('drifttime',	0.0)
     
     p.save()
 
@@ -105,7 +102,6 @@ def add(request):
         if p.lifetime < settings.LIMITS['purity']['min']:
             print('Alarm!')
 
-    
     
     return HttpResponse('Adding run '+p.run+' time:'+p.ts.strftime('%x %X'))
 

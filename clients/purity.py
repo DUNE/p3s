@@ -102,7 +102,7 @@ except:
     print("file '%s' not found." % filename)
     exit(-1)
     
-myreader = csv.reader(f, delimiter=' ', quotechar='|')
+myreader = csv.reader(f, delimiter=', ', quotechar='|')
 
 frst = True
 
@@ -115,7 +115,9 @@ items = ('run','tpc', 'lifetime', 'error', 'count', 'sn', 'snclusters')
 for row in myreader:
     print(row)
     if(frst):
-        frst = False
+        frst	= False
+        print(len(row))
+        exit(0)
         continue # skip Bruce's header
     
     cnt=0
