@@ -1485,13 +1485,13 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
     fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "Slot";
-    strtolook2 = "RMSpfx";
+    strtolook2 = "RMS"; // RMSpfx
     fprintf(JsonFile,"       \"RMS of channel ADC from slot\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
     fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
     strtolook = "Slot";
-    strtolook2 = "Meanpfx";
+    strtolook2 = "Mean"; // Meanpfx
     fprintf(JsonFile,"       \"Mean of channel ADC from slot\":\"");
     filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
     fprintf(JsonFile,"%s\",\n",filesstr.Data());
@@ -1511,16 +1511,18 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
     filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
     fprintf(JsonFile,"%s\",\n",filesstr.Data());
 
-    strtolook = "PersistentFFTFiber";
+    strtolook = "Persistent"; // PersistentFFTFiber
+    strtolook2 = "FFT";
     fprintf(JsonFile,"       \"Persistent FFT Fiber\":\"");
-    filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
+    filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
     //fprintf(JsonFile,"%s",filesstr.Data());
     fputs(filesstr.Data(),JsonFile); // long string, fprintf has a limitiation on the number of chars
     fprintf(JsonFile,"\",\n");
 
-    strtolook = "ProfiledFFTFiber";
+    strtolook = "Profiled"; // ProfiledFFTFiber
+    strtolook2 = "FFT";
     fprintf(JsonFile,"       \"Profiled FFT Fiber\":\"");
-    filesstr = FindImagesAndPrint(strtolook, strtolook, dirstr, imagevec);
+    filesstr = FindImagesAndPrint(strtolook, strtolook2, dirstr, imagevec);
     //fprintf(JsonFile,"%s",filesstr.Data());
     fputs(filesstr.Data(),JsonFile);  // long string, fprintf has a limitiation on the number of chars
     fprintf(JsonFile,"\",\n");
