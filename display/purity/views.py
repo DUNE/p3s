@@ -12,6 +12,9 @@ from utils.miscUtils import parseCommaDash
 
 #########################################################    
 # count how many distinct runs there were
+# this is mainly to generate serial numbers until we
+# properly propagate the real run number
+
 @csrf_exempt
 def index(request):
     maxnum = 0
@@ -30,20 +33,27 @@ def index(request):
 @csrf_exempt
 def delete(request):
     post	= request.POST
-    p_pk	= None
-    run		= None
+    p_pk	= post.get('pk','')
+    run		= post.get('run','')
+    infile	= post.get('infile','')
 
-    try:
-        p_pk = post['pk']
-    except:
-        try:
-            run = post['run']
-        except:
-            return HttpResponse("Missing key(s) for deletion")
+
+    if(p_pk=='' and run=='' and infile==''):
+        return HttpResponse("Missing key(s) for deletion")
 
    
     p = None
-    if(p_pk):
+
+    if(infile!=''):
+        try:
+            p = pur.objects.filter(infile=infile)
+            p.delete()
+        except:
+            return HttpResponse("Entries for input file %s were not found or deletion failed" % infile )
+            
+        return HttpResponse("Entries for input file %s deleted" % infile )
+    
+    if(p_pk!=''):
         if(p_pk=='ALL'):
             try:
                 pur.objects.all().delete()
@@ -64,7 +74,7 @@ def delete(request):
             
         return HttpResponse("Entries %s deleted" % pdeleted )
 
-    if(run):
+    if(run!=''):
         runlist = parseCommaDash(run)
         rdeleted = []
         for r in runlist:
@@ -95,6 +105,7 @@ def add(request):
     p.sn	= post.get('sn',	0.0)
     p.snclusters= post.get('snclusters',0)
     p.drifttime	= post.get('drifttime',	0.0)
+    p.infile	= post.get('infile',	0.0)
     
     p.save()
 
