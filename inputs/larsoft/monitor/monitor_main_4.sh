@@ -82,6 +82,19 @@ if [ ! -d "$DESTINATION" ]; then
     exit -1
 fi
 
+# Create Bee directory
+export BEE_DIR=$P3S_DATA/$P3S_BEE_DIR
+export BEE_DESTINATION=$BEE_DIR/$P3S_JOB_UUID
+BEE_OUTPUT_FILE=sps_${P3S_OUTPUT_FILE}
+
+echo making $BEE_DESTINATION
+mkdir $BEE_DESTINATION
+if [ ! -d "$BEE_DESTINATION" ]; then
+    echo Directory $BEE_DESTINATION was not created, exiting
+    $P3S_HOME/clients/service.py -n monitor -m "Failed to create $BEE_DESTINATION"
+    exit -1
+fi
+
 roots=$P3S_OUTPUT_FILE    #`ls *.root`
 jsons=`ls *.json`
 
@@ -121,6 +134,15 @@ date
 time ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
 time root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
 date
+
+# Copy the root file with the spacepoint tree in the bee directory and create the symbolic link
+echo Copying the BEE file: $BEE_OUTPUT_FILE
+cp ${BEE_OUTPUT_FILE} $BEE_DESTINATION
+
+rm ${BEE_DIR}/recent.root
+
+ln -s $BEE_DESTINATION/${BEE_OUTPUT_FILE} ${BEE_DIR}/recent.root
+
 echo Finished the ROOT macro, looking at JSON
 ls -l *.json
 
