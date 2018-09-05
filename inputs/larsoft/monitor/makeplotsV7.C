@@ -253,6 +253,22 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
   f->Close();
   // ---------------------------------------------------------------------------
+  // Save the spacepoint tree in another root file
+  TFile *f1 = new TFile(infile,"READ");
+  TString outfile = TString("sps_") + infile;
+  TTree *oldtree = (TTree*)f1->Get("sps/spt");
+ 
+  TFile *newfile = new TFile(outfile.Data(),"RECREATE");
+  TTree *newtree = oldtree->CloneTree();
+  newfile->mkdir("sps");
+  newfile->cd("sps");
+
+  //newtree->Print();
+  newtree->Write();
+  
+  f1->Close();
+  delete f1;
+  // ---------------------------------------------------------------------------
   // Stop timing
   mn_t->Stop();
   if(VERBOSE){
@@ -495,6 +511,12 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       HistoTitle.ReplaceAll("APA4","APA4:DS-DaS");
       HistoTitle.ReplaceAll("APA5","APA5:US-DaS");
       HistoTitle.ReplaceAll("APA6","APA6:MS-DaS");
+      HistoTitle.ReplaceAll("APA 1","APA1:DS-RaS");
+      HistoTitle.ReplaceAll("APA 2","APA2:MS-RaS");
+      HistoTitle.ReplaceAll("APA 3","APA3:US-RaS");
+      HistoTitle.ReplaceAll("APA 4","APA4:DS-DaS");
+      HistoTitle.ReplaceAll("APA 5","APA5:US-DaS");
+      HistoTitle.ReplaceAll("APA 6","APA6:MS-DaS");
       HistoTitle.ReplaceAll("distribution"," ");
 
       TH1 *h1 = (TH1*)h->Clone("hnew");
@@ -1891,7 +1913,7 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 
   fprintf(JsonspsFile,"         \"Event Displays beam particle\":\"");
   for(UInt_t i=0; i < beamvec.size(); i++){
-    TString strtolook = vec[i];
+    TString strtolook = beamvec[i];
     if(i < vec.size()-1)
       fprintf(JsonspsFile,"%s,",strtolook.Data());
     else
