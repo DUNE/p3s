@@ -79,7 +79,11 @@
 
     <!-- Pilots: {{ npilots }}, Jobs: {{ njobs }}, Workflows: {{ nwf }}, Datasets: {{ ndatasets }}<br/> -->
     <hr/>
-    Users: {{ users }}
+    {% if paramtable %}
+    <h3>Parameter Checklist</h3>
+
+    {% render_table paramtable %}
+    {% endif %}
     <hr/>
 
     </center>

@@ -97,6 +97,17 @@ class ServiceTable(MonitorTable):
         model = service
         attrs = {'class': 'paleblue'}
 
+#--------------------------------------------------------
+class ParamTable(tables.Table):
+    parameter	= tables.Column(verbose_name='System Parameter')
+    nominal	= tables.Column(verbose_name='Nominal')
+    actual	= tables.Column(verbose_name='Actual')
+    status	= tables.Column(verbose_name='Status')
+    action	= tables.Column(verbose_name='Action')
+    
+    class Meta:
+        attrs	= {'class': 'paleblue'}
+        
 #########################################################    
 ############### SUMMARY TABLES ##########################    
 #########################################################    

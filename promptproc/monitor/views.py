@@ -31,6 +31,7 @@ from django.conf			import settings
 # Models used in the application:
 from sites.models			import site
 from jobs.models			import job
+from jobs.models import jobtype as jj
 from data.models			import dataset, datatype
 from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
@@ -143,15 +144,17 @@ def data_handler(request, what):
     try:
         dqm_domain	= settings.SITE['dqm_domain']
         dqm_host	= settings.SITE['dqm_host']
-        p3s_jobtypes	= settings.SITE['p3s_jobtypes']
         p3s_services	= settings.SITE['p3s_services']
     except:
-        return HttpResponse("error: check local.py for dqm_domain,dqm_host,p3s_jobtypes, p3s_services")
+        return HttpResponse("error: check local.py")
 
     p3s_users	= 'All,'+p3sUser.all()
     
     userlist	= p3s_users.split(',')
-    jobtypes	= p3s_jobtypes.split(',')
+    jobtypes = []
+
+    for jt in jj.objects.all(): jobtypes.append(jt.name)
+
     services	= p3s_services.split(',')
     
     #----------------------------------------------

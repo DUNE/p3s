@@ -11,8 +11,6 @@ from django.conf	import settings
 
 from django.utils.safestring		import mark_safe
 
-# Provisional, for stats - don't forget to delete
-# if this view is refactored:
 from jobs.models			import job, jobtype
 from data.models			import dataset, datatype
 from pilots.models			import pilot
@@ -20,7 +18,7 @@ from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow
 from monitor.monitorTables		import *
 from logic.models			import user, service
-
+from sites.models			import site
 from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.timeUtils import uptime
 from utils.timeUtils import loadavg
@@ -186,7 +184,6 @@ def index(request):
     jobSummaryData.append({'State':' ',	'Count': ' '}) # placeholder
     
     jobSummary = ShortSummaryTable(jobSummaryData)
-
     
     states	= (
         (makeJobLink(domain, 'defined'),	'ts_def',None),
@@ -240,7 +237,30 @@ def index(request):
         for v in toList.values(): l.append(v)
 
     l = list(map(int, l))
-    # print(int(sum(l)/len(l)))
+
+
+    ourSite = site.objects.all()[0]
+    paramData = []
+
+    nominalPilots	= ourSite.pilots
+    actualPilots	= pilot.N('Total')
+    if abs(nominalPilots-actualPilots)<50:
+        status = 'OK'
+    else:
+        status = 'FAIL'
+        
+    paramData.append({'parameter':'Total Pilots','nominal':nominalPilots,'actual':actualPilots, 'status':status, 'action':'-'})
+    
+    nominalLife		= ourSite.pilotlife
+    actualLife		= int(sum(l)/len(l))
+    if abs(nominalLife-actualLife)<100:
+        status = 'OK'
+    else:
+        status = 'FAIL'
+        
+    paramData.append({'parameter':'Pilot Lifetime','nominal':nominalLife,'actual':actualLife, 'status':status, 'action':'-'})
+    
+    paramtable = ParamTable(paramData)
     
     return render(request, 'index.html',
                   {
@@ -260,6 +280,7 @@ def index(request):
                       'navtable':	TopTable(domain, dqm_domain),
                       'hometable':	HomeTable(domain, dqm_domain),
                       'exptable':	RightTable(domain, dqm_domain),
+                      'paramtable':	paramtable,
                   }
     )
 
