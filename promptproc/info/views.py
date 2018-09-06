@@ -19,7 +19,7 @@ from pilots.models			import pilot
 from workflows.models			import dag, dagVertex, dagEdge
 from workflows.models			import workflow
 from monitor.monitorTables		import *
-from logic.models			import user
+from logic.models			import user, service
 
 from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.timeUtils import uptime
@@ -227,6 +227,20 @@ def index(request):
         'Finished Jobs Types',
         'Defined Jobs Types',
     ]
+
+
+
+
+    TOs = service.objects.filter(name='TO').order_by('-id')[:3]
+    l = []
+    
+    for to in TOs:
+        info = json.loads(to.info)
+        toList = info['TO']
+        for v in toList.values(): l.append(v)
+
+    l = list(map(int, l))
+    # print(int(sum(l)/len(l)))
     
     return render(request, 'index.html',
                   {
