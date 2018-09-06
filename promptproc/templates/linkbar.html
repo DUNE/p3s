@@ -1,54 +1,27 @@
 {% load render_table from django_tables2 %}
 {% load static %}
-<!-- table width="100%">
-  <tr>
-    <td width="20%"><img src="{% static 'images/dune_logo.png' %}"  width="50%" ></td>
-    <td width="30%"><a href="http://{{ domain }}">	<b>p3s home @"{{ host }}"	</b></a></td>
-    <td width="30%"><a href="http://{{ dqm_domain }}">	<b>DQM @"{{ dqm_host }}"	</b></a></td>
-    <td width="20%">{{ time }}</td>
-  </tr>
-</table -->
-<!-- hr/ -->
-<!-- center>
-<table width="90%">
-  <tr>
-    <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/jobs">	Jobs</a></td>
-    <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/pilots">	Pilots</a></td>
-
-    <td align="center" width="14%" ><a href="http://{{ domain }}/monitor/workflows">	Workflows</a></td>
-    <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/dags">	DAGs</a></td>
-
-    <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/data">	Data</a></td>
-    <td align="center" width="14%" >  <a href="http://{{ domain }}/monitor/datatypes">	Data Types</a></td>
-    <td align="center" width="12%" ><a href="http://{{ domain }}/monitor/services">	Services</a></td>
-
-    <td align="center" width="12%"><a href="http://{{ domain }}/monitor/sites">	Sites</a></td>
-
-  </tr>
-</table>
-</center -->
-
 <center>
-<table width="60%">
+<table width="80%">
   <tr>
-{% if navtable %}
-<td align="left">
-  {% render_table navtable %}
-</td>
-{% endif %}
-<td align="center"><img src="{% static 'images/dune_logo.png' %}"  width="70%"></td>
 {% if hometable %}
 <td align="right">
   {% render_table hometable %}
 </td>
 {% endif %}
+
+<td align="center"><img src="{% static 'images/dune_logo.png' %}"  width="70%"></td>
+
+{% if navtable %}
+<td align="left">
+  {% render_table navtable %}
+</td>
+{% endif %}
+
+{% if exptable %}
+<td align="left">
+ {% render_table exptable %}
+</td>
+{% endif %}
   </tr>
 </table>
 </center>
-
-
-
-
-    <!-- td width="5%"><h2>p3s</h2></td -->
-    <!-- images/Logo_NP_Blue.png -->
- <!-- style="font-size:20px" -->

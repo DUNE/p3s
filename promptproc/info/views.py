@@ -25,7 +25,7 @@ from utils.selectorUtils 		import dropDownGeneric, boxSelector
 from utils.timeUtils import uptime
 from utils.timeUtils import loadavg
 
-from utils.navbar			import TopTable, HomeTable
+from utils.navbar			import *
 
 refreshChoices = [('', 'Never'), ('5', '5s'), ('10', '10s'), ('30', '30s'), ('60','1min') ]
 
@@ -206,26 +206,6 @@ def index(request):
     
     jobTimelineTable = TimelineTable(jobsData)
 
-    # jtData = []
-
-    # for jt in jobtype.objects.all():
-    #     tmpDict = collections.OrderedDict()
-    #     tmpDict['State']=jt.name
-    #     for t in times: tmpDict[t[0]]=job.timeline('ts_sto', t[1], state='finished', jobtype=jt.name)
-    #     jtData.append(tmpDict)
-    
-    # jobTypeTable = TimelineTable(jtData)
-    # jobTypeTable.changeName('Type')
-
-   
-    
-    # systemData = []
-    # systemData.append({'attribute': 'Uptime',		'value': upt})
-    # systemData.append({'attribute': 'Load',		'value': ldavg})
-    # systemData.append({'attribute': 'Sites',		'value': ",".join(site.list())})
-    # systemData.append({'attribute': 'Data location',	'value': dirpath})
-    # systemInfoTable = DetailTable(systemData) # suspended until further decision
-
     users = user.all()
 
     selectors = []
@@ -265,6 +245,7 @@ def index(request):
                       'refresh':	refresh,
                       'navtable':	TopTable(domain, dqm_domain),
                       'hometable':	HomeTable(domain, dqm_domain),
+                      'exptable':	RightTable(domain, dqm_domain),
                   }
     )
 
