@@ -7,6 +7,7 @@
 #########################################################
 
 import uuid
+import json
 import datetime
 from datetime import datetime
 from datetime import time
@@ -53,6 +54,8 @@ def add(request):
                 name		= post['name'],
             )
 
+            e = json.loads(j.env)
+            j.infile=e['P3S_INPUT_FILE']
             j.save()
     
             return HttpResponse("%s" % post['uuid'] )

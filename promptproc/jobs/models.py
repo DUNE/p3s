@@ -29,6 +29,7 @@ class job(models.Model):
     pid		= models.CharField(max_length=16, default='')
     errcode	= models.CharField(max_length=16, default='')		#
     directive	= models.CharField(max_length=16, default='')		# for future development
+    infile	= models.CharField(max_length=256,default='',verbose_name='Input File')
 
     # ---
     def __str__(self):

@@ -1,1 +1,1 @@
-{"name":"sagebrush", "server":"serenity.local:8000", "pilotcycles":0, "pilotperiod": 5, "pilotbeat": 5, "env":{"P3S_SITE":"sagebrush", "P3S_SERVER":"serenity.local:8000","P3S_DIRPATH":"/home/maxim/p3sdata/","P3S_LARSOFT":"None"}}
+{"name":"sagebrush", "server":"serenity.local:8000", "pilots":5, "pilotcycles":0, "pilotperiod":5, "pilotbeat":5, "env":{"P3S_SITE":"sagebrush", "P3S_SERVER":"serenity.local:8000","P3S_DIRPATH":"/home/maxim/p3sdata/","P3S_LARSOFT":"None"}}

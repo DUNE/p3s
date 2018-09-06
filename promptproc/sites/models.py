@@ -6,6 +6,7 @@ class site(models.Model):
     name	= models.CharField(max_length=64, default='', primary_key=True)		# human-readable site name
     env		= models.TextField(default='{}')			# the default site environment
     server	= models.CharField(max_length=64, default='')		# who the pilot talks to
+    pilots	= models.PositiveIntegerField(default=1)		#
     pilotcycles	= models.PositiveIntegerField(default=1)		#
     pilotperiod	= models.PositiveIntegerField(default=10)		# in seconds
     pilotbeat	= models.PositiveIntegerField(default=20)		# in seconds
