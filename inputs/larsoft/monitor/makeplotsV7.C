@@ -195,7 +195,6 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
     // Skip these directories for now
     if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") ) continue;
-    //if(dirstr.Contains("pdsphitmonitor")) continue;
 
     current_sourcedir->cd(dirstr.Data());
     TDirectory *subdir = gDirectory;
@@ -1652,8 +1651,8 @@ void IncludeOverflow(TH1 *h){
 void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
   // --------------------------------------------------
 
-  std::vector<TString> vec;
-  std::vector<TString> beamvec;
+  std::vector< std::vector<TString> > vec;
+  std::vector< std::vector<TString> > beamvec;
 
   // Define beam lines - this is approximate
   //TPolyLine3D *polyline = new TPolyLine3D(2);
@@ -1709,52 +1708,64 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 
 	TString runstr;
 	if(run >= 100000){
-	  if(subrun >= 100)
+	  if(subrun >= 1000)
 	    runstr = Form("run%i_%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 10)
+	  else if(subrun >= 100)
 	    runstr = Form("run%i_0%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 0)
+	  else if(subrun >= 10)
 	    runstr = Form("run%i_00%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run%i_000%i_sps_event%i",run,subrun,event);
 	}
 	else if(run >= 10000){
-	  if(subrun >= 100)
-	    runstr = Form("run0%i_%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 10)
+	  if(subrun >= 1000)
+	    runstr = Form("run%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 100)
 	    runstr = Form("run0%i_0%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 0)
+	  else if(subrun >= 10)
 	    runstr = Form("run0%i_00%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run0%i_000%i_sps_event%i",run,subrun,event);
 	}
 	else if(run >= 1000){
-	  if(subrun >= 100)
-	    runstr = Form("run00%i_%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 10)
+	  if(subrun >= 1000)
+	    runstr = Form("run%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 100)
 	    runstr = Form("run00%i_0%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 0)
+	  else if(subrun >= 10)
 	    runstr = Form("run00%i_00%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run00%i_000%i_sps_event%i",run,subrun,event);
 	}
 	else if(run >= 100){
-	  if(subrun >= 100)
-	    runstr = Form("run000%i_%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 10)
+	  if(subrun >= 1000)
+	    runstr = Form("run%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 100)
 	    runstr = Form("run000%i_0%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 0)
+	  else if(subrun >= 10)
 	    runstr = Form("run000%i_00%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run000%i_000%i_sps_event%i",run,subrun,event);
 	}
 	else if(run >= 10){
-	  if(subrun >= 100)
-	    runstr = Form("run0000%i_%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 10)
+	  if(subrun >= 1000)
+	    runstr = Form("run%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 100)
 	    runstr = Form("run0000%i_0%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 0)
+	  else if(subrun >= 10)
 	    runstr = Form("run0000%i_00%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run0000%i_000%i_sps_event%i",run,subrun,event);
 	}
 	else if(run >= 0){
-	  if(subrun >= 100)
-	    runstr = Form("run00000%i_%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 10)
+	  if(subrun >= 1000)
+	    runstr = Form("run%i_%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 100)
 	    runstr = Form("run00000%i_0%i_sps_event%i",run,subrun,event);
-	  else if(subrun >= 0)
+	  else if(subrun >= 10)
 	    runstr = Form("run00000%i_00%i_sps_event%i",run,subrun,event);
+	  else if(subrun >= 0)
+	    runstr = Form("run00000%i_000%i_sps_event%i",run,subrun,event);
 	}
 
 	TString imagestrxy = runstr + TString("XYEventDisplay.png");
@@ -1833,10 +1844,13 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	}
 	cxy->SaveAs(imagestrxy.Data());
 
-	vec.push_back(imagestrxy);
-	vec.push_back(imagestrxz);
-	vec.push_back(imagestryz);
-	
+	std::vector<TString> imvec;
+	imvec.push_back(imagestrxy);
+	imvec.push_back(imagestrxz);
+	imvec.push_back(imagestryz);
+	vec.push_back(imvec);
+
+	// Plots with the beam particle
 	imagestrxy = runstr + TString("XYBeamEventDisplay.png");
 	imagestrxz = runstr + TString("XZBeamEventDisplay.png");
 	imagestryz = runstr + TString("YZBeamEventDisplay.png");
@@ -1887,9 +1901,11 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	}
 	cxybeam->SaveAs(imagestrxy.Data());
 
-	beamvec.push_back(imagestrxy);
-	beamvec.push_back(imagestrxz);
-	beamvec.push_back(imagestryz);
+	std::vector<TString> imbeamvec;
+	imbeamvec.push_back(imagestrxy);
+	imbeamvec.push_back(imagestrxz);
+	imbeamvec.push_back(imagestryz);
+	beamvec.push_back(imbeamvec);
 
       }
     }
@@ -1902,22 +1918,35 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 
   fprintf(JsonspsFile,"     \"Category\":\"Hit 2D event displays\",\n");
   fprintf(JsonspsFile,"      \"Files\": {\n");
-  fprintf(JsonspsFile,"        \"Event Displays\":\"");
-  for(UInt_t i=0; i < vec.size(); i++){
-    TString strtolook = vec[i];
-    if(i < vec.size()-1)
-      fprintf(JsonspsFile,"%s,",strtolook.Data());
-    else
-      fprintf(JsonspsFile,"%s\",\n",strtolook.Data());
+
+  for(UInt_t j=0; j < vec.size(); j++){
+    std::vector<TString> imvec = vec.at(j);
+    TString firstim = imvec[0];
+    firstim.Remove(firstim.Length()-18);
+    fprintf(JsonspsFile,"        \"%s\":\"",firstim.Data());
+    for(UInt_t i=0; i < imvec.size(); i++){
+      TString strtolook = imvec[i];
+      if(i < imvec.size()-1)
+	fprintf(JsonspsFile,"%s,",strtolook.Data());
+      else
+	fprintf(JsonspsFile,"%s\",\n",strtolook.Data());
+    }
   }
 
-  fprintf(JsonspsFile,"         \"Event Displays beam particle\":\"");
-  for(UInt_t i=0; i < beamvec.size(); i++){
-    TString strtolook = beamvec[i];
-    if(i < vec.size()-1)
-      fprintf(JsonspsFile,"%s,",strtolook.Data());
-    else
-      fprintf(JsonspsFile,"%s\"\n",strtolook.Data());
+  for(UInt_t j=0; j < beamvec.size(); j++){
+    std::vector<TString> imbeamvec = beamvec.at(j);
+    TString firstim = imbeamvec[0];
+    firstim.Remove(firstim.Length()-22);
+    fprintf(JsonspsFile,"         \"Beam particle - %s\":\"",firstim.Data());
+    for(UInt_t i=0; i < imbeamvec.size(); i++){
+      TString strtolook = imbeamvec[i];
+      if(i < imbeamvec.size()-1)
+	fprintf(JsonspsFile,"%s,",strtolook.Data());
+      else if(j == beamvec.size()-1)
+	fprintf(JsonspsFile,"%s\"\n",strtolook.Data());
+      else
+	fprintf(JsonspsFile,"%s\",\n",strtolook.Data());
+    }
   }
 
   fprintf(JsonspsFile,"     }\n");
