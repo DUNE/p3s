@@ -151,7 +151,7 @@ def data_handler(request, what):
     p3s_users	= 'All,'+p3sUser.all()
     
     userlist	= p3s_users.split(',')
-    jobtypes = []
+    jobtypes = ['All',]
 
     for jt in jj.objects.all(): jobtypes.append(jt.name)
 
