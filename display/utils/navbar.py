@@ -19,8 +19,10 @@ def NavBarData(domain=''):
         '<a href="http://'+domain+'/monitor/puritychart">Purity Charts</a>',
         '<a href="http://'+domain+'/monitor/snchart">S/N Charts</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=monitor">TPC Monitor</a>',
-        '<a href="http://'+domain+'/monitor/monrun?jobtype=evdisp">2D Event Display</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=femb">FEMB</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=evdisp">2D Raw Event Display</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=crt">CRT</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=beam">Beam</a>',
         '<a href="http://'+domain+'/monitor/monrun">All Entries</a>'
         )
     if(domain==''): return len(links)
@@ -36,7 +38,7 @@ class NavTable(tables.Table):
         self.Ncolumns = len(args[0][0].keys())
         super(NavTable, self).__init__(*args,**kwargs)
 
-    for i in range(7): locals()['col'+str(i+1)] = tables.Column()
+    for i in range(9): locals()['col'+str(i+1)] = tables.Column()
     
     def set_site(self, site=''):
         self.site=site
