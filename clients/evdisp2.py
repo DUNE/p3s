@@ -50,7 +50,7 @@ from clientUtils	import takeJson
 
 ########################################################
 fileTypes = OrderedDict([
-    ('adcraw_tpp',		'Raw ADC - pedestal channel vs. tick'),
+    ('adcraw_tpp',		'Raw 2D Event Display'),   # 'Raw ADC - pedestal channel vs. tick'
     ('chmet_ped_tps',		'ADC Pedestals'),
     ('chmet_pedexc_tps',	'ADC pedestal peak bin excess'),
     ('chmet_pedorf_tps',	'ADC pedestal out-of-range fraction'),
