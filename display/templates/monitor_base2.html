@@ -25,13 +25,16 @@
     <center><b>Back to Home Page: </b>
       {{ dqmHome }}
     </center>
-    <center>    
-      <h2>protoDUNE DQM{{ pageName }} on server {{ host }} updated at {{ time }}</h2>
-      <h3>{{ message }}</h3>
+    <center>
+      {% if table %} 
+      <h3>protoDUNE DQM{{ pageName }} on server {{ host }} updated at {{ time }}</h3>
+      {% endif %}
+      <h2>{{ message }}</h2>
 
 
 	    <!-- div -->
-	      {% block frm %}
+	    {% block frm %}
+	    {% if table %}
 	      <form action="" method="post">
 		{% csrf_token %}
 		<table>
@@ -50,6 +53,7 @@
 		</table>
 		
 	      </form>
+	      {% endif %}
 	      {% endblock %}
 	      <!-- /div -->
     </center>

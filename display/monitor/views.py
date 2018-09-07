@@ -408,7 +408,15 @@ def data_handler2(request, what, tbl, tblHeader, url):
     # Initialize the table object, fill essential info in the dictionary for the template (d)
     t = None # placeholder for the table
 
-    if(len(objs)==0): return HttpResponse('No objects found according to your citeria')
+    if(len(objs)==0):
+        d['navtable']	= TopTable(domain)
+        d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
+        d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
+        d['message']	= 'No objects were found according to the selected citeria'
+
+        return render(request, 'unitable2.html', d)
+
+#        return HttpResponse('No objects found according to your citeria')
     
     if(tbl=='RunTable'): # special case
         RunData = []
