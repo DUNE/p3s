@@ -112,7 +112,7 @@ if(auto):
             if (f.startswith(k) and f.endswith(".png")): files.append(f)
         if (len(files)>0): filesDict[fileTypes[k]] = ",".join(files)
         
-    output['Category']	= '2D Event Display'
+    output['Category']	= 'Raw 2D Event Display'
     output['Files']	= filesDict
     
     fileListFile = open(formatted_run+'_FileList.json', 'w')
