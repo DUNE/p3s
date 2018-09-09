@@ -69,8 +69,9 @@ def HomeBarData(domain, dqm_domain, host=None, port=None):
         
     data = []
     data.append({
-        'col1':mark_safe('<a href="http://'+domain+'/">p3s Home@'+domain+'</a>'),
-        'col2':mark_safe('<a href="http://'+dqm_domain+'/">DQM Home@'+dqm_domain+'</a>'),
+        'col1':mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual">Shifter Manual</a>'),
+        'col2':mark_safe('<a href="http://'+domain+'/">p3s Home@'+domain+'</a>'),
+        'col3':mark_safe('<a href="http://'+dqm_domain+'/">DQM Home@'+dqm_domain+'</a>'),
     })
 
     return data
@@ -79,6 +80,7 @@ def HomeBarData(domain, dqm_domain, host=None, port=None):
 class AnchorTable(tables.Table):
     col1 = tables.Column()
     col2 = tables.Column()
+    col3 = tables.Column()
     
     def set_site(self, site=''):
         self.site=site

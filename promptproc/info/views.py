@@ -82,9 +82,11 @@ def index(request):
 
 
     # ---
+    test		= request.GET.get('test', '')
 
     refresh		= request.GET.get('refresh', None)
     refreshSelector	= None
+    
     try:
         refreshSelector = dropDownGeneric(label='Refresh',
                                           initial={'refresh': refresh},
@@ -244,21 +246,25 @@ def index(request):
 
     nominalPilots	= ourSite.pilots
     actualPilots	= pilot.N('Total')
-    if abs(nominalPilots-actualPilots)<50:
+    if abs(nominalPilots-actualPilots)<50 and test!='pilots':
         status = 'OK'
+        action = '-'
     else:
         status = 'FAIL'
+        action = mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual#Checking_the_HTCondor_queue">Check HTCondor Queue</a>')
         
-    paramData.append({'parameter':'Total Pilots','nominal':nominalPilots,'actual':actualPilots, 'status':status, 'action':'-'})
+    paramData.append({'parameter':'Total Pilots','nominal':nominalPilots,'actual':actualPilots, 'status':status, 'action':action})
     
     nominalLife		= ourSite.pilotlife
     actualLife		= int(sum(l)/len(l))
-    if abs(nominalLife-actualLife)<100:
+    if abs(nominalLife-actualLife)<1000 and test!='lifetime':
         status = 'OK'
+        action = '-'
     else:
         status = 'FAIL'
+        action = mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual#Pilot_Lifetime">Create a service ticket under high priority</a>')
         
-    paramData.append({'parameter':'Pilot Lifetime','nominal':nominalLife,'actual':actualLife, 'status':status, 'action':'-'})
+    paramData.append({'parameter':'Pilot Lifetime','nominal':nominalLife,'actual':actualLife, 'status':status, 'action':action})
     
     paramtable = ParamTable(paramData)
     
