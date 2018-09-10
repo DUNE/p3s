@@ -1,0 +1,26 @@
+[
+    {
+	"name":		"Femb",
+	"timeout":	"900000",
+        "jobtype":	"femb",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/femb/fembcount_data.sh",
+        "priority":	"1",
+	"state":	"defined",
+	"env":		{
+	    "DUNETPCVER":	"v07_05_00",
+	    "DUNETPCQUAL":	"e17:prof",
+	    "P3S_COMMENT":	"Testing 07_03_00/e17",
+	    "P3S_AFS_SETUP_":	"/afs/cern.ch/work/t/tjunk/public",
+	    "P3S_XRD_URI":	"xroot://eospublic.cern.ch/",
+	    "P3S_DATA":		"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
+	    "P3S_NEVENTS":	"1000",
+	    "P3S_LAR_SETUP":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_2.sh",
+	    "P3S_FCL":		"protodune_dqm2.fcl",
+	    "P3S_INPUT_DIR":	"input",
+	    "P3S_INPUT_FILE":	"dummy_to_be_replaced",
+	    "P3S_OUTPUT_DIR":	"output",
+	    "P3S_EVDISP_DIR":	"monitor",
+	    "P3S_USED_DIR":	"used",
+	    "P3S_OUTPUT_FILE":	"femb.root"}
+    }
+]
