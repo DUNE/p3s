@@ -103,7 +103,7 @@ services.RawDigitPrepService.AdcChannelToolNames: [
   "pdcht_All",
   "pdcht_Apas",
   "pdcht_Zplanes",
-  "pdcht_Cplanes",
+  #"pdcht_Cplanes",
   "pdcht_Iplanes",
   "rawAdcDetectorPlotColl"
 ]
