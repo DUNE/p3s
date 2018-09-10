@@ -139,7 +139,7 @@ echo MSG done with cleanup
 #$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j evdisp
 
 #echo MSG finished registration
-date | mail -s $P3S_JOB_UUID potekhin@bnl.gov
+echo FEMB | mail -s $P3S_JOB_UUID potekhin@bnl.gov
 
 date
 echo 'done'

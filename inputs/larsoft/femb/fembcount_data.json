@@ -9,7 +9,7 @@
 	"env":		{
 	    "DUNETPCVER":	"v07_05_00",
 	    "DUNETPCQUAL":	"e17:prof",
-	    "P3S_COMMENT":	"Testing 07_03_00/e17",
+	    "P3S_COMMENT":	"Testing 07_05_00/e17, AFS commented out",
 	    "P3S_AFS_SETUP_":	"/afs/cern.ch/work/t/tjunk/public",
 	    "P3S_XRD_URI":	"xroot://eospublic.cern.ch/",
 	    "P3S_DATA":		"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
