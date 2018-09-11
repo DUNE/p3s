@@ -49,14 +49,19 @@ from clientenv		import clientenv
 from clientUtils	import takeJson
 
 ########################################################
-fileTypes = OrderedDict([
-    ('adcraw_tpp',		'Raw 2D Event Display'),   # 'Raw ADC - pedestal channel vs. tick'
-    ('chmet_ped_tps',		'ADC Pedestals'),
-    ('chmet_pedexc_tps',	'ADC pedestal peak bin excess'),
-    ('chmet_pedorf_tps',	'ADC pedestal out-of-range fraction'),
-    ('chmet_pedrms_tps',	'ADC pedestal sigma'),
-    ('detprep-',		'Raw ADC detector display (Collection View)'),
-])
+fileTypes = {
+    'evdisp':OrderedDict([
+        ('adcraw_tpp',		'Raw 2D Event Display'),   # 'Raw ADC - pedestal channel vs. tick'
+        ('chmet_ped_tps',		'ADC Pedestals'),
+        ('chmet_pedexc_tps',	'ADC pedestal peak bin excess'),
+        ('chmet_pedorf_tps',	'ADC pedestal out-of-range fraction'),
+        ('chmet_pedrms_tps',	'ADC pedestal sigma'),
+        ('detprep-',		'Raw ADC detector display (Collection View)'),]),
+    'femb':OrderedDict([
+        ('eviewg',			'FEMB count vs Event'),
+        ('eviewh',			'FEMB count distribution'),])
+}
+             
 
 # ---
 output		= OrderedDict()
@@ -69,12 +74,14 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-a", "--auto",	action='store_true',	help="parse the current directory automatically")
 parser.add_argument("-v", "--verbosity",type=int, default=0,	help="output verbosity")
 parser.add_argument("-f", "--filename",	type=str,		help="raw data file name e.g. np04_raw_run003498_0012_dl8.root", default='')
+parser.add_argument("-t", "--type",	type=str,		help="monitor entry type e.g. evdisp vs femb", default='')
 
 args	= parser.parse_args()
 
 auto	= args.auto
 verb	= args.verbosity
 filename= args.filename
+mtype	= args.type
 
 #########################################################
 if(auto):
@@ -91,26 +98,34 @@ if(auto):
     idx		= int(tokens[3])
     dl		= int(tokens[4].split('.')[0][2:])
 
-    print("Run:", run, "Idx:", idx, "dl:", dl)
+    if verb>1: print("Run:", run, "Idx:", idx, "dl:", dl)
     
     if run is None or idx is None or dl is None:
         print("Could not parse the run parameters, exiting...")
         exit(-1)
 
+    if mtype=='':
+        print('Monitor type unspecified, exiting...')
+        exit(-2)
+        
+    print(fileTypes[mtype])
+    exit(0)
+    
     formatted_run	= "run%06d_%04d_dl%02d" % (run, idx, dl)
     
     summaryDict['run']	= formatted_run
-    summaryDict['Type']	= 'evdisp'
+    summaryDict['Type']	= mtype
 
     summaryFile = open(formatted_run+'_summary.json', 'w')
     summaryFile.write(json.dumps([summaryDict], indent=4))
     summaryFile.close()
-    
-    for k in fileTypes: #    print('KEY----------------->', k)
+
+    fT = fileTypes[mtype]
+    for k in fT: #    print('KEY----------------->', k)
         files = []
         for f in L:
             if (f.startswith(k) and f.endswith(".png")): files.append(f)
-        if (len(files)>0): filesDict[fileTypes[k]] = ",".join(files)
+        if (len(files)>0): filesDict[fT[k]] = ",".join(files)
         
     output['Category']	= 'Raw 2D Event Display'
     output['Files']	= filesDict
