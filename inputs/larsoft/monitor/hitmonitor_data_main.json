@@ -7,9 +7,9 @@
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "DUNETPCVER":	"v07_04_00",
+	    "DUNETPCVER":	"v07_05_00_01",
 	    "DUNETPCQUAL":	"e17:prof",
-	    "P3S_AFS_SETUP_":	"/afs/cern.ch/work/t/tjunk/public",
+	    "P3S_AFS_SETUP":	"/afs/cern.ch/work/t/tjunk/public",
 	    "P3S_XRD_URI":	"xroot://eospublic.cern.ch/",
 	    "P3S_DATA":		"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
 	    "P3S_NEVENTS":	"5",
