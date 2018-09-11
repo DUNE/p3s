@@ -85,32 +85,38 @@ mtype	= args.type
 
 #########################################################
 if(auto):
-    run	= None
-    evt	= None
+    if filename=='':
+        print('No raw data file name specified, exiting...')
+        exit(-1)
+
+            
+    run, idx, dl = None, None, None
+    
     L	= sorted(os.listdir("."))
 
     # Let's extract the run, event numbers
     # Example: np04_raw_run003498_0012_dl8.root                      #
     
     tokens	= filename.split('_')
-    
-    run		= int(tokens[2][3:])
-    idx		= int(tokens[3])
-    dl		= int(tokens[4].split('.')[0][2:])
+    try:
+        run		= int(tokens[2][3:])
+        idx		= int(tokens[3])
+        dl		= int(tokens[4].split('.')[0][2:])
+    except:
+        print('Could not parse the file name, exiting...')
+        exit(-2)
 
     if verb>1: print("Run:", run, "Idx:", idx, "dl:", dl)
     
     if run is None or idx is None or dl is None:
         print("Could not parse the run parameters, exiting...")
-        exit(-1)
+        exit(-3)
 
     if mtype=='':
         print('Monitor type unspecified, exiting...')
-        exit(-2)
+        exit(-4)
         
-    print(fileTypes[mtype])
-    exit(0)
-    
+    # ---
     formatted_run	= "run%06d_%04d_dl%02d" % (run, idx, dl)
     
     summaryDict['run']	= formatted_run
@@ -120,6 +126,7 @@ if(auto):
     summaryFile.write(json.dumps([summaryDict], indent=4))
     summaryFile.close()
 
+    # ---
     fT = fileTypes[mtype]
     for k in fT: #    print('KEY----------------->', k)
         files = []
