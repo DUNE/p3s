@@ -117,28 +117,27 @@ rm -fr $P3S_JOB_UUID
 echo MSG done with cleanup
 # ---
 
-# This need to be updated
-#cd $DESTINATION
-#echo MSG will run $P3S_HOME/clients/evdisp2.py
+cd $DESTINATION
+echo MSG will run $P3S_HOME/clients/evdisp2.py
 
-#$P3S_HOME/clients/evdisp2.py -a -f $P3S_INPUT_FILE
-#ls -l *.json
+$P3S_HOME/clients/evdisp2.py -a -t femb -f $P3S_INPUT_FILE
+ls -l *.json
 
-#summary=`ls run*summary.json`
-#echo MSG found the run summary $summary
+summary=`ls run*summary.json`
+echo MSG found the run summary $summary
 
-#f=`ls -m *FileList.json`
-#descriptors=`echo $f | tr -d ' '`
-#ld=`echo -n $descriptors | wc -m`
-#if [ $ld == 0 ]; then
-#    echo No descriptots found
-#    exit 3
-#fi
-#echo MSG Found the file descriptors: $descriptors
+f=`ls -m *FileList.json`
+descriptors=`echo $f | tr -d ' '`
+ld=`echo -n $descriptors | wc -m`
+if [ $ld == 0 ]; then
+    echo No descriptots found
+    exit 3
+fi
+echo MSG Found the file descriptors: $descriptors
 
-#$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j evdisp
+$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j femb
 
-#echo MSG finished registration
+echo MSG finished registration
 echo FEMB | mail -s $P3S_JOB_UUID potekhin@bnl.gov
 
 date
