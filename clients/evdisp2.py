@@ -61,8 +61,8 @@ fileTypes = {
         ('eviewg',			'FEMB count vs Event'),
         ('eviewh',			'FEMB count distribution'),])
 }
-             
 
+categories = {'evdisp':'Raw 2D Event Display', 'femb':'FEMB Monitor'}
 # ---
 output		= OrderedDict()
 filesDict	= OrderedDict()
@@ -134,7 +134,7 @@ if(auto):
             if (f.startswith(k) and f.endswith(".png")): files.append(f)
         if (len(files)>0): filesDict[fT[k]] = ",".join(files)
         
-    output['Category']	= 'Raw 2D Event Display'
+    output['Category']	= categories[mtype]
     output['Files']	= filesDict
     
     fileListFile = open(formatted_run+'_FileList.json', 'w')
