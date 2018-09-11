@@ -411,7 +411,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(len(objs)==0):
         d['navtable']	= TopTable(domain)
         d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
-        d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
+        d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
         d['message']	= 'No objects were found according to the selected citeria'
 
         return render(request, 'unitable2.html', d)
@@ -515,7 +515,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
     d['tblHeader']	= tblHeader
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
-    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
+    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
     
     return render(request, 'unitable2.html', d)
 
@@ -689,7 +689,7 @@ def automon(request):
 
     d['tables']		= tbls
     d['headers']	= cats
-    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
+    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
 
     return render(request, 'unitable4.html', d)
 
