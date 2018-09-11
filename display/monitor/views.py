@@ -284,7 +284,7 @@ def puritychart(request, what):
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
-    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col2']
+    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
     d['vMinmax']	= [settings.CHARTS[what]['min'], settings.CHARTS[what]['max']]
     
     return render(request, 'purity_chart2.html', d)
