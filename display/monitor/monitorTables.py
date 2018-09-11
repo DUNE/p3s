@@ -175,6 +175,9 @@ class MonRunTable(MonitorTable):
         if monType=='evdisp':
             output+='<td>EVENT DISPLAY</td></tr></table>'
             
+        if monType=='femb':
+            output+='<td>FEMB monitor</td></tr></table>'
+            
         if monType=='crt':
             output+='<td>CRT entry</td></tr></table>'
             
