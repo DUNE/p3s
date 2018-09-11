@@ -39,8 +39,16 @@ services:
     AdcChannelToolNames: [
       "digitReader",
       "adcPedestalFit",
-      "pdapa_adcChannelPedestalPlotter",
-      "pdapa_adcChannelPedestalRmsPlotter"
+      "pdtps_adcChannelPedestalPlotter",
+      "pdtps_adcChannelPedestalRmsPlotter",
+      "pdtps_adcChannelPedestalOrfPlotter",
+      "pdtps_adcChannelPedestalPeakBinExcessPlotter",
+      "pdcht_All",
+      "pdcht_Apas",
+      "pdcht_Zplanes",
+      #"pdcht_Cplanes",
+      "pdcht_Iplanes",
+      "rawAdcDetectorPlotColl"
     ]
   }
 }
@@ -49,7 +57,6 @@ physics:
 {
   producers:
   {
-
     timingrawdecoder: @local::timing_raw_decoder   
     ssprawdecoder: @local::ssp_raw_decoder  
     tpcrawdecoder: @local::pdsp_tpc_raw_decoder
@@ -92,21 +99,21 @@ tools.tickRanges.plotTicks.begin: 3000
 tools.tickRanges.plotTicks.end:   4000
 MaxSignal:   50
 
-services.RawDigitPrepService.AdcChannelToolNames: [
+#services.RawDigitPrepService.AdcChannelToolNames: [
   #@sequence::services.RawDigitPrepService.AdcChannelToolNames,
-  "digitReader",
-  "adcPedestalFit",      # This is (re) running the pedestal finder. Not needed if done earlier.
-  "pdtps_adcChannelPedestalPlotter",
-  "pdtps_adcChannelPedestalRmsPlotter",
-  "pdtps_adcChannelPedestalOrfPlotter",
-  "pdtps_adcChannelPedestalPeakBinExcessPlotter",
-  "pdcht_All",
-  "pdcht_Apas",
-  "pdcht_Zplanes",
+#  "digitReader",
+#  "adcPedestalFit",      # This is (re) running the pedestal finder. Not needed if done earlier.
+#  "pdtps_adcChannelPedestalPlotter",
+#  "pdtps_adcChannelPedestalRmsPlotter",
+#  "pdtps_adcChannelPedestalOrfPlotter",
+#  "pdtps_adcChannelPedestalPeakBinExcessPlotter",
+#  "pdcht_All",
+#  "pdcht_Apas",
+#  "pdcht_Zplanes",
   #"pdcht_Cplanes",
-  "pdcht_Iplanes",
-  "rawAdcDetectorPlotColl"
-]
+#  "pdcht_Iplanes",
+#  "rawAdcDetectorPlotColl"
+#]
 
 tools.dqmRawAdcPlotter: @local::tools.rawAdcPlotter
 tools.dqmPreparedAdcPlotter: @local::tools.preparedAdcPlotter
