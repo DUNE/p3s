@@ -1,3 +1,5 @@
+# mapping of larsoft numbering convention to
+# the labels invented by the DAQ group
 tpcMap = {
     1: 'APA-RaS-US/APA3', 
     2: 'APA-DaS-US/APA5',
