@@ -82,7 +82,7 @@ physics:
     #dbcluster:          @local::protodunespmc_dbcluster3d
     #emtrkmichelid:      @local::protodune_emtrkmichelid
     linecluster:        @local::dune35t_linecluster
-    calo:               @local::dune35t_calomc
+    #calo:               @local::dune35t_calomc
     pandora:            @local::protodune_pandora
     pandoraTrack:       @local::dune_pandoraTrackCreation
     pandoraShower:      @local::dune_pandoraShowerCreation
