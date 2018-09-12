@@ -36,7 +36,7 @@ from .models				import monrun
 from utils.selectorUtils		import dropDownGeneric, boxSelector, twoFieldGeneric
 from utils.navbar			import TopTable, HomeTable, HomeBarData
 from utils.miscUtils 			import parseCommaDash
-
+from utils.tpcMap			import *
 
 # The tables needed here are defined in a separate unit of code
 from .monitorTables import *
@@ -240,7 +240,7 @@ def puritychart(request, what):
     lowerLimit			= settings.LIMITS[what]['min']
     
     # select by TPC and the time range
-    for tpcNum in (1,2,5,6,9,10):
+    for tpcNum in tpcOrder:
         objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
         if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
@@ -255,7 +255,7 @@ def puritychart(request, what):
 
         # This dict takes the panel name, the above formed time series as string, and axes names/labels
         purDict = {}
-        purDict["panel"]	= 'tpc'+str(tpcNum)
+        purDict["panel"]	= tpcMap[tpcNum] # 'tpc'+str(tpcNum)
         purDict["timeseries"]	= purStr # !!! ship out finalized time series STRING in Google format !!!
         purDict			= {**purDict, **PURITYCHARTLABELS[what]} # merge: add axes labels etc
         purDict['extra']	= purDict['extra']+': '+str(lowerLimit)
