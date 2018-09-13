@@ -146,7 +146,7 @@ def monchart(request):
             except:
                 break
 
-        myDict["panel"]	= tpcMap[tpcNum] # 'tpc'+str(tpcNum)
+        myDict["panel"]	= tpcMap[tpcOrder[tpcNum]] # 'tpc'+str(tpcNum)
         myDict["timeseries"]=dataStr
 
         if(what=='hits'):
