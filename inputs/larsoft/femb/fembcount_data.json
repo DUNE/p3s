@@ -1,7 +1,7 @@
 [
     {
 	"name":		"Femb",
-	"timeout":	"900000",
+	"timeout":	"9000",
         "jobtype":	"femb",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/femb/fembcount_data.sh",
         "priority":	"1",
