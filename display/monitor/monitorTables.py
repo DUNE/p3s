@@ -33,6 +33,14 @@ monPatterns = {
     "noise2":	"NNoisy Channels Above ADC RMS Threshold"
 }
 
+
+monTags = {
+    'evdisp':	'<td>EVENT DISPLAY</td></tr></table>',
+    'femb':	'<td>FEMB monitor</td></tr></table>',
+    'crt':	'<td>CRT</td></tr></table>',
+    'purity':	'<td>PURITY</td></tr></table>',
+}
+
 #########################################################
 # We need this to make links to this service itself.
 try:
@@ -147,7 +155,13 @@ class MonRunTable(MonitorTable):
             monType = d['Type']
         except:
             pass
+
+        # ---
+        if monType is None:
+            output+='<td>ERROR PARSING JSON</td></tr></table>'
+            return format_html(output)
         
+        # ---
         if monType=='monitor':
             try:
                 # column headers for hits and charge
@@ -172,18 +186,14 @@ class MonRunTable(MonitorTable):
             except:
                 output+='<td>ERROR PARSING JSON</td></tr></table>'
 
-        if monType=='evdisp':
-            output+='<td>EVENT DISPLAY</td></tr></table>'
-            
-        if monType=='femb':
-            output+='<td>FEMB monitor</td></tr></table>'
-            
-        if monType=='crt':
-            output+='<td>CRT entry</td></tr></table>'
-            
-        if monType is None:
-            output+='<td>ERROR PARSING JSON</td></tr></table>'
-            
+            return format_html(output)
+        
+        # ---
+        try:
+            output+=monTags[monType]
+        except:            
+            output+='<td>ERROR LOOKING UP PROCESSING TYPE</td></tr></table>'
+           
         return format_html(output)
 
 # Sample summary:
