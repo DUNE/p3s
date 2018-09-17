@@ -7,7 +7,7 @@
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "DUNETPCVER":	"v07_05_00_01",
+	    "DUNETPCVER":	"v07_06_00",
 	    "DUNETPCQUAL":	"e17:prof",
 	    "P3S_AFS_SETUP":	"/afs/cern.ch/work/t/tjunk/public",
 	    "P3S_XRD_URI":	"xroot://eospublic.cern.ch/",
