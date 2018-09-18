@@ -53,6 +53,7 @@ void SaveImageNameInJson(TString jsonfile, TString dirstr, std::vector<TString> 
 TString FindImagesAndPrint(TString strtolook, TString strtolook2, TString dirstr, std::vector<TString> imagevec);
 void PlotDistToMean(TH1 *h,Int_t mean);
 void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline=true);
+TString GetDataLogger(TString inputfile);
 
 // For CRT plots
 void MakeCRTPlots(TDirectory *dir, TString jsonfile); // modify this one
@@ -79,7 +80,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   std::vector<TString> directories_in_file = FindDirectories(current_sourcedir);
   
   // Find run/subrun ID and time this run started
-  TString runstr("run0000_0000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
+  TString runstr("run000000_0000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
   // Loop first to find the run and the date
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
@@ -93,40 +94,20 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     }
   }
 
+  if(!infile.Contains("rawtpcmonitor")){
+    TRegexp reg(".root");
+    TRegexp reg2("np04_mon_");
+    TString s_infile = infile;
+    s_infile(reg) = "";
+    s_infile(reg2) = "";
+    s_infile.Remove(14);
+    runstr = s_infile;
+  }
+
   // Define canvas
   //c1 = new TCanvas("c1","c1",800,800);
 
-  TString dl("_dl00");
-  if(infile.Contains("dl1"))
-    dl = "_dl01";
-  else if(infile.Contains("dl2"))
-    dl = "_dl02";
-  else if(infile.Contains("dl3"))
-    dl = "_dl03";
-  else if(infile.Contains("dl4"))
-    dl = "_dl04";
-  else if(infile.Contains("dl5"))
-    dl = "_dl05";
-  else if(infile.Contains("dl6"))
-    dl = "_dl06";
-  else if(infile.Contains("dl7"))
-    dl = "_dl07";
-  else if(infile.Contains("dl8"))
-    dl = "_dl08";
-  else if(infile.Contains("dl9"))
-    dl = "_dl09";
-  else if(infile.Contains("dl10"))
-    dl = "_dl10";
-  else if(infile.Contains("dl11"))
-    dl = "_dl11";
-  else if(infile.Contains("dl12"))
-    dl = "_dl12";
-  else if(infile.Contains("dl13"))
-    dl = "_dl13";
-  else if(infile.Contains("dl14"))
-    dl = "_dl14";
-  else if(infile.Contains("dl15"))
-    dl = "_dl15";
+  TString dl = GetDataLogger(infile);
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
   
@@ -341,7 +322,7 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
       htree->SetBranchAddress("fSubRun",    &fSubRun);
       htree->SetBranchAddress("fTimeStamp", &fTimeStamp);
       
-      Int_t runfirst = 100000000; Int_t subrunfirst = 100000000;
+      Int_t runfirst = 999999; Int_t subrunfirst = 9999;
       Int_t runlast = -1; Int_t subrunlast = -1;
       // Find first and last runs/subruns
       for(Int_t ii = 0; ii < htree->GetEntries(); ii++){
@@ -448,6 +429,46 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
     }
   }
   
+}
+
+// --------------------------------------------------
+TString GetDataLogger(TString inputfile){
+  // --------------------------------------------------
+
+  TString dl("_dl00");
+  if(inputfile.Contains("dl1"))
+    dl = "_dl01";
+  else if(inputfile.Contains("dl2"))
+    dl = "_dl02";
+  else if(inputfile.Contains("dl3"))
+    dl = "_dl03";
+  else if(inputfile.Contains("dl4"))
+    dl = "_dl04";
+  else if(inputfile.Contains("dl5"))
+    dl = "_dl05";
+  else if(inputfile.Contains("dl6"))
+    dl = "_dl06";
+  else if(inputfile.Contains("dl7"))
+    dl = "_dl07";
+  else if(inputfile.Contains("dl8"))
+    dl = "_dl08";
+  else if(inputfile.Contains("dl9"))
+    dl = "_dl09";
+  else if(inputfile.Contains("dl10"))
+    dl = "_dl10";
+  else if(inputfile.Contains("dl11"))
+    dl = "_dl11";
+  else if(inputfile.Contains("dl12"))
+    dl = "_dl12";
+  else if(inputfile.Contains("dl13"))
+    dl = "_dl13";
+  else if(inputfile.Contains("dl14"))
+    dl = "_dl14";
+  else if(inputfile.Contains("dl15"))
+    dl = "_dl15";
+
+  return dl;
+
 }
 
 // --------------------------------------------------
@@ -1677,6 +1698,9 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
   xyline->SetLineColor(kRed);
   xyline->SetLineWidth(2.0);
 
+  TString regstring = jsonfile;
+  regstring.Remove(14);
+
   // loop over all keys in this directory
   TIter nextkey(dir->GetListOfKeys());
   TKey *fkey, *foldkey=0;
@@ -1699,6 +1723,16 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
       std::vector<double> *vy = 0;
       std::vector<double> *vz = 0;
       std::vector<double> *vcharge = 0;
+      //std::vector<int>    *vtrackid = 0;
+      // beam information
+      //std::vector<double> *beamPosx;
+      //std::vector<double> *beamPosy;
+      //std::vector<double> *beamPosz;
+      
+      //std::vector<double> *beamDirx;
+      //std::vector<double> *beamDiry;
+      //std::vector<double> *beamDirz;
+
       TTree *spttree = (TTree*)obj;
       spttree->SetBranchAddress("run",      &run);
       spttree->SetBranchAddress("subrun",   &subrun);
@@ -1708,6 +1742,13 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
       spttree->SetBranchAddress("vy",       &vy);
       spttree->SetBranchAddress("vz",       &vz);
       spttree->SetBranchAddress("vcharge",  &vcharge);
+      //spttree->SetBranchAddress("vtrackid", &vtrackid);
+      //spttree->SetBranchAddress("beamPosx", &beamPosx);
+      //spttree->SetBranchAddress("beamPosy", &beamPosy);
+      //spttree->SetBranchAddress("beamPosz", &beamPosz);
+      //spttree->SetBranchAddress("beamDirx", &beamDirx);
+      //spttree->SetBranchAddress("beamDiry", &beamDiry);
+      //spttree->SetBranchAddress("beamDirz", &beamDirz);
 
       for(Int_t i = 0; i < spttree->GetEntries(); i++){
 	spttree->GetEntry(i);
@@ -1774,17 +1815,27 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	    runstr = Form("run00000%i_000%i_sps_event%i",run,subrun,event);
 	}
 
+	runstr = Form("%s_sps_event%i",regstring.Data(),event);
+
 	TString imagestrxy = runstr + TString("XYEventDisplay.png");
 	TString imagestrxz = runstr + TString("XZEventDisplay.png");
 	TString imagestryz = runstr + TString("YZEventDisplay.png");
 
-	TH2D* YZHisto = new TH2D(Form("ZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 152, 0, 608);
-	TH2D* XZHisto = new TH2D(Form("ZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 180, -360, 360);
-	TH2D* XYHisto = new TH2D(Form("XYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 180, -360, 360, 152, 0, 608);
+	//TH2D* YZHisto = new TH2D(Form("ZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 152, 0, 608);
+	//TH2D* XZHisto = new TH2D(Form("ZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 180, 0, 720, 180, -360, 360);
+	//TH2D* XYHisto = new TH2D(Form("XYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 180, -360, 360, 152, 0, 608);
 
-	TH2D* YZHistoBeam = new TH2D(Form("BeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 110, -30, 80, 50, 390, 440);
-	TH2D* XZHistoBeam = new TH2D(Form("BeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 110, -30, 80, 60, -60, 0);
-	TH2D* XYHistoBeam = new TH2D(Form("BeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 60, -60, 0, 50, 390, 440);
+	//TH2D* YZHistoBeam = new TH2D(Form("BeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event), 110, -30, 80, 50, 390, 440);
+	//TH2D* XZHistoBeam = new TH2D(Form("BeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event), 110, -30, 80, 60, -60, 0);
+	//TH2D* XYHistoBeam = new TH2D(Form("BeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event), 60, -60, 0, 50, 390, 440);
+
+	TH2D* YZHisto = new TH2D(Form("ZY%sevent%i",regstring.Data(),event),Form("Z-Y display for %s and event %i",regstring.Data(),event), 180, 0, 720, 152, 0, 608);
+	TH2D* XZHisto = new TH2D(Form("ZX%sevent%i",regstring.Data(),event),Form("Z-X display for %s and event %i",regstring.Data(),event), 180, 0, 720, 180, -360, 360);
+	TH2D* XYHisto = new TH2D(Form("XY%sevent%i",regstring.Data(),event),Form("X-Y display for %s and event %i",regstring.Data(),event), 180, -360, 360, 152, 0, 608);
+
+	TH2D* YZHistoBeam = new TH2D(Form("BeamZY%sevent%i",regstring.Data(),event),Form("Z-Y display for %s and event %i",regstring.Data(),event), 110, -30, 80, 50, 390, 440);
+	TH2D* XZHistoBeam = new TH2D(Form("BeamZX%sevent%i",regstring.Data(),event),Form("Z-X display for %s and event %i",regstring.Data(),event), 110, -30, 80, 60, -60, 0);
+	TH2D* XYHistoBeam = new TH2D(Form("BeamXY%sevent%i",regstring.Data(),event),Form("X-Y display for %s and event %i",regstring.Data(),event), 60, -60, 0, 50, 390, 440);
 	
 	for(Int_t j = 0; j < vx->size(); j++){
 	  Double_t vxval = vx->at(j);
@@ -1814,7 +1865,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	YZHistoBeam->GetZaxis()->SetTitleOffset(1.2); XZHistoBeam->GetZaxis()->SetTitleOffset(1.2); XYHistoBeam->GetZaxis()->SetTitleOffset(1.2);
 
 	// 
-	TCanvas *cyz = new TCanvas(Form("CZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
+	//TCanvas *cyz = new TCanvas(Form("CZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
+	TCanvas *cyz = new TCanvas(Form("CZY%sevent%i",regstring.Data(),event),Form("Z-Y display for %s and event %i",regstring.Data(),event));
 	cyz->SetFrameFillColor(kBlue+3);
 	YZHisto->Draw("colz");
 	if(YZHisto->GetEntries() > 0){
@@ -1826,7 +1878,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	}
 	cyz->SaveAs(imagestryz.Data());
 	
-	TCanvas *cxz = new TCanvas(Form("CZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
+	//TCanvas *cxz = new TCanvas(Form("CZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
+	TCanvas *cxz = new TCanvas(Form("CZX%sevent%i",regstring.Data(),event),Form("Z-X display for %s and event %i",regstring.Data(),event));
 	cxz->SetFrameFillColor(kBlue+3);
 	XZHisto->Draw("colz");
 	if(XZHisto->GetEntries() > 0){
@@ -1838,7 +1891,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	}
 	cxz->SaveAs(imagestrxz.Data());
 
-	TCanvas *cxy = new TCanvas(Form("CXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
+	//TCanvas *cxy = new TCanvas(Form("CXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
+	TCanvas *cxy = new TCanvas(Form("CXY%sevent%i",regstring.Data(),event),Form("X-Y display for %s and event %i",regstring.Data(),event));
 	cxy->SetFrameFillColor(kBlue+3);
 	XYHisto->Draw("colz");
 	if(XYHisto->GetEntries() > 0){
@@ -1861,7 +1915,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	imagestrxz = runstr + TString("XZBeamEventDisplay.png");
 	imagestryz = runstr + TString("YZBeamEventDisplay.png");
 
-	TCanvas *cyzbeam = new TCanvas(Form("CBeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
+	//TCanvas *cyzbeam = new TCanvas(Form("CBeamZYrun%i-%ievent%i",run,subrun,event),Form("Z-Y display for run %i-%i and event %i",run,subrun,event));
+	TCanvas *cyzbeam = new TCanvas(Form("CBeamZY%sevent%i",regstring.Data(),event),Form("Z-Y display for %s and event %i",regstring.Data(),event));
 	cyzbeam->SetFrameFillColor(kBlue+3);
 	YZHistoBeam->Draw("colz");
 	if(drawbeamline)
@@ -1877,7 +1932,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	}
 	cyzbeam->SaveAs(imagestryz.Data());
 
-	TCanvas *cxzbeam = new TCanvas(Form("CBeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
+	//TCanvas *cxzbeam = new TCanvas(Form("CBeamZXrun%i-%ievent%i",run,subrun,event),Form("Z-X display for run %i-%i and event %i",run,subrun,event));
+	TCanvas *cxzbeam = new TCanvas(Form("CBeamZX%sevent%i",regstring.Data(),event),Form("Z-X display for %s and event %i",regstring.Data(),event));
 	cxzbeam->SetFrameFillColor(kBlue+3);
 	XZHistoBeam->Draw("colz");
 	if(drawbeamline)
@@ -1893,7 +1949,8 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	}
 	cxzbeam->SaveAs(imagestrxz.Data());
 
-	TCanvas *cxybeam = new TCanvas(Form("CBeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
+	//TCanvas *cxybeam = new TCanvas(Form("CBeamXYrun%i-%ievent%i",run,subrun,event),Form("X-Y display for run %i-%i and event %i",run,subrun,event));
+	TCanvas *cxybeam = new TCanvas(Form("CBeamXY%sevent%i",regstring.Data(),event),Form("X-Y display for %s and event %i",regstring.Data(),event));
 	cxybeam->SetFrameFillColor(kBlue+3);
 	XYHistoBeam->Draw("colz");
 	if(drawbeamline)
