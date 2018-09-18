@@ -163,5 +163,5 @@ echo MSG Found the file descriptors: $descriptors
 $P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
 
 echo MSG finished registration
-echo $INPUT_FILE | mail -s $P3S_JOB_UUID potekhin@bnl.gov
+# echo $INPUT_FILE | mail -s $P3S_JOB_UUID potekhin@bnl.gov
 exit 0

@@ -121,6 +121,12 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     dl = "_dl11";
   else if(infile.Contains("dl12"))
     dl = "_dl12";
+  else if(infile.Contains("dl13"))
+    dl = "_dl13";
+  else if(infile.Contains("dl14"))
+    dl = "_dl14";
+  else if(infile.Contains("dl15"))
+    dl = "_dl15";
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
   

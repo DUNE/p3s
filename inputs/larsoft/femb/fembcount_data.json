@@ -1,15 +1,15 @@
 [
     {
 	"name":		"Femb",
-	"timeout":	"900000",
+	"timeout":	"9000",
         "jobtype":	"femb",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/femb/fembcount_data.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
-	    "DUNETPCVER":	"v07_05_00_01",
+	    "DUNETPCVER":	"v07_06_00",
 	    "DUNETPCQUAL":	"e17:prof",
-	    "P3S_COMMENT":	"Testing 07_05_00_01/e17",
+	    "P3S_COMMENT":	"Testing 07_05_00/e17",
 	    "P3S_AFS_SETUP":	"/afs/cern.ch/work/t/tjunk/public",
 	    "P3S_XRD_URI":	"xroot://eospublic.cern.ch/",
 	    "P3S_DATA":		"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
