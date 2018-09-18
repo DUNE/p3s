@@ -2,36 +2,68 @@ Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
 # Release Notes
 
+* Version 2.01 20180918 remove extraneous fragments and obsolete references
 * Version 1.05 20180307 setup is now available from the np04dqm directory
 * Version 1.04 20180301 added info about a working LARSoft example
 * Version 1.03 20180228 more verbose info on file permissions
 * Version 1.02 20180226 added information on EOS, directory locations etc
 * Version 1.01 20180120 first official version
+
 ---
 
 # Introduction
-## Purpose and content of this document
 
-* This document explains how to set up and run the job submission
-client. These instructions are not generic as they are tailored
-to operation of the protoDUNE experiment at CERN in 2018. There
-are references to certain directory locations, environment
-variables and scripts that are site and application-specific.
-* There is a separate "overview" document which contains a general
-description of how p3s works and what its components are. For the
-end user a lot of this detail won't matter since they are typically
-interested in just running a number of jobs on resources provided
-by the system and following their progress, consulting the log files
-if necessary. That's the extent of the instructions found below.
-These instructions were validated by a few new users. If anything
+## Blitz-p3s
+If you want to cut to the chase and run the now-current payloads you can do the
+following
+
+* obtain credentials from Nektarios Benekos (on the "need to know" basis only) for
+the production account **np04dqm**
+* switch to the p3s *clients* directory */afs/cern.ch/user/n/np04dqm/public/p3s/p3s/clients*
+* run the *job.py* client as detailed below
+
+Submitting a job can be done in this manner:
+```
+./job.py -j my_job_description.json -f my_input_file.root
+```
+
+To make this productive, you will need to look up the input file you want, and identify
+the job description that suits your needs. For the inputs, please examine the
+p3s input directory located at:
+```
+/eos/experiment/neutplatform/protodune/np04tier0/p3s/input
+```
+and select a file based on the run number or other parameters such as time stamp. As for
+job descriptions, there are production versions in located in the path ../inputs/larsoft/*
+relative to the clients directory. So a realistic example in which jobs are submitted
+for the FEMB monitor, the 2D raw event display and the TPC monitor can look like this:
+
+```
+./job.py -v 2 -j  ../inputs/larsoft/femb/fembcount_data.json -f np04_raw_run004429_0065_dl8.root
+./job.py -v 2 -j ../inputs/larsoft/evdisp/eventdisplay_data.json  -f np04_raw_run004429_0065_dl8.root
+./job.py -v 2 -j ../inputs/larsoft/monitor/hitmonitor_data_main.json  -f np04_raw_run004429_0065_dl8.root
+```
+The jobs should appear in the "jobs" section of the Web monitor (see one of the sections
+below for detail). Once completed, the jobs will post their results
+to the DQM server located at p3s-content.cern.ch.
+
+
+
+## About this document
+This document is maintaned in the "markdown" format and the source file
+is contained in the directory *p3s/documents/src*. To rebuild the PDF
+version as needed you can use the command (provided you have pandoc
+installed):
+
+```
+pandoc -s -o JOB.pdf JOB.md
+```
+
+The main purpose of this document is to explain how to set up and run the "job submission
+client", with the purpose of executing protoDUNE software in a controlled
+and monitored way in CERN Tier-0. Details of the p3s design, organization and operation are
+omitted for sake of brevity, only essentials are presented. If anything
 does not work as expected, please consult the author of this document.
-* Please keep track of the version number located on top of this document.
-Once incremental changes become significant the version number will
-be bumped up. It is important to refer to the right set of instructions
-as p3s is gradually enters operations period and adjustments are made.
-This document also exists in PDF format and can be printed out for
-your convenience, in the documents/pdf folder of the p3s repository (as
-explained below).
 
 ## PLEASE READ THIS
 
@@ -127,7 +159,7 @@ and wrapper script templates
 
 ### B. Use the **np04dqm installation** (quite easy, really)
 
-Access the follwoing directory:
+Access the following directory:
 ```
 /afs/cern.ch/user/n/np04dqm/public/p3s/
 ```
@@ -191,51 +223,21 @@ The next step is to make sure that you can also see the Web pages served by p3s
 so you have monitoring functionality. Try to access **http://p3s-web.cern.ch**
 in your browser (if you are at CERN). Currently the server **p3s-web.cern.ch** is
 only accessible within the confines of the CERN firewall. If you want to access it
-from an external machine, please use a ssh tunnel like in the command below
+from an external Linux machine, please use a ssh tunnel like in the command below
 ```
 ssh -4 -L 8008:p3s-web.cern.ch:80 myCERNaccount@lxplus.cern.ch
 ```
 ...in which case pointing your browser to localhost:8008 will result in you seeing
-the p3s server (which is on port 80 at CERN).
+the p3s server (which is on port 80 at CERN). On Windows, you can use a ssh
+utility of your choice in a similar manner, provided it does have the tunneling
+functionality.
 
 ---
 
 # Submitting a job
-## The mechanics of the job submission
-
-Keep in mind that when you "submit a job" all you are doing is sending
-a record containing all the info necessary for running a particular
-executable, to the p3s database. The system (p3s) will then match this job
-with a live and available **pilot** occupying a batch slot in CERN Tier-0 facility
-and deploy the payload for execution in that batch slot (i.e. on one of the Worker
-Nodes at CERN). The pilot will monitor the state of the job under its management
-and send periodic "heartbeats" to the server to tell it that it's still alive.
-Once the job completes, the pilot closes logs, optionally performs other
-"close out" functions and resumes querying the p3s server for the next job.
-
-This is a typical case of a pilot-based framework with the following
-features:
-
-* low latency between submission and the start of job execution since you are
-not waiting for a HTConfor or other queue; in some cases such as busy HT Condor
-queues speed gains can be quite substantial
-
-* you don't have to run batch commands yourself and you don't have to manage
-HTCOndor JDL files
-
-* ease of automation (e.g. creating automatic scripts) since same tested job
-template can be used in automated submission
-
-* easy to read tabulated view of all of your jobs in the p3s monitor which
-is a Web application
-
-* the identity under which jobs are executed is not your identity but the
-production identity... This can be helpful or not helpful depending
-on situation, and path permissions need to be thought through. The NP04
-group at CERN has access to various EOS and some AFS directories so
-this can be made to work
-
 ## An example of the job description
+
+For general notes on how jobs are submitted in p3s please see the Appendix.
 
 The purpose of the following dummy example (with rather arbitrary attributes, file
 names and variables) is to demonstrate how JSON is used to describe jobs in p3s. Let
@@ -349,7 +351,7 @@ we set the correct environment, so unless already done so use the command
 ```
 source ../configuration/lxvm_np04dqm.sh
 ```
-After that the following command can be used (once again form the "clients" directory)
+After that the following command can be used (once again from the "clients" directory)
 ```
 ./job.py -j ../inputs/jobs/printEnv.json
 ```
@@ -378,18 +380,12 @@ found on the worker node. The *.err file should be empty if everything worked we
 Since running a functioning wrapper script (as opposed to Linux built-in commands) is
 a more realistic use case note that it's entirely up to the author of the wrapper script to define the location
 of the output files other than stdout. Please see the "p3s/inputs" directory for examples of
-job descriptions which access different directories. In many cases, ROOT and other files
-produced by the current version of p3s will move the files they produce to
-the following location in EOS:
-```
-/eos/experiment/neutplatform/protodune/np04tier0/p3s/outputs
-```
-...but once again this depends on what's in the wrapper script.
+job descriptions which access different directories.
 
 The **job** client script we use here and all clients in p3s suite support the "-h"
 command line option which prints an annotated list of all command line options. Take
 a look, it's helpful. If you need more verbose output, you can add "-v 2" to the command
-line to change the verbosity level.
+line (in most clients) to change the verbosity level.
 
 
 ## Creating and editing your wrapper scripts
@@ -437,9 +433,9 @@ option will output helpful information. For example:
 
 ## Note on environment variables
 With rare exceptions such as *P3S_MODE* and *P3S_INPUT_FILE (which may change in future versions)
-there is no semantic importance to
-the exact names of the environment variables used in formulating your job. The only thing that
-matters is that the payload script contained correct references to the environment.
+there is no semantic importance to the exact names of the environment variables used in formulating
+your job. The only thing that matters is that the payload script contained correct references to
+the environment.
 
 ---
 
@@ -493,54 +489,32 @@ a current CERN policy.
 
 # Moving on to "real" payloads
 
-## Software provisioning and production account
+## Software provisioning and the production account
 
-At the time of writing, LArSoft is provisioned to the CERN interactive
-and worker nodes via CVMFS. This is reflected in the wrapper scripts
-for most LArSoft jobs run in p3s.
+At the time of writing the duneTPC software is provisioned to the CERN interactive
+and worker nodes via CVMFS for "most" releases, and is also available via AFS
+for a small number of select recent releases.
 
-The protoDUNE-SP production account **np04dqm** is used to place
-standard wrapper scripts, job definitions etc. For example, when you want
-to run a "standard" job you may want to refer to a wrapper script
-contained in a public directory of the np04dqm account, in your JSON
-job definition. Take a look at
-```
-/afs/cern.ch/user/n/np04dqm/public/p3s/scripts
-```
+The protoDUNE-SP production account **np04dqm** is used to host
+standard job definitions etc, under the path p3s/inputs/larsoft.
+JSON files used to define LArSoft jobs are fairly standard in that they
+typically specify location of the FCL file, version of duneTPC etc.
 
-## Hello, World!
-
-Please take a look at examples in p3s/inputs/larsoft for realistic examples.
-JSON files used to submit LArSoft jobs are fairly standard in that they
-typically specify locattion of the FCL file etc.
-
-Please read the notes in the beginning of this document regarding what
-Linux and e-groups you need to belong at CERN to make your work efficient
-and your experience positive. Look at the following directory
+For a p3s client to run properly in needs to have the correct Python
+environment. "Standard" job definitions have already the necessary
+commands baked in, so you don't have to do anything. For example,
+you can immediately submit a prefab LArSoft test job (which simply dumps
+hits obtained from a prestaged ROOT file) by running the command:
 ```
-/afs/cern.ch/user/n/np04dqm/public/p3s/scripts/test
-```
-Try to run *testAccess.sh* from that directory. You should see "OK" printed to
-your screen, this just verifies that you have access to that folder. If this does
-not happen, contact the author of this document. Now, switch to the
-directory **p3s/clients** (as per installation documented above). In case you
-have not already done so, please set up the required Python environment by
-running the command:
-```
-source ~np04dqm/public/vp3s/bin/activate
-```
-Now submit a prefab LArSoft test job (which jumps hits obtained from a prestaged
-ROOT file) by running the command:
-```
-./job.py -v 2 -j  /afs/cern.ch/user/n/np04dqm/public/p3s/scripts/test/hitdumptest.json
+./job.py -v 2 -j /afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/test/hitdumptest.json
 ```
 
 In the command line above, "-v" stands for the verbosity level (which is 2 in this case)
 and the "-j" option allows the user to supply a job description in the JSON format, stored
 in a previously prepared JSON file.
 
-If all works well, you will see a UUID of the job just submitted printed on screen, and it
-will also be displayed in the p3s monitor at p3s-web.cern.ch, the "jobs" section.
+If all works well, you will see a UUID of the job just submitted printed on screen in the shell you
+are running, and it will also be displayed in the p3s monitor at p3s-web.cern.ch, the "jobs" section.
 Upon completion (e.g. when you refresh the monitor page and the sate of the job switches from
 "running" to "finished") you may examine the output directory
 ```
@@ -552,6 +526,12 @@ The content of the file chould be a list of the hits read from the input.
 You can now copy hitdumptest.json, hitdumptest.sh and requisite FCL files to your public AFS directory
 (so they can be accessed by p3s) and start doing useful work of your own. Congratulations!
 
+If you run a custom wrapper script which is not immediately derived from production and testing
+sample, you may need to set up the required Python environment by
+running the command:
+```
+source ~np04dqm/public/vp3s/bin/activate
+```
 
 ## Remote access to data
 If you want to pull data produced by p3s to your local machine (including your laptop) it's
@@ -566,3 +546,39 @@ To copy a file from CERN EOS to your machine use a command similar to this one:
 ```
 xrdcp xroot://eospublic.cern.ch//eos/experiment/neutplatform/protodune/np04tier0/p3s/output/myDirectory/myFIle.root .
 ```
+
+# Appendix
+## The mechanics of the job submission
+
+Keep in mind that when you "submit a job" all you are doing is sending
+a record containing all the info necessary for running a particular
+executable, to the p3s database. The system (p3s) will then match this job
+with a live and available **pilot** occupying a batch slot in CERN Tier-0 facility
+and deploy the payload for execution in that batch slot (i.e. on one of the Worker
+Nodes at CERN). The pilot will monitor the state of the job under its management
+and send periodic "heartbeats" to the server to tell it that it's still alive.
+Once the job completes, the pilot closes logs, optionally performs other
+"close out" functions and resumes querying the p3s server for the next job.
+
+This is a typical case of a pilot-based framework with the following
+features:
+
+* low latency between submission and the start of job execution since you are
+not waiting for a HTConfor or other queue; in some cases such as busy HT Condor
+queues speed gains can be quite substantial
+
+* you don't have to run batch commands yourself and you don't have to manage
+HTCOndor JDL files
+
+* ease of automation (e.g. creating automatic scripts) since same tested job
+template can be used in automated submission
+
+* easy to read tabulated view of all of your jobs in the p3s monitor which
+is a Web application
+
+* the identity under which jobs are executed is not your identity but the
+production identity... This can be helpful or not helpful depending
+on situation, and path permissions need to be thought through. The NP04
+group at CERN has access to various EOS and some AFS directories so
+this can be made to work
+
