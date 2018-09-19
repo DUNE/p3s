@@ -17,6 +17,7 @@ def NavBarData(domain=''):
     links = (
         '<a href="http://'+domain+'/monitor/puritytable">Purity Table</a>',
         '<a href="http://'+domain+'/monitor/puritychart">Purity Charts</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=purity">Purity Drift</a>',
         '<a href="http://'+domain+'/monitor/snchart">S/N Charts</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=monitor">TPC Monitor</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=femb">FEMB</a>',
@@ -32,13 +33,14 @@ def NavBarData(domain=''):
         allLinks['col'+str(n+1)] = mark_safe(links[n])
 
     return [allLinks,]
-    
+
+# hardcoded range, ugly but no time to fix
 class NavTable(tables.Table):
     def __init__(self, *args, **kwargs):
         self.Ncolumns = len(args[0][0].keys())
         super(NavTable, self).__init__(*args,**kwargs)
 
-    for i in range(9): locals()['col'+str(i+1)] = tables.Column()
+    for i in range(10): locals()['col'+str(i+1)] = tables.Column()
     
     def set_site(self, site=''):
         self.site=site
