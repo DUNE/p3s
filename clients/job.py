@@ -83,9 +83,13 @@ parser.add_argument("-a", "--adjust",	action='store_true',	help="enables state/p
 
 parser.add_argument("-d", "--delete",	action='store_true',	help="deletes the DB record job regardless of its state. Needs uuid or id (pk). *SHOULD BE USED WITH CARE*")
 
-# parser.add_argument("-k", "--kill",	action='store_true',	help="kills a running job. Needs uuid or id (pk). *FUTURE DEVELOPMENT*")
+parser.add_argument("-t", "--test",	action='store_true',	help="do not contact the server - testing the client")
 
-parser.add_argument("-t", "--test",	action='store_true',	help="when set, do not contact the server")
+parser.add_argument("-l", "--ltype",	action='store_true',	help="list or set job types and limits")
+
+parser.add_argument("-L", "--limit",	type=int,	help="sets the job type limit",	default=-1)
+
+parser.add_argument("-T", "--jobtype",	type=str,	help="job type to retrieve or adjust",	default='')
 
 parser.add_argument("-S", "--server",	type=str,
                     help="server URL: defaults to $P3S_SERVER or if unset to http://localhost:8000/",
@@ -108,12 +112,6 @@ parser.add_argument("-j", "--json_in",	type=str,	help="JSON file with job templa
 
 parser.add_argument("-f", "--filename",	type=str,	help="value with which to override P3S_INPUT_FILE in the job template",
 		    default='')
-
-# parser.add_argument("-i", "--inputdir",	type=str,	help="input directory *FUTURE DEVELOPMENT",		default='')
-
-
-# parser.add_argument("-T", "--timestamp",type=str,	help="type of ts for deletion *FUTURE DEVELOPMENT*",	default='defined', choices=['ts_def','ts_sta','ts_sto'])
-
 
 parser.add_argument("-v", "--verbosity",type=int,	help="set output verbosity", default=envDict['verb'], choices=[0, 1, 2])
 
@@ -138,6 +136,10 @@ Njobs	= args.number
 delay	= args.delay
 version	= args.version
 
+ltype	= args.ltype
+limit	= args.limit
+jobtype	= args.jobtype
+
 
 filename= args.filename
 
@@ -156,7 +158,27 @@ if(usage):
     exit(0)
 
 ### p3s interface defined here
-API  = serverAPI(server=server)
+API  = serverAPI(server=server, verb=verb)
+
+
+
+################# JOB TYPES: DUMP AND SET LIMITS   #####################
+
+if(ltype):
+    if(limit>=0):
+        d = {}
+        d["name"]	= jobtype
+        d["limit"]	= limit
+        resp = API.post2server('job', 'limit', d)
+        if(verb>0): print(resp)
+        exit(0)
+
+        
+    resp = API.get2server('job', 'ltype', jobtype)
+    if(verb>0): print(resp)
+
+    exit(0)
+    
 
 ########################## UPDATE/ADJUSTMENT ###########################
 # Check if an adjustment of an existing job is requested, and send a
@@ -241,9 +263,10 @@ if(json_in!=''):
     inputFiles = inputFile.split(',')
     
     # multiple files override the number of jobs to be auto-generated
-    # N.B. suspend this feature since it interferes with testing
+    # N.B. this feature may be suspended if it interferes with testing
     # with a subset of all files...
-    # if(len(inputFiles) !=1): Njobs=len(inputFiles)
+    
+    if(len(inputFiles) !=1): Njobs=len(inputFiles)
     
     data = takeJson(json_in, verb)
 
@@ -287,3 +310,6 @@ if(json_in!=''):
 ###################### GRAND FINALE ####################################
 exit(0)
 ########################################################################
+# parser.add_argument("-i", "--inputdir",	type=str,	help="input directory *FUTURE DEVELOPMENT",		default='')
+# parser.add_argument("-k", "--kill",	action='store_true',	help="kills a running job. Needs uuid or id (pk). *FUTURE DEVELOPMENT*")
+

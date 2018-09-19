@@ -23,7 +23,7 @@ from django.utils			import timezone
 
 from django.db		import transaction
 
-from .models import job
+from .models import job, jobtype
 
 from utils.timeUtils import dt
 from utils.miscUtils import parseCommaDash
@@ -178,10 +178,41 @@ def purge(request):
     if selection:
         if(state and state!=''):
             selection = selection.filter(state=state)
-        print('objects:',len(selection))
-        nDeleted = len(selection)
-        for o in selection:
-            print(o.uuid)
         selection.delete()
     
     return HttpResponse(str(nDeleted))
+
+###################################################
+def ltype(request):
+    name = request.GET.get('name','')
+
+    if name=='':
+        return HttpResponse(serializers.serialize("json", jobtype.objects.all()))
+    else:
+        try:
+            return HttpResponse(serializers.serialize("json", jobtype.objects.filter(name=name)))
+        except:
+            return HttpResponse('not found')
+    
+###################################################
+@csrf_exempt
+def limit(request):
+    post	= request.POST
+    name	= post.get('name','')
+    limit	= post.get('limit',0)
+
+    try:
+        if(name==''):
+            jts = jobtype.objects.all()
+            for jt in jts:
+                jt.njobs = limit
+                jt.save()
+            return HttpResponse('set limit '+str(limit)+' for all job types')
+    
+        jt = jobtype.objects.get(pk=name)
+        jt.njobs = limit
+        jt.save()
+        return HttpResponse('set limit ' + str(limit) + ' for job type ' + name)
+    except:
+        return HttpResponse('error')
+

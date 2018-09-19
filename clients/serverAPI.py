@@ -27,6 +27,8 @@ class serverAPI(dict):
             'delete':	server+'jobs/delete',
             'purge':	server+'jobs/purge',
             'add':	server+'jobs/add',
+            'ltype':	server+'jobs/ltype?name=%s',
+            'limit':	server+'jobs/limit',
         }
 
         ### SITE
@@ -108,7 +110,8 @@ class serverAPI(dict):
         # print('************', view, url, stuff, self[view][url])
         return rdec(communicate(self[view][url], data=data2post(stuff).utf8(), logger=self.logger, verb=self.verb))
     
-    def get2server(self, view, url, stuff): #        print(self[view][url] % stuff)
+    def get2server(self, view, url, stuff):
+        if(self.verb>0): print(self[view][url] % stuff)
         resp = communicate(self[view][url] % stuff, logger=self.logger)
         return rdec(resp)
 
