@@ -51,18 +51,23 @@ from clientUtils	import takeJson
 ########################################################
 fileTypes = {
     'evdisp':OrderedDict([
-        ('adcraw_tpp',		'Raw 2D Event Display'),   # 'Raw ADC - pedestal channel vs. tick'
-        ('chmet_ped_tps',		'ADC Pedestals'),
+        ('adcraw_tpp',		'Raw 2D Event Display'),
+        ('chmet_ped_tps',	'ADC Pedestals'),
         ('chmet_pedexc_tps',	'ADC pedestal peak bin excess'),
         ('chmet_pedorf_tps',	'ADC pedestal out-of-range fraction'),
         ('chmet_pedrms_tps',	'ADC pedestal sigma'),
         ('detprep-',		'Raw ADC detector display (Collection View)'),]),
     'femb':OrderedDict([
-        ('eviewg',			'FEMB count vs Event'),
-        ('eviewh',			'FEMB count distribution'),])
+        ('eview',		'FEMB count vs Event and count distribution'),]), # g/h are options
+    'purity':OrderedDict([
+        ('drift',		'Cluster Drift Time'),])
 }
 
-categories = {'evdisp':'Raw 2D Event Display', 'femb':'FEMB Monitor'}
+categories = {
+    'evdisp':'Raw 2D Event Display',
+    'femb':'FEMB Monitor',
+    'purity':'Purity/Signal-to-Noise/Drift Time'
+}
 # ---
 output		= OrderedDict()
 filesDict	= OrderedDict()
