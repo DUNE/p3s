@@ -41,10 +41,11 @@ def add(request):
     
     try:
         with transaction.atomic():
+            jType = post['jobtype']
             j = job(
                 uuid		= post['uuid'],
                 user		= post['user'],
-                jobtype		= post['jobtype'],
+                jobtype		= jType,
                 payload		= post['payload'],
                 env		= post['env'],
                 priority	= post['priority'],
@@ -53,6 +54,15 @@ def add(request):
                 timelimit	= post['timeout'],
                 name		= post['name'],
             )
+
+            try:
+                Nrunning	= job.N(state='running', jobtype=jType)
+                jt		= jobtype.objects.get(pk=jType)
+                Nlimit		= jt.njobs
+                if Nrunning>=Nlimit:
+                     return HttpResponse("job %s not accepted, running %d with limit %d" % (post['uuid'], Nrunning, Nlimit))
+            except:
+                pass
 
             e = json.loads(j.env)
             j.infile=e['P3S_INPUT_FILE']
