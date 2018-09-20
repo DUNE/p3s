@@ -151,8 +151,8 @@ def monchart(request):
 
         if(what=='hits'):
             myDict["vAxis"]='Plane %s hits/RMS' % plane
-            myDict["main"]='hits'
-            myDict["extra"]='rms'
+            myDict["main"]='Mean of hits'
+            myDict["extra"]='Mean of hits RMS'
         elif(what=='charge'):
             myDict["vAxis"]='Plane %s Charge/RMS' % plane
             myDict["main"]='charge'

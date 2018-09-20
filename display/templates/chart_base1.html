@@ -33,6 +33,7 @@
       height: 400,
       width: 400,
       timeZone:0,
+//      curveType: 'function',
       
 //      vAxis: {
 //      title: '{{ p.vAxis }}' // Example: 'Electron Lifetime (ms)'
@@ -57,7 +58,7 @@ series: {
       };
 
       
-      var chart = new google.visualization.LineChart(document.getElementById('{{ p.panel }}'));
+      var chart = new google.visualization.ScatterChart(document.getElementById('{{ p.panel }}'));
 //      var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
       chart.draw(data, google.charts.Bar.convertOptions(options));
 
