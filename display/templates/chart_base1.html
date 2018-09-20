@@ -57,7 +57,8 @@ series: {
       };
 
       
-      var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
+      var chart = new google.visualization.LineChart(document.getElementById('{{ p.panel }}'));
+//      var chart = new google.visualization.ColumnChart(document.getElementById('{{ p.panel }}'));
       chart.draw(data, google.charts.Bar.convertOptions(options));
 
       {% endfor %}
