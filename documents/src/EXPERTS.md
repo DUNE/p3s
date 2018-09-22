@@ -66,5 +66,12 @@ to restart.
 There are a few service processes that allow p3s/DQM to run according to the design. These run
 periodically as directed by crontab entries defined by the user *np04dqm*.
 
+At CERN there is a Kerberos-enabled distributed version of crontab called **acrontab**. To query
+the current contents the command *acrontab -l* must be used. A sample outpu is presented below:
 
-
+```
+01,11,21,31,41,51 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/htcondor/pilotclean_np04dqm.sh
+05,25,45 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/pilotpurge_np04dqm.sh
+07,17,27,37,47,57 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/htcondor/pcalc_np04dqm.sh
+1,31 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -5 np04 Z
+```
