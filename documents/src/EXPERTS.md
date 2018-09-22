@@ -25,6 +25,15 @@ installed):
 pandoc -s -o EXPERTS.pdf EXPERTS.md
 ```
 
+# Directories
+
+Both p3s and DQM services rely on a shared EOS file system
+and specifically this folder:
+```
+/eos/experiment/neutplatform/protodune/np04tier0/p3s
+```
+
+
 # Servers
 
 ## The machines
@@ -67,11 +76,20 @@ There are a few service processes that allow p3s/DQM to run according to the des
 periodically as directed by crontab entries defined by the user *np04dqm*.
 
 At CERN there is a Kerberos-enabled distributed version of crontab called **acrontab**. To query
-the current contents the command *acrontab -l* must be used. A sample outpu is presented below:
+the current contents the command *acrontab -l* must be used. A sample output is presented below:
 
 ```
 01,11,21,31,41,51 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/htcondor/pilotclean_np04dqm.sh
 05,25,45 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/pilotpurge_np04dqm.sh
 07,17,27,37,47,57 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/htcondor/pcalc_np04dqm.sh
 1,31 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -5 np04 Z
+```
+
+The first three entries perform maintenance and cleanup of the p3s pilot population. The line on the bottom of the list
+is driving a script which scans the p3s input directory for new arrivals and submits p3s jobs in a few different categories.
+The script is in a public directory and you can inspect its contents, it is also of course in the git
+repository:
+
+```
+https://github.com/DUNE/dqmconfig/blob/master/services/tscan_np04dqm.sh
 ```
