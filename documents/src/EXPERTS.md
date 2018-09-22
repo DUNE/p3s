@@ -115,8 +115,14 @@ https://github.com/DUNE/dqmconfig/blob/master/crontab/np04dqm_prod.cron
 
 It is important to keep this under version control, so if you need to modify this, please clone the directory,
 check in and push the content, then repopulate crontab as the user "np04dqm". If you need to temporarily
-stop all crontab activity, this can be achieved by *acrontab -r* which deletes the crontab content. It can
-be reinstated by *acrontab < /np04dqm_prod.cron*.
+stop all crontab activity, this can be achieved by
+```
+acrontab -r
+```
+which deletes the crontab content. It can be reinstated by
+```
+acrontab < /np04dqm_prod.cron.
+```
 
 The first three entries perform maintenance and cleanup of the p3s pilot population. The line on the bottom of the list
 is driving a script which scans the p3s input directory for new arrivals and submits p3s jobs in a few different categories.
@@ -130,4 +136,20 @@ https://github.com/DUNE/dqmconfig/blob/master/services/tscan_np04dqm.sh
 The command line arguments to this script have the following significance:
 
 * -5 is the number of minutes defining the first point in the past when the system is looking
-for new files. If the script is activated at 12 p.m., it will scan files
+for new files. If the script is activated at 12 p.m., it will scan files created between 11:55 a.m. and
+12 p.m. If a wider interval is needed, the file np04dqm_prod.cron must be updated and uploaded to crontab.
+
+* np04 is a wildcard i.e. the starting portion of the raw file name. If it changes (unlikely but possible)
+this needs to be updated
+
+* Z suppresses diagnostic output from this command. If you choose to run it interactively - which is often
+very useful - you may want to set this argument to "D" which will produce debugging information.
+
+
+In fact, this command can be used to process data for a specific protoDUNE run, e.g.
+```
+/afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -5 np04_raw_run004610 D
+```
+
+where 4610 is the run number. Padding must be respected for this to work. If the run was a while
+back, just change -5 to a larger negative number so the files are still picked up.
