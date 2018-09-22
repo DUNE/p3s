@@ -51,8 +51,20 @@ of over a thousand. The number of running pilots is readily available on the lan
 
 ## Updates
 
-The database server p3s-db does need updates. The p3s and DQM servers are updated in the following way - the users issues
+The database server p3s-db does not need updates.
+
+The p3s and DQM servers are updated in the following way - the users issues
 the "git pull" command in the directory "~/projects/p3s" and then the Apache server needs a restart. There is an alias
 on both machines under the name *arestart* (for "Apache Restart") which will ask for the user's password. The user must
 be under the identity of *np04dqm*.
+
+If a server tanks (which happens exceedingly rarely and not expected during the run) you will just need
+to restart.
+
+# Crontab
+
+There are a few service processes that allow p3s/DQM to run according to the design. These run
+periodically as directed by crontab entries defined by the user *np04dqm*.
+
+
 
