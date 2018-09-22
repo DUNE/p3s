@@ -8,13 +8,13 @@ Created by: Maxim Potekhin        _potekhin@bnl.gov_
 
 # Introduction
 
-This document is of interest to a small group of people who
-have enough expertise and system access rights to perform
-mission-critical updates, service restarts and similar actions
+This document is of interest to members of the DQM and DRA
+groups who have interest, enough expertise and system access rights
+to perform mission-critical updates, service restarts and similar actions
 on the protoDUNE p3s and DQM servers. You will need to obtain
-credentials for the protoDUNE DQM production account. If you
-are not a member of this group of expert DQM users you don't
-have to read this document any further.
+credentials for the protoDUNE DQM production account. In this document,
+we refer to the person performing operations on the servers as
+*the operator*.
 
 This document is maintaned in the "markdown" format and the source file
 is contained in the directory *p3s/documents/src*. To rebuild the PDF
@@ -33,6 +33,21 @@ and specifically this folder:
 /eos/experiment/neutplatform/protodune/np04tier0/p3s
 ```
 
+Under this directory, there are a few others, of which of most
+interest are *input* and *monitor*. The former acts as a "dropbox"
+for incoming raw data files. The latter contains the outputs
+of the DQM jobs and also is the location from which the DQM
+Apache server is serving its content i.e. graphs, tables etc.
+
+The output of each p3s job is contained in a single directory
+in the *monitor* folder which is named according to the job's
+UUID. This convention is respected throughout p3s, DQM and
+various web pages of these systems, which makes it easy to
+correlate data and access it on disk.
+
+If a directory under *monitor* is removed without deletion of
+the corresponding DB entry on the DQM server this will result
+in missing tables, graphs etc for specific runs.
 
 # Servers
 
@@ -52,7 +67,9 @@ The first two servers run Apache-Django services which may need to be updated, s
 
 It's a good practice to periodically check the available disk space once every few weeks, even though
 problems are not anticipated in this area. Theoretically, there may be unusually "fat" Apache logs
-and other leftovers that may need cleaning. The Linux load report for p3s-web is presented on the
+and other leftovers that may need cleaning. Location to be checked is the usual /var/log/httpd.
+
+The Linux load report for p3s-web is presented on the
 landing page of that service, and if the load appears to be too high adjustments may be needed such
 as reducing the frequency interaction of the p3s pilots with the service. This is usually not necessary
 if there are only a few hundred pilots running (200-300) but may become an issue at the pilot population
@@ -60,15 +77,20 @@ of over a thousand. The number of running pilots is readily available on the lan
 
 ## Updates
 
-The database server p3s-db does not need updates.
+The database server p3s-db does not need updates as it runs a static installation of PostgreSQL.
 
-The p3s and DQM servers are updated in the following way - the users issues
-the "git pull" command in the directory "~/projects/p3s" and then the Apache server needs a restart. There is an alias
-on both machines under the name *arestart* (for "Apache Restart") which will ask for the user's password. The user must
-be under the identity of *np04dqm*.
+The servers **p3s-web.cern.ch** and  **p3s-content.cern.ch** may need updates depending on
+circumstances. If the developer made changes to the service and/or expert shifters opted to change
+bits of the server configuration and these changes are in the repo, the p3s and DQM servers are updated
+in the following way - the operator issues the "git pull" command in the directory "~/projects/p3s"
+and then the Apache server needs a restart. There is an alias on both machines under the
+name *arestart* (for "Apache Restart") which will ask for the user's password.
+The operator must be logged on the machine as. *np04dqm*.
 
-If a server tanks (which happens exceedingly rarely and not expected during the run) you will just need
-to restart.
+If a server tanks (which happens extremely rarely and not really expected during the run) the operator
+will just need to restart. If the machines are inaccessible this requires immediate escalation
+via the CERN ticket system at a high priority. The operator may also check the status of these machines
+in the OpenStack cloud via its Web interface. These are assigned to DUNE.
 
 # Crontab
 
@@ -85,6 +107,17 @@ the current contents the command *acrontab -l* must be used. A sample output is 
 1,31 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -5 np04 Z
 ```
 
+The contents of crontab are version controlled in the DUNE repo under "dqmconfig". The contents can be found
+at
+```
+https://github.com/DUNE/dqmconfig/blob/master/crontab/np04dqm_prod.cron
+```
+
+It is important to keep this under version control, so if you need to modify this, please clone the directory,
+check in and push the content, then repopulate crontab as the user "np04dqm". If you need to temporarily
+stop all crontab activity, this can be achieved by *acrontab -r* which deletes the crontab content. It can
+be reinstated by *acrontab < /np04dqm_prod.cron*.
+
 The first three entries perform maintenance and cleanup of the p3s pilot population. The line on the bottom of the list
 is driving a script which scans the p3s input directory for new arrivals and submits p3s jobs in a few different categories.
 The script is in a public directory and you can inspect its contents, it is also of course in the git
@@ -93,3 +126,8 @@ repository:
 ```
 https://github.com/DUNE/dqmconfig/blob/master/services/tscan_np04dqm.sh
 ```
+
+The command line arguments to this script have the following significance:
+
+* -5 is the number of minutes defining the first point in the past when the system is looking
+for new files. If the script is activated at 12 p.m., it will scan files
