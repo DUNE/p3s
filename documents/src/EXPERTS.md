@@ -85,17 +85,17 @@ bits of the server configuration and these changes are in the repo, the p3s and 
 in the following way - the operator issues the "git pull" command in the directory "~/projects/p3s"
 and then the Apache server needs a restart. There is an alias on both machines under the
 name *arestart* (for "Apache Restart") which will ask for the user's password.
-The operator must be logged on the machine as. *np04dqm*.
+The operator must be logged on the machine as *np04dqm*.
 
 If a server tanks (which happens extremely rarely and not really expected during the run) the operator
 will just need to restart. If the machines are inaccessible this requires immediate escalation
 via the CERN ticket system at a high priority. The operator may also check the status of these machines
 in the OpenStack cloud via its Web interface. These are assigned to DUNE.
 
-# Crontab
-
-There are a few service processes that allow p3s/DQM to run according to the design. These run
-periodically as directed by crontab entries defined by the user *np04dqm*.
+# Crontab and automatic creation of DQM jobs
+## Crontab content
+There are a few service processes that must run periodically in order to allow p3s/DQM to function
+according to its design. These run periodically as directed by crontab entries defined by the user *np04dqm*.
 
 At CERN there is a Kerberos-enabled distributed version of crontab called **acrontab**. To query
 the current contents the command *acrontab -l* must be used. A sample output is presented below:
@@ -104,7 +104,7 @@ the current contents the command *acrontab -l* must be used. A sample output is 
 01,11,21,31,41,51 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/htcondor/pilotclean_np04dqm.sh
 05,25,45 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/pilotpurge_np04dqm.sh
 07,17,27,37,47,57 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/htcondor/pcalc_np04dqm.sh
-1,31 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -5 np04 Z
+1,16,31,46 * * * * lxplus.cern.ch /afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -14 +7G np04 5 Z
 ```
 
 The contents of crontab are version controlled in the DUNE repo under "dqmconfig". The contents can be found
@@ -133,14 +133,21 @@ repository:
 https://github.com/DUNE/dqmconfig/blob/master/services/tscan_np04dqm.sh
 ```
 
-The command line arguments to this script have the following significance:
+## Tscan
 
-* -5 is the number of minutes defining the first point in the past when the system is looking
-for new files. If the script is activated at 12 p.m., it will scan files created between 11:55 a.m. and
+The command line arguments to this script have the following meaning which is explained here using
+the snippet of code above (see the crontab dump)
+
+* -14 is the number of minutes defining the first point in the past when the system is looking
+for new files. If the script is activated at 12 p.m., it will scan files created between 11:46 a.m. and
 12 p.m. If a wider interval is needed, the file np04dqm_prod.cron must be updated and uploaded to crontab.
+
+* +7G is the minimum size of files to be considered for job submission (smaller files will be rejected)
 
 * np04 is a wildcard i.e. the starting portion of the raw file name. If it changes (unlikely but possible)
 this needs to be updated
+
+* 5 means the maximum number of files to be ingested in a single invocation of the script, e.g. if 20 files are found there will still be only 5 jobs in each category created
 
 * Z suppresses diagnostic output from this command. If you choose to run it interactively - which is often
 very useful - you may want to set this argument to "D" which will produce debugging information.
@@ -148,8 +155,25 @@ very useful - you may want to set this argument to "D" which will produce debugg
 
 In fact, this command can be used to process data for a specific protoDUNE run, e.g.
 ```
-/afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -5 np04_raw_run004610 D
+/afs/cern.ch/user/n/np04dqm/public/p3s/dqmconfig/services/tscan_np04dqm.sh -5 +7G np04_raw_run004610 5 D
 ```
 
 where 4610 is the run number. Padding must be respected for this to work. If the run was a while
 back, just change -5 to a larger negative number so the files are still picked up.
+
+## Job Types and Caps
+
+There are a few job types defined in p3s, you can see them in various tables on the landing page of p3s
+and also in the drop-down selector on the jobs page. There are limits on how many jobs of each type can
+run simultaneously in p3s. The limits can be inspected by running
+```
+./job.py -l -v 2
+```
+from the *clients* folder in the p3s directory hierarchy. In case this needs to be changed,
+one needs to specify a new limit and the job type to be adjusted, e.g.
+```
+./job.py -l -v 2 -L 10 -T evdisp
+```
+
+will set the top number of jobs of the event display type to 10. This can (and should) be used to
+temporarily suspend job submission when necessary.
