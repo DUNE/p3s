@@ -38,11 +38,13 @@ services:
     DoWires: false
     AdcChannelToolNames: [
       "digitReader",
-      "adcPedestalFit",
+      "pd_adcPedestalFit",
       "pdtps_adcChannelPedestalPlotter",
-      "pdtps_adcChannelPedestalRmsPlotter",
+      "pdtps_adcChannelPedestalNoisePlotter",
       "pdtps_adcChannelPedestalOrfPlotter",
       "pdtps_adcChannelPedestalPeakBinExcessPlotter",
+      "pdtps_adcChannelPedestalRawRmsPlotter",
+      "pdtps_adcChannelPedestalRawTailPlotter",
       "pdcht_All",
       "pdcht_Apas",
       "pdcht_Zplanes",
@@ -98,22 +100,6 @@ LogLevel:     2
 tools.tickRanges.plotTicks.begin: 3000
 tools.tickRanges.plotTicks.end:   4000
 MaxSignal:   50
-
-#services.RawDigitPrepService.AdcChannelToolNames: [
-  #@sequence::services.RawDigitPrepService.AdcChannelToolNames,
-#  "digitReader",
-#  "adcPedestalFit",      # This is (re) running the pedestal finder. Not needed if done earlier.
-#  "pdtps_adcChannelPedestalPlotter",
-#  "pdtps_adcChannelPedestalRmsPlotter",
-#  "pdtps_adcChannelPedestalOrfPlotter",
-#  "pdtps_adcChannelPedestalPeakBinExcessPlotter",
-#  "pdcht_All",
-#  "pdcht_Apas",
-#  "pdcht_Zplanes",
-  #"pdcht_Cplanes",
-#  "pdcht_Iplanes",
-#  "rawAdcDetectorPlotColl"
-#]
 
 tools.dqmRawAdcPlotter: @local::tools.rawAdcPlotter
 tools.dqmPreparedAdcPlotter: @local::tools.preparedAdcPlotter
