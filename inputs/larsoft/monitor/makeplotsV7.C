@@ -41,7 +41,7 @@ bool VERBOSE = false;
 bool SAVELISTOFDEADNOISYCHANNELS = true;
 
 // Helper functions
-void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TString& currentdate);
+void FindRunAndTime(TDirectory *dir, Double_t& TimeStamp, TString& runid, TString& currentdate);
 std::vector<TString> FindDirectories(TDirectory *dir);
 TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString datename, std::vector<TString>& imagesvec);
 void PrintListofDeadNoisyChannels(TObjArray* dir, TString histoname, TString outfilename);
@@ -80,7 +80,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   std::vector<TString> directories_in_file = FindDirectories(current_sourcedir);
   
   // Find run/subrun ID and time this run started
-  TString runstr("run000000_0000"); TString datestr("00/00/00"); ULong64_t sTimeStamp = 999;
+  TString runstr("run000000_0000"); TString datestr("00/00/00"); Double_t sTimeStamp = 999;
   // Loop first to find the run and the date
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
@@ -296,7 +296,7 @@ std::vector<TString> FindDirectories(TDirectory *dir){
 }
 
 // --------------------------------------------------
-void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TString& currentdate){
+void FindRunAndTime(TDirectory *dir, Double_t& TimeStamp, TString& runid, TString& currentdate){
   // --------------------------------------------------
 
   // loop over all keys in this directory
@@ -316,7 +316,7 @@ void FindRunAndTime(TDirectory *dir, ULong64_t& TimeStamp, TString& runid, TStri
     if(obj->IsA()->InheritsFrom(TTree::Class()) ){
       if(!objname.Contains("Header")) continue;
 
-      Int_t fRun, fSubRun; ULong64_t fTimeStamp;
+      Int_t fRun, fSubRun; Double_t fTimeStamp;
       TTree *htree = (TTree*)obj;
       htree->SetBranchAddress("fRun",       &fRun);
       htree->SetBranchAddress("fSubRun",    &fSubRun);
@@ -556,6 +556,19 @@ TObjArray* SaveHistosFromDirectory(TDirectory *dir, TString runname, TString dat
       h1->GetYaxis()->SetTitleOffset(1.4);
 
       if(dirname.Contains("tpcmonitor")){
+
+	// Set upper threshold for raw RMS plot
+	if(HistoName.Contains("fAllChanRMS")){
+	  for(Int_t m=0; m < h1->GetNbinsX(); m++){
+	    for(Int_t n=0; n < h1->GetNbinsY(); n++){
+	      if(h1->GetBinContent(m,n) > 30.0){
+		//cout << h1->GetBinContent(m ,n) << endl;
+		h1->SetBinContent(m,n,30.0);
+	      }
+	    }
+	  }
+	}
+
 	if(HistoName.Contains("fAllChan") || HistoName.Contains("fBitValue")){
 	  Double_t stops[9] = { 0.0000, 1./255., 1./6., 1./3., 1./2., 2./3., 5./6., 254./255., 1.0000};
 	  Double_t red[9]   = {  0./255.,   5./255.,  15./255.,  35./255., 102./255., 196./255., 208./255., 199./255., 110./255.};
@@ -842,11 +855,17 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
   TString deadchannel_str("");
   TString nois1channel_str("");
   TString nois2channel_str("");
+  TString rawrmsU_str("");
+  TString rawrmsV_str("");
+  TString rawrmsZ_str("");
 
-   const Int_t napas = 6;
+  const Int_t napas = 6;
   Int_t deadchannel_arr[napas] = {0,0,0,0,0,0};
   Int_t nois1channel_arr[napas] = {0,0,0,0,0,0};
   Int_t nois2channel_arr[napas] = {0,0,0,0,0,0};
+  Double_t rawrmsU_arr[napas] = {0,0,0,0,0,0};
+  Double_t rawrmsV_arr[napas] = {0,0,0,0,0,0};
+  Double_t rawrmsZ_arr[napas] = {0,0,0,0,0,0};
 
   TIter nextkey(dir->GetListOfKeys() );
   TKey *key, *oldkey=0;
@@ -858,12 +877,69 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
     // read object from  source file
     TObject *obj = key->ReadObj();
 
+    if(!obj->IsA()->InheritsFrom(TH1::Class())) continue;
+
     // Object name
     TString objname(obj->GetName());
+    TH1 *h1 = (TH1*)obj;
 
-    if(objname.Contains("NDeadChannelsHisto") && !objname.Contains("HistoU") && !objname.Contains("HistoV") && !objname.Contains("HistoZ") && obj->IsA()->InheritsFrom(TH1::Class())){
-      // descendant of TH1
-      TH1 *h1 = (TH1*)obj;
+    // histogrmas are saved in random order - need the histo name.
+    if(objname.Contains("ChanRMSDistU1")){
+      rawrmsU_arr[0] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistU2")){
+      rawrmsU_arr[1] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistU3")){
+      rawrmsU_arr[2] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistU4")){
+      rawrmsU_arr[3] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistU5")){
+      rawrmsU_arr[4] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistU6")){
+      rawrmsU_arr[5] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistV1")){
+      rawrmsV_arr[0] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistV2")){
+      rawrmsV_arr[1] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistV3")){
+      rawrmsV_arr[2] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistV4")){
+      rawrmsV_arr[3] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistV5")){
+      rawrmsV_arr[4] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistV6")){
+      rawrmsV_arr[5] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistZ1")){
+      rawrmsZ_arr[0] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistZ2")){
+      rawrmsZ_arr[1] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistZ3")){
+      rawrmsZ_arr[2] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistZ4")){
+      rawrmsZ_arr[3] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistZ5")){
+      rawrmsZ_arr[4] = h1->GetMean();
+    }
+    else if(objname.Contains("ChanRMSDistZ6")){
+      rawrmsZ_arr[5] = h1->GetMean();
+    }
+
+    if(objname.Contains("NDeadChannelsHisto") && !objname.Contains("HistoU") && !objname.Contains("HistoV") && !objname.Contains("HistoZ")){
       for(int j=1; j<=h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
 	if(!binlabel.Contains("APA")) continue;
@@ -916,9 +992,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
       }
 
     }
-    if(objname.Contains("ChannelsHistoFromNSigma") && !objname.Contains("NSigmaU") && !objname.Contains("NSigmaV") && !objname.Contains("NSigmaZ") && obj->IsA()->InheritsFrom(TH1::Class())){
-      // descendant of TH1
-      TH1 *h1 = (TH1*)obj;
+    if(objname.Contains("ChannelsHistoFromNSigma") && !objname.Contains("NSigmaU") && !objname.Contains("NSigmaV") && !objname.Contains("NSigmaZ")){
       for(int j=1; j<=h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
 	if(!binlabel.Contains("APA")) continue;
@@ -970,10 +1044,7 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 	nois1channel_str += tempstr;
       }
     }
-    if(objname.Contains("ChannelsHistoFromNCounts") && !objname.Contains("NCountsU") && !objname.Contains("NCountsV") && !objname.Contains("NCountsZ") && obj->IsA()->InheritsFrom(TH1::Class())){
-      // descendant of TH1
-      TH1 *h1 = (TH1*)obj;
-    
+    if(objname.Contains("ChannelsHistoFromNCounts") && !objname.Contains("NCountsU") && !objname.Contains("NCountsV") && !objname.Contains("NCountsZ")){
       for(int j=1; j<=h1->GetNbinsX(); j++){
 	TString binlabel(h1->GetXaxis()->GetBinLabel(j));
 	if(!binlabel.Contains("APA")) continue;
@@ -1029,9 +1100,37 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
 
   }
 
+  // Raw RMS as a string
+  for(Int_t i=0; i<napas; i++){
+    TString tempstr = Form(",%.2f", (float)rawrmsU_arr[i]);
+    if(i == 0)
+      tempstr = Form("%.2f",(float)rawrmsU_arr[i]);
+
+    rawrmsU_str += tempstr;
+  }
+
+  for(Int_t i=0; i<napas; i++){
+    TString tempstr = Form(",%.2f", (float)rawrmsV_arr[i]);
+    if(i == 0)
+      tempstr = Form("%.2f",(float)rawrmsV_arr[i]);
+
+    rawrmsV_str += tempstr;
+  }
+
+  for(Int_t i=0; i<napas; i++){
+    TString tempstr = Form(",%.2f", (float)rawrmsZ_arr[i]);
+    if(i == 0)
+      tempstr = Form("%.2f",(float)rawrmsZ_arr[i]);
+
+    rawrmsZ_str += tempstr;
+  }
+
   fprintf(deadchanJsonFile,"      \"NDead  Channels\": \"%s\",\n",deadchannel_str.Data());
   fprintf(deadchanJsonFile,"      \"NNoisy Channels 6Sigma away from mean value of the ADC RMS\": \"%s\",\n",nois1channel_str.Data());
   fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold\": \"%s\",\n",nois2channel_str.Data());
+  fprintf(deadchanJsonFile,"      \"Plane U Mean of Raw RMS\": \"%s\",\n",rawrmsU_str.Data());
+  fprintf(deadchanJsonFile,"      \"Plane V Mean of Raw RMS\": \"%s\",\n",rawrmsV_str.Data());
+  fprintf(deadchanJsonFile,"      \"Plane Z Mean of Raw RMS\": \"%s\",\n",rawrmsZ_str.Data());
   //fprintf(deadchanJsonFile,"   }\n");
   //fprintf(deadchanJsonFile,"]\n");
   
