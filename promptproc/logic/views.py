@@ -186,7 +186,7 @@ def jobTO(request):
             cnt+=1
 
     msg = 'deleted timeout jobs: '+str(cnt)
-    if(direct!=''): # just write the message to the DB and exit with empty string
+    if(direct!='' and cnt>0): # just write the message to the DB and exit with empty string
         t0		= timezone.now()
         s = service(name='jobTO', ts=t0, info=msg)
         s.save()
