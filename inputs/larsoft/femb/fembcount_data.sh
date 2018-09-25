@@ -81,7 +81,7 @@ echo making $DESTINATION
 mkdir $DESTINATION
 if [ ! -d "$DESTINATION" ]; then
     echo Directory $DESTINATION was not created, exiting
-    $P3S_HOME/clients/service.py -n evdisp -m "Failed to create $DESTINATION"
+    $P3S_HOME/clients/service.py -n femb -m "Failed to create $DESTINATION"
     exit -1
 fi
 

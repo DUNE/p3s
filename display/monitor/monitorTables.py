@@ -19,9 +19,12 @@ from .models import monrun
 
 #########################################################
 Planes = ('U','V','Z')
+
 # ---
 monchartHitsHeaderURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=hits"  >%s Hits/RMS  </a></th>'
 monchartChargeHeaderURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>'
+monchartRawRmsURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Mean of Raw RMS</a></th>'
+
 # ---
 monPatterns = {
     "hits1":	"Plane %s Mean NHits",
@@ -30,7 +33,8 @@ monPatterns = {
     "charge2":	"Plane %s RMS of Charge",
     "dead":	"NDead  Channels",
     "noise1":	"NNoisy Channels 6Sigma away from mean value of the ADC RMS",
-    "noise2":	"NNoisy Channels Above ADC RMS Threshold"
+    "noise2":	"NNoisy Channels Above ADC RMS Threshold",
+    "meanrawrms":	"Plane %s Mean of Raw RMS",
 }
 
 
@@ -143,6 +147,7 @@ class MonRunTable(MonitorTable):
     #
     # this is the most important (and crafty) method of all, we parse json
     # and populate tables within the monrun table dynamically
+    
     def render_summary(self, value, record):
         # this better be moved to the template...
         output = '<table width="100%"><tr>'
@@ -165,8 +170,22 @@ class MonRunTable(MonitorTable):
         if monType=='monitor':
             try:
                 # column headers for hits and charge
-                for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
-                for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
+                try:
+                    for plane in Planes: output+= (monchartHitsHeaderURL)	% (self.site, plane, plane)
+                except:
+                    pass
+
+                try:
+                    for plane in Planes: output+= (monchartChargeHeaderURL)	% (self.site, plane, plane)
+                except:
+                    pass
+
+                try:
+                    for plane in Planes:
+                        testing = d[monPatterns['meanrawrms'] % plane]
+                        output+= (monchartRawRmsURL) % (self.site, plane, plane)
+                except:
+                    pass
 
                 # column headers for dead and noisy channels
                 output+=('<th><a href="http://%s/monitor/monchart?what=dead">Dead Channels</th>') % (self.site)
@@ -175,9 +194,21 @@ class MonRunTable(MonitorTable):
                 output+='</tr><tr>' # ready to add the data to columns
             
                 # columns for hits and charge
-                for plane in Planes: output+= '<td>'+ ('%s<hr/>%s</td>')	% (d[monPatterns['hits1']  % plane], d[monPatterns['hits2']  % plane])
-                for plane in Planes: output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']% plane], d[monPatterns['charge2']% plane])
-        
+                try:
+                    for plane in Planes: output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['hits1']	% plane], d[monPatterns['hits2']  % plane])
+                except:
+                    pass
+                
+                try:
+                    for plane in Planes: output+= ('<td>%s<hr/>%s</td>')	% (d[monPatterns['charge1']	% plane], d[monPatterns['charge2']% plane])
+                except:
+                    pass
+                    
+                try:
+                    for plane in Planes: output+= ('<td>%s</td>')		% (d[monPatterns['meanrawrms']	% plane])
+                except:
+                    pass
+                    
                 # columns for dead and noisy channels
                 output+='<td>%s</td>'          % (pad0four(d["NDead  Channels"]))
                 output+=('<td>%s<hr/>%s</td>') % (pad0four(d["NNoisy Channels 6Sigma away from mean value of the ADC RMS"]),pad0four(d["NNoisy Channels Above ADC RMS Threshold"]))
