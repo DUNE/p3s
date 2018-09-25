@@ -1,7 +1,7 @@
 [
     {
 	"name":		"Monitor:Main",
-	"timeout":	"9000",
+	"timeout":	"10800",
         "jobtype":	"monitor",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/monitor_main_4.sh",
         "priority":	"1",
@@ -12,7 +12,7 @@
 	    "P3S_AFS_SETUP":	"/afs/cern.ch/work/t/tjunk/public",
 	    "P3S_XRD_URI":	"xroot://eospublic.cern.ch/",
 	    "P3S_DATA":		"/eos/experiment/neutplatform/protodune/np04tier0/p3s",
-	    "P3S_NEVENTS":	"4",
+	    "P3S_NEVENTS":	"3",
 	    "P3S_LAR_SETUP":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/lar_setup_2.sh",
 	    "P3S_FCL":		"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor/hitmonitor_data_main.fcl",
 	    "P3S_INPUT_DIR":	"input",
