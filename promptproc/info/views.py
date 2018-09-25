@@ -257,7 +257,7 @@ def index(request):
     
     nominalLife		= ourSite.pilotlife
     actualLife		= int(sum(lifeList)/len(lifeList))
-    if abs(nominalLife-actualLife)<1000 and test!='lifetime':
+    if abs(nominalLife-actualLife)<2000 and test!='lifetime':
         status = 'OK'
         action = '-'
     else:
