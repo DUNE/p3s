@@ -230,7 +230,7 @@ def index(request):
 
 
 
-    TOs = service.objects.filter(name='TO').order_by('-id')[:3]
+    TOs = service.objects.filter(name='TO').order_by('-id')[:6]
     l = []
     
     for to in TOs:
@@ -238,7 +238,7 @@ def index(request):
         toList = info['TO']
         for v in toList.values(): l.append(v)
 
-    l = list(map(int, l))
+    lifeList = list(map(int, l))
 
 
     ourSite = site.objects.all()[0]
@@ -256,7 +256,7 @@ def index(request):
     paramData.append({'parameter':'Total Pilots','nominal':nominalPilots,'actual':actualPilots, 'status':status, 'action':action})
     
     nominalLife		= ourSite.pilotlife
-    actualLife		= int(sum(l)/len(l))
+    actualLife		= int(sum(lifeList)/len(lifeList))
     if abs(nominalLife-actualLife)<1000 and test!='lifetime':
         status = 'OK'
         action = '-'
