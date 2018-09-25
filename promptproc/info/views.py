@@ -230,7 +230,7 @@ def index(request):
 
 
 
-    TOs = service.objects.filter(name='TO').order_by('-id')[:6]
+    TOs = service.objects.filter(name='TO').order_by('-id')[:10]
     l = []
     
     for to in TOs:
