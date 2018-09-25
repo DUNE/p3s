@@ -141,6 +141,9 @@ def monchart(request):
                 elif(what=='dead'):
                     data3 = s[monPatterns[what]].split(',')
                     dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
+                elif(what=='meanrawrms'):
+                    data4 = s[monPatterns[what]%plane].split(',')
+                    dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data4[tpcNum])
                 else:
                     pass
             except:
@@ -191,6 +194,7 @@ def monchart(request):
     d['pageName']	= ': '+what+' timeline'
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
+    d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
 
     return render(request, 'purity_chart1.html', d)
 

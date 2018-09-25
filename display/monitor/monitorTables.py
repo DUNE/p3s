@@ -23,7 +23,7 @@ Planes = ('U','V','Z')
 # ---
 monchartHitsHeaderURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=hits"  >%s Hits/RMS  </a></th>'
 monchartChargeHeaderURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Charge/RMS</a></th>'
-monchartRawRmsURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=charge">%s Mean of Raw RMS</a></th>'
+monchartRawRmsURL	= '<th><a href="http://%s/monitor/monchart?plane=%s&what=meanrawrms">%s Mean of Raw RMS</a></th>'
 
 # ---
 monPatterns = {
