@@ -184,8 +184,15 @@ def jobTO(request):
         if(duration>dT):
             j.delete()
             cnt+=1
-    
-    return HttpResponse('deleted timeout jobs: '+str(cnt))
+
+    msg = 'deleted timeout jobs: '+str(cnt)
+    if(direct!=''): # just write the message to the DB and exit with empty string
+        t0		= timezone.now()
+        s = service(name='jobTO', ts=t0, info=msg)
+        s.save()
+        return HttpResponse('')
+    else:
+        return HttpResponse(msg)
 
 ###################################################
 @csrf_exempt
