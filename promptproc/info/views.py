@@ -61,6 +61,17 @@ def jobTypeTable(domain, ts, state=None):
 
     return jtt
 
+# ---
+def limitTable(domain):
+    jlData = []
+
+    for jt in jobtype.objects.all():
+        tmpDict = collections.OrderedDict()
+        tmpDict['Type']	= makeJobTypeLink(domain, jt.name)
+        tmpDict['Limit']= jt.njobs
+        jlData.append(tmpDict)
+
+    return JobTypeLimitTable(jlData)
 
 #######################
 def index(request):
@@ -216,6 +227,7 @@ def index(request):
         jobTimelineTable,
         jobTypeTable(domain, 'ts_sto', 'finished'),
         jobTypeTable(domain, 'ts_def'),
+        limitTable(domain),
     ]
     #defTypeTable]
     
@@ -225,6 +237,7 @@ def index(request):
         'Timeline of Job States',
         'Finished Jobs Types',
         'Defined Jobs Types',
+        'Type limits',
     ]
 
 

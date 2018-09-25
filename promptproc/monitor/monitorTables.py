@@ -72,9 +72,9 @@ class ShortSummaryTable(tables.Table):
     class Meta:
         attrs	= {'class': 'paleblue'}
 #--------------------------------------------------------
-class JobTypeTable(tables.Table):
+class JobTypeLimitTable(tables.Table):
     Type	= tables.Column()
-    Running	= tables.Column()
+    Limit	= tables.Column()
     class Meta:
         attrs	= {'class': 'paleblue'}
 #--------------------------------------------------------
