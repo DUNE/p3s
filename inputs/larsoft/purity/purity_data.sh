@@ -87,23 +87,24 @@ fi
 roots=$P3S_OUTPUT_FILE    #`ls *.root`
 jsons=`ls *.json`
 pngs=`ls *.png`
+txts=`ls *.txt`
 
 if [ -z ${P3S_XRD_URI+x} ];
 then
     echo P3S_XRD_URI undefined, using FUSE to stage out the data
-    for f in $roots $jsons $pngs
+    for f in $roots $jsons $pngs $txts
     do
 	[ -s $f ] && cp $f $DESTINATION
     done
 else
     echo P3S_XRD_URI defined, using xrdcp to stage out the data
-    for f in $roots $jsons $pngs
+    for f in $roots $jsons $pngs $txts
     do
 	[ -s $f ] && time (xrdcp --silent --tpc first $f $P3S_XRD_URI/$DESTINATION) 2>&1
     done
 fi
 
-echo MSG finished copying root,json,png files
+echo MSG finished copying root,json,png,txt files
 
 cd ..
 #echo ls before: $P3S_JOB_UUID
