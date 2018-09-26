@@ -100,3 +100,6 @@ physics.producers.caldata.DigitLabel: "tpcrawdecoder:daq"
 physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane0.RoiThreshold: 12.0
 physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane1.RoiThreshold: 12.0
 physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane2.RoiThreshold: 2.5
+
+services.SignalShapingServiceDUNE.IndUFilter: "(x>0.01)*gaus"
+services.SignalShapingServiceDUNE.IndVFilter: "(x>0.01)*gaus"
