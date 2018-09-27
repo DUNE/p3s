@@ -13,9 +13,11 @@ import	django_tables2 as tables
 from django.utils.html import format_html
 
 
-from purity.models import pur
-from evdisp.models import evdisp
-from .models import monrun
+from purity.models			import pur
+from evdisp.models			import evdisp
+from .models				import monrun
+
+from utils.tpcMap			import *
 
 #########################################################
 Planes = ('U','V','Z')
@@ -110,7 +112,7 @@ class MonitorTable(tables.Table):
 #---
 class PurityTable(MonitorTable):
     def render_tpc(self, value):
-        return ':'+str(value)
+        return str(value)+': '+tpcMap[value]
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
