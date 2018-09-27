@@ -84,7 +84,7 @@ fi
 
 
 
-roots=$P3S_OUTPUT_FILE    #`ls *.root`
+roots=$P3S_OUTPUT_FILE # can't do`ls *.root` since it will include the input file
 jsons=`ls *.json`
 pngs=`ls *.png`
 txts=`ls *.txt`
@@ -120,7 +120,7 @@ cd $DESTINATION
 
 echo Looking at JSON
 ls -l *.json
-summary=`ls run*summary.json`
+summary=`ls *summary.json`
 echo MSG found the run summary $summary
 
 f=`ls -m *FileList.json`
@@ -132,10 +132,17 @@ if [ $ld == 0 ]; then
 fi
 
 
-echo MSG Found the file descriptors: $descriptors
+# FIXME: uncomment when Justin fixes the app
 
+#echo MSG Found the file descriptors: $descriptors
 #$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
+#echo MSG finished registration
 
-echo MSG finished registration
-# echo $INPUT_FILE | mail -s $P3S_JOB_UUID potekhin@bnl.gov
+export lfile=`ls Lifetime*.txt`
+export run=`echo $lfile | tr -d 'Lifetime_Run' | tr -d '.txt'`
+$P3S_HOME/clients/purity.py -f $lfile -r $run
+
 exit 0
+
+
+# echo $INPUT_FILE | mail -s $P3S_JOB_UUID potekhin@bnl.gov

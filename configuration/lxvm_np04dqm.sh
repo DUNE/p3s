@@ -2,8 +2,9 @@
 
 # setting up the p3s environment
 
-# 1. Python virtual env
+# 1. Python virtual env and P3S home
 export P3S_VENV='/afs/cern.ch/user/n/np04dqm/public/vp3s'
+export P3S_HOME='/afs/cern.ch/user/n/np04dqm/public/p3s/p3s'
 
 # 2. Service-related parameters
 export P3S_SERVER="http://p3s-web:80/"

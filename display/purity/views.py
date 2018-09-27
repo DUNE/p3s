@@ -105,7 +105,7 @@ def add(request):
     p.sn	= post.get('sn',	0.0)
     p.snclusters= post.get('snclusters',0)
     p.drifttime	= post.get('drifttime',	0.0)
-    p.infile	= post.get('infile',	0.0)
+    p.infile	= post.get('infile',	'')
     
     p.save()
 
