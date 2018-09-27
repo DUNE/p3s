@@ -110,7 +110,7 @@ class MonitorTable(tables.Table):
 #---
 class PurityTable(MonitorTable):
     def render_tpc(self, value):
-        return ':'+value
+        return ':'+str(value)
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
