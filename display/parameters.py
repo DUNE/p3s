@@ -2,7 +2,7 @@ import os
 
 LIMITS = {
     'purity': {
-        'min':		'0.5',
+        'min':		'0.1',
         'max':		'10000.0',
         'alarm':	True
         },
