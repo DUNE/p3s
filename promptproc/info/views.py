@@ -273,7 +273,7 @@ def index(request):
 
     countBad		= 0
 
-    for l in lifelist:
+    for l in lifeList:
         if abs(nominalLife-l)<10000:
             countBad+=1
     
