@@ -270,12 +270,19 @@ def index(request):
     
     nominalLife		= ourSite.pilotlife
     actualLife		= int(sum(lifeList)/len(lifeList))
-    if abs(nominalLife-actualLife)<2000 and test!='lifetime':
+
+    countBad		= 0
+
+    for l in lifelist:
+        if abs(nominalLife-l)<10000:
+            countBad+=1
+    
+    if abs(nominalLife-actualLife)<1200 and countBad>3 and test!='lifetime':
         status = 'OK'
         action = '-'
     else:
         status = 'FAIL'
-        action = mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual#Pilot_Lifetime">Create a service ticket under high priority</a>')
+        action = mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual#Pilot_Lifetime">See the manual at this link, possibly create a service ticket</a>')
         
     paramData.append({'parameter':'Pilot Lifetime','nominal':nominalLife,'actual':actualLife, 'status':status, 'action':action})
     
