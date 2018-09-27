@@ -96,8 +96,8 @@ def add(request):
 
     p=pur()
     
-    p.run	= post['run']
-    p.tpc	= post['tpc']
+    p.run	= post.get('run',	0)
+    p.tpc	= post.get('tpc',	0)
     p.lifetime	= post.get('lifetime',	0.0)
     p.error	= post.get('error',	0.0)
     p.count	= post.get('count',	0.0)

@@ -127,9 +127,10 @@ for row in data[1:]:
     d = OrderedDict.fromkeys(items) # note we take ordered keys from the tuple
     for e in row.split(','):
         d[items[cnt]] = e
+        if(verb>2): print(items[cnt], e)
         cnt+=1
 
-    d['run']	= run
+    # d['run']	= run
     if infile!='': d['infile'] = infile
 
     if(timestamp==''):
@@ -138,7 +139,7 @@ for row in data[1:]:
         d['ts']	= timestamp
         if(verb>0): print('Using timestamp:', d['ts'])
         
-    if verb>2: print(d)
+    if verb>0: print(d)
     
     if not err:
         resp = API.post2server('purity', 'add', d)
