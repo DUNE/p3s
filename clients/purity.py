@@ -47,7 +47,7 @@ parser.add_argument("-d", "--delete",	action='store_true',	help="deletes an entr
 parser.add_argument("-f", "--file",	type=str,	help="input file (TXT) with purity data",		default='')
 parser.add_argument("-F", "--infile",	type=str,	help="name of the raw data input file used",		default='')
 parser.add_argument("-i", "--id",	type=str,	help="id of the entry to be adjusted or deleted (pk)",	default='')
-parser.add_argument("-r", "--run",	type=str,	help="run number for items to be added or deleted",	default='')
+parser.add_argument("-r", "--run",	type=str,	help="run number for items to be added or deleted, AUTO has a special meaning",	default='')
 
 parser.add_argument("-T", "--timestamp",type=str,	default='',
                     help="enforce/override the timestamp - YYYY-MM-DD HH:MM[:ss[.uuuuuu]][TZ]")
@@ -109,7 +109,7 @@ data = [x.strip().replace(' ', '') for x in f.readlines()]
 # provide one
 
 err = False
-if(run==''):
+if(run=='AUTO'): # will use counter from the DB to generate a number
     run = API.get2server('purity', 'index', '')
     if 'error' in run:
         err = True

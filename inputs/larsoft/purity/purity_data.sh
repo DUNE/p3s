@@ -139,8 +139,11 @@ fi
 #echo MSG finished registration
 
 export lfile=`ls Lifetime*.txt`
-export run=`echo $lfile | tr -d 'Lifetime_Run' | tr -d '.txt'`
-$P3S_HOME/clients/purity.py -f $lfile -r $run
+
+# we can either parse the file name, or use the recently available run info from TXT
+#export run=`echo $lfile | tr -d 'Lifetime_Run' | tr -d '.txt'`
+
+$P3S_HOME/clients/purity.py -f $lfile # -r $run
 
 exit 0
 
