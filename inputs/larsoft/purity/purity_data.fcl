@@ -2,16 +2,16 @@
 #include "RawDecoder.fcl"
 #include "TPCMonitor.fcl"
 #include "SSPMonitor.fcl"
-#include "PDSPNearlineHeader.fcl"
 
 #include "caldata_dune.fcl"
 #include "hitfindermodules_dune.fcl"
 #include "SpacePointSolver.fcl"
 #include "cluster_dune.fcl"
 #include "lifetime.fcl"
-#include "PDSPHitMonitor.fcl"
 #include "SaveSpacePoints.fcl"
 #include "tools_dune.fcl"
+
+#include "protodune_tools_dune.fcl"
 
 process_name: PurityMonitor
 
@@ -24,7 +24,7 @@ services:
                         @table::protodune_reco_services
   ExptGeoHelperInterface:       @local::dune_geometry_helper
   Geometry:                     @local::protodune_geo
-  DetectorClocksService:        @local::dunefd_detectorclocks # will change to protodune
+  DetectorClocksService:        @local::protodune_detectorclocks
   DetectorPropertiesService:    @local::protodune_detproperties
   LArPropertiesService:         @local::dunefd_properties
   DatabaseUtil:                 @local::dunefd_database
@@ -37,7 +37,7 @@ services:
     DoWires: true
     AdcChannelToolNames: [
       "digitReader",
-      "pd_adcPedestalFit",
+      "pd_adcPedestalFit", #def_adcPedestalFit
       "adcSampleFiller",
       "adcVintageDeconvoluter",
       "adcDuneSignalFinder"
@@ -124,7 +124,10 @@ physics.analyzers.lifetime.DebugCluster:    -1
 physics.producers.caldata.DigitLabel: "tpcrawdecoder:daq"
 physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane0.RoiThreshold: 12.0
 physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane1.RoiThreshold: 12.0
-physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane2.RoiThreshold: 2.5
+physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane2.RoiThreshold: 3.0
+
+services.SignalShapingServiceDUNE.IndUFilter: "(x>0.01)*gaus"
+services.SignalShapingServiceDUNE.IndVFilter: "(x>0.01)*gaus"
 
 ##########
 ##### For MC
