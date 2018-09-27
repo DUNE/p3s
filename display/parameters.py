@@ -16,7 +16,7 @@ LIMITS = {
 CHARTS = {
     'purity': {
         'min':	'0.0',
-        'max':	'1.0'
+        'max':	'0.4'
         },
     'sn': {
         'min':	'0.0',
