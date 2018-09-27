@@ -109,6 +109,8 @@ class MonitorTable(tables.Table):
 
 #---
 class PurityTable(MonitorTable):
+    def render_tpc(self, value):
+        return ':'+value
     class Meta:
         model = pur
         attrs = {'class': 'paleblue'}
