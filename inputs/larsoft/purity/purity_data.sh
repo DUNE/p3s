@@ -143,7 +143,7 @@ export lfile=`ls Lifetime*.txt`
 # we can either parse the file name, or use the recently available run info from TXT
 #export run=`echo $lfile | tr -d 'Lifetime_Run' | tr -d '.txt'`
 
-$P3S_HOME/clients/purity.py -f $lfile # -r $run
+$P3S_HOME/clients/purity.py -f $lfile -F $P3S_INPUT_FILE
 
 exit 0
 
