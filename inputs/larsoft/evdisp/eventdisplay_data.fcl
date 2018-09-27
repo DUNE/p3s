@@ -12,7 +12,7 @@ services:
   RandomNumberGenerator: {} 
   ExptGeoHelperInterface:       @local::dune_geometry_helper
   Geometry:                     @local::protodune_geo
-  DetectorClocksService:        @local::dunefd_detectorclocks
+  DetectorClocksService:        @local::protodune_detectorclocks
   DetectorPropertiesService:    @local::protodune_detproperties
   LArPropertiesService:         @local::dunefd_properties
   LArFFT:                       @local::dunefd_larfft  
@@ -23,13 +23,13 @@ services:
    fileName:  "RunRawDecoderTFile.root"
    tmpDir: "<parent-path-of-filename>"  # default
   }
-  #soon PdspChannelMapService:   @local::pdspchannelmap
-  PdspChannelMapService: {
-    FileName:         "protoDUNETPCChannelMap_RCE_v4.txt"
-    FELIXFileName:    "protoDUNETPCChannelMap_FELIX_v4.txt"
-    SSPFileName:      "protoDUNESSPChannelMap_v1.txt"
-    LogLevel:         1
-  }
+  PdspChannelMapService:   @local::pdspchannelmap
+  #PdspChannelMapService: {
+  #  FileName:         "protoDUNETPCChannelMap_RCE_v4.txt"
+  #  FELIXFileName:    "protoDUNETPCChannelMap_FELIX_v4.txt"
+  #  SSPFileName:      "protoDUNESSPChannelMap_v1.txt"
+  #  LogLevel:         1
+  #}
   #RawDigitPrepService: @local::adcprep_readraw
   #RawDigitExtractService: @local::rdx_std
   RawDigitPrepService: {
