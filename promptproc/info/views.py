@@ -284,7 +284,7 @@ def index(request):
         status = 'FAIL'
         action = mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual#Pilot_Lifetime">See the manual at this link, possibly create a service ticket</a>')
         
-    paramData.append({'parameter':'Pilot Lifetime','nominal':nominalLife,'actual':actualLife, 'status':status, 'action':action})
+    paramData.append({'parameter':'Pilot Lifetime : Bad Pilots','nominal':nominalLife,'actual':(str(actualLife)+':'+str(countBad), 'status':status, 'action':action})
     
     paramtable = ParamTable(paramData)
     
