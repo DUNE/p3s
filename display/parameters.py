@@ -2,7 +2,7 @@ import os
 
 LIMITS = {
     'purity': {
-        'min':		'0.1',
+        'min':		'0.2',
         'max':		'10000.0',
         'alarm':	True
         },
@@ -16,10 +16,10 @@ LIMITS = {
 CHARTS = {
     'purity': {
         'min':	'0.0',
-        'max':	'0.4'
+        'max':	'0.6'
         },
     'sn': {
         'min':	'0.0',
-        'max':	'100.0'
+        'max':	'80.0'
         },
 }
