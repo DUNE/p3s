@@ -274,10 +274,10 @@ def index(request):
     countBad		= 0
 
     for l in lifeList:
-        if abs(nominalLife-l)<10000:
+        if abs(nominalLife-l)>10000:
             countBad+=1
     
-    if abs(nominalLife-actualLife)<1200 and countBad>3 and test!='lifetime':
+    if abs(nominalLife-actualLife)<1200 and countBad<3 and test!='lifetime':
         status = 'OK'
         action = '-'
     else:
