@@ -38,7 +38,7 @@ services:
     DoWires: false
     AdcChannelToolNames: [
       "digitReader",
-      "pd_evtview"
+      "pd_evtviewNfemb"
     ]
   }
 }
