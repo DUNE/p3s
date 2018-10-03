@@ -122,8 +122,8 @@ physics.analyzers.lifetime.ChiCut:      3
 physics.analyzers.lifetime.DebugCluster:    -1
 
 physics.producers.caldata.DigitLabel: "tpcrawdecoder:daq"
-physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane0.RoiThreshold: 12.0
-physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane1.RoiThreshold: 12.0
+physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane0.RoiThreshold: 10.0
+physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane1.RoiThreshold: 10.0
 physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane2.RoiThreshold: 3.0
 
 services.SignalShapingServiceDUNE.IndUFilter: "(x>0.01)*gaus"
