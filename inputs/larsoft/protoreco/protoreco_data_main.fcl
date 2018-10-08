@@ -10,6 +10,7 @@
 #include "ploteventdetails.fcl"
 #include "tools_dune.fcl"
 #include "protodune_tools_dune.fcl"
+#include "PDSPNearlineHeader.fcl"
 
 process_name: ProtoReco
 
@@ -90,12 +91,13 @@ physics:
 
   analyzers:
   {
+    pdspnearlineheader: @local::PDSPNearlineHeader_params
     eventDetails:       @local::proto_ploteventdetails
   }
 
   produce: [ tpcrawdecoder, ssprawdecoder, timingrawdecoder ]
   reco: [ caldata, gaushit, reco3d, hitpdune, linecluster, pandora, pandoraTrack, pandoraShower ]
-  analysis: [ eventDetails ]
+  analysis: [ pdspnearlineheader, eventDetails ]
   trigger_paths : [ produce, reco ]
   #mainout: [out1]
   end_paths: [ analysis ]
