@@ -43,7 +43,7 @@ else
 
 fi
 
-P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/mon/'`
+P3S_OUTPUT_FILE=`echo $P3S_INPUT_FILE | sed 's/raw/rec/'`
 
 
 echo Output file: $P3S_OUTPUT_FILE
