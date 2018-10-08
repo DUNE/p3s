@@ -269,7 +269,9 @@ def index(request):
     paramData.append({'parameter':'Total Pilots','nominal':nominalPilots,'actual':actualPilots, 'status':status, 'action':action})
     
     nominalLife		= ourSite.pilotlife
-    actualLife		= int(sum(lifeList)/len(lifeList))
+    actualLife		= ourSite.pilotlife
+    if len(lifeList)!=0:
+        actualLife = int(sum(lifeList)/len(lifeList))
 
     countBad		= 0
 
