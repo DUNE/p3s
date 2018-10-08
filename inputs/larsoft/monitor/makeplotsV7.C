@@ -54,12 +54,13 @@ TString FindImagesAndPrint(TString strtolook, TString strtolook2, TString dirstr
 void PlotDistToMean(TH1 *h,Int_t mean);
 void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline=true);
 TString GetDataLogger(TString inputfile);
+void PrintProtoRecoSummary(TDirectory *dir, TString jsonfilename, TString srun, TString sdate, bool filelist=false);
 
 // For CRT plots
 void MakeCRTPlots(TDirectory *dir, TString jsonfile); // modify this one
 void PrintCRTSummary(TDirectory *dir, TString jsonfilename, TString srun, TString sdate); // don't change this one
 
-void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_dl1.root
+void makeplotsV7(TString infile="rawtpcmonitor.root"){
 
   // Start timing
   TStopwatch *mn_t = new TStopwatch;
@@ -97,6 +98,8 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   if(!infile.Contains("rawtpcmonitor")){
     TRegexp reg(".root");
     TRegexp reg2("np04_mon_");
+    if(infile.Contains("rec"))
+      reg2 = "np04_rec_";
     TString s_infile = infile;
     s_infile(reg) = "";
     s_infile(reg2) = "";
@@ -111,7 +114,8 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
   TString subdirname = runstr + TString("_tpcmonitor") + TString("_summary.json");
   
-  bool isCRT = false;
+  bool isCRT = false; 
+  bool isReco = false;
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);
     if(dirstr.Contains("CRTOnlineMonitor")){
@@ -127,10 +131,23 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
       break;
     }
+    if(dirstr.Contains("eventDetails")){
+      current_sourcedir->cd(dirstr.Data());
+      TDirectory *subdir = gDirectory;
+
+      subdirname = runstr + TString("_protoreco") + TString("_summary.json");
+      PrintProtoRecoSummary(subdir, subdirname, runstr, datestr);
+
+      isReco = true;
+
+      current_sourcedir->cd("..");
+
+      break;
+    }
   }
   
   FILE *summaryJsonFile;
-  if(!isCRT){
+  if(!isCRT && !isReco){
     summaryJsonFile = fopen(subdirname.Data(),"w");
     fprintf(summaryJsonFile,"[\n");
     fprintf(summaryJsonFile,"   {\n");
@@ -140,7 +157,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   // Create summary json file
   for(int i=0; i < directories_in_file.size(); i++){
     TString dirstr = directories_in_file.at(i);  
-    if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") || dirstr.Contains("sps")) continue;
+    if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") || dirstr.Contains("sps") || dirstr.Contains("eventDetails")) continue;
 
     current_sourcedir->cd(dirstr.Data());
     TDirectory *subdir = gDirectory;
@@ -169,8 +186,13 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
     FILE *summaryJsonFile2 = fopen(subdirname.Data(),"a");
     fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
     fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
-    fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
-    fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
+    if(isReco){
+      fprintf(summaryJsonFile2,"      \"Type\": \"protoReconstruction\"\n");
+    }
+    else{
+      fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
+      fprintf(summaryJsonFile2,"      \"APA\": \"1, 2, 3, 4, 5, 6\"\n");
+    }
     fprintf(summaryJsonFile2,"   }\n");
     fprintf(summaryJsonFile2,"]\n");
     fclose(summaryJsonFile2);
@@ -182,6 +204,9 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
 
     // Skip these directories for now
     if(dirstr.Contains("pdspnearlineheader") || dirstr.Contains("tjcosmic") || dirstr.Contains("gaushit") || dirstr.Contains("reco3d") || dirstr.Contains("lifetime") ) continue;
+    if(isReco){
+      if(dirstr.Contains("timingrawdecoder") || dirstr.Contains("sprawdecoder")) continue;
+    }
 
     current_sourcedir->cd(dirstr.Data());
     TDirectory *subdir = gDirectory;
@@ -199,6 +224,13 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
       TString jsonfile = TString(subdir->GetName()) + TString("_FileList.json");
       MakeCRTPlots(subdir, jsonfile);
       // Nothing else to do here
+      current_sourcedir->cd("..");
+      continue;
+    }
+    else if(dirstr.Contains("eventDetails")){
+      TString jsonfile = runstr + TString("_protoreco") + TString("_FileList.json");
+      PrintProtoRecoSummary(subdir, jsonfile, runstr, datestr, true);
+
       current_sourcedir->cd("..");
       continue;
     }
@@ -240,20 +272,22 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){ // np04_mon_run001113_3_d
   f->Close();
   // ---------------------------------------------------------------------------
   // Save the spacepoint tree in another root file
-  TFile *f1 = new TFile(infile,"READ");
-  TString outfile = TString("sps_") + infile;
-  TTree *oldtree = (TTree*)f1->Get("sps/spt");
- 
-  TFile *newfile = new TFile(outfile.Data(),"RECREATE");
-  TTree *newtree = oldtree->CloneTree();
-  newfile->mkdir("sps");
-  newfile->cd("sps");
-
-  //newtree->Print();
-  newtree->Write();
-  
-  f1->Close();
-  delete f1;
+  if(!isCRT && !isReco){
+    TFile *f1 = new TFile(infile,"READ");
+    TString outfile = TString("sps_") + infile;
+    TTree *oldtree = (TTree*)f1->Get("sps/spt");
+    
+    TFile *newfile = new TFile(outfile.Data(),"RECREATE");
+    TTree *newtree = oldtree->CloneTree();
+    newfile->mkdir("sps");
+    newfile->cd("sps");
+    
+    //newtree->Print();
+    newtree->Write();
+    
+    f1->Close();
+    delete f1;
+  }
   // ---------------------------------------------------------------------------
   // Stop timing
   mn_t->Stop();
@@ -2132,6 +2166,74 @@ void PrintCRTSummary(TDirectory *dir, TString jsonfilename, TString srun, TStrin
   fprintf(crtJsonFile,"   {\n");
 
   //fprintf(crtJsonFile,"      \"Type\": \"crt\",\n");
+  
+  //fprintf(crtJsonFile,"   }\n");
+  //fprintf(crtJsonFile,"]\n");
+
+  // Close file
+  fclose(crtJsonFile);
+
+}
+
+// --------------------------------------------------
+void PrintProtoRecoSummary(TDirectory *dir, TString jsonfilename, TString srun, TString sdate, bool filelist){
+  // --------------------------------------------------
+
+  if(filelist){
+    // Open file
+    FILE *crtJsonFile2 = fopen(jsonfilename.Data(),"w");
+    
+    fprintf(crtJsonFile2,"[\n");
+    fprintf(crtJsonFile2,"   {\n");
+    fprintf(crtJsonFile2,"     \"Category\":\"Proto Reconstruction\",\n");
+    fprintf(crtJsonFile2,"      \"Files\": {\n");
+
+    fprintf(crtJsonFile2,"      }\n");
+    fprintf(crtJsonFile2,"   }\n");
+    fprintf(crtJsonFile2,"]\n");
+
+    // Close file
+    fclose(crtJsonFile2);
+    
+    return;
+  } 
+  
+  // Open file
+  FILE *crtJsonFile = fopen(jsonfilename.Data(),"w");
+
+  fprintf(crtJsonFile,"[\n");
+  fprintf(crtJsonFile,"   {\n");
+
+   // loop over all keys in this directory
+  TIter nextkey(dir->GetListOfKeys());
+  TKey *fkey, *foldkey=0;
+  std::string cdate;
+  while((fkey = (TKey*)nextkey())){
+    //plot only the highest cycle number for each key
+    if (foldkey && !strcmp(foldkey->GetName(),fkey->GetName())) continue;
+
+    // read object from  source file
+    TObject *obj = fkey->ReadObj();
+
+    // Object name
+    TString objname(obj->GetName());
+
+    if(obj->IsA()->InheritsFrom(TH1::Class()) ){
+      TH1 *h1 = (TH1*)obj;
+      if(objname == "NTracks"){
+	Double_t mean = h1->GetMean();
+	TString tempstr = Form("%.2f",(float)mean);
+	fprintf(crtJsonFile,"      \"Number of reconstructed tracks\": \"%s\",\n",tempstr.Data());
+      }
+      else if(objname == "NLongTracks"){
+	Double_t mean = h1->GetMean();
+	TString tempstr = Form("%.2f",(float)mean);
+	fprintf(crtJsonFile,"      \"Number of long reconstructed tracks\": \"%s\",\n",tempstr.Data());
+      }
+    }
+  }
+
+  //fprintf(crtJsonFile,"      \"Type\": \"protoReco\",\n");
   
   //fprintf(crtJsonFile,"   }\n");
   //fprintf(crtJsonFile,"]\n");
