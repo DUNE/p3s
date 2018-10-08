@@ -2,6 +2,7 @@
 #include "RawDecoder.fcl"
 #include "TPCMonitor.fcl"
 #include "SSPMonitor.fcl"
+#include "PDSPNearlineHeader.fcl"
 #include "caldata_dune.fcl"
 #include "hitfindermodules_dune.fcl"
 #include "SpacePointSolver.fcl"
@@ -10,7 +11,6 @@
 #include "ploteventdetails.fcl"
 #include "tools_dune.fcl"
 #include "protodune_tools_dune.fcl"
-#include "PDSPNearlineHeader.fcl"
 
 process_name: ProtoReco
 
