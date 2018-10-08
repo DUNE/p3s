@@ -82,11 +82,6 @@ if [ ! -d "$DESTINATION" ]; then
     exit -1
 fi
 
-# Create Bee directory
-export BEE_DIR=$P3S_DATA/$P3S_BEE_DIR
-export BEE_DESTINATION=$BEE_DIR/$P3S_JOB_UUID
-BEE_OUTPUT_FILE=sps_${P3S_OUTPUT_FILE}
-
 roots=$P3S_OUTPUT_FILE    #`ls *.root`
 jsons=`ls *.json`
 
@@ -117,5 +112,35 @@ rm -fr $P3S_JOB_UUID
 
 echo MSG done with cleanup
 # ---
+
+cd $DESTINATION
+cp $ROOT_MACRO_LOCATION/$ROOT_MACRO_NAME .
+
+echo MSG Startng the ROOT macro
+date
+time ROOT_MACRO_TORUN=${ROOT_MACRO_NAME}'("'${P3S_OUTPUT_FILE}'");'
+time root -b -l -q $ROOT_MACRO_TORUN  >& ${P3S_INPUT_FILE}.log
+date
+
+echo Finished the ROOT macro, looking at JSON
+ls -l *.json
+
+summary=`ls run*summary.json`
+echo MSG found the run summary $summary
+
+f=`ls -m *FileList.json`
+descriptors=`echo $f | tr -d ' '`
+ld=`echo -n $descriptors | wc -m`
+if [ $ld == 0 ]; then
+    echo No descriptots found
+    exit 3
+fi
+
+
+echo MSG Found the file descriptors: $descriptors
+
+#$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
+
+echo MSG finished registration
 
 exit 0
