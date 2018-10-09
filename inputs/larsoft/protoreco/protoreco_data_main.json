@@ -19,7 +19,9 @@
 	    "P3S_INPUT_FILE":	"dummy_to_be_replaced",
 	    "P3S_OUTPUT_DIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/output/",
 	    "P3S_MONITOR_DIR":	"protoreco",
-	    "P3S_USED_DIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/used/"
+	    "P3S_USED_DIR":	"/eos/experiment/neutplatform/protodune/np04tier0/p3s/used/",
+	    "ROOT_MACRO_LOCATION":"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/monitor",
+	    "ROOT_MACRO_NAME":	"makeplotsV7.C"
 	  }
     }
 ]
