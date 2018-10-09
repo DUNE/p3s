@@ -187,7 +187,7 @@ void makeplotsV7(TString infile="rawtpcmonitor.root"){
     fprintf(summaryJsonFile2,"      \"run\": \"%s\",\n", runstrdl.Data());
     fprintf(summaryJsonFile2,"      \"TimeStamp\": \"%s\",\n", datestr.Data());
     if(isReco){
-      fprintf(summaryJsonFile2,"      \"Type\": \"protoReconstruction\"\n");
+      fprintf(summaryJsonFile2,"      \"Type\": \"reco\"\n");
     }
     else{
       fprintf(summaryJsonFile2,"      \"Type\": \"monitor\",\n");
