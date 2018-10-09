@@ -16,13 +16,13 @@ class Ncolumns(object):
 def NavBarData(domain=''):
     links = (
         '<a href="http://'+domain+'/monitor/puritytable">Purity<br/>Table</a>',
-        '<a href="http://'+domain+'/monitor/puritychart">Purity Charts</a>',
-        '<a href="http://'+domain+'/monitor/monrun?jobtype=purity">Purity Drift</a>',
-        '<a href="http://'+domain+'/monitor/snchart">S/N Charts</a>',
-        '<a href="http://'+domain+'/monitor/monrun?jobtype=monitor">TPC Monitor</a>',
+        '<a href="http://'+domain+'/monitor/puritychart">Purity<br/>Charts</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=purity">Purity<br/>Drift</a>',
+        '<a href="http://'+domain+'/monitor/snchart">S/N<br/>Charts</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=monitor">TPC<br/>Monitor</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=femb">FEMB</a>',
-        '<a href="http://'+domain+'/monitor/monrun?jobtype=evdisp">2D Raw Event Display</a>',
-        '<a href="http://'+domain+'/monitor/monrun?jobtype=reco">reco</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=evdisp">2D Raw<br/>Event Display</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=reco">Reco</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=crt">CRT</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=beam">Beam</a>',
         '<a href="http://'+domain+'/monitor/monrun">All Entries</a>'
