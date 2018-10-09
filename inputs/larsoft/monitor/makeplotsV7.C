@@ -470,7 +470,19 @@ TString GetDataLogger(TString inputfile){
   // --------------------------------------------------
 
   TString dl("_dl00");
-  if(inputfile.Contains("dl1"))
+  if(inputfile.Contains("dl10"))
+    dl = "_dl10";
+  else if(inputfile.Contains("dl11"))
+    dl = "_dl11";
+  else if(inputfile.Contains("dl12"))
+    dl = "_dl12";
+  else if(inputfile.Contains("dl13"))
+    dl = "_dl13";
+  else if(inputfile.Contains("dl14"))
+    dl = "_dl14";
+  else if(inputfile.Contains("dl15"))
+    dl = "_dl15";
+  else if(inputfile.Contains("dl1"))
     dl = "_dl01";
   else if(inputfile.Contains("dl2"))
     dl = "_dl02";
@@ -488,18 +500,6 @@ TString GetDataLogger(TString inputfile){
     dl = "_dl08";
   else if(inputfile.Contains("dl9"))
     dl = "_dl09";
-  else if(inputfile.Contains("dl10"))
-    dl = "_dl10";
-  else if(inputfile.Contains("dl11"))
-    dl = "_dl11";
-  else if(inputfile.Contains("dl12"))
-    dl = "_dl12";
-  else if(inputfile.Contains("dl13"))
-    dl = "_dl13";
-  else if(inputfile.Contains("dl14"))
-    dl = "_dl14";
-  else if(inputfile.Contains("dl15"))
-    dl = "_dl15";
 
   return dl;
 
