@@ -224,6 +224,13 @@ class MonRunTable(MonitorTable):
             return format_html(output)
         
         # ---
+        if monType=='reco':
+            try:
+                output+='Number of reconstructed tracks: %s, Number of long reconstructed tracks: %s' % (d['Number of reconstructed tracks'], d['Number of long reconstructed tracks'])
+            except:
+                output+='ERROR PARSING JSON'
+            return format_html(output)
+                # ---
         try:
             output+=monTags[monType]
         except:            
@@ -231,7 +238,19 @@ class MonRunTable(MonitorTable):
            
         return format_html(output)
 
-# Sample summary:
+
+# Sample summary for the "reco" product:
+# [
+#    {
+#       "Number of reconstructed tracks": "52.80",
+#       "Number of long reconstructed tracks": "19.80",
+#       "run": "run005077_0045_dl08",
+#       "TimeStamp": "Tue Oct  9 05:10:28 2018",
+#       "Type": "reco"
+#    }
+# ]
+
+# Sample summary for the "monitor" product:
 # [
 #    {
 #       "Plane U Mean NHits": "14.00,0.00,0.00,0.00,0.00,0.00",
