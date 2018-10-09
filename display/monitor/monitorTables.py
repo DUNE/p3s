@@ -226,11 +226,13 @@ class MonRunTable(MonitorTable):
         # ---
         if monType=='reco':
             try:
-                output+='Number of reconstructed tracks: %s, Number of long reconstructed tracks: %s' % (d['Number of reconstructed tracks'], d['Number of long reconstructed tracks'])
+                output+='<td>Number of reconstructed tracks: %s</td><td>Number of long reconstructed tracks: %s</td>' % (d['Number of reconstructed tracks'], d['Number of long reconstructed tracks'])
+                output+='</tr></table>'
             except:
-                output+='ERROR PARSING JSON'
+                output+='<td>ERROR PARSING JSON</td></tr></table>'
             return format_html(output)
-                # ---
+
+        # ---
         try:
             output+=monTags[monType]
         except:            
