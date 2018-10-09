@@ -42,7 +42,16 @@ from utils.tpcMap			import *
 from .monitorTables import *
 
 #########################################################
-JOBTYPECHOICES	= [('', 'All'), ('purity','Purity'), ('monitor','Monitor'), ('femb', 'FEMB diagnostics'), ('evdisp','2D Raw Event Display'), ('crt','CRT'), ('beam','Beam Instrumentation'), ]
+JOBTYPECHOICES	= [
+    ('',		'All'),
+    ('purity',		'Purity'),
+    ('monitor',		'Monitor'),
+    ('femb',		'FEMB diagnostics'),
+    ('evdisp',		'2D Raw Event Display'),
+    ('reco',		'proto Reco'),
+    ('crt',		'CRT'),
+    ('beam',		'Beam Instrumentation'),
+]
 
 REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
 PAGECHOICES	= [('25','25'),		('50','50'),	('100','100'),	('200','200'),	('400','400'),]

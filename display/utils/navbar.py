@@ -22,6 +22,7 @@ def NavBarData(domain=''):
         '<a href="http://'+domain+'/monitor/monrun?jobtype=monitor">TPC Monitor</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=femb">FEMB</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=evdisp">2D Raw Event Display</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=reco">reco</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=crt">CRT</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=beam">Beam</a>',
         '<a href="http://'+domain+'/monitor/monrun">All Entries</a>'
@@ -32,6 +33,8 @@ def NavBarData(domain=''):
     for n in range(len(links)):
         allLinks['col'+str(n+1)] = mark_safe(links[n])
 
+    # unfortunately we still need to hadrcode the length of the list later on,
+    # tried dynamic but it's crafty anyway -mxp-
     return [allLinks,]
 
 # hardcoded range, ugly but no time to fix
@@ -40,7 +43,7 @@ class NavTable(tables.Table):
         self.Ncolumns = len(args[0][0].keys())
         super(NavTable, self).__init__(*args,**kwargs)
 
-    for i in range(10): locals()['col'+str(i+1)] = tables.Column()
+    for i in range(11): locals()['col'+str(i+1)] = tables.Column()
     
     def set_site(self, site=''):
         self.site=site
