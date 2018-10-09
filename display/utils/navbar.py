@@ -15,7 +15,7 @@ class Ncolumns(object):
 
 def NavBarData(domain=''):
     links = (
-        '<a href="http://'+domain+'/monitor/puritytable">Purity Table</a>',
+        '<a href="http://'+domain+'/monitor/puritytable">Purity<br/>Table</a>',
         '<a href="http://'+domain+'/monitor/puritychart">Purity Charts</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=purity">Purity Drift</a>',
         '<a href="http://'+domain+'/monitor/snchart">S/N Charts</a>',
