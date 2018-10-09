@@ -139,7 +139,7 @@ fi
 
 echo MSG Found the file descriptors: $descriptors
 
-#$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
+$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j reco
 
 echo MSG finished registration
 
