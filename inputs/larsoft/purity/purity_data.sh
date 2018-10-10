@@ -118,23 +118,25 @@ echo MSG done with cleanup
 # ---
 cd $DESTINATION
 
-echo Looking at JSON
-ls -l *.json
-summary=`ls *summary.json`
-echo MSG found the run summary $summary
 
-f=`ls -m *FileList.json`
-descriptors=`echo $f | tr -d ' '`
-ld=`echo -n $descriptors | wc -m`
-if [ $ld == 0 ]; then
-    echo No descriptots found
-    exit 3
-fi
+########### commented until version cut 
+# echo Looking at JSON
+# ls -l *.json
+# summary=`ls *summary.json`
+# echo MSG found the run summary $summary
+
+# f=`ls -m *FileList.json`
+# descriptors=`echo $f | tr -d ' '`
+# ld=`echo -n $descriptors | wc -m`
+# if [ $ld == 0 ]; then
+#     echo No descriptots found
+#     exit 3
+# fi
 
 
-echo MSG Found the file descriptors: $descriptors
-$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j purity
-echo MSG finished registration
+# echo MSG Found the file descriptors: $descriptors
+# $P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j purity
+# echo MSG finished registration
 
 export lfile=`ls Lifetime*.txt`
 
