@@ -132,11 +132,9 @@ if [ $ld == 0 ]; then
 fi
 
 
-# FIXME: uncomment when Justin fixes the app
-
-#echo MSG Found the file descriptors: $descriptors
-#$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j monitor
-#echo MSG finished registration
+echo MSG Found the file descriptors: $descriptors
+$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j purity
+echo MSG finished registration
 
 export lfile=`ls Lifetime*.txt`
 
