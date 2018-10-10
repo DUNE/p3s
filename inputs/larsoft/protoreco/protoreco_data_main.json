@@ -2,7 +2,7 @@
     {
 	"name":		"ProtoReco",
 	"timeout":	"9000",
-        "jobtype":	"protoreco",
+        "jobtype":	"reco",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/protoreco/protoreco_main.sh",
         "priority":	"1",
 	"state":	"defined",
