@@ -1,7 +1,7 @@
 [
     {
 	"name":		"Purity",
-	"timeout":	"12000",
+	"timeout":	"14400",
         "jobtype":	"purity",
         "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/purity/purity_data.sh",
         "priority":	"1",
