@@ -1966,9 +1966,9 @@ void DrawEventDisplays(TDirectory *dir, TString jsonfile, bool drawbeamline){
 	TH2D* XZHisto = new TH2D(Form("ZX%sevent%i",regstring.Data(),event),Form("Z-X display for %s and event %i",regstring.Data(),event), 180, 0, 720, 180, -360, 360);
 	TH2D* XYHisto = new TH2D(Form("XY%sevent%i",regstring.Data(),event),Form("X-Y display for %s and event %i",regstring.Data(),event), 180, -360, 360, 152, 0, 608);
 
-	TH2D* YZHistoBeam = new TH2D(Form("BeamZY%sevent%i",regstring.Data(),event),Form("Z-Y display for %s and event %i",regstring.Data(),event), 110, -30, 80, 50, 390, 440);
-	TH2D* XZHistoBeam = new TH2D(Form("BeamZX%sevent%i",regstring.Data(),event),Form("Z-X display for %s and event %i",regstring.Data(),event), 110, -30, 80, 60, -60, 0);
-	TH2D* XYHistoBeam = new TH2D(Form("BeamXY%sevent%i",regstring.Data(),event),Form("X-Y display for %s and event %i",regstring.Data(),event), 60, -60, 0, 50, 390, 440);
+	TH2D* YZHistoBeam = new TH2D(Form("BeamZY%sevent%i",regstring.Data(),event),Form("Z-Y display for %s and event %i",regstring.Data(),event), 120, -20, 100, 70, 390, 460);
+	TH2D* XZHistoBeam = new TH2D(Form("BeamZX%sevent%i",regstring.Data(),event),Form("Z-X display for %s and event %i",regstring.Data(),event), 120, -20, 100, 70, -40, 30);
+	TH2D* XYHistoBeam = new TH2D(Form("BeamXY%sevent%i",regstring.Data(),event),Form("X-Y display for %s and event %i",regstring.Data(),event), 70, -40, 30, 70, 390, 460);
 	
 	for(Int_t j = 0; j < vx->size(); j++){
 	  Double_t vxval = vx->at(j);
