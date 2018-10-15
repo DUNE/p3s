@@ -242,7 +242,7 @@ def puritychart(request, what):
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
-        return makeQuery('puritychart', q) # now we'll go and get the query results...
+        return makeQuery((what+'chart'), q) # now we'll go and get the query results...
 
     
     ##########################################################################################################
