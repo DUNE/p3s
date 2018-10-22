@@ -1,0 +1,103 @@
+#include "services_dune.fcl"
+
+# This is the default configuration file
+#include "RawDecoder.fcl"
+
+# This must come after all prologs.
+#include "protodune_tools_dune.fcl"
+
+services:
+{
+  TimeTracker:       {}
+  RandomNumberGenerator: {} 
+  ExptGeoHelperInterface:       @local::dune_geometry_helper
+  Geometry:                     @local::protodune_geo
+  DetectorClocksService:        @local::protodune_detectorclocks
+  DetectorPropertiesService:    @local::protodune_detproperties
+  LArPropertiesService:         @local::dunefd_properties
+  LArFFT:                       @local::dunefd_larfft  
+  DatabaseUtil:                 @local::dunefd_database
+  ChannelStatusService:         @local::dunefd_channel_status
+  TFileService: { 
+   closeFileFast: true  # default
+   fileName:  "EventDisplayApa3zbeam.root"
+   tmpDir: "<parent-path-of-filename>"  # default
+  }
+  PdspChannelMapService:   @local::pdspchannelmap
+  #RawDigitPrepService: @local::adcprep_readraw
+  #RawDigitExtractService: @local::rdx_std
+  RawDigitPrepService: {
+    service_provider: ToolBasedRawDigitPrepService
+    LogLevel: 3
+    DoWires: false
+    AdcChannelToolNames: [
+      "digitReader",
+      "pd_adcPedestalFit",
+      "adcSampleFiller",
+      "pdsp_sticky_codes_ped",
+      "pdsp_adcMitigate",
+      "pdcht_Apa3z"
+    ]
+  }
+}
+
+physics:
+{
+  producers:
+  {
+    timingrawdecoder: @local::timing_raw_decoder   
+    ssprawdecoder: @local::ssp_raw_decoder  
+    tpcrawdecoder: @local::pdsp_tpc_raw_decoder
+    dataprep: {
+      module_type: DataPrepModule
+      DigitLabel: "tpcrawdecoder:daq"
+      LogLevel: 2
+      DoAssns: false
+      DoGroups: false
+      IntermediateStates: []
+      KeepChannelBegin:    0
+      KeepChannelEnd:      0
+      #OnlineChannelMapTool: pd_onlineChannelMap
+      OnlineChannelMapTool: pd_onlineChannelMapByFemb
+    }
+  }
+
+  #Create path to run module
+  produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder, dataprep ] 
+  trigger_paths : [ produce ]
+}
+
+physics.producers.timingrawdecoder.MakeEventTimeFile: true
+
+outputs: {}
+
+source:
+{
+  module_type: RootInput
+  fileNames: [ "/home/dladams/data/dune/np04/np04_coldbox_test/np04_raw_run000720_1_dl1.root" ]
+  maxEvents : -1
+}
+
+process_name: processNp04DataApa3zbeam
+ 
+# Display prepared data (0) rather than raw-ped (1).
+tools.pdcht_Apa3z.DataType: 0
+
+# Switch display range to something approprioate for signal
+tools.pdcht_Apa3z.MaxSignal: 400
+
+# Redefine plot name and title.
+tools.pdcht_Apa3z.HistName: "hadcmit_%CRNAME%_run%0RUN%_evt%0EVENT%_Trigger%TRIG%"
+tools.pdcht_Apa3z.HistTitle: "Mitigated ADC for run %RUN% event %EVENT% %CRLABEL% (%CRLABEL2%: %CRLABEL1%) Trigger %TRIG%"
+
+# Speed thing up by only processing the required channels.
+physics.producers.dataprep.KeepChannelBegin: 2080
+physics.producers.dataprep.KeepChannelEnd:   2560
+
+# Tick range for 160 kV
+#tools.tickRanges.plotTicks.begin: 4500
+#tools.tickRanges.plotTicks.end:   5500
+
+# Tick range for 140 kV
+#tools.tickRanges.plotTicks.begin: 4800
+#tools.tickRanges.plotTicks.end:   5800
