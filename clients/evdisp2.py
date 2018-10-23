@@ -57,6 +57,8 @@ fileTypes = {
         ('chmet_pedorf_tps',	'ADC pedestal out-of-range fraction'),
         ('chmet_pedrms_tps',	'ADC pedestal sigma'),
         ('detprep-',		'Raw ADC detector display (Collection View)'),]),
+    'apa3':OrderedDict([
+        ('adcraw_tpp',		'APA3 Display'),]),
     'femb':OrderedDict([
         ('eview',		'FEMB count vs Event and count distribution'),]), # g/h are options
     'purity':OrderedDict([
