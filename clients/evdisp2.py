@@ -67,6 +67,7 @@ fileTypes = {
 
 categories = {
     'evdisp':'Raw 2D Event Display',
+    'apa3':'APA3 Display',
     'femb':'FEMB Monitor',
     'purity':'Purity/Signal-to-Noise/Drift Time'
 }
