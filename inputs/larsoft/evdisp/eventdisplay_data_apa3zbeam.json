@@ -1,9 +1,9 @@
 [
     {
-	"name":		"EvDisp2D_APA3",
+	"name":		"APA3",
 	"timeout":	"4000",
-        "jobtype":	"evdisp",
-        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/evdisp/eventdisplay_data.sh",
+        "jobtype":	"apa3",
+        "payload":	"/afs/cern.ch/user/n/np04dqm/public/p3s/p3s/inputs/larsoft/evdisp/eventdisplay_data_apa3zbeam.sh",
         "priority":	"1",
 	"state":	"defined",
 	"env":		{
