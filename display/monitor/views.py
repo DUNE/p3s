@@ -143,17 +143,21 @@ def monchart(request):
                 if(what in ('hits','charge')):
                     data1 = s[monPatterns[what+'1']%plane].split(',')
                     data2 = s[monPatterns[what+'2']%plane].split(',')
-                    dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                    if(len(data1)==6 and len(data2)==6):
+                        dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
                 elif(what=='noise'):
                     data1 = s[monPatterns[what+'1']].split(',')
                     data2 = s[monPatterns[what+'2']].split(',')
-                    dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
+                    if(len(data1)==6 and len(data2)==6):
+                        dataStr += ('[new Date(Date.UTC(%s)), %s, %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data1[tpcNum], data2[tpcNum])
                 elif(what=='dead'):
                     data3 = s[monPatterns[what]].split(',')
-                    dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
+                    if(len(data3)==6):
+                        dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data3[tpcNum])
                 elif(what=='meanrawrms'):
                     data4 = s[monPatterns[what]%plane].split(',')
-                    dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data4[tpcNum])
+                    if(len(data4)==6):
+                        dataStr += ('[new Date(Date.UTC(%s)), %s],') % (t.strftime("%Y, %m-1, %d, %H, %M, %S"), data4[tpcNum])
                 else:
                     pass
             except:
