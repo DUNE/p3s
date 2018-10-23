@@ -48,7 +48,7 @@ JOBTYPECHOICES	= [
     ('monitor',		'Monitor'),
     ('femb',		'FEMB diagnostics'),
     ('evdisp',		'2D Raw Event Display'),
-    ('apa3',		'2D Raw Event Display for APA3'),
+    ('apa3',		'2D Raw Display for APA3'),
     ('reco',		'proto Reco'),
     ('crt',		'CRT'),
     ('beam',		'Beam Instrumentation'),
