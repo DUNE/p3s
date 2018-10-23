@@ -104,11 +104,11 @@ except:
 data = [x.strip().replace(' ', '') for x in f.readlines()]
 
 # ---
-# Until we don't get the "real" file info e.g. run, idx and dl
-# we rely on the auto-incremented counter on the server to
-# provide one
+# We have the option to rely on the auto-incremented counter on the server
+# to provide a simulated run number (for testing)
 
 err = False
+
 if(run=='AUTO'): # will use counter from the DB to generate a number
     run = API.get2server('purity', 'index', '')
     if 'error' in run:
@@ -120,10 +120,16 @@ if(run=='AUTO'): # will use counter from the DB to generate a number
 
 # ---
 # This has to match the attributes of the "purity" model in the display app
+
 items = ('run','tpc', 'lifetime', 'error', 'count', 'sn', 'snclusters', 'drifttime')
 
 for row in data[1:]:
+    if ('nan' in row or 'NaN' in row):
+        if verb>0: print('Skipping a NAN line:', row)
+        continue
+    
     cnt=0
+    
     d = OrderedDict.fromkeys(items) # note we take ordered keys from the tuple
     for e in row.split(','):
         d[items[cnt]] = e
