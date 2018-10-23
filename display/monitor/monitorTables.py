@@ -41,6 +41,7 @@ monPatterns = {
 
 
 monTags = {
+    'apa3':	'<td>EVENT DISPLAY FOR APA3</td></tr></table>',
     'evdisp':	'<td>EVENT DISPLAY</td></tr></table>',
     'femb':	'<td>FEMB monitor</td></tr></table>',
     'crt':	'<td>CRT</td></tr></table>',
