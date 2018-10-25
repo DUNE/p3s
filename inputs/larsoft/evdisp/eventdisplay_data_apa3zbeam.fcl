@@ -18,7 +18,7 @@ services:
   LArPropertiesService:         @local::dunefd_properties
   LArFFT:                       @local::dunefd_larfft  
   DatabaseUtil:                 @local::dunefd_database
-  ChannelStatusService:         @local::dunefd_channel_status
+  ChannelStatusService:         @local::pdsp_channel_status
   TFileService: { 
    closeFileFast: true  # default
    fileName:  "EventDisplayApa3zbeam.root"
@@ -55,6 +55,7 @@ physics:
       LogLevel: 2
       DoAssns: false
       DoGroups: false
+      BeamEventLabel:     ""
       IntermediateStates: []
       KeepChannelBegin:    0
       KeepChannelEnd:      0
@@ -68,8 +69,7 @@ physics:
   } 
 
   #Create path to run module
-  produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder, dataprep ] 
-  #produce: [ timingrawdecoder, trigfilter, ssprawdecoder, tpcrawdecoder, dataprep ]
+  produce: [ timingrawdecoder, trigfilter, ssprawdecoder, tpcrawdecoder, dataprep ]
   trigger_paths : [ produce ]
 }
 

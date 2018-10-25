@@ -17,19 +17,13 @@ services:
   LArPropertiesService:         @local::dunefd_properties
   LArFFT:                       @local::dunefd_larfft  
   DatabaseUtil:                 @local::dunefd_database
-  ChannelStatusService:         @local::dunefd_channel_status
+  ChannelStatusService:         @local::pdsp_channel_status
   TFileService: { 
    closeFileFast: true  # default
    fileName:  "RunRawDecoderTFile.root"
    tmpDir: "<parent-path-of-filename>"  # default
   }
   PdspChannelMapService:   @local::pdspchannelmap
-  #PdspChannelMapService: {
-  #  FileName:         "protoDUNETPCChannelMap_RCE_v4.txt"
-  #  FELIXFileName:    "protoDUNETPCChannelMap_FELIX_v4.txt"
-  #  SSPFileName:      "protoDUNESSPChannelMap_v1.txt"
-  #  LogLevel:         1
-  #}
   #RawDigitPrepService: @local::adcprep_readraw
   #RawDigitExtractService: @local::rdx_std
   RawDigitPrepService: {
@@ -68,6 +62,7 @@ physics:
       LogLevel: 2
       DoAssns: false
       DoGroups: false
+      BeamEventLabel:     ""
       IntermediateStates: []
       KeepChannelBegin:    0
       KeepChannelEnd:      0
