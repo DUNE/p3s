@@ -1,4 +1,5 @@
 #include "services_dune.fcl"
+#include "ProtoDUNETriggerFilter.fcl"
 
 # This is the default configuration file
 #include "RawDecoder.fcl"
@@ -62,8 +63,13 @@ physics:
     }
   }
 
+  filters: {
+     trigfilter:  @local::pdsp_trigfilter_beam
+  } 
+
   #Create path to run module
   produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder, dataprep ] 
+  #produce: [ timingrawdecoder, trigfilter, ssprawdecoder, tpcrawdecoder, dataprep ]
   trigger_paths : [ produce ]
 }
 
@@ -87,7 +93,7 @@ tools.pdcht_Apa3z.DataType: 0
 tools.pdcht_Apa3z.MaxSignal: 400
 
 # Redefine plot name and title.
-tools.pdcht_Apa3z.HistName: "hadcmit_%CRNAME%_run%0RUN%_evt%0EVENT%_Trigger%TRIG%"
+tools.pdcht_Apa3z.HistName: "hadcmit_%CRNAME%_run%0RUN%_evt%0EVENT%"
 tools.pdcht_Apa3z.HistTitle: "Mitigated ADC for run %RUN% event %EVENT% %CRLABEL% (%CRLABEL2%: %CRLABEL1%) Trigger %TRIG%"
 
 # Speed thing up by only processing the required channels.
