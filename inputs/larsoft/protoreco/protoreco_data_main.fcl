@@ -24,17 +24,13 @@ services:
                         @table::protodune_reco_services
   ExptGeoHelperInterface:       @local::dune_geometry_helper
   Geometry:                     @local::protodune_geo
-  DetectorClocksService:        @local::protodune_detectorclocks # will change to protodune
+  DetectorClocksService:        @local::protodune_detectorclocks
   DetectorPropertiesService:    @local::protodune_detproperties
   LArPropertiesService:         @local::dunefd_properties
   DatabaseUtil:                 @local::dunefd_database
-  ChannelStatusService:         @local::dunefd_channel_status
-  PdspChannelMapService: {
-    FileName:         "protoDUNETPCChannelMap_RCE_v4.txt"
-    FELIXFileName:    "protoDUNETPCChannelMap_FELIX_v4.txt"
-    SSPFileName:      "protoDUNESSPChannelMap_v1.txt"
-    LogLevel:         1
-  }
+  ChannelStatusService:         @local::pdsp_channel_status
+  PdspChannelMapService:        @local::pdspchannelmap
+ 
   TFileService: { fileName: "ProtoReco.root" }
   RawDigitPrepService: {
     service_provider: ToolBasedRawDigitPrepService
@@ -105,8 +101,8 @@ physics:
 
 physics.producers.caldata.DigitLabel: "tpcrawdecoder:daq"
 
-physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane0.RoiThreshold: 10.0
-physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane1.RoiThreshold: 10.0
+physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane0.RoiThreshold: 9.0
+physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane1.RoiThreshold: 9.0
 physics.producers.gaushit.HitFinderToolVec.CandidateHitsPlane2.RoiThreshold: 3.0
 
 # Get rid of low frequency noise
