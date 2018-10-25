@@ -1159,6 +1159,20 @@ void PrintDeadNoisyChannelsJson(TDirectory *dir, TString jsonfilename, TString s
     rawrmsZ_str += tempstr;
   }
 
+  // Protection against empty strings
+  if(deadchannel_str == "")
+    deadchannel_str = "0,   0,   0,   0,   0,   0";
+  if(nois1channel_str == "")
+    nois1channel_str = "0,   0,   0,   0,   0,   0";
+  if(nois2channel_str == "")
+    nois2channel_str = "0,   0,   0,   0,   0,   0";
+  if(rawrmsU_str == "")
+    rawrmsU_str = "0,   0,   0,   0,   0,   0";
+  if(rawrmsV_str == "")
+    rawrmsV_str = "0,   0,   0,   0,   0,   0";
+  if(rawrmsZ_str == "")
+    rawrmsZ_str = "0,   0,   0,   0,   0,   0";
+
   fprintf(deadchanJsonFile,"      \"NDead  Channels\": \"%s\",\n",deadchannel_str.Data());
   fprintf(deadchanJsonFile,"      \"NNoisy Channels 6Sigma away from mean value of the ADC RMS\": \"%s\",\n",nois1channel_str.Data());
   fprintf(deadchanJsonFile,"      \"NNoisy Channels Above ADC RMS Threshold\": \"%s\",\n",nois2channel_str.Data());
@@ -1485,21 +1499,57 @@ void PrintGausHitsJson(TDirectory *dir, TString jsonfilename, TString srun, TStr
   hitrmsS_Vstr.Remove(hitrmsS_Vstr.Length()-1);
   hitrmsS_Zstr.Remove(hitrmsS_Zstr.Length()-1);
 
-  fprintf(deadchanJsonFile,"      \"Plane U Mean NHits\": \"%s\",\n",nhits_Ustr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane V Mean NHits\": \"%s\",\n",nhits_Vstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane Z Mean NHits\": \"%s\",\n",nhits_Zstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane U Mean of Charge\": \"%s\",\n",hitchargeM_Ustr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane V Mean of Charge\": \"%s\",\n",hitchargeM_Vstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane Z Mean of Charge\": \"%s\",\n",hitchargeM_Zstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane U RMS of Charge\": \"%s\",\n",hitchargeS_Ustr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane V RMS of Charge\": \"%s\",\n",hitchargeS_Vstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane Z RMS of Charge\": \"%s\",\n",hitchargeS_Zstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane U Mean of Hit RMS\": \"%s\",\n",hitrmsM_Ustr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane V Mean of Hit RMS\": \"%s\",\n",hitrmsM_Vstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane Z Mean of Hit RMS\": \"%s\",\n",hitrmsM_Zstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane U RMS of Hit RMS\": \"%s\",\n",hitrmsS_Ustr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane V RMS of Hit RMS\": \"%s\",\n",hitrmsS_Vstr.Data());
-  fprintf(deadchanJsonFile,"      \"Plane Z RMS of Hit RMS\": \"%s\",\n",hitrmsS_Zstr.Data());
+  // Protection against empty strings
+  if(nhits_Ustr == "")
+    nhits_Ustr = "0,   0,   0,   0,   0,   0";
+  if(nhits_Vstr == "")
+    nhits_Vstr = "0,   0,   0,   0,   0,   0";
+  if(nhits_Zstr == "")
+    nhits_Zstr = "0,   0,   0,   0,   0,   0";
+
+  if(hitchargeM_Ustr == "")
+    hitchargeM_Ustr = "0,   0,   0,   0,   0,   0";
+  if(hitchargeM_Vstr == "")
+    hitchargeM_Vstr = "0,   0,   0,   0,   0,   0";
+  if(hitchargeM_Zstr == "")
+    hitchargeM_Zstr = "0,   0,   0,   0,   0,   0";
+
+  if(hitchargeS_Ustr == "")
+    hitchargeS_Ustr = "0,   0,   0,   0,   0,   0";
+  if(hitchargeS_Vstr == "")
+    hitchargeS_Vstr = "0,   0,   0,   0,   0,   0";
+  if(hitchargeS_Zstr == "")
+    hitchargeS_Zstr = "0,   0,   0,   0,   0,   0";
+
+  if(hitrmsM_Ustr == "")
+    hitrmsM_Ustr = "0,   0,   0,   0,   0,   0";
+  if(hitrmsM_Vstr == "")
+    hitrmsM_Vstr = "0,   0,   0,   0,   0,   0";
+  if(hitrmsM_Zstr == "")
+    hitrmsM_Zstr = "0,   0,   0,   0,   0,   0";
+
+  if(hitrmsS_Ustr == "")
+    hitrmsS_Ustr = "0,   0,   0,   0,   0,   0";
+  if(hitrmsS_Vstr == "")
+    hitrmsS_Vstr = "0,   0,   0,   0,   0,   0";
+  if(hitrmsS_Zstr == "")
+    hitrmsS_Zstr = "0,   0,   0,   0,   0,   0";
+
+  fprintf(deadchanJsonFile,"      \"Plane U Mean NHits\": \"%s\",\n",      nhits_Ustr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane V Mean NHits\": \"%s\",\n",      nhits_Vstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane Z Mean NHits\": \"%s\",\n",      nhits_Zstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane U Mean of Charge\": \"%s\",\n",  hitchargeM_Ustr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane V Mean of Charge\": \"%s\",\n",  hitchargeM_Vstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane Z Mean of Charge\": \"%s\",\n",  hitchargeM_Zstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane U RMS of Charge\": \"%s\",\n",   hitchargeS_Ustr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane V RMS of Charge\": \"%s\",\n",   hitchargeS_Vstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane Z RMS of Charge\": \"%s\",\n",   hitchargeS_Zstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane U Mean of Hit RMS\": \"%s\",\n", hitrmsM_Ustr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane V Mean of Hit RMS\": \"%s\",\n", hitrmsM_Vstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane Z Mean of Hit RMS\": \"%s\",\n", hitrmsM_Zstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane U RMS of Hit RMS\": \"%s\",\n",  hitrmsS_Ustr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane V RMS of Hit RMS\": \"%s\",\n",  hitrmsS_Vstr.Data());
+  fprintf(deadchanJsonFile,"      \"Plane Z RMS of Hit RMS\": \"%s\",\n",  hitrmsS_Zstr.Data());
 
   //fprintf(deadchanJsonFile,"   }\n");
   //fprintf(deadchanJsonFile,"]\n");
