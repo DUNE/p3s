@@ -47,6 +47,9 @@ services:
       "digitReader",
       "pd_adcPedestalFit", #def_adcPedestalFit
       "adcSampleFiller",
+      "pdsp_sticky_codes_ped",
+      "pdsp_adcMitigate",
+      "pdsp_timingMitigate",
       "adcVintageDeconvoluter",
       #"adcKeepAllSignalFinder"
       "adcThresholdSignalFinder"
@@ -74,6 +77,7 @@ physics:
     tpcrawdecoder:      @local::pdsp_tpc_raw_decoder
     timingrawdecoder:   @local::timing_raw_decoder
     ssprawdecoder:      @local::ssp_raw_decoder
+    ctbrawdecoder:      @local::ctb_raw_decoder
     caldata:            @local::producer_adcprep
     gaushit:            @local::dunefd_gaushitfinder
     reco3d:             @local::standard_spacepointsolver
@@ -89,7 +93,7 @@ physics:
     sps:                @local::proto_savesps
   }
 
-  produce: [ tpcrawdecoder, ssprawdecoder, timingrawdecoder ]
+  produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder, ctbrawdecoder ]
   reco: [ caldata, gaushit, reco3d, hitpdune ]
   analysis: [ pdspnearlineheader, tpcmonitor, sspmonitor, pdsphitmonitor, sps ]
   trigger_paths : [ produce, reco ]
