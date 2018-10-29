@@ -39,8 +39,12 @@ services:
       "digitReader",
       "pd_adcPedestalFit", #def_adcPedestalFit
       "adcSampleFiller",
+      "pdsp_sticky_codes_ped",
+      "pdsp_adcMitigate",
+      "pdsp_timingMitigate",
       "adcVintageDeconvoluter",
-      "adcDuneSignalFinder"
+      "adcThresholdSignalFinder"
+      #"adcDuneSignalFinder"
     ]
   }
 
@@ -78,7 +82,7 @@ physics:
     lifetime:           @local::proto_lifetime
   }
 
-  produce: [ tpcrawdecoder, ssprawdecoder, timingrawdecoder ]
+  produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder ]
   reco: [ caldata, gaushit, tjcosmic ]
   analysis: [ lifetime ]
   trigger_paths : [ produce, reco ]
