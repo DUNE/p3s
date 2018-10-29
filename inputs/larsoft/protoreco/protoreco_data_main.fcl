@@ -40,6 +40,9 @@ services:
       "digitReader",
       "pd_adcPedestalFit",
       "adcSampleFiller",
+      "pdsp_sticky_codes_ped",
+      "pdsp_adcMitigate",
+      "pdsp_timingMitigate",
       "adcVintageDeconvoluter",
       "adcThresholdSignalFinder"
     ]
@@ -91,7 +94,7 @@ physics:
     eventDetails:       @local::proto_ploteventdetails
   }
 
-  produce: [ tpcrawdecoder, ssprawdecoder, timingrawdecoder ]
+  produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder ]
   reco: [ caldata, gaushit, reco3d, hitpdune, linecluster, pandora, pandoraTrack, pandoraShower ]
   analysis: [ pdspnearlineheader, eventDetails ]
   trigger_paths : [ produce, reco ]
