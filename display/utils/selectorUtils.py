@@ -1,5 +1,7 @@
 from django import forms
 
+widgetSizes = {'run':'8', 'subrun':'4', 'dl':'3'}
+
 #########################################################    
 class boxSelector(forms.Form):
 
@@ -63,6 +65,31 @@ class twoFieldGeneric(forms.Form):
        self.fields[self.field2] = forms.CharField(required=False, initial=self.init2, label=self.label2)
 
     def getval(self, what):
+        return self.cleaned_data[what]
+   
+#########################################################
+#---
+class oneFieldGeneric(forms.Form):
+    def __init__(self, *args, **kwargs):
+       self.label	= kwargs.pop('label')
+       self.field	= kwargs.pop('field')
+       try:
+           self.init	= kwargs.pop('init')
+       except:
+           self.init	= ''
+
+
+       super(oneFieldGeneric, self).__init__(*args, **kwargs)
+
+       widgetSize = '10'
+       if(self.field in ('run', 'subrun', 'dl')): widgetSize = widgetSizes[self.field] 
+       
+       self.fields[self.field] = forms.CharField(required=False, initial=self.init, label=self.label, widget=forms.TextInput(attrs={'size': widgetSize}) )
+
+  
+    def getval(self, what):
+        # print(what, self[what].value()) # // diagnostics
+
         return self.cleaned_data[what]
    
 #---

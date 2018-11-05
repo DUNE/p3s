@@ -33,7 +33,7 @@ from purity.models			import pur
 from evdisp.models			import evdisp
 from .models				import monrun
 
-from utils.selectorUtils		import dropDownGeneric, boxSelector, twoFieldGeneric
+from utils.selectorUtils		import dropDownGeneric, boxSelector, twoFieldGeneric, oneFieldGeneric
 from utils.navbar			import TopTable, HomeTable, HomeBarData
 from utils.miscUtils 			import parseCommaDash
 from utils.tpcMap			import *
@@ -46,12 +46,12 @@ JOBTYPECHOICES	= [
     ('',		'All'),
     ('purity',		'Purity'),
     ('monitor',		'Monitor'),
-    ('femb',		'FEMB diagnostics'),
-    ('evdisp',		'2D Raw Event Display'),
-    ('apa3',		'2D Raw Display for APA3'),
+    ('femb',		'FEMB'),
+    ('evdisp',		'2D Raw EvDisp'),
+    ('apa3',		'2D APA3 Raw'),
     ('reco',		'proto Reco'),
     ('crt',		'CRT'),
-    ('beam',		'Beam Instrumentation'),
+    ('beam',		'Beam'),
 ]
 
 REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
@@ -323,6 +323,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     domain	= request.get_host()
 
+    run = ''
+    
     host	= request.GET.get('host','')
     port	= request.get_port()
     
@@ -332,12 +334,15 @@ def data_handler2(request, what, tbl, tblHeader, url):
     j_uuid	= request.GET.get('j_uuid','')
     jobtype	= request.GET.get('jobtype','')
     d_type	= request.GET.get('d_type','')
+    
     run		= request.GET.get('run','')
+    subrun	= request.GET.get('subrun','')
+    dl		= request.GET.get('dl','')
+    
     evnum	= request.GET.get('evnum','')
     refresh	= request.GET.get('refresh',None)
     showjob	= request.GET.get('showjob',None)
     tpc		= request.GET.get('tpc','')
-
 
 
     initJobType=jobtype
@@ -365,6 +370,19 @@ def data_handler2(request, what, tbl, tblHeader, url):
             if tpcSelector.is_valid(): q += tpcSelector.handleDropSelector()
             
         # ---
+        run1Selector	= oneFieldGeneric(request.POST, label="Run", field="run", init=run)
+        if run1Selector.is_valid(): run=run1Selector.getval("run")
+        if(run!=''): q+= 'run='+run+'&'
+
+        idxSelector = oneFieldGeneric(request.POST, label="File Idx", field="subrun", init=subrun)
+        if idxSelector.is_valid(): subrun=idxSelector.getval("subrun")
+        if(subrun!=''): q+= 'subrun='+subrun+'&'
+    
+        dlSelector = oneFieldGeneric(request.POST, label="dl", field="dl", init=dl)
+        if dlSelector.is_valid(): dl=dlSelector.getval("dl")
+        if(dl!=''): q+= 'dl='+dl+'&'
+        # ---
+        
         tsSelector = twoFieldGeneric(request.POST,
                                      label1=TSLABEL1, field1="tsmin", init1=tsmin,
                                      label2=TSLABEL2, field2="tsmax", init2=tsmax)
@@ -375,6 +393,7 @@ def data_handler2(request, what, tbl, tblHeader, url):
             if(tsmin!=''): q+= 'tsmin='+tsmin+'&'
             if(tsmax!=''): q+= 'tsmax='+tsmax+'&'
 
+    
         if(what=='evdisp'):
             juuidSelector = twoFieldGeneric(request.POST,
                                             label1="Job UUID",	field1="j_uuid",	init1=j_uuid,
@@ -386,16 +405,16 @@ def data_handler2(request, what, tbl, tblHeader, url):
                 d_type=juuidSelector.getval("d_type")
                 if(d_type!=''): q+= 'd_type='+d_type+'&'
                 
-            runSelector =  twoFieldGeneric(request.POST,
-                                           label1="Run",	field1="run",	init1=run,
-                                           label2="Event",	field2="event",	init2=evnum)
+            # runSelector =  twoFieldGeneric(request.POST,
+            #                                label1="Run",	field1="run",	init1=run,
+            #                                label2="Event",	field2="event",	init2=evnum)
             
-            if runSelector.is_valid():
-                run=runSelector.getval("run")
-                if(run!=''): q+= 'run='+run+'&'
+            # if runSelector.is_valid():
+            #     run=runSelector.getval("run")
+            #     if(run!=''): q+= 'run='+run+'&'
                 
-                event=runSelector.getval("event")
-                if(event!=''): q+= 'evnum='+event+'&'
+            #     event=runSelector.getval("event")
+            #     if(event!=''): q+= 'evnum='+event+'&'
                 
 
         return makeQuery(url, q) # We have built a query and will come to same page/view with the query parameters
@@ -417,7 +436,11 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
     if(jobtype!=''):	objs = objs.filter(jobtype=jobtype)
     if(d_type!=''):	objs = objs.filter(datatype=d_type)
+    
     if(run!=''):	objs = objs.filter(run=run)
+    if(subrun!=''):	objs = objs.filter(subrun=subrun)
+    if(dl!=''):		objs = objs.filter(dl=dl)
+    
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
     if(tpc!=''):	objs = objs.filter(tpc=tpc)
 
@@ -480,7 +503,18 @@ def data_handler2(request, what, tbl, tblHeader, url):
     if(what=='monrun'):
         typeSelector	= dropDownGeneric(initial={'jobtype':initJobType}, label='Type', choices = JOBTYPECHOICES, tag='jobtype')
         selectors.append(typeSelector)
-        
+
+    # ---
+    
+    run1Selector = oneFieldGeneric(label="Run", field="run", init=run)
+    selectors.append(run1Selector)
+    
+    idxSelector = oneFieldGeneric(label="File Idx", field="subrun", init=subrun)
+    selectors.append(idxSelector)
+
+    dlSelector = oneFieldGeneric(label="dl", field="dl", init=dl)
+    selectors.append(dlSelector)
+    
     # ---
     tsSelector = twoFieldGeneric(label1=TSLABEL1, field1="tsmin", init1=tsmin, label2=TSLABEL2, field2="tsmax", init2=tsmax)
     
@@ -494,14 +528,16 @@ def data_handler2(request, what, tbl, tblHeader, url):
         juuidSelector = twoFieldGeneric(label1="Job UUID", field1="j_uuid", init1=j_uuid, label2="Data Type", field2="d_type", init2=d_type)
         selectors.append(juuidSelector)
         
-        runSelector =  twoFieldGeneric(label1="Run",
-                                       field1="run",
-                                       init1=run,
-                                       label2="Event",
-                                       field2="event",
-                                       init2=evnum)
-        selectors.append(runSelector)
-
+        # runSelector =  twoFieldGeneric(label1="Run",
+        #                                field1="run",
+        #                                init1=run,
+        #                                label2="Event",
+        #                                field2="event",
+        #                                init2=evnum)
+        # selectors.append(runSelector)
+        
+ 
+    
     # -------------------------------------------------------------
     u1, u2, r, e, g = None, None, None, None, None
     
