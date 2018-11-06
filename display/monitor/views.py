@@ -23,6 +23,8 @@ from	django_tables2			import RequestConfig
 from	django_tables2.utils		import A
 
 import datetime
+from datetime				import timedelta
+
 import random
 import json
 # import pytz
@@ -323,7 +325,9 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     domain	= request.get_host()
 
-    run = ''
+    # tMin = timezone.now() - timedelta(seconds=(3600*48))
+    # tMin_str = format(tMin, '%Y-%m-%d %H:%M:%S')
+
     
     host	= request.GET.get('host','')
     port	= request.get_port()
@@ -427,11 +431,21 @@ def data_handler2(request, what, tbl, tblHeader, url):
 
     now		= datetime.datetime.now().strftime('%x %X')+' '+timezone.get_current_timezone_name() # beautify later
     d		= dict(domain=domain, time=str(now))
-#    objs	= eval(what).objects.order_by('-pk').all()
-    objs	= eval(what).objects.all()
+    objs	= eval(what).objects.all() # objs = eval(what).objects.order_by('-pk').all()
 
     if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin)
+    
 
+    maxId = 0
+    idMin = 0
+    try:
+        maxId = objs.aggregate(Max('id'))
+        idMin = maxId['id__max']-settings.MAXMON
+    except:
+        pass
+    
+    if tsmin=='' and idMin >=0: objs = objs.filter(pk__gt=idMin)
+    
     if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
     if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
     if(jobtype!=''):	objs = objs.filter(jobtype=jobtype)
@@ -443,7 +457,6 @@ def data_handler2(request, what, tbl, tblHeader, url):
     
     if(evnum!=''):	objs = objs.filter(evnum=evnum)
     if(tpc!=''):	objs = objs.filter(tpc=tpc)
-
 
     #-------------
     # Initialize the table object, fill essential info in the dictionary for the template (d)

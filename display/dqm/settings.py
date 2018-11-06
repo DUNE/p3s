@@ -20,6 +20,9 @@ from parameters	import LIMITS, CHARTS
 # -mxp- common time format
 TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
+# max default number of the monitor items to display:
+MAXMON		= 1000
+
 DIRPATH		= SITE['dirpath']
 DQM_DOMAIN	= SITE['dqm_domain']
 DQM_HOST	= SITE['dqm_host']
