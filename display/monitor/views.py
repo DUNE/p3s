@@ -134,6 +134,13 @@ def monchart(request):
         myDict = {}
 
         objs = monrun.objects.filter(jobtype='monitor').order_by('-pk')
+
+
+        if tsmin=='':
+            tMin = timezone.now() - timedelta(seconds=(3600*24*settings.MAXMONDAYS))
+            tMin_str = format(tMin, '%Y-%m-%d %H:%M:%S')
+            tsmin = tMin_str
+
         if(tsmin!=''):  objs = objs.filter(ts__gte=tsmin)
         if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
 
@@ -211,7 +218,8 @@ def monchart(request):
     d['navtable']	= TopTable(domain)
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
     d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
-
+    d['message']	= 'If data are missing, try modifying the time window'
+    
     return render(request, 'purity_chart1.html', d)
 
 #########################################################
@@ -260,6 +268,11 @@ def puritychart(request, what):
     lowerLimit			= settings.LIMITS[what]['min']
     
     # select by TPC and the time range
+    if tsmin=='':
+        tMin = timezone.now() - timedelta(seconds=(3600*24*settings.MAXMONDAYS))
+        tMin_str = format(tMin, '%Y-%m-%d %H:%M:%S')
+        tsmin = tMin_str
+    
     for tpcNum in tpcOrder:
         objs = pur.objects.order_by('-pk').filter(tpc=tpcNum)
         if(tsmin!=''):	objs = objs.filter(ts__gte=tsmin)
@@ -306,6 +319,8 @@ def puritychart(request, what):
     d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
     d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
     d['vMinmax']	= [settings.CHARTS[what]['min'], settings.CHARTS[what]['max']]
+
+    d['message']	= 'If data are missing, try modifying the time window'
     
     return render(request, 'purity_chart2.html', d)
 
@@ -433,18 +448,25 @@ def data_handler2(request, what, tbl, tblHeader, url):
     d		= dict(domain=domain, time=str(now))
     objs	= eval(what).objects.all() # objs = eval(what).objects.order_by('-pk').all()
 
+
+
+    if tsmin=='':
+        tMin = timezone.now() - timedelta(seconds=(3600*24*settings.MAXMONDAYS))
+        tMin_str = format(tMin, '%Y-%m-%d %H:%M:%S')
+        tsmin = tMin_str
+    
     if(tsmin!=''):	objs = eval(what).objects.filter(ts__gte=tsmin)
     
 
-    maxId = 0
-    idMin = 0
-    try:
-        maxId = objs.aggregate(Max('id'))
-        idMin = maxId['id__max']-settings.MAXMON
-    except:
-        pass
+    # maxId = 0
+    # idMin = 0
+    # try:
+    #     maxId = objs.aggregate(Max('id'))
+    #     idMin = maxId['id__max']-settings.MAXMON
+    # except:
+    #     pass
     
-    if tsmin=='' and idMin >=0: objs = objs.filter(pk__gt=idMin)
+    # if tsmin=='' and idMin >=0: objs = objs.filter(pk__gt=idMin)
     
     if(tsmax!=''):	objs = objs.filter(ts__lte=tsmax)
     if(j_uuid!=''):	objs = objs.filter(j_uuid=j_uuid)
@@ -462,15 +484,8 @@ def data_handler2(request, what, tbl, tblHeader, url):
     # Initialize the table object, fill essential info in the dictionary for the template (d)
     t = None # placeholder for the table
 
-    if(len(objs)==0):
-        d['navtable']	= TopTable(domain)
-        d['hometable']	= HomeTable(p3s_domain, dqm_domain, domain, port)
-        d['dqmHome']	= HomeBarData(p3s_domain, dqm_domain, domain, port)[0]['col3']
-        d['message']	= 'No objects were found according to the selected citeria'
+    if(len(objs)==0): d['message'] = 'No objects for the selected citeria. Try modifying the TIME WINDOW or other parameters.'
 
-        return render(request, 'unitable2.html', d)
-
-#        return HttpResponse('No objects found according to your citeria')
     
     if(tbl=='RunTable'): # special case
         RunData = []
@@ -493,7 +508,9 @@ def data_handler2(request, what, tbl, tblHeader, url):
     
     RequestConfig(request, paginate={'per_page': int(perpage)}).configure(t)
 
-    d['table']	= t
+
+    d['table'] = t
+        
     d['N']	= str(len(objs))
     d['domain']	= domain
     

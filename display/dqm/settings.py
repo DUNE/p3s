@@ -22,6 +22,7 @@ TIMEFORMAT = '%Y%m%d %H:%M:%S'
 
 # max default number of the monitor items to display:
 MAXMON		= 1000
+MAXMONDAYS	= 3
 
 DIRPATH		= SITE['dirpath']
 DQM_DOMAIN	= SITE['dqm_domain']
