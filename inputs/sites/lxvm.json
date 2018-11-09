@@ -1,1 +1,1 @@
-{"name":"lxvm", "server":"p3s-web:80", "pilots":350, "pilotcycles":0, "pilotperiod": 40, "pilotbeat": 100, "env":{"P3S_SITE":"lxvm", "P3S_SERVER":"p3s-web:80","P3S_DIRPATH":"/eos/experiment/neutplatform/protodune/np04tier0/p3s"}}
+{"name":"lxvm", "server":"p3s-web:80", "pilots":150, "pilotcycles":0, "pilotperiod": 40, "pilotbeat": 100, "env":{"P3S_SITE":"lxvm", "P3S_SERVER":"p3s-web:80","P3S_DIRPATH":"/eos/experiment/neutplatform/protodune/np04tier0/p3s"}}
