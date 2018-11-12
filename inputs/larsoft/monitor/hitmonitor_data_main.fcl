@@ -50,6 +50,7 @@ services:
       "pdsp_sticky_codes_ped",
       "pdsp_adcMitigate",
       "pdsp_timingMitigate",
+      "adcCorrectUndershoot",
       "adcVintageDeconvoluter",
       #"adcKeepAllSignalFinder"
       "adcThresholdSignalFinder"
