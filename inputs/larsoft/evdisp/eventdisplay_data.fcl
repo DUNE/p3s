@@ -62,6 +62,7 @@ physics:
       LogLevel: 2
       DoAssns: false
       DoGroups: false
+      ChannelRanges:      []
       BeamEventLabel:     ""
       IntermediateStates: []
       KeepChannelBegin:    0
