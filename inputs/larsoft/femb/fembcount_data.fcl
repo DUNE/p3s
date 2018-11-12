@@ -33,7 +33,8 @@ services:
     AdcChannelToolNames: [
       "digitReader",
       "pd_evtviewNfemb",
-      "pd_tpsviewNfemb"
+      "pd_evtviewNfembByTps"
+      #"pd_tpsviewNfemb"
     ]
   }
 }
@@ -51,6 +52,7 @@ physics:
       LogLevel: 2
       DoAssns: false
       DoGroups: false
+      ChannelRanges:      []
       BeamEventLabel:     ""
       IntermediateStates: []
       KeepChannelBegin:    0
