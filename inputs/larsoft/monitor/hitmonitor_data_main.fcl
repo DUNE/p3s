@@ -58,8 +58,8 @@ services:
   }
 }
 
-services.DetectorPropertiesService.NumberTimeSamples: 6000
-services.DetectorPropertiesService.ReadOutWindowSize: 6000
+services.DetectorPropertiesService.NumberTimeSamples: 15000
+services.DetectorPropertiesService.ReadOutWindowSize: 15000
 
 #source is now a root file
 source:
@@ -75,10 +75,12 @@ physics:
 {
   producers:
   {
-    tpcrawdecoder:      @local::pdsp_tpc_raw_decoder
     timingrawdecoder:   @local::timing_raw_decoder
     ssprawdecoder:      @local::ssp_raw_decoder
+    tpcrawdecoder:      @local::pdsp_tpc_raw_decoder
+    crtrawdecoder:      @local::crt_raw_decoder
     ctbrawdecoder:      @local::ctb_raw_decoder
+    #beamevent:          @local::proto_beamevent
     caldata:            @local::producer_adcprep
     gaushit:            @local::dunefd_gaushitfinder
     reco3d:             @local::standard_spacepointsolver
@@ -94,7 +96,7 @@ physics:
     sps:                @local::proto_savesps
   }
 
-  produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder, ctbrawdecoder ]
+  produce: [ timingrawdecoder, ssprawdecoder, tpcrawdecoder, crtrawdecoder, ctbrawdecoder ]
   reco: [ caldata, gaushit, reco3d, hitpdune ]
   analysis: [ pdspnearlineheader, tpcmonitor, sspmonitor, pdsphitmonitor, sps ]
   trigger_paths : [ produce, reco ]
