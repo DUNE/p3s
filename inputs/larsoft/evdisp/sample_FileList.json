@@ -1,0 +1,22 @@
+[
+    {
+        "Category": "Raw 2D Event Display",
+        "Files": {
+            "Raw 2D Event Display": "adcraw_tpp0u_run005863_evt012678.png,adcraw_tpp0v_run005863_evt012678.png,adcraw_tpp0z_run00586
+3_evt012678.png,adcraw_tpp1u_run005863_evt012678.png,adcraw_tpp1v_run005863_evt012678.png,adcraw_tpp1z_run005863_evt012678.png,adcra
+w_tpp2u_run005863_evt012678.png,adcraw_tpp2v_run005863_evt012678.png,adcraw_tpp2z_run005863_evt012678.png,adcraw_tpp3u_run005863_evt
+012678.png,adcraw_tpp3v_run005863_evt012678.png,adcraw_tpp3z_run005863_evt012678.png,adcraw_tpp4u_run005863_evt012678.png,adcraw_tpp
+4v_run005863_evt012678.png,adcraw_tpp4z_run005863_evt012678.png,adcraw_tpp5u_run005863_evt012678.png,adcraw_tpp5v_run005863_evt01267
+8.png,adcraw_tpp5z_run005863_evt012678.png",
+            "ADC Pedestals": "chmet_ped_tps0_run005863_evt012678.png,chmet_ped_tps1_run005863_evt012678.png,chmet_ped_tps2_run005863
+_evt012678.png,chmet_ped_tps3_run005863_evt012678.png,chmet_ped_tps4_run005863_evt012678.png,chmet_ped_tps5_run005863_evt012678.png"
+,
+            "ADC pedestal peak bin excess": "chmet_pedexc_tps0_run005863_evt012678.png,chmet_pedexc_tps1_run005863_evt012678.png,chm
+et_pedexc_tps2_run005863_evt012678.png,chmet_pedexc_tps3_run005863_evt012678.png,chmet_pedexc_tps4_run005863_evt012678.png,chmet_ped
+exc_tps5_run005863_evt012678.png",
+            "ADC pedestal out-of-range fraction": "chmet_pedorf_tps0_run005863_evt012678.png,chmet_pedorf_tps1_run005863_evt012678.p
+ng,chmet_pedorf_tps2_run005863_evt012678.png,chmet_pedorf_tps3_run005863_evt012678.png,chmet_pedorf_tps4_run005863_evt012678.png,chm
+et_pedorf_tps5_run005863_evt012678.png"
+        }
+    }
+]
