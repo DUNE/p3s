@@ -140,6 +140,13 @@ if(auto):
         files = []
         for f in L:
             if (f.startswith(k) and f.endswith(".png")): files.append(f)
+        if 'adcraw_tpp' in k:
+            filesUVZ = []
+            for letter in ('u','v','z'):
+                for ff in files:
+                    if letter+'_run' in ff: filesUVZ.append(ff)
+            files=filesUVZ
+            
         if (len(files)>0): filesDict[fT[k]] = ",".join(files)
         
     output['Category']	= categories[mtype]
