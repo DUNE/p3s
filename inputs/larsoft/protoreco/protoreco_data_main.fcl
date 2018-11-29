@@ -50,8 +50,8 @@ services:
   }
 }
 
-services.DetectorPropertiesService.NumberTimeSamples: 15000
-services.DetectorPropertiesService.ReadOutWindowSize: 15000
+services.DetectorPropertiesService.NumberTimeSamples: 6000
+services.DetectorPropertiesService.ReadOutWindowSize: 6000
 services.DetectorPropertiesService.Efield: [ 0.5, 0.77894737, 1.7263158 ]
 
 #source is now a root file
