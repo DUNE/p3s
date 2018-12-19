@@ -15,6 +15,7 @@ class Ncolumns(object):
 
 def NavBarData(domain=''):
     links = (
+        '<a href="http://'+domain+'/Monitor/PRM">PRM</a>',
         '<a href="http://'+domain+'/monitor/puritytable">Purity<br/>Table</a>',
         '<a href="http://'+domain+'/monitor/puritychart">Purity<br/>Charts</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=purity">Purity<br/>Drift</a>',
@@ -44,7 +45,7 @@ class NavTable(tables.Table):
         self.Ncolumns = len(args[0][0].keys())
         super(NavTable, self).__init__(*args,**kwargs)
 
-    for i in range(12): locals()['col'+str(i+1)] = tables.Column()
+    for i in range(13): locals()['col'+str(i+1)] = tables.Column()
     
     def set_site(self, site=''):
         self.site=site
