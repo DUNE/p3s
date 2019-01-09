@@ -13,6 +13,7 @@ class monrun(models.Model):
     j_uuid	= models.CharField(max_length=36, default='',	verbose_name='Produced by job')
     ts		= models.DateTimeField(blank=True,null=True,	verbose_name='Timestamp')
     jobtype	= models.CharField(max_length=16, default='',	verbose_name='Job Type')
+    directory	= models.TextField(default='',			verbose_name='Directory')
  
     # ---
     @classmethod
@@ -32,7 +33,7 @@ class monrun(models.Model):
         fList, row, rows, cnt = files.split(','), [], [], 0
 
         for filename in fList:
-            row.append('http://%s/%s/%s/%s/%s' % (domain, dqmURL, '', j_uuid, filename))
+            row.append('http://%s/%s/%s/%s/%s' % (domain, dqmURL, self.directory, j_uuid, filename))
             cnt+=1
             if cnt==6:
                 cnt=0
