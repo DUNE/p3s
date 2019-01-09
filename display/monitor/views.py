@@ -50,10 +50,10 @@ JOBTYPECHOICES	= [
     ('monitor',		'Monitor'),
     ('femb',		'FEMB'),
     ('evdisp',		'2D Raw EvDisp'),
-    ('apa3',		'2D APA3 Raw'),
+#    ('apa3',		'2D APA3 Raw'),
     ('reco',		'proto Reco'),
-    ('crt',		'CRT'),
-    ('beam',		'Beam'),
+#    ('crt',		'CRT'),
+#    ('beam',		'Beam'),
 ]
 
 REFRESHCHOICES	= [('', 'Never'),	('10', '10s'),	('30', '30s'),	('60','1min'),	('120', '2min'),  ]
