@@ -27,12 +27,12 @@ class monrun(models.Model):
         link = mark_safe(pattern % (domain, run, subrun, jobtype, run, subrun, jobtype ))
         return link
     # ---
-    @classmethod
+    # @classmethod
     def autoMonImgURLs(self, domain, dqmURL, j_uuid, files):
         fList, row, rows, cnt = files.split(','), [], [], 0
 
         for filename in fList:
-            row.append('http://%s/%s/%s/%s' % (domain, dqmURL, j_uuid, filename))
+            row.append('http://%s/%s/%s/%s/%s' % (domain, dqmURL, '', j_uuid, filename))
             cnt+=1
             if cnt==6:
                 cnt=0

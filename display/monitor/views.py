@@ -698,6 +698,8 @@ def automon(request):
         return HttpResponse('not found')
 
     entry = None
+    # Note that "entry" means a 'monrun' object selected according to the supplied criteria
+
     if(jobtype==''):
         entry= entries[0]
     else:
@@ -708,11 +710,11 @@ def automon(request):
                 try:
                     entry = entries.filter(jobtype=jobtype).filter(dl=dl)[0]
                 except:
-                    return HttpResponse('not found')
+                    return HttpResponse('monrun object not found')
         except:
-            return HttpResponse('not found')
+            return HttpResponse('monrun not found')
 
-    # Create a dictionary describing files from JSON we just located
+    # Create a dictionary describing files from JSON contained in the entry we just located
     description = json.loads(entry.description, object_pairs_hook=OrderedDict)
     
     url2images, p3s_domain, dqm_domain, dqm_host, p3s_users, p3s_jobtypes = None, None, None, None, None, None
@@ -745,7 +747,7 @@ def automon(request):
         if(files is None): return HttpResponse('error')
 
         d['tblHeader'] = d['tblHeader']+', category: "'+category+'", subcategory: "'+filetype+'"'
-        d['rows'] = monrun.autoMonImgURLs(domain, url2images, j_uuid, files)
+        d['rows'] = entry.autoMonImgURLs(domain, url2images, j_uuid, files)
         d['backLink'] = monrun.backMonLink(domain, run, subrun, jobtype)
         return render(request, 'unitable3.html', d)
     
