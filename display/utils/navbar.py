@@ -24,8 +24,8 @@ def NavBarData(domain=''):
         '<a href="http://'+domain+'/monitor/monrun?jobtype=femb">FEMB</a>',
         '<a href="http://'+domain+'/monitor/monrun?jobtype=evdisp">2D Raw<br/>Event Display</a>',
 #        '<a href="http://'+domain+'/monitor/monrun?jobtype=apa3">APA3</a>',
-#        '<a href="http://'+domain+'/monitor/monrun?jobtype=reco">Reco</a>',
-        '<a href="http://'+domain+'/monitor/monrun?jobtype=crt">CRT</a>',
+        '<a href="http://'+domain+'/monitor/monrun?jobtype=reco">Reco</a>',
+#        '<a href="http://'+domain+'/monitor/monrun?jobtype=crt">CRT</a>',
 #        '<a href="http://'+domain+'/monitor/monrun?jobtype=beam">Beam</a>',
         '<a href="http://'+domain+'/monitor/monrun">All Entries</a>'
         )
