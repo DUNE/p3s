@@ -646,7 +646,7 @@ def move(request):
     for pk in pklist:
         try:
             obj = monrun.objects.get(pk=int(pk))
-            # obj.delete()
+            obj.directory = moveto
             output.append(obj.j_uuid)
         except:
             pass
