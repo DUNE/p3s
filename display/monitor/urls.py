@@ -20,6 +20,9 @@ urlpatterns = [
 
     url(r'^addmon',	views.addmon,  	name='addmon'),
     url(r'^delmon',	views.delmon,  	name='delmon'),
+    url(r'^move',	views.move,  	name='move'),
+
+    
     url(r'^automon',	views.automon, 	name='automon'),
     
 

@@ -630,6 +630,37 @@ def addmon(request):
     m.save()
 
     return HttpResponse('Adding mon entry for run '+str(m.run)+', subrun '+str(m.subrun)+', dl '+str(m.dl))
+
+#########################################################    
+@csrf_exempt
+def move(request):
+    post	= request.POST
+    pk		= post.get('pk', '')
+    moveto	= post.get('moveto', '')
+
+    # if(run=='' and pk==''): return HttpResponse('Did not delete mon entries, run/ID unspecified')
+    
+    # if(run=='ALL' or pk=='ALL'):
+    #     try:
+    #         obj = monrun.objects.all().delete()
+    #         return HttpResponse('Deleted ALL mon entries')
+    #     except:
+    #         return HttpResponse('Failed to delete ALL mon entries ')
+       
+    # if(pk!=''):
+    #     pklist = parseCommaDash(pk)
+    #     output = ''
+    #     for pk in pklist:
+    #         try:
+    #             obj = monrun.objects.get(pk=int(pk))
+    #             obj.delete()
+    #             output+='Deleted mon entry ID '+str(pk)+'\n'
+    #         except:
+    #             output+='Failed to delete mon entry ID '+str(pk)+'\n'
+            
+    return HttpResponse('testing')
+
+
 #########################################################    
 @csrf_exempt
 def delmon(request):

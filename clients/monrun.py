@@ -47,6 +47,7 @@ parser.add_argument("-a", "--auto",			help="parse the current directory automati
 parser.add_argument("-s", "--summary",	type=str,	help="summary file name (JSON)",			default='')
 parser.add_argument("-d", "--descr",	type=str,	help="description file name (JSON)",			default='')
 parser.add_argument("-u", "--uuid",	type=str,	help="job uuid to delete or to register (override)",	default='')
+parser.add_argument("-m", "--moveto",	type=str,	help="directory to move the results to, from cwd",	default='')
 parser.add_argument("-j", "--jobtype",	type=str,	help="job type (which produced these data",		default='')
 parser.add_argument("-i", "--id",	type=str,	help="id of the entry to be adjusted or deleted (pk)", 	default='')
 parser.add_argument("-r", "--run",	type=str,	help="run number",					default='')
@@ -63,6 +64,7 @@ summary		= args.summary
 description	= args.descr
 
 job_uuid	= args.uuid
+moveto		= args.moveto
 jobtype		= args.jobtype
 server		= args.server
 
@@ -82,6 +84,10 @@ API  = serverAPI(server=server)
 
 d = {}    
 
+
+# ---
+# DELETION
+# ---
 if(delete):
     if(run=='' and pk==''):
         print('Error: you need to specify either the run number or ID to delete entries. Exiting...')
@@ -105,7 +111,25 @@ if(delete):
     exit(0)
 
 # ---
+# MIGRATION
+# ---
 
+if(moveto!=''):
+    if(pk==''):
+        print('Need item IDs (pk)  in order to move them, exiting...')
+        exit(-1)
+
+    d['pk']	= pk
+    d['moveto']	= moveto
+    
+    resp = API.post2server('monitor', 'move', d)
+    if(verb>0): print(resp)
+    
+    exit(0)
+
+# ---
+# REGISTRAION
+# ---
 # By now we assume we are to perform registration of
 # a "monitor run" on the server. First check if there is
 # a description, otherwise it's pointless:

@@ -95,6 +95,7 @@ class serverAPI(dict):
         self['monitor']	= {
             'addmon':	server+'monitor/addmon',
             'delmon':	server+'monitor/delmon',
+            'move':	server+'monitor/move',
         }
 
 
