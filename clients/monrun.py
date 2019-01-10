@@ -32,8 +32,9 @@ from collections import OrderedDict
 
 from serverAPI		import serverAPI
 from clientenv		import clientenv
-from clientUtils	import takeJson
 
+from clientUtils	import takeJson
+from clientUtils	import parseCommaDash
 
 #########################################################
 settings.configure()
@@ -120,6 +121,12 @@ if(moveto!=''):
         print('Need item IDs (pk)  in order to move them, exiting...')
         exit(-1)
 
+
+    pks = parseCommaDash(pk)
+    if(verb>0):
+        print(pks)
+        exit(0)
+    
     d['pk']	= pk
     d['moveto']	= moveto
     
