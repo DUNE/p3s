@@ -126,8 +126,14 @@ if(moveto!=''):
     resp = API.post2server('monitor', 'move', d)
     if(verb>0): print(resp)
 
-    shutil.move('testdir','2019')
-    
+    directories = resp.split(',')
+    for directory in directories:
+        try:
+            shutil.move(directory, moveto)
+            if(verb>0): print(directory, 'moved to', moveto)
+        except:
+            if(verb>0): print(directory, 'failed to be moved to', moveto)
+            
     exit(0)
 
 # ---
