@@ -647,6 +647,7 @@ def move(request):
         try:
             obj = monrun.objects.get(pk=int(pk))
             obj.directory = moveto
+            obj.save()
             output.append(obj.j_uuid)
         except:
             pass
