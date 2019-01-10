@@ -125,9 +125,8 @@ if(moveto!=''):
     pks = parseCommaDash(pk)
     if(verb>0):
         print(pks)
-        exit(0)
     
-    d['pk']	= pk
+    d['pk']	= pks
     d['moveto']	= moveto
     
     resp = API.post2server('monitor', 'move', d)
