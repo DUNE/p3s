@@ -647,7 +647,7 @@ def move(request):
         try:
             obj = monrun.objects.get(pk=int(pk))
             # obj.delete()
-            output.append(pk)
+            output.append(obj.j_uuid)
         except:
             pass
 
