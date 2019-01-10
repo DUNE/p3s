@@ -26,6 +26,7 @@ import json
 import csv
 
 import os
+import shutil
 
 from collections import OrderedDict
 
@@ -124,6 +125,8 @@ if(moveto!=''):
     
     resp = API.post2server('monitor', 'move', d)
     if(verb>0): print(resp)
+
+    shutil.move('testdir','2019')
     
     exit(0)
 
