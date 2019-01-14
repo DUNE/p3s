@@ -679,8 +679,8 @@ def delmon(request):
         for pk in pklist:
             try:
                 obj = monrun.objects.get(pk=int(pk))
+                output+=(obj.j_uuid+' ')
                 obj.delete()
-                output+='Deleted mon entry ID '+str(pk)+'\n'
             except:
                 output+='Failed to delete mon entry ID '+str(pk)+'\n'
             
