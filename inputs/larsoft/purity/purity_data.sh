@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export P3S_HOME=/afs/cern.ch/user/n/np04dqm/public/p3s/p3s
+source $P3S_HOME/configuration/lxvm_np04dqm.sh > /dev/null
 
 if [ -z ${P3S_LAR_SETUP+x} ];
 then
