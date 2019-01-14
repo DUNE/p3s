@@ -75,7 +75,7 @@ echo ---
 
 echo MSG finished python setup
 
-export DESTINATION=$P3S_DATA/$P3S_EVDISP_DIR/$P3S_JOB_UUID
+export DESTINATION=$P3S_DATA/$P3S_EVDISP_DIR/$DQM_SUBDIR/$P3S_JOB_UUID
 
 echo making $DESTINATION
 mkdir $DESTINATION
