@@ -19,7 +19,7 @@ class monrun(models.Model):
     j_uuid	= models.CharField(max_length=36, default='',	verbose_name='Produced by job')
     ts		= models.DateTimeField(blank=True,null=True,	verbose_name='Timestamp')
     jobtype	= models.CharField(max_length=16, default='',	verbose_name='Job Type')
-    directory	= models.TextField(default='2019_01',		verbose_name='Directory')
+    directory	= models.TextField(default='2019_1',		verbose_name='Directory')
     # The above default value is a temporary solution but a workable one.
     # We don't cut new directories often,
     # so having this in the code is not too burdensome
