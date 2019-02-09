@@ -4,3 +4,8 @@ for o in objects.filter(ts_lhb__gte=yest):
     print(o.ts_lhb)
 ###############################################
 t = datetime.strptime("0001:023:05:20:25","%Y:%j:%H:%M:%S")
+
+
+# Time Since File Creation
+time.mktime(datetime.now().timetuple())-os.path.getctime("foo")
+
