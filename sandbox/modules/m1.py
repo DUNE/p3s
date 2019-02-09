@@ -1,7 +1,9 @@
 #!/usr/bin/env python3.5
 
-#from .test import foo
-from test import *
-from foo import X
-print(X)
+import test.foo
+
+if __name__ == '__main__':
+    print(test.foo.X)
+
+    
 exit(0)
