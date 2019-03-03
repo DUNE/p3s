@@ -48,6 +48,7 @@ parser.add_argument("-D", "--delete", 			help="deletes an entry. Needs id or run
 parser.add_argument("-a", "--auto",			help="parse the current directory automatically",	action='store_true')
 parser.add_argument("-s", "--summary",	type=str,	help="summary file name (JSON)",			default='')
 parser.add_argument("-d", "--descr",	type=str,	help="description file name (JSON)",			default='')
+parser.add_argument("-b", "--subdir",	type=str,	help="optional subdir to place the data in",		default='')
 parser.add_argument("-u", "--uuid",	type=str,	help="job uuid to delete or to register (override)",	default='')
 parser.add_argument("-m", "--moveto",	type=str,	help="directory to move the results to, from cwd",	default='')
 parser.add_argument("-j", "--jobtype",	type=str,	help="job type (which produced these data",		default='')
@@ -64,6 +65,7 @@ args = parser.parse_args()
 
 summary		= args.summary
 description	= args.descr
+subdir		= args.subdir
 
 job_uuid	= args.uuid
 moveto		= args.moveto
@@ -216,6 +218,7 @@ d['run']	= run
 d['subrun']	= subrun
 d['dl']		= dl
 d['jobtype']	= jobtype
+d['subdir']	= subdir
 
 if(timestamp==''):
     d['ts']	= str(timezone.now())

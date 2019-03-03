@@ -626,10 +626,14 @@ def addmon(request):
     m.j_uuid		= post.get('j_uuid',	'')
     m.jobtype		= post.get('jobtype',	'')
     m.ts		= post.get('ts',	timezone.now())
+
+    subdir		= post.get('subdir',	'')
+    if(subdir!=''):
+        m.directory = subdir
     
     m.save()
 
-    return HttpResponse('Adding mon entry for run '+str(m.run)+', subrun '+str(m.subrun)+', dl '+str(m.dl))
+    return HttpResponse('Adding mon entry for run '+str(m.run)+', subrun '+str(m.subrun)+', dl '+str(m.dl)+', subdir '+m.directory)
 
 #########################################################    
 @csrf_exempt
