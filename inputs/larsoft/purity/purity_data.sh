@@ -136,7 +136,7 @@ fi
 
 
 echo MSG Found the file descriptors: $descriptors
-$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j purity
+$P3S_HOME/clients/monrun.py -s $summary -d $descriptors -j purity -b $DQM_SUBDIR
 echo MSG finished registration
 
 export lfile=`ls Lifetime*.txt`
