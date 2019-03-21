@@ -34,7 +34,7 @@ env | grep P3S
 # 6. DQM
 export DQM_DATA_LIFE=1200 # in minutes, e.g. 24 hrs will be 1440
 export DQM_SERVER="http://p3s-content:80/"
-export DQM_SUBDIR="2019_1"
+export DQM_SUBDIR="2019_2" # switched from 1 to 2 on 20190321 at 4:37 EST
 env | grep DQM
 
 # Set DISPLAY to a dummy value so that ROOT does not print warnings at CERN.
