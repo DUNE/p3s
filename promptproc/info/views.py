@@ -266,7 +266,11 @@ def index(request):
         status = 'FAIL'
         action = mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual#Checking_the_HTCondor_queue">Check HTCondor Queue</a>')
         
-    paramData.append({'parameter':'Total Pilots','nominal':nominalPilots,'actual':actualPilots, 'status':status, 'action':action})
+    paramData.append({'parameter':'Total Pilots',
+                      'nominal':nominalPilots,
+                      'actual':actualPilots,
+                      'status':status,
+                      'action':action})
     
     nominalLife		= ourSite.pilotlife
     actualLife		= ourSite.pilotlife
@@ -286,8 +290,18 @@ def index(request):
         status = 'FAIL'
         action = mark_safe('<a href="https://wiki.dunescience.org/wiki/DQM_Shifter_Manual#Pilot_Lifetime">See the manual at this link, possibly create a service ticket</a>')
         
-    paramData.append({'parameter':'Pilot Lifetime : Bad Pilots','nominal':nominalLife,'actual':(str(actualLife)+':'+str(countBad)), 'status':status, 'action':action})
+    paramData.append({'parameter':'Pilot Lifetime : Bad Pilots',
+                      'nominal':nominalLife,
+                      'actual':(str(actualLife)+':'+str(countBad)),
+                      'status':status, 'action':action})
     
+
+    paramData.append({'parameter':'xrdcp benchmark',
+                      'nominal':'<6min',
+                      'actual':'1m',
+                      'status':'OK',
+                      'action':'-'})
+
     paramtable = ParamTable(paramData)
     
     return render(request, 'index.html',
