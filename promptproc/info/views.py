@@ -295,10 +295,11 @@ def index(request):
                       'actual':(str(actualLife)+':'+str(countBad)),
                       'status':status, 'action':action})
     
-
+    xrd= service.objects.filter(name='xrdcheck').order_by('-id')[0]
+    xrdt=xrd.info
     paramData.append({'parameter':'xrdcp benchmark',
                       'nominal':'<6min',
-                      'actual':'1m',
+                      'actual':'Latest: '+xrdt,
                       'status':'OK',
                       'action':'-'})
 
