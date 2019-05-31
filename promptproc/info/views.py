@@ -306,6 +306,15 @@ def index(request):
                       'status':status,
                       'action':'-'})
 
+    inputsize= service.objects.filter(name='inputsize').order_by('-id')[0]
+    iSize=inputsize.info
+    status='OK'
+    paramData.append({'parameter':'Inbox size',
+                      'nominal':'<1PB',
+                      'actual':'Latest: '+iSize,
+                      'status':status,
+                      'action':'-'})
+
     paramtable = ParamTable(paramData)
     
     return render(request, 'index.html',
