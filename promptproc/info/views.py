@@ -295,16 +295,16 @@ def index(request):
                       'actual':(str(actualLife)+':'+str(countBad)),
                       'status':status, 'action':action})
     
-    xrd= service.objects.filter(name='xrdcheck').order_by('-id')[0]
-    xrdt=xrd.info
-    xrdm=xrdt.split('m')[0]
-    status='OK'
-    if(int(xrdm)>10): status='FAIL'
-    paramData.append({'parameter':'xrdcp benchmark',
-                      'nominal':'<10min',
-                      'actual':'Latest: '+xrdm+'min',
-                      'status':status,
-                      'action':'-'})
+#    xrd= service.objects.filter(name='xrdcheck').order_by('-id')[0]
+#    xrdt=xrd.info
+#    xrdm=xrdt.split('m')[0]
+#    status='OK'
+#    if(int(xrdm)>10): status='FAIL'
+#    paramData.append({'parameter':'xrdcp benchmark',
+#                      'nominal':'<10min',
+#                      'actual':'Latest: '+xrdm+'min',
+#                      'status':status,
+#                      'action':'-'})
 
     inputsize= service.objects.filter(name='inputsize').order_by('-id')[0]
     iSize=inputsize.info
